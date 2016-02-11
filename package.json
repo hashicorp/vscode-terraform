@@ -1,0 +1,26 @@
+{
+	"name": "terraform",
+	"displayName": "Terraform",
+	"description": "Terraform",
+	"version": "0.0.1",
+	"publisher": "mauve",
+	"engines": {
+		"vscode": "^0.10.6"
+	},
+	"categories": [
+		"Languages"
+	],
+	"contributes": {
+		"languages": [{
+			"id": "terraform",
+			"aliases": ["Terraform", "terraform"],
+			"extensions": [".tf",".tfvars"],
+			"configuration": "./terraform.configuration.json"
+		}],
+		"grammars": [{
+			"language": "terraform",
+			"scopeName": "source.terraform",
+			"path": "./syntaxes/terraform.tmLanguage"
+		}]
+	}
+}
