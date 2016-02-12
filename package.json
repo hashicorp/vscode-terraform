@@ -1,8 +1,9 @@
 {
+    "icon": "terraform.png",
 	"name": "terraform",
 	"displayName": "Terraform",
-	"description": "Terraform",
-	"version": "0.0.1",
+	"description": "Adds syntax highlighting for Hashicorp's Terraform",
+	"version": "0.0.2",
 	"publisher": "mauve",
 	"engines": {
 		"vscode": "^0.10.6"
