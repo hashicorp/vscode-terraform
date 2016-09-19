@@ -98,7 +98,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>(resource)\s+(")(\w+)(")\s+(")(.+)(")\s+({)</string>
+			<string>(resource|data)\s+(")(\w+)(")\s+(")(.+)(")\s+({)</string>
 			<key>name</key>
 			<string>meta.resource.terraform</string>
 		</dict>
