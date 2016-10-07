@@ -1,3 +1,8 @@
+0.0.4
+=====
+
+- Fixed screenshot in README.md
+
 0.0.3
 =====
 
