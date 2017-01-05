@@ -13,6 +13,24 @@
 	<array>
 		<dict>
 			<key>begin</key>
+			<string>/\*</string>
+			<key>captures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.comment.terraform</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Block comments</string>
+			<key>end</key>
+			<string>\*/</string>
+			<key>name</key>
+			<string>comment.block.terraform</string>
+		</dict>
+		<dict>
+			<key>begin</key>
 			<string>#</string>
 			<key>captures</key>
 			<dict>
