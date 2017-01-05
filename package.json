@@ -43,6 +43,11 @@
           "type": "boolean",
           "default": true,
           "description": "Run 'terraform fmt' on save."
+        },
+        "terraform.path": {
+          "type": "string",
+          "default": "terraform",
+          "description": "Path to the 'terraform' executable"
         }
       }
     }

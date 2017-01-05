@@ -5,9 +5,9 @@ import { exec } from 'child_process';
 
 const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
 
-function fmt(text: string): Promise<string> {
+function fmt(execPath:String, text: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        const child = exec('terraform fmt -', {
+        const child = exec(execPath + ' fmt -', {
             encoding: 'utf8',
             maxBuffer: 1024 * 1024,
         }, (error, stdout, stderr) => {
@@ -37,15 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
         if (terraformConfig['formatOnSave'] && textEditor.document === document) {
             const range = fullRange(document);
 
-            fmt(document.getText())
+            fmt(terraformConfig['path'], document.getText())
                 .then((formattedText) => {
                     textEditor.edit((editor) => {
                         editor.replace(range, formattedText);
                     });
-
-                    // sometimes the selections persistes if multiple lines are removed
-                    // textEditor.selections.length = 0;
-                }).then(applied => {
+                }).then((applied) => {
                     ignoreNextSave.add(document);
 
                     return document.save();
