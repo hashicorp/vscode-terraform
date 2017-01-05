@@ -1,27 +1,66 @@
 {
-    "icon": "terraform.png",
-	"name": "terraform",
-	"displayName": "Terraform",
-	"description": "Adds syntax highlighting for Hashicorp's Terraform",
-	"version": "0.0.5",
-	"publisher": "mauve",
-	"engines": {
-		"vscode": "^0.10.6"
-	},
-	"categories": [
-		"Languages"
-	],
-	"contributes": {
-		"languages": [{
-			"id": "terraform",
-			"aliases": ["Terraform", "terraform"],
-			"extensions": [".tf",".tfvars"],
-			"configuration": "./terraform.configuration.json"
-		}],
-		"grammars": [{
-			"language": "terraform",
-			"scopeName": "source.terraform",
-			"path": "./syntaxes/terraform.tmLanguage"
-		}]
-	}
+  "icon": "terraform.png",
+  "name": "terraform",
+  "displayName": "Terraform",
+  "description": "Adds syntax highlighting for Hashicorp's Terraform",
+  "version": "0.0.5",
+  "publisher": "mauve",
+  "engines": {
+    "vscode": "^0.10.6"
+  },
+  "categories": [
+    "Other",
+    "Languages",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:terraform"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "languages": [{
+      "id": "terraform",
+      "aliases": [
+        "Terraform",
+        "terraform"
+      ],
+      "extensions": [
+        ".tf",
+        ".tfvars"
+      ],
+      "configuration": "./terraform.configuration.json"
+    }],
+    "grammars": [{
+      "language": "terraform",
+      "scopeName": "source.terraform",
+      "path": "./syntaxes/terraform.tmLanguage"
+    }],
+    "configuration": {
+      "type": "object",
+      "title": "Terraform configuration",
+      "properties": {
+        "terraform.formatOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run 'terraform fmt' on save."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.0",
+    "mocha": "^2.3.3",
+    "@types/node": "^6.0.40",
+    "@types/mocha": "^2.2.32"
+  },
+  "dependencies": {
+    "vscode-languageserver": "^2.6.2"
+  }
 }
