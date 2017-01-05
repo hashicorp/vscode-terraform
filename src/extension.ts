@@ -24,8 +24,10 @@ function fmt(text: string): Promise<string> {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+    let ignoreNextSave = new WeakSet<vscode.TextDocument>();
+
     var onSave = vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
-        if (document.languageId !== 'terraform') {
+        if (document.languageId !== 'terraform' || ignoreNextSave.has(document)) {
             return;
         }
 
@@ -42,9 +44,14 @@ export function activate(context: vscode.ExtensionContext) {
                     });
 
                     // sometimes the selections persistes if multiple lines are removed
-                    textEditor.selections.length = 0;
-                })
-                .catch((e) => {
+                    // textEditor.selections.length = 0;
+                }).then(applied => {
+                    ignoreNextSave.add(document);
+
+                    return document.save();
+                }).then(() => {
+                    ignoreNextSave.delete(document);
+                }).catch((e) => {
                     vscode.window.showErrorMessage(e);
                 });
         }
