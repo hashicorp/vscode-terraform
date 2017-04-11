@@ -42,12 +42,17 @@
         "terraform.formatOnSave": {
           "type": "boolean",
           "default": false,
-          "description": "Run 'terraform fmt' on save."
+          "description": "Run `terraform fmt` on save for .tf files."
+        },
+        "terraform.formatVarsOnSave": {
+          "type": ["boolean", "null"],
+          "default": null,
+          "description": "Run `terraform fmt` on save for .tfvars files (if `null` this setting is equal to `terraform.formatOnSave`)."
         },
         "terraform.path": {
           "type": "string",
           "default": "terraform",
-          "description": "Path to the 'terraform' executable"
+          "description": "Path to the `terraform` executable"
         }
       }
     }

@@ -1,5 +1,3 @@
-'use strict';
-
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 
@@ -23,6 +21,16 @@ function fmt(execPath:String, text: string): Promise<string> {
     });
 }
 
+function isFormatOnSaveEnabled(document: vscode.TextDocument) : boolean {
+    let terraformConfig = vscode.workspace.getConfiguration('terraform');
+
+    if (document.fileName.endsWith('.tfvars') && terraformConfig['formatVarsOnSave'] !== null) {
+        return !!terraformConfig['formatVarsOnSave'];
+    }
+
+    return !!terraformConfig['formatOnSave'];
+}
+
 export function activate(context: vscode.ExtensionContext) {
     let ignoreNextSave = new WeakSet<vscode.TextDocument>();
 
@@ -34,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
         let terraformConfig = vscode.workspace.getConfiguration('terraform');
         let textEditor = vscode.window.activeTextEditor;
 
-        if (terraformConfig['formatOnSave'] && textEditor.document === document) {
+        if (isFormatOnSaveEnabled(document) && textEditor.document === document) {
             const range = fullRange(document);
 
             fmt(terraformConfig['path'], document.getText())
