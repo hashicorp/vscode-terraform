@@ -3,10 +3,10 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Adds syntax highlighting for Hashicorp's Terraform",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "mauve",
   "engines": {
-    "vscode": "^0.10.6"
+    "vscode": "^1.8.0"
   },
   "categories": [
     "Other",

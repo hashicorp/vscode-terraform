@@ -1,3 +1,14 @@
+0.0.7
+=====
+
+## What's New & Changes
+- [Add auto closing and surrounding pairs](https://github.com/mauve/vscode-terraform/pull/10)
+- `terraform.formatOnSave` is now disabled by default due to some minor
+  issues I want to improve before enabling it again
+- Added new configuration option `terraform.formatVarsOnSave` which
+  controls whether to format `.tfvars` files on save, by default this
+  setting mirrors `terraform.formatOnSave`
+
 0.0.6
 =====
 
