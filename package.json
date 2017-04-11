@@ -41,7 +41,7 @@
       "properties": {
         "terraform.formatOnSave": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Run 'terraform fmt' on save."
         },
         "terraform.path": {
