@@ -1,3 +1,9 @@
+0.0.8
+=====
+
+## What's New
+- Also highlight interpolations and function calls inside strings
+
 0.0.7
 =====
 
