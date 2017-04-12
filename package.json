@@ -2,8 +2,8 @@
   "icon": "terraform.png",
   "name": "terraform",
   "displayName": "Terraform",
-  "description": "Adds syntax highlighting for Hashicorp's Terraform",
-  "version": "0.0.8",
+  "description": "A cool little plugin for editing Hashicorp's Terraform files",
+  "version": "0.0.9",
   "publisher": "mauve",
   "engines": {
     "vscode": "^1.8.0"
