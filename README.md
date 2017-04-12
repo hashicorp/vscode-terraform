@@ -11,5 +11,4 @@ Adds syntax highlightning and other editing features for [Terraform](https://www
 
 # Screenshot
 
-![Syntax Highlighting](https://raw.githubusercontent.com/mauve/vscode-terraform/master/doc/screenshot.png)
-
+![Syntax Highlighting](https://raw.githubusercontent.com/mauve/vscode-terraform/master/screenshot.png)
