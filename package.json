@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "A cool little plugin for editing Hashicorp's Terraform files",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "mauve",
   "engines": {
     "vscode": "^1.8.0"

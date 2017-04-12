@@ -1,9 +1,10 @@
-0.0.9
+0.0.10
 =====
 
 ## What's New
 - Add a command to run `terraform validate`
 - Also handle `.hcl` files (Closes #17)
+- Update screenshot in README.md
 
 0.0.8
 =====
