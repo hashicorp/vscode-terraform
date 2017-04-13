@@ -2,7 +2,7 @@
   "icon": "terraform.png",
   "name": "terraform",
   "displayName": "Terraform",
-  "description": "A cool little plugin for editing Hashicorp's Terraform files",
+  "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
   "version": "0.0.12",
   "publisher": "mauve",
   "engines": {
