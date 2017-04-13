@@ -7,7 +7,7 @@ variable "region" {
 }
 
 resource "aws_s3_bucket" "agent_bucket" {
-  bucket   = "${var.stage}-${var.region}-mybucket"
+  bucket   = "${var.stage}-${var.region}-${var.smurf}mybucket"
   acl      = "private"
   property = "value"
 

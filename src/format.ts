@@ -26,7 +26,7 @@ export class FormatOnSaveHandler {
       const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
       const range = fullRange(document);
 
-      this._output.appendLine(`Running 'terraform fmt' on '${document.fileName}'`);
+      this._output.appendLine(`terraform.format: running 'terraform fmt' on '${document.fileName}'`);
       this.fmt(this._configuration['path'], document.getText())
         .then((formattedText) => {
           textEditor.edit((editor) => {
@@ -37,10 +37,10 @@ export class FormatOnSaveHandler {
 
           return document.save();
         }).then(() => {
-          this._output.appendLine("Formatting successful.");
+          this._output.appendLine("terraform.format: Successful.");
           this._ignoreNextSave.delete(document);
         }).catch((e) => {
-          this._output.appendLine(`Formatting failed: '${e}'`);
+          this._output.appendLine(`terraform.format: Failed: '${e}'`);
           vscode.window.showWarningMessage(e);
         });
     }

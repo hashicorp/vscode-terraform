@@ -11,7 +11,8 @@
   "categories": [
     "Other",
     "Languages",
-    "Formatters"
+    "Formatters",
+    "Linters"
   ],
   "repository": {
     "type": "git",
@@ -19,32 +20,43 @@
   },
   "activationEvents": [
     "onLanguage:terraform",
-    "onCommand:terraform.validate"
+    "onCommand:terraform.validate",
+    "onCommand:terraform.lint"
   ],
   "main": "./out/src/extension",
   "contributes": {
-    "commands": [{
-      "command": "terraform.validate",
-      "title": "Terraform: Validate"
-    }],
-    "languages": [{
-      "id": "terraform",
-      "aliases": [
-        "Terraform",
-        "terraform"
-      ],
-      "extensions": [
-        ".tf",
-        ".tfvars",
-        ".hcl"
-      ],
-      "configuration": "./terraform.configuration.json"
-    }],
-    "grammars": [{
-      "language": "terraform",
-      "scopeName": "source.terraform",
-      "path": "./syntaxes/terraform.json"
-    }],
+    "commands": [
+      {
+        "command": "terraform.validate",
+        "title": "Terraform: Validate"
+      },
+      {
+        "command": "terraform.lint",
+        "title": "Terraform: Lint"
+      }
+    ],
+    "languages": [
+      {
+        "id": "terraform",
+        "aliases": [
+          "Terraform",
+          "terraform"
+        ],
+        "extensions": [
+          ".tf",
+          ".tfvars",
+          ".hcl"
+        ],
+        "configuration": "./terraform.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "terraform",
+        "scopeName": "source.terraform",
+        "path": "./syntaxes/terraform.json"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Terraform configuration",
@@ -55,7 +67,10 @@
           "description": "Run `terraform fmt` on save for .tf files."
         },
         "terraform.formatVarsOnSave": {
-          "type": ["boolean", "null"],
+          "type": [
+            "boolean",
+            "null"
+          ],
           "default": null,
           "description": "Run `terraform fmt` on save for .tfvars files (if `null` this setting is equal to `terraform.formatOnSave`)."
         },
@@ -68,6 +83,19 @@
           "type": "string",
           "default": "templates",
           "description": "A relative path to where your templates are stored relative to the workspace root."
+        },
+        "terraform.lintPath": {
+          "type": "string",
+          "default": "tflint",
+          "description": "Path to the `tflint` executable."
+        },
+        "terraform.lintConfig": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Path to the `tflint` config file."
         }
       }
     }

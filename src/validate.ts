@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 
-import { stripAnsi } from './ansi';
-
 export function validateCommand() {
   const configuration = vscode.workspace.getConfiguration("terraform");
   const workspaceDir = vscode.workspace.rootPath;
@@ -17,7 +15,7 @@ export function validateCommand() {
     .then(() => {
       vscode.window.showInformationMessage("Validation succeeded.");
     }).catch((error) => {
-      output.appendLine("Validation failed:");
+      output.appendLine("terraform.validate: Failed:");
       output.append(error);
       vscode.window.showErrorMessage("Validation failed, more information in the output tab.");
     });
