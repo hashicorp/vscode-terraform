@@ -11,4 +11,12 @@ Adds syntax highlightning and other editing features for [Terraform](https://www
 
 # Screenshot
 
-![Syntax Highlighting](https://raw.githubusercontent.com/mauve/vscode-terraform/master/screenshot.png)
+![Syntax Highlighting](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/screenshot.png)
+
+## Format on Save
+
+![Format on Save](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-format-on-save.gif)
+
+## Automatically closes braces and quotes
+
+![Automatically closes braces and more](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-brace-closing.gif)
