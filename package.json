@@ -43,7 +43,7 @@
     "grammars": [{
       "language": "terraform",
       "scopeName": "source.terraform",
-      "path": "./syntaxes/terraform.tmLanguage"
+      "path": "./syntaxes/terraform.json"
     }],
     "configuration": {
       "type": "object",
