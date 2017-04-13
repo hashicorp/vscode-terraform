@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { exec } from 'child_process';
 
 import { stripAnsi } from './ansi';
+import { isTerraformDocument } from './helpers';
 
 export class FormatOnSaveHandler {
   private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
@@ -15,7 +16,7 @@ export class FormatOnSaveHandler {
   }
 
   onSave(document: vscode.TextDocument) {
-    if (document.languageId !== 'terraform' || this._ignoreNextSave.has(document)) {
+    if (!isTerraformDocument(document) || this._ignoreNextSave.has(document)) {
       return;
     }
 
