@@ -1,3 +1,9 @@
+0.0.12
+======
+
+## What's New
+- Add linting support using [tflint](https://github.com/wata727/tflint) (Closes #12)
+
 0.0.11
 ======
 
