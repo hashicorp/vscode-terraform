@@ -1,5 +1,12 @@
+0.0.11
+======
+
+## What's New
+- Only run `terraform fmt` on terraform files so that the plugin can be used for `HCL` files in general (Closes #18)
+- Syntax highlight string interpolations in heredocs
+
 0.0.10
-=====
+======
 
 ## What's New
 - Add a command to run `terraform validate`
