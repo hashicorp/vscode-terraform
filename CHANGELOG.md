@@ -1,3 +1,10 @@
+0.0.13
+======
+
+## What's New
+- Much better marketplace description
+- Minor fixes
+
 0.0.12
 ======
 
