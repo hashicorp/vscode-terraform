@@ -96,6 +96,38 @@
           ],
           "default": null,
           "description": "Path to the `tflint` config file."
+        },
+        "terraform.indexing": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "If true, runs `terraform-index` enables indexing"
+            },
+            "indexerPath": {
+              "type": "string",
+              "default": "terraform-index",
+              "description": "Path to the `terraform-index` executable (download from: https://github.com/mauve/terraform-index/releases)"
+            },
+            "liveIndexing": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, runs `terraform-index` on the file currently being enabled (requires indexing to be enabled)"
+            },
+            "liveIndexingDelay": {
+              "type": "number",
+              "default": 500,
+              "description": "The number of milliseconds to delay before execution. Resets with each keystroke."
+            }
+          },
+          "default": {
+            "enabled": false,
+            "indexerPath": "terraform-index",
+            "liveIndexing": true,
+            "delay": 500
+          },
+          "description": "Use `terraform-index` (download from: https://github.com/mauve/terraform-index/releases) to get live syntax errors, rename support, go to symbol, and much more..."
         }
       }
     }

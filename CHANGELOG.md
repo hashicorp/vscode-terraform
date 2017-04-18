@@ -1,3 +1,16 @@
+0.0.14
+======
+
+## What's New
+- Experimental new Indexing support using [terraform-index](https://github.com/mauve/terraform-index)
+  - Browse document symbols
+  - Browse workspace symbols
+  - Peek definition
+  - Goto definition
+  - Find references
+  - Completion for variables and outputs
+  - Rename variables (and all usages)
+
 0.0.13
 ======
 

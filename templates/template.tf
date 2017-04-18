@@ -7,7 +7,7 @@ variable "region" {
 }
 
 resource "aws_s3_bucket" "agent_bucket" {
-  bucket   = "${var.stage}-${var.region}-${var.smurf}mybucket"
+  bucket   = "${var.stage}-${var.region}-${var.stage}mybucket"
   acl      = "private"
   property = "value"
 
@@ -28,4 +28,8 @@ HEREDOC
   subkey {
     smurf = "gargamel"
   }
+}
+
+output "iam_user_agent" {
+  value = "smurf"
 }

@@ -9,6 +9,14 @@ Adds syntax highlightning and other editing features for [Terraform](https://www
 - Automatically closes braces and quotes
 - Adds a command for running `terraform validate`
 - Linting support with the help of [tflint](https://github.com/wata727/tflint)
+- ***EXPERIMENTAL***:
+  - Browse document symbols
+  - Browse workspace symbols
+  - Peek definition
+  - Goto definition
+  - Find references
+  - Completion for variables and outputs
+  - Rename variables (and all usages)
 
 ## Syntax Highlighting
 
@@ -47,3 +55,49 @@ You can `terraform validate` your project by invoking the command `Terraform: Va
 workspace root).
 
 Because the output of `terraform validate` is not parseable the output is just dumped into the output tab.
+
+### Experimental Indexing support
+
+Enabling indexing support requires the tool [terraform-index](https://github.com/mauve/terraform-index) to be
+available and the feature to be enabled by setting `terraform.indexing.enabled` to `true` (it defaults to `false`).
+
+Currently only `resource`, `output` and `variable` are supported, and sometimes even limited.
+
+### Browse Document Symbols
+
+Press `Ctrl+Shift+O` or `⇧⌘O` to browse symbols in the current file.
+
+![Browse Document Symbols](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-browse-document-symbols.png)
+
+### Browse Workspace Symbols
+
+Press `Ctrl+T` or `⌘T` to quickly jump to any symbol.
+
+![Browse Workspace Symbols](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-browse-workspace-symbols.png)
+
+### Peek and Go To definition
+
+Press `Alt+F12` or `⌥F12` to peek definition (currently only some types supported).
+
+![Peek definition](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-peek-definition.png)
+
+### Find All References
+
+Press `Shift+F12` or `⇧F12` to find all references (currently only variables).
+
+![Find all references](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-find-references.png)
+
+### Code completion
+
+Press `Ctrl+Space` (also triggered automatically after `.` and `"`) for simple code completion (currently only variables and outputs).
+
+![Complete variables and outputs](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-complete-variables-and-outputs.png)
+
+![Complete variables](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-complete-variables.png)
+
+### Rename variable and 
+
+Press `F2` to automatically rename a variable and its usages.
+
+![Rename variable (before)](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-rename-variable-before.png)
+![Rename variable (after)](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-rename-variable-after.png)
