@@ -1,3 +1,9 @@
+0.0.15
+======
+
+## What's New
+- Tiny bugfix for "Browse symbols" where a results would not get shown
+
 0.0.14
 ======
 
