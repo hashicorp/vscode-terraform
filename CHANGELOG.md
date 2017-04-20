@@ -1,8 +1,9 @@
-0.0.15
-======
+0.0.16 (0.0.15)
+===============
 
 ## What's New
 - Tiny bugfix for "Browse symbols" where a results would not get shown
+- More tiny bugfixes for index
 
 0.0.14
 ======

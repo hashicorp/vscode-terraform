@@ -103,7 +103,7 @@ class Index {
   getSymbols(match: string): vscode.SymbolInformation[] {
     let symbols = [] as vscode.SymbolInformation[];
     for (let uri of this._byUri.keys()) {
-      symbols.push(...this.getDocumentSymbols(vscode.Uri.file(uri), match));
+      symbols.push(...this.getDocumentSymbols(vscode.Uri.parse(uri), match));
     }
     return symbols;
   }
@@ -123,7 +123,7 @@ class Index {
 
     for (let [uri, index] of this._byUri) {
       for (let variable of index.Variables) {
-        this._variables.set(variable.Name, Parser.locationToLocation(variable.Location, vscode.Uri.file(uri)));
+        this._variables.set(variable.Name, Parser.locationToLocation(variable.Location, vscode.Uri.parse(uri)));
       }
     }
   }
@@ -133,7 +133,7 @@ class Index {
 
     for (let [uri, index] of this._byUri) {
       for (let output of index.Outputs) {
-        this._outputs.set(output.Name, Parser.locationToLocation(output.Location, vscode.Uri.file(uri)));
+        this._outputs.set(output.Name, Parser.locationToLocation(output.Location, vscode.Uri.parse(uri)));
       }
     }
   }
@@ -143,7 +143,7 @@ class Index {
     this._referencesById.clear();
 
     for (let [uriString, index] of this._byUri) {
-      let uri = vscode.Uri.file(uriString);
+      let uri = vscode.Uri.parse(uriString);
       let allReferences = [];
       for (let targetId in index.References) {
         if (!this.validTarget(targetId)) {
