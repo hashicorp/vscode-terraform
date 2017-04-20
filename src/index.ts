@@ -22,10 +22,10 @@ class Reference {
 }
 
 class Index {
-  private _byUri = new Map<vscode.Uri, Parser.IndexResult>();
+  private _byUri = new Map<string, Parser.IndexResult>();
   private _variables = new Map<string, vscode.Location>();
   private _outputs = new Map<string, vscode.Location>();
-  private _references = new Map<vscode.Uri, Reference[]>();
+  private _references = new Map<string, Reference[]>();
   private _referencesById = new Map<string, vscode.Location[]>();
 
   updateUri(uri: vscode.Uri) {
@@ -46,7 +46,7 @@ class Index {
   }
 
   findDefinition(doc: vscode.TextDocument, pos: vscode.Position): (vscode.Location | null) {
-    let references = this._references.get(doc.uri);
+    let references = this._references.get(doc.uri.toString());
     if (references === undefined) {
       return null;
     }
@@ -68,7 +68,7 @@ class Index {
   }
 
   deleteUri(uri: vscode.Uri) {
-    this._byUri.delete(uri);
+    this._byUri.delete(uri.toString());
 
     this.rebuildVariables();
     this.rebuildReferences();
@@ -84,7 +84,7 @@ class Index {
   }
 
   getDocumentSymbols(uri: vscode.Uri, match?: string): vscode.SymbolInformation[] {
-    let result = this._byUri.get(uri);
+    let result = this._byUri.get(uri.toString());
     if (result === undefined) {
       return [];
     }
@@ -103,14 +103,14 @@ class Index {
   getSymbols(match: string): vscode.SymbolInformation[] {
     let symbols = [] as vscode.SymbolInformation[];
     for (let uri of this._byUri.keys()) {
-      symbols.push(...this.getDocumentSymbols(uri, match));
+      symbols.push(...this.getDocumentSymbols(vscode.Uri.file(uri), match));
     }
     return symbols;
   }
 
   private update(uri: vscode.Uri, result: Parser.IndexResult) {
     console.log("Updating index for ", uri.toString());
-    this._byUri.set(uri, result);
+    this._byUri.set(uri.toString(), result);
 
     this.rebuildVariables();
     this.rebuildOutputs();
@@ -123,7 +123,7 @@ class Index {
 
     for (let [uri, index] of this._byUri) {
       for (let variable of index.Variables) {
-        this._variables.set(variable.Name, Parser.locationToLocation(variable.Location, uri));
+        this._variables.set(variable.Name, Parser.locationToLocation(variable.Location, vscode.Uri.file(uri)));
       }
     }
   }
@@ -133,7 +133,7 @@ class Index {
 
     for (let [uri, index] of this._byUri) {
       for (let output of index.Outputs) {
-        this._outputs.set(output.Name, Parser.locationToLocation(output.Location, uri));
+        this._outputs.set(output.Name, Parser.locationToLocation(output.Location, vscode.Uri.file(uri)));
       }
     }
   }
@@ -142,7 +142,8 @@ class Index {
     this._references.clear();
     this._referencesById.clear();
 
-    for (let [uri, index] of this._byUri) {
+    for (let [uriString, index] of this._byUri) {
+      let uri = vscode.Uri.file(uriString);
       let allReferences = [];
       for (let targetId in index.References) {
         if (!this.validTarget(targetId)) {
@@ -169,7 +170,7 @@ class Index {
       }
 
       if (allReferences.length > 0) {
-        this._references.set(uri, allReferences);
+        this._references.set(uriString, allReferences);
       }
     }
   }
