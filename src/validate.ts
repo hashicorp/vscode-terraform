@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
+import { outputChannel } from './extension';
 
 export function validateCommand() {
   const configuration = vscode.workspace.getConfiguration("terraform");
   const workspaceDir = vscode.workspace.rootPath;
-  const output = vscode.window.createOutputChannel("Terraform");
 
   if (workspaceDir === undefined) {
     vscode.window.showWarningMessage("terraform.Validate can only be used when opening a folder");
@@ -15,8 +15,8 @@ export function validateCommand() {
     .then(() => {
       vscode.window.showInformationMessage("Validation succeeded.");
     }).catch((error) => {
-      output.appendLine("terraform.validate: Failed:");
-      output.append(error);
+      outputChannel.appendLine("terraform.validate: Failed:");
+      outputChannel.append(error);
       vscode.window.showErrorMessage("Validation failed, more information in the output tab.");
     });
 }

@@ -3,11 +3,11 @@ import { exec } from 'child_process';
 
 import { stripAnsi } from './ansi';
 import { isTerraformDocument } from './helpers';
+import { outputChannel } from './extension';
 
 export class FormatOnSaveHandler {
   private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
   private _configuration = vscode.workspace.getConfiguration('terraform');
-  private _output = vscode.window.createOutputChannel("Terraform");
 
   static create() {
     let handler = new FormatOnSaveHandler;
@@ -26,7 +26,7 @@ export class FormatOnSaveHandler {
       const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
       const range = fullRange(document);
 
-      this._output.appendLine(`terraform.format: running 'terraform fmt' on '${document.fileName}'`);
+      outputChannel.appendLine(`terraform.format: running 'terraform fmt' on '${document.fileName}'`);
       this.fmt(this._configuration['path'], document.getText())
         .then((formattedText) => {
           textEditor.edit((editor) => {
@@ -37,10 +37,10 @@ export class FormatOnSaveHandler {
 
           return document.save();
         }).then(() => {
-          this._output.appendLine("terraform.format: Successful.");
+          outputChannel.appendLine("terraform.format: Successful.");
           this._ignoreNextSave.delete(document);
         }).catch((e) => {
-          this._output.appendLine(`terraform.format: Failed: '${e}'`);
+          outputChannel.appendLine(`terraform.format: Failed: '${e}'`);
           vscode.window.showWarningMessage(e);
         });
     }

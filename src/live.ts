@@ -8,7 +8,6 @@ import { Parser } from './parser';
 import { createDiagnostic } from './index';
 import { process } from './process';
 
-let output = vscode.window.createOutputChannel("Terraform");
 let runner;
 
 function liveIndexEnabledForDocument(doc: vscode.TextDocument): boolean {

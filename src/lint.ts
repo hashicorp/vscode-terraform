@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { exec } from 'child_process';
 
 import { errorDiagnosticCollection } from './extension';
+import { outputChannel } from './extension';
 
 type Issue = {
   type: string;
@@ -31,7 +32,6 @@ function toDiagnostic(issue: Issue): vscode.Diagnostic {
 export function lintCommand() {
   const configuration = vscode.workspace.getConfiguration("terraform");
   const workspaceDir = vscode.workspace.rootPath;
-  const output = vscode.window.createOutputChannel("Terraform");
 
   if (workspaceDir === undefined) {
     vscode.window.showWarningMessage("terraform.lint can only be used when opening a folder");
@@ -40,7 +40,7 @@ export function lintCommand() {
 
   lint(configuration["lintPath"], configuration["lintConfig"], workspaceDir)
     .then((issues) => {
-      output.appendLine(`terraform.lint: ${issues.length} issues`);
+      outputChannel.appendLine(`terraform.lint: ${issues.length} issues`);
       errorDiagnosticCollection.clear();
 
       // group by filename first
@@ -56,14 +56,14 @@ export function lintCommand() {
 
       // report diagnostics
       issuesByFile.forEach((diagnostics, file) => {
-        output.appendLine(`terraform.lint: ${file}: ${diagnostics.length} issues`);
+        outputChannel.appendLine(`terraform.lint: ${file}: ${diagnostics.length} issues`);
         errorDiagnosticCollection.set(vscode.Uri.file(`${workspaceDir}/${file}`), diagnostics);
       });
 
-      output.appendLine("terraform.lint: Done");
+      outputChannel.appendLine("terraform.lint: Done");
     }).catch((error) => {
-      output.appendLine("terraform.lint: Failed:");
-      output.append(error);
+      outputChannel.appendLine("terraform.lint: Failed:");
+      outputChannel.append(error);
       vscode.window.showErrorMessage("Linting failed, more information in the output tab.");
     });
 }
