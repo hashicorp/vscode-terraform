@@ -68,6 +68,15 @@
     },
     {
       "captures": {
+        "1": { "name": "storage.type.function.terraform" },
+        "2": { "name": "punctuation.definition.tag.terraform" }
+      },
+      "foldingStartMarker": "\\{\\s*$",
+      "foldingStopMarker": "^\\s*\\}",
+      "match": "(terraform)\\s+({)"
+    },
+    {
+      "captures": {
         "1": { "name": "variable.other.assignment.terraform" },
         "2": { "name": "keyword.operator.terraform" }
       },
@@ -147,7 +156,7 @@
       "captures": {
         "0": { "name": "entity.other.attribute-name.terraform" }
       },
-      "match": "(terraform|var|self|count|module|path|data)(\\.[\\w\\*]+)+"
+      "match": "(terraform|var|self|count|module|path|data)(\\.[\\w\\-\\*]+)+"
     },
     "strings": {
       "begin": "\\\"",
@@ -168,13 +177,13 @@
       ]
     },
     "heredoc": {
-      "begin": "(?>\\s*<<(\\w+))",
+      "begin": "(?>\\s*<<\\s?(\\w+))",
       "beginCaptures": {
         "0": { "name": "string.terraform punctuation.definition.string.begin.terraform" },
         "1": { "name": "keyword.operator.heredoc.terraform" }
       },
       "comment": "Heredoc",
-      "end": "^\\1$",
+      "end": "\\1$",
       "endCaptures": {
         "0": { "name": "string.terraform punctuation.definition.string.end.terraform keyword.operator.heredoc.terraform" }
       },
