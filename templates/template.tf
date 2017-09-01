@@ -6,10 +6,38 @@ variable "region" {
   default = "us-east-1"
 }
 
+
+
+terraform {
+
+}
+
+variable "aws_test_var" {
+  description = "test variable"
+  default = {
+    string = "string"
+    variable = "${var.variable}"
+    number = 2
+    bool = true
+    list = []
+  }
+}
+
+variable "aws_test_var" {
+  description = "test variable"
+  default = <<EOF
+    [
+      "test1",
+      "test2",
+      "foo",
+      "bar"
+    ]EOF
+}
+
 resource "aws_s3_bucket" "agent_bucket" {
-  bucket   = "${var.stage}-${var.region}-${var.stage}mybucket"
+  bucket   = "${var.stage_test}-${var.region.test}-${var.stage}mybucket"
   acl      = "private"
-  property = "value"
+  property = "${var.foo-bar.variable}"
 
   smurf = <<HEREDOC
 Lorem ${var.ipsum} dolor sit amet, consectetur adipiscing elit,
