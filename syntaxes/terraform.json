@@ -147,7 +147,7 @@
       "captures": {
         "0": { "name": "entity.other.attribute-name.terraform" }
       },
-      "match": "(terraform|var|self|count|module|path|data)(\\.[\\w\\*]+)+"
+      "match": "(terraform|var|self|count|module|path|data)(\\.[\\w\\*-]+)+"
     },
     "strings": {
       "begin": "\\\"",
