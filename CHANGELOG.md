@@ -1,3 +1,10 @@
+0.0.17
+======
+
+## What's New
+- Several great syntax highlighting fixes by [@haad](https://github.com/haad)
+- We no longer create several output channels (closes #25)
+
 0.0.16 (0.0.15)
 ===============
 
