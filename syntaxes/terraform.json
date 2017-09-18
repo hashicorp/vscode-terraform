@@ -64,7 +64,7 @@
       },
       "foldingStartMarker": "\\{\\s*$",
       "foldingStopMarker": "^\\s*\\}",
-      "match": "(provider|provisioner|variable|output|module|atlas)\\s+(\")?([\\w\\-]+)(\")?\\s+({)"
+      "match": "(locals|provider|provisioner|variable|output|module|atlas)\\s+(\")?([\\w\\-]+)(\")?\\s+({)"
     },
     {
       "captures": {
@@ -156,7 +156,7 @@
       "captures": {
         "0": { "name": "entity.other.attribute-name.terraform" }
       },
-      "match": "(terraform|var|self|count|module|path|data)(\\.[\\w\\-\\*]+)+"
+      "match": "(local|terraform|var|self|count|module|path|data)(\\.[\\w\\-\\*]+)+"
     },
     "strings": {
       "begin": "\\\"",
