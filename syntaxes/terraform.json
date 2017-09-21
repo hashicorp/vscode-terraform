@@ -77,6 +77,15 @@
     },
     {
       "captures": {
+        "1": { "name": "storage.type.function.terraform" },
+        "2": { "name": "punctuation.definition.tag.terraform" }
+      },
+      "foldingStartMarker": "\\{\\s*$",
+      "foldingStopMarker": "^\\s*\\}",
+      "match": "(terraform)\\s+({)"
+    },
+    {
+      "captures": {
         "1": { "name": "variable.other.assignment.terraform" },
         "2": { "name": "keyword.operator.terraform" }
       },
