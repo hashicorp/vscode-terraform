@@ -1,3 +1,9 @@
+0.0.18
+======
+
+## What's New
+- Add support for local variable type [@mspaulding06](https://github.com/mspaulding06)
+
 0.0.17
 ======
 
