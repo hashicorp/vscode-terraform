@@ -17,6 +17,7 @@ export function validateCommand() {
     }).catch((error) => {
       outputChannel.appendLine("terraform.validate: Failed:");
       outputChannel.append(error);
+      outputChannel.show(true);
       vscode.window.showErrorMessage("Validation failed, more information in the output tab.");
     });
 }
