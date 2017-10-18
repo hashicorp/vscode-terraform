@@ -5,6 +5,7 @@
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
   "version": "0.0.18",
   "publisher": "mauve",
+  "license": "BSD 3-clause",
   "engines": {
     "vscode": "^1.8.0"
   },
@@ -136,13 +137,16 @@
     "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test"
+    "build": "tsc -p ./",
+    "test": "node ./node_modules/vscode/bin/test",
+    "lint": "tslint -t verbose \"src/**/*.ts\""
   },
   "devDependencies": {
-    "typescript": "^2.0.3",
-    "vscode": "^1.0.0",
-    "mocha": "^2.3.3",
+    "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
-    "@types/mocha": "^2.2.32"
+    "mocha": "^2.3.3",
+    "tslint": "^5.7.0",
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.0"
   }
 }
