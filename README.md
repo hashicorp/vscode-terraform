@@ -1,6 +1,22 @@
-# vscode-terraform
+<h1 align="center">
+  <br>
+    <img src="https://raw.githubusercontent.com/mauve/vscode-terraform/master/terraform.png" alt="logo" width="200">
+  <br>
+  vscode-terraform
+  <br>
+  <br>
+</h1>
 
-Adds syntax highlightning and other editing features for [Terraform](https://www.terraform.io/) files.
+<h4 align="center">Adds syntax highlightning and other editing features for <a href="https://www.terraform.io/">Terraform</a> files</h4>
+
+<p align="center">
+  <a href="https://travis-ci.org/mauve/vscode-terraform">
+    <img src="https://travis-ci.org/mauve/vscode-terraform.svg?branch=master">
+  </a>
+  <a href="https://github.com/mauve/vscode-terraform/releases">
+    <img src="https://img.shields.io/github/release/mauve/vscode-terraform.svg" alt="Release">
+  </a>
+</p>
 
 ## Features at a glance
 
