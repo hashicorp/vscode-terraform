@@ -73,7 +73,7 @@ export class RenameProvider implements vscode.RenameProvider {
 
     let symbol = document.getText(range);
     let references = index.findReferences(document.getText(range));
-    if (references.length == 0) {
+    if (references.length === 0) {
       return null;
     }
 
@@ -81,11 +81,11 @@ export class RenameProvider implements vscode.RenameProvider {
     let edit = new vscode.WorkspaceEdit;
     edit.replace(document.uri, range, newName);
     references.forEach((location) => {
-      let range = new vscode.Range(
+      let r = new vscode.Range(
         new vscode.Position(location.range.start.line, location.range.start.character + magic),
         new vscode.Position(location.range.start.line, location.range.start.character + magic + symbol.length));
 
-      edit.replace(location.uri, range, newName);
+      edit.replace(location.uri, r, newName);
     });
     return edit;
   }

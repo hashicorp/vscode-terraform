@@ -17,7 +17,7 @@ interface TerraformConfiguration {
   indexing: TerraformIndexConfiguration;
 }
 
-export function getConfiguration() : TerraformConfiguration {
+export function getConfiguration(): TerraformConfiguration {
   let raw = vscode.workspace.getConfiguration("terraform");
 
   // needed for conversion

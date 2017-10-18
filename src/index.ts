@@ -35,7 +35,7 @@ class Index {
   }
 
   updateDocument(doc: vscode.TextDocument) {
-    if (doc.languageId != "terraform" || doc.isDirty) {
+    if (doc.languageId !== "terraform" || doc.isDirty) {
       console.log("Ignoring document: ", doc.uri.toString);
       return;
     }
@@ -121,8 +121,8 @@ class Index {
   private rebuildVariables() {
     this._variables.clear();
 
-    for (let [uri, index] of this._byUri) {
-      for (let variable of index.Variables) {
+    for (let [uri, idx] of this._byUri) {
+      for (let variable of idx.Variables) {
         this._variables.set(variable.Name, Parser.locationToLocation(variable.Location, vscode.Uri.parse(uri)));
       }
     }
@@ -131,8 +131,8 @@ class Index {
   private rebuildOutputs() {
     this._outputs.clear();
 
-    for (let [uri, index] of this._byUri) {
-      for (let output of index.Outputs) {
+    for (let [uri, idx] of this._byUri) {
+      for (let output of idx.Outputs) {
         this._outputs.set(output.Name, Parser.locationToLocation(output.Location, vscode.Uri.parse(uri)));
       }
     }
@@ -142,15 +142,15 @@ class Index {
     this._references.clear();
     this._referencesById.clear();
 
-    for (let [uriString, index] of this._byUri) {
+    for (let [uriString, idx] of this._byUri) {
       let uri = vscode.Uri.parse(uriString);
       let allReferences = [];
-      for (let targetId in index.References) {
+      for (let targetId in idx.References) {
         if (!this.validTarget(targetId)) {
           continue;
         }
 
-        let reference = index.References[targetId];
+        let reference = idx.References[targetId];
         let target = this.findTargetLocation(targetId);
         let references = reference.Locations.map((r): Reference => {
           return {
@@ -192,7 +192,7 @@ class Index {
 export let index = new Index();
 
 export function createWorkspaceWatcher(): vscode.FileSystemWatcher {
-  var watcher = vscode.workspace.createFileSystemWatcher("**/*.{tf,tfvars}");
+  let watcher = vscode.workspace.createFileSystemWatcher("**/*.{tf,tfvars}");
   watcher.onDidChange((uri) => { index.updateUri(uri) });
   watcher.onDidCreate((uri) => { index.updateUri(uri) });
   watcher.onDidDelete((uri) => { index.deleteUri(uri) });
