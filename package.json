@@ -49,6 +49,12 @@
           ".hcl"
         ],
         "configuration": "./terraform.configuration.json"
+      },
+      {
+        "id": "json",
+        "extensions": [
+          ".tfstate"
+        ]
       }
     ],
     "grammars": [
