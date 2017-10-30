@@ -5,5 +5,9 @@ export function isTerraformDocument(document: vscode.TextDocument): boolean {
     return false;
   }
 
+  if (document.isUntitled) {
+    return true;
+  }
+
   return (document.fileName.endsWith('.tf') || document.fileName.endsWith('.tfvars'));
 }
