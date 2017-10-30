@@ -1,3 +1,11 @@
+0.0.19
+======
+
+## What's New
+- Mark `.tfstate` files as JSON (closes #38)
+- Remove unnecessary files from package
+- Show output channel on validation failure [@jackric](https://github.com/jackric)
+
 0.0.18
 ======
 
