@@ -5,53 +5,33 @@ import { stripAnsi } from './ansi';
 import { isTerraformDocument } from './helpers';
 import { outputChannel } from './extension';
 
-export class FormatOnSaveHandler {
-  private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
-  private _configuration = vscode.workspace.getConfiguration('terraform');
+export class FormattingEditProvider implements vscode.DocumentFormattingEditProvider {
+  provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
+    if (this.formattingDisabled()) {
+      return [];
+    }
 
-  static create() {
-    let handler = new FormatOnSaveHandler;
+    const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
+    const range = fullRange(document);
 
-    return vscode.workspace.onDidSaveTextDocument((doc) => handler.onSave(doc));
+    outputChannel.appendLine(`terraform.format: running 'terraform fmt' on '${document.fileName}'`);
+    return this.fmt(this.getPath(), document.getText())
+      .then((formattedText) => {
+        outputChannel.appendLine("terraform.format: Successful.");
+        return [new vscode.TextEdit(range, formattedText)];
+      }).catch((e) => {
+        outputChannel.appendLine(`terraform.format: Failed: '${e}'`);
+        vscode.window.showWarningMessage(e);
+        return [];
+      });
   }
 
-  onSave(document: vscode.TextDocument) {
-    if (!isTerraformDocument(document) || this._ignoreNextSave.has(document)) {
-      return;
-    }
-
-    let textEditor = vscode.window.activeTextEditor;
-
-    if (this.isFormatOnSaveEnabled(document) && textEditor.document === document) {
-      const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
-      const range = fullRange(document);
-
-      outputChannel.appendLine(`terraform.format: running 'terraform fmt' on '${document.fileName}'`);
-      this.fmt(this._configuration['path'], document.getText())
-        .then((formattedText) => {
-          textEditor.edit((editor) => {
-            editor.replace(range, formattedText);
-          });
-        }).then((applied) => {
-          this._ignoreNextSave.add(document);
-
-          return document.save();
-        }).then(() => {
-          outputChannel.appendLine("terraform.format: Successful.");
-          this._ignoreNextSave.delete(document);
-        }).catch((e) => {
-          outputChannel.appendLine(`terraform.format: Failed: '${e}'`);
-          vscode.window.showWarningMessage(e);
-        });
-    }
+  private formattingDisabled(): boolean {
+    return vscode.workspace.getConfiguration('terraform.format').get<boolean>('enable') !== true;
   }
 
-  private isFormatOnSaveEnabled(document: vscode.TextDocument): boolean {
-    if (document.fileName.endsWith('.tfvars') && this._configuration['formatVarsOnSave'] !== null) {
-      return !!this._configuration['formatVarsOnSave'];
-    }
-
-    return !!this._configuration['formatOnSave'];
+  private getPath(): string {
+    return vscode.workspace.getConfiguration('terraform')['path'];
   }
 
   private fmt(execPath: String, text: string): Promise<string> {

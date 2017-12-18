@@ -1,3 +1,11 @@
+0.0.20
+======
+
+## What's New
+- The formatter now uses the correct Formatting API so that the builtin command for formatting works as expected (closes #42)
+- The formatter no longer has a hardcoded list of approved extensions, instead if the document type is 'terraform' then the formatter can be used to that file (closes #41)
+- The introduced formatter changes means that the plugin specific configuration for formatting (e.g. `terraform.formatOnSave`) have been deprecated and are no longer used.
+
 0.0.19
 ======
 

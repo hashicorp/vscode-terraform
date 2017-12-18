@@ -21,7 +21,7 @@
 ## Features at a glance
 
 - Syntax highlightning for `.tf` and `.tfvars` files (and `.hcl`)
-- Automatic format on save using `terraform fmt`
+- Automatic formatting using `terraform fmt`
 - Automatically closes braces and quotes
 - Adds a command for running `terraform validate`
 - Linting support with the help of [tflint](https://github.com/wata727/tflint)
@@ -38,17 +38,9 @@
 
 ![Syntax Highlighting](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/screenshot.png)
 
-## Format on Save
+## Formatting support
 
-Optionally you can configure that `terraform fmt` is invoked on save to format your terraform files.
-Formatting is done only on files with the extension `.tf` or `.tfvars`, so that you can assign this plugin to
-any HCL file type you are using which is not necessary terraform.
-
-Format on save is configured using `terraform.formatOnSave` which defaults to `false`. `.tfvars` files can also
-be formatted on save by using the setting `terraform.formatVarsOnSave`, by default this setting is `null`
-which means that `.tfvars` files are also configured using the `terraform.formatOnSave` setting. You can
-use separate settings for `.tfvars` and `.tf` files by setting `terraform.formatVarsOnSave` to anything
-other than `null`.
+The plugin also ships a formatter integration which uses `terraform fmt` for formatting editors. Formatting can be disabled by setting `terraform.format.enable` to `false`.
 
 ## Linting
 

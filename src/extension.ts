@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { FormatOnSaveHandler } from './format';
+import { FormattingEditProvider } from './format';
 import { validateCommand } from './validate';
 import { lintCommand } from './lint';
 import { liveIndex } from './live';
@@ -11,7 +11,8 @@ export let outputChannel = vscode.window.createOutputChannel("Terraform");
 export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(errorDiagnosticCollection);
 
-    ctx.subscriptions.push(FormatOnSaveHandler.create());
+    vscode.languages.registerDocumentFormattingEditProvider('terraform', new FormattingEditProvider);
+
     ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument(liveIndex));
 
     ctx.subscriptions.push(vscode.commands.registerCommand('terraform.validate', () => { validateCommand(); }));
