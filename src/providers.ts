@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import { index } from './index';
+import { TextDocument } from 'vscode';
 
 export class DefinitionProvider implements vscode.DefinitionProvider {
   provideDefinition(document: vscode.TextDocument, position: vscode.Position): vscode.Location {

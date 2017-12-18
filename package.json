@@ -3,9 +3,9 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "publisher": "mauve",
-  "license": "BSD 3-clause",
+  "license": "BSD-3-Clause",
   "engines": {
     "vscode": "^1.17.0"
   },
@@ -68,18 +68,10 @@
       "type": "object",
       "title": "Terraform configuration",
       "properties": {
-        "terraform.formatOnSave": {
+        "terraform.format.enable": {
           "type": "boolean",
-          "default": false,
-          "description": "Run `terraform fmt` on save for .tf files."
-        },
-        "terraform.formatVarsOnSave": {
-          "type": [
-            "boolean",
-            "null"
-          ],
-          "default": null,
-          "description": "Run `terraform fmt` on save for .tfvars files (if `null` this setting is equal to `terraform.formatOnSave`)."
+          "default": true,
+          "description": "Enable/disable default Terraform formatter"
         },
         "terraform.path": {
           "type": "string",
@@ -155,6 +147,6 @@
     "mocha": "^2.3.3",
     "tslint": "^5.7.0",
     "typescript": "^2.0.3",
-    "vscode": "^1.0.0"
+    "vscode": "^1.1.10"
   }
 }
