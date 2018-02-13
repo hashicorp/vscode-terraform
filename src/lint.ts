@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 
 import { errorDiagnosticCollection } from './extension';
 import { outputChannel } from './extension';
@@ -70,12 +70,12 @@ export function lintCommand() {
 
 function lint(execPath: string, lintConfig: string, workspaceDir: string): Promise<Issue[]> {
   return new Promise<any[]>((resolve, reject) => {
-    let commandLineParts = [execPath, "--format", "json"];
+    let commandLineArgs = ["--format", "json"];
     if (lintConfig !== null) {
-      commandLineParts.push("--config", lintConfig);
+      commandLineArgs.push("--config", lintConfig);
     }
 
-    const child = exec(commandLineParts.join(" "), {
+    const child = execFile(execPath, commandLineArgs, {
       cwd: workspaceDir,
       encoding: 'utf8',
       maxBuffer: 1024 * 1024

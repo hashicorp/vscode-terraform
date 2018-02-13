@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 
 import { stripAnsi } from './ansi';
 import { isTerraformDocument } from './helpers';
@@ -36,9 +36,9 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
 
   private fmt(execPath: String, text: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const commandLine = `${execPath} fmt -`;
+      const commandLineArgs = ["fmt", "-"];
 
-      const child = exec(commandLine, {
+      const child = execFile("${execPath}", commandLineArgs, {
         encoding: 'utf8',
         maxBuffer: 1024 * 1024,
       }, (error, stdout, stderr) => {
