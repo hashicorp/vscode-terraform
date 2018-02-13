@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { outputChannel } from './extension';
 
 export function validateCommand() {
@@ -23,14 +23,13 @@ export function validateCommand() {
 }
 
 function validate(execPath: string, directory: string, workspaceDir: string): Promise<string> {
-  if (directory === undefined) {
-    directory = "";
-  }
-
   return new Promise<string>((resolve, reject) => {
-    const commandLine = `${execPath} validate -no-color ${directory}`;
+    let commandLineArgs = ["validate", "-no-color"];
+    if (directory !== undefined) {
+      commandLineArgs.push(directory);
+    }
 
-    const child = exec(commandLine, {
+    const child = execFile(execPath, commandLineArgs, {
       cwd: workspaceDir,
       encoding: 'utf8',
       maxBuffer: 1024 * 1024

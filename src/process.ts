@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 
 import { Parser } from './parser';
 
@@ -8,10 +8,10 @@ import { getConfiguration } from './configuration';
 export function process(text: string): Promise<Parser.IndexResult> {
   const cfg = getConfiguration();
   const path = cfg.indexing.indexerPath;
-  const commandLine = `${path} -`;
+  const commandLineArgs = ["-"];
 
   return new Promise<Parser.IndexResult>((resolve, reject) => {
-    let child = exec(commandLine, {
+    let child = execFile(path, commandLineArgs, {
       encoding: "utf8",
       cwd: vscode.workspace.rootPath
     }, (error, stdout, stderr) => {
