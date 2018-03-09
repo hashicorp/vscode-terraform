@@ -148,7 +148,7 @@
             }
           },
           "default": {
-            "enabled": true,
+            "enabled": false,
             "indexerPath": "terraform-index",
             "liveIndexing": true,
             "delay": 500
