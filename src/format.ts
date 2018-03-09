@@ -87,7 +87,7 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
     return new Promise<string>((resolve, reject) => {
       const commandLineArgs = ["fmt", "-"];
 
-      const child = execFile("${execPath}", commandLineArgs, {
+      const child = execFile(this.getPath(), commandLineArgs, {
         encoding: 'utf8',
         maxBuffer: 1024 * 1024,
       }, (error, stdout, stderr) => {

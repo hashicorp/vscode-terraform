@@ -94,10 +94,12 @@
           },
           "default": {
             "enable": true,
-            "ignoreExtensionsOnSave": [".tfsmurf"],
+            "ignoreExtensionsOnSave": [
+              ".tfsmurf"
+            ],
             "formatOnSave": true
           }
-        }, 
+        },
         "terraform.path": {
           "type": "string",
           "default": "terraform",
