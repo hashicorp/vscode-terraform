@@ -165,7 +165,7 @@
   },
   "scripts": {
     "clean": "git clean -xdf",
-    "compile": "npm run lint && tsc -p ./",
+    "compile": "npm run lint && mkdir -p out/src/data && cp src/data/*.json out/src/data && tsc -p ./",
     "watch": "mkdir -p out/src/data && cp src/data/*.json out/src/data && tsc -watch -p ./",
     "lint": "tslint -t verbose \"src/**/*.ts\"",
     "vscode:prepublish": "npm install --no-save && npm run compile",
