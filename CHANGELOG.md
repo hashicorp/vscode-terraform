@@ -2,7 +2,9 @@
 ======
 
 ## What's New
-- Format on save is back
+- Auto completion support [@ranga543](https://github.com/ranga543)
+- Format on save is back (closes #45, #47)
+- Tools can now be installed in directories which have spaces [@xeres](https://github.com/xeres)
 
 ### Format on save
 

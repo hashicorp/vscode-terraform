@@ -20,6 +20,11 @@
 
 ## Features at a glance
 
+- Autocompletion support
+  1. `Terraform` high level types `(variable, resource, data, module ...)` auto completion support.
+  2. `resource` types `(aws_dynamodb_table ...)` auto completion support for `aws, azure & google`
+  3. `resource | data | module | output | variable` property types auto completion support
+  4. `resource | data` 1-level nested block property types auto completion support 
 - Syntax highlightning for `.tf` and `.tfvars` files (and `.hcl`)
 - Automatic formatting using `terraform fmt`
 - Automatically closes braces and quotes
@@ -37,6 +42,11 @@
 ## Syntax Highlighting
 
 ![Syntax Highlighting](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/screenshot.png)
+
+## Auto-completion support
+
+![Auto completion]
+(https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-auto-completion.gif)
 
 ## Formatting support
 
