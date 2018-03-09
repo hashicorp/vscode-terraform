@@ -1,3 +1,11 @@
+0.0.22
+======
+
+## Fixes
+- Do not require `terraform.index.enabled` to be true in order for auto-completion to work
+- Fix a small typo which makes `Format Document` command fail
+- Correctly bundle auto-completion data files
+
 0.0.21
 ======
 
