@@ -1,7 +1,7 @@
-const awsResources: ITerraformData = require("../../terraform-provider-aws.json");
-const azureResources: ITerraformData = require("../../terraform-provider-azurerm.json");
-const googleResources: ITerraformData = require("../../terraform-provider-google.json");
-export const terraformConfigAutoComplete: ITerraformConfigAutoComplete = require("../../terraform-config.json");
+const awsResources: ITerraformData = require("./data/terraform-provider-aws.json");
+const azureResources: ITerraformData = require("./data/terraform-provider-azurerm.json");
+const googleResources: ITerraformData = require("./data/terraform-provider-google.json");
+export const terraformConfigAutoComplete: ITerraformConfigAutoComplete = require("./data/terraform-config.json");
 
 import * as _ from "lodash"
 
@@ -23,8 +23,8 @@ export interface IResourceFormat {
 }
 
 export interface ITerraformData {
-    data: {[key: string]: IResourceFormat};
-    resource: {[key: string]: IResourceFormat};
+    data: { [key: string]: IResourceFormat };
+    resource: { [key: string]: IResourceFormat };
 }
 
 export interface ITerraformConfigAutoComplete {
