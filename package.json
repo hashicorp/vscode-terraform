@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
@@ -68,11 +68,36 @@
       "type": "object",
       "title": "Terraform configuration",
       "properties": {
-        "terraform.format.enable": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable/disable default Terraform formatter"
-        },
+        "terraform.format": {
+          "type": "object",
+          "description": "Formatting settings",
+          "properties": {
+            "enable": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable/disable default Terraform formatter"
+            },
+            "ignoreExtensionsOnSave": {
+              "type": "array",
+              "default": [],
+              "description": "List of extensions to not format when invoking the 'Format Document' command",
+              "items": {
+                "type": "string",
+                "description": "File extension"
+              }
+            },
+            "formatOnSave": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable/disable format on save"
+            }
+          },
+          "default": {
+            "enable": true,
+            "ignoreExtensionsOnSave": [".tfsmurf"],
+            "formatOnSave": true
+          }
+        }, 
         "terraform.path": {
           "type": "string",
           "default": "terraform",
@@ -128,6 +153,11 @@
           },
           "description": "Use `terraform-index` (download from: https://github.com/mauve/terraform-index/releases) to get live syntax errors, rename support, go to symbol, and much more..."
         }
+      }
+    },
+    "configurationDefaults": {
+      "[terraform]": {
+        "editor.formatOnSave": false
       }
     }
   },

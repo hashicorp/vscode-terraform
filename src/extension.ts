@@ -11,7 +11,11 @@ export let outputChannel = vscode.window.createOutputChannel("Terraform");
 export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(errorDiagnosticCollection);
 
-    vscode.languages.registerDocumentFormattingEditProvider('terraform', new FormattingEditProvider);
+    let formattingProvider = new FormattingEditProvider;
+
+    // we need to manually handle save events otherwise format on autosave does not work
+    ctx.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => formattingProvider.onSave(doc)));
+    vscode.languages.registerDocumentFormattingEditProvider('terraform', formattingProvider);
 
     ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument(liveIndex));
 
