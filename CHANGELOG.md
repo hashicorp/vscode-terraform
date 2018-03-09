@@ -1,3 +1,35 @@
+0.0.21
+======
+
+## What's New
+- Format on save is back
+
+### Format on save
+
+The last version introduced usage of the correct extension APIs for registering formatting
+providers. VSCode then automatically invokes the formatting provider on save if `editor.formatOnSave` has been specified. VSCode however does never invoke the formatting
+provider if the save operation came from an auto-save event.
+
+0.0.21 reintroduces the manual code which handled format on autosave instead of relying on
+VSCode to perform those operations. The following configuration options have changes as result
+of that:
+
+- `terraform.format.enable`: needs to be `true`
+- `terraform.format.formatOnSave`: needs to be `true`
+- `terraform.format.ignoreExtensionsOnSave`: can be used to exclude `.tfvars` for example from autosave formatting
+
+The global setting: `editor.formatOnSave` should be `false` for Terraform files and the
+extension contributes that default configuration. Please verify that you do not have
+conflicting configuration, by removing the following setting if you have it:
+
+```
+"[terraform]": {
+  "editor.formatOnSave": true
+}
+```
+
+The configuration `editor.formatOnSave` will have the correct setting contributed by Terraform.
+
 0.0.20
 ======
 
