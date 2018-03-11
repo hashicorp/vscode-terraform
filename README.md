@@ -20,7 +20,7 @@
 
 ## Features at a glance
 
-- Autocompletion support
+- Auto-completion support
   1. `Terraform` high level types `(variable, resource, data, module ...)` auto completion support.
   2. `resource` types `(aws_dynamodb_table ...)` auto completion support for `aws, azure & google`
   3. `resource | data | module | output | variable` property types auto completion support
@@ -45,8 +45,7 @@
 
 ## Auto-completion support
 
-![Auto completion]
-(https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-auto-completion.gif)
+![Auto completion](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-auto-completion.gif)
 
 ## Formatting support
 
