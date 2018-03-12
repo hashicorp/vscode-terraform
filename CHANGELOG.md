@@ -1,3 +1,9 @@
+0.0.23
+======
+
+## Fixes
+- Typo in README.md which broke the auto-complete preview [@chroju](https://github.com/chroju)
+
 0.0.22
 ======
 
