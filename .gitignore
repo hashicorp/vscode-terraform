@@ -4,3 +4,4 @@ node_modules/
 out/
 .vscode-test
 npm-debug.log
+hcl-hil/*.js
