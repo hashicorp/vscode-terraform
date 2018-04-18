@@ -11,6 +11,8 @@ import {
   RenameProvider
 } from './providers';
 
+import { parseHcl } from './index/parser';
+
 export function createDiagnostic(error: Parser.ParseError) {
   let range = Parser.locationToRange(error.Location);
   return new vscode.Diagnostic(range, error.Message, vscode.DiagnosticSeverity.Error);
@@ -40,9 +42,10 @@ class Index {
       return;
     }
 
-    process(doc.getText())
-      .then((result) => this.update(doc.uri, result))
-      .catch((error) => console.log("Could not parse:", error));
+    parseHcl(doc.getText());
+    // process(doc.getText())
+    //  .then((result) => this.update(doc.uri, result))
+    //  .catch((error) => console.log("Could not parse:", error));
   }
 
   findDefinition(doc: vscode.TextDocument, pos: vscode.Position): (vscode.Location | null) {
