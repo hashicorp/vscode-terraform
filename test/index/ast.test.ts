@@ -1,13 +1,14 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import * as parser from '../../src/index/parser';
+import { parseHcl } from '../../src/index/hcl-hil';
+import { walk, NodeType, VisitedNode } from '../../src/index/ast';
 
 import * as vscode from 'vscode';
 
 suite("Index Tests", () => {
     suite("Parser Tests", () => {
         test("Can parse simple .tf", () => {
-            const [ast, error] = parser.parseHcl(`template "aws_s3_bucket" "bucket" {}`);
+            const ast = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
 
             assert.equal(ast.Node.Items.length, 1);
 
@@ -17,11 +18,11 @@ suite("Index Tests", () => {
         });
 
         test("Walk emits Item nodes", () => {
-            const [ast, error] = parser.parseHcl(`template "aws_s3_bucket" "bucket" {}`);
+            const a = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
 
             let found = [];
-            parser.walk(ast, (type: parser.NodeType, node: any, path: parser.VisitedNode[], index?: number, array?: any[]) => {
-                if (type === parser.NodeType.Item) {
+            walk(a, (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => {
+                if (type === NodeType.Item) {
                     found.push(node);
                 }
             });
@@ -30,11 +31,11 @@ suite("Index Tests", () => {
         });
 
         test("Walk emits Key nodes with index and array", () => {
-            const [ast, error] = parser.parseHcl(`template "aws_s3_bucket" "bucket" {}`);
+            const ast = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
 
             let found = [];
-            parser.walk(ast, (type: parser.NodeType, node: any, path: parser.VisitedNode[], index?: number, array?: any[]) => {
-                if (type === parser.NodeType.Key) {
+            walk(ast, (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => {
+                if (type === NodeType.Key) {
                     found.push([index, array.length]);
                 }
             });
