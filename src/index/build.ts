@@ -1,6 +1,7 @@
 
-import { Index, UntypedSection, TypedSection } from './index';
-import { walk, NodeType } from './parser';
+import { FileIndex, UntypedSection, TypedSection } from './index';
+import { walk, NodeType } from './ast';
+import { Ast } from './hcl-hil';
 
 import * as vscode from 'vscode';
 
@@ -51,17 +52,17 @@ function typedSectionFromKeyItemNode(uri: vscode.Uri, item: any): TypedSection {
     return new TypedSection(sectionType, type, typeLoc, name, nameLoc, location);
 }
 
-export function build(uri: vscode.Uri, ast: any): Index {
-    let result = new Index();
+export function build(uri: vscode.Uri, ast: Ast): FileIndex {
+    let result = new FileIndex(uri);
 
     walk(ast, (type, node, path, index, array) => {
         if (type === NodeType.Item) {
             if (node.Keys.length === 2) {
-                result.UntypedSections.push(untypedSectionFromKeyItemNode(uri, node));
+                result.untypedSections.push(untypedSectionFromKeyItemNode(uri, node));
             }
 
             if (node.Keys.length === 3) {
-                result.TypedSections.push(typedSectionFromKeyItemNode(uri, node));
+                result.typedSections.push(typedSectionFromKeyItemNode(uri, node));
             }
         }
     });

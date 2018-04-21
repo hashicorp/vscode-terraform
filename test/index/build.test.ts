@@ -1,6 +1,6 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import * as parser from '../../src/index/parser';
+import { parseHcl } from '../../src/index/hcl-hil';
 import * as build from '../../src/index/build';
 
 import * as vscode from 'vscode';
@@ -11,13 +11,13 @@ suite("Index Tests", () => {
         const uri = vscode.Uri.parse("untitled:file");
 
         test("Collects typed sections", () => {
-            const [ast, error] = parser.parseHcl(`resource "aws_s3_bucket" "bucket" {}`);
+            const ast = parseHcl(`resource "aws_s3_bucket" "bucket" {}`);
 
             let index = build.build(uri, ast);
 
-            assert.equal(index.TypedSections.length, 1);
+            assert.equal(index.typedSections.length, 1);
 
-            let s = index.TypedSections[0];
+            let s = index.typedSections[0];
             assert.equal(s.SectionType, "resource");
 
             let typeLocation = new vscode.Location(uri, new vscode.Range(0, 10, 0, 23));
@@ -29,20 +29,20 @@ suite("Index Tests", () => {
             assert.deepEqual(s.NameLocation, nameLocation, "name location");
 
             let location = new vscode.Location(uri, new vscode.Range(0, 0, 0, 35));
-            assert.deepEqual(s.Location, location, "section location");
+            assert.deepEqual(s.location, location, "section location");
         });
 
         test("Collects untyped sections", () => {
-            const [ast, error] = parser.parseHcl(`variable "region" {}`);
+            const ast = parseHcl(`variable "region" {}`);
 
             let index = build.build(uri, ast);
 
-            assert.equal(index.UntypedSections.length, 1);
-            assert.equal(index.UntypedSections[0].SectionType, "variable");
+            assert.equal(index.untypedSections.length, 1);
+            assert.equal(index.untypedSections[0].sectionType, "variable");
 
             let nameLocation = new vscode.Location(uri, new vscode.Range(0, 10, 0, 16));
-            assert.equal(index.UntypedSections[0].Name, "region");
-            assert.deepEqual(index.UntypedSections[0].NameLocation, nameLocation, "name location");
+            assert.equal(index.untypedSections[0].name, "region");
+            assert.deepEqual(index.untypedSections[0].nameLocation, nameLocation, "name location");
         });
     });
 });
