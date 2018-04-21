@@ -1,5 +1,6 @@
 
-let hcl = require('../hcl-hil.js');
+
+import * as hcl from './hcl-hil';
 
 export enum NodeType {
     Unknown,
@@ -11,11 +12,11 @@ export enum NodeType {
 }
 
 export type VisitorFunc = (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => void;
-export type VisitedNode = {type: NodeType, node: any};
+export type VisitedNode = { type: NodeType, node: any };
 
 function walkInternal(node: any, visitor: VisitorFunc, type: NodeType, path: VisitedNode[], index?: number, array?: any[]) {
     visitor(type, node, path, index, array);
-    const current = {type: type, node: node};
+    const current = { type: type, node: node };
 
     if (node.hasOwnProperty("Node")) {
         walkInternal(node.Node, visitor, NodeType.Node, path.concat(current));
@@ -36,10 +37,4 @@ function walkInternal(node: any, visitor: VisitorFunc, type: NodeType, path: Vis
 
 export function walk(node: any, visitor: VisitorFunc) {
     return walkInternal(node, visitor, NodeType.Unknown, []);
-}
-
-export function parseHcl(document: string): any {
-    let ast = hcl.parseHcl(document);
-
-    return ast;
 }
