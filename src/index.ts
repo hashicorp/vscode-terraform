@@ -11,7 +11,7 @@ import {
   RenameProvider
 } from './providers';
 
-import { parseHcl } from './index/parser';
+import { parseHcl } from './index/hcl-hil';
 
 export function createDiagnostic(error: Parser.ParseError) {
   let range = Parser.locationToRange(error.Location);
@@ -42,7 +42,6 @@ class Index {
       return;
     }
 
-    parseHcl(doc.getText());
     // process(doc.getText())
     //  .then((result) => this.update(doc.uri, result))
     //  .catch((error) => console.log("Could not parse:", error));
