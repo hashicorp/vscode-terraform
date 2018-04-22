@@ -1,49 +1,35 @@
 import * as vscode from 'vscode';
 import * as _ from "lodash"
 
-import { index } from './index';
+import { WorkspaceIndex } from '../index/index';
 import { terraformConfigAutoComplete, allProviders, IFieldDef } from './model';
-import { TextDocument } from 'vscode';
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const nestedRegexes: RegExp[] = [/\w[A-Za-z0-9\-_]*(\s*){/, /\w[A-Za-z0-9\-_]*(\s*)=(\s*){/];
 const propertyExp = new RegExp("^([\\w_-]+)$");
 
-const variablesAndFields = ["variable", "output"]
-const classes = ["locals"]
-const modules = ["module", "provider"]
-const interfaces = ["resource", "data"]
-
-export class DefinitionProvider implements vscode.DefinitionProvider {
-  provideDefinition(document: vscode.TextDocument, position: vscode.Position): vscode.Location {
-    return index.findDefinition(document, position);
-  }
-}
-
-export class ReferenceProvider implements vscode.ReferenceProvider {
-  provideReferences(document: vscode.TextDocument, position: vscode.Position, context: vscode.ReferenceContext): vscode.Location[] {
-    let range = document.getWordRangeAtPosition(position);
-    return index.findReferences(document.getText(range));
-  }
-}
+const variablesAndFields = ["variable", "output"];
+const classes = ["locals"];
+const modules = ["module", "provider"];
+const interfaces = ["resource", "data"];
 
 export class CompletionProvider implements vscode.CompletionItemProvider {
   private getVariables(position: vscode.Position, includePrefix: boolean, match?: string): vscode.CompletionItem[] {
-    return index.getVariables(match).map((v) => {
-      let item = new vscode.CompletionItem(v);
+    return WorkspaceIndex.query("ALL_FILES", { type: "variable", name: match }).map((variable) => {
+      let item = new vscode.CompletionItem(variable.name);
       item.kind = vscode.CompletionItemKind.Variable;
       if (includePrefix) {
         let range = new vscode.Range(position, position);
-        item.textEdit = new vscode.TextEdit(range, `var.${v}`);
+        item.textEdit = new vscode.TextEdit(range, `var.${variable.name}`);
       }
       return item;
     });
   }
 
   private getOutputs(match?: string): vscode.CompletionItem[] {
-    return index.getOutputs(match).map((o) => {
-      let item = new vscode.CompletionItem(o);
+    return WorkspaceIndex.query("ALL_FILES", { type: "output", name: match }).map((output) => {
+      let item = new vscode.CompletionItem(output.name);
       item.kind = vscode.CompletionItemKind.Property;
       return item;
     });
@@ -205,44 +191,5 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     items.push(...this.getAutoCompletion(modules, vscode.CompletionItemKind.Module));
     items.push(...this.getAutoCompletion(interfaces, vscode.CompletionItemKind.Interface));
     return items;
-  }
-}
-
-export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
-  provideDocumentSymbols(document: vscode.TextDocument): vscode.SymbolInformation[] {
-    return index.getDocumentSymbols(document.uri);
-  }
-}
-
-export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
-  provideWorkspaceSymbols(query: string): vscode.SymbolInformation[] {
-    return index.getSymbols(query);
-  }
-}
-
-export class RenameProvider implements vscode.RenameProvider {
-  provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string): vscode.WorkspaceEdit {
-    let range = document.getWordRangeAtPosition(position);
-    if (range === undefined) {
-      return null;
-    }
-
-    let symbol = document.getText(range);
-    let references = index.findReferences(document.getText(range));
-    if (references.length === 0) {
-      return null;
-    }
-
-    const magic = 4; // length("var.")
-    let edit = new vscode.WorkspaceEdit;
-    edit.replace(document.uri, range, newName);
-    references.forEach((location) => {
-      let r = new vscode.Range(
-        new vscode.Position(location.range.start.line, location.range.start.character + magic),
-        new vscode.Position(location.range.start.line, location.range.start.character + magic + symbol.length));
-
-      edit.replace(location.uri, r, newName);
-    });
-    return edit;
   }
 }

@@ -1,5 +1,7 @@
 
 import * as vscode from 'vscode';
+import { build } from './build';
+import { parseHcl } from './hcl-hil';
 
 export interface QueryOptions {
     name?: string;
@@ -112,3 +114,5 @@ export class Index {
         return indices.reduce((a, i) => a.concat(...i.sections(options)), new Array<Section>());
     }
 }
+
+export let WorkspaceIndex = new Index;

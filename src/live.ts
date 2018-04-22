@@ -4,10 +4,6 @@ import { execFile } from 'child_process';
 import { getConfiguration } from './configuration';
 import { errorDiagnosticCollection } from './extension';
 
-import { Parser } from './parser';
-import { createDiagnostic } from './index';
-import { process } from './process';
-
 let runner;
 
 function liveIndexEnabledForDocument(doc: vscode.TextDocument): boolean {
@@ -28,14 +24,14 @@ export function liveIndex(e: vscode.TextDocumentChangeEvent) {
     clearTimeout(runner);
   }
   runner = setTimeout(function () {
-    process(e.document.getText())
-      .then((index) => {
-        errorDiagnosticCollection.set(e.document.uri, index.Errors.map(createDiagnostic));
-        runner = null;
-      })
-      .catch((err) => {
-        console.log("Error:", err);
-        runner = null;
-      });
+    // process(e.document.getText())
+    //  .then((index) => {
+    //    errorDiagnosticCollection.set(e.document.uri, index.Errors.map(createDiagnostic));
+    //    runner = null;
+    //  })
+    //  .catch((err) => {
+    //    console.log("Error:", err);
+    //   runner = null;
+    //  });
   }, getConfiguration().indexing.liveIndexingDelay);
 }
