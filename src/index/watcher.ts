@@ -1,8 +1,8 @@
 
 import * as vscode from 'vscode';
 import { Index } from './index';
-import { parseHcl } from './hcl-hil';
-import { build } from './build';
+import { parseHcl, ParseError, Ast } from './hcl-hil';
+import { build } from './build'; import { errorDiagnosticCollection } from '../extension';
 
 function updateDocument(index: Index, uri: vscode.Uri) {
   vscode.workspace.openTextDocument(uri).then((doc) => {
@@ -11,10 +11,24 @@ function updateDocument(index: Index, uri: vscode.Uri) {
       return;
     }
 
-    let ast = parseHcl(doc.getText());
-    let fileIndex = build(uri, ast);
+    try {
+      let ast = parseHcl(doc.getText());
+      let fileIndex = build(uri, ast);
+      index.add(fileIndex);
+    } catch (e) {
+      if (e instanceof ParseError) {
+        let range = new vscode.Range(e.line, e.column, e.line, 300);
+        let message = e.message === "" ? "Parse error" : e.message;
+        let diagnostics = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
 
-    index.add(fileIndex);
+        errorDiagnosticCollection.set(uri, [diagnostics]);
+      } else {
+        let range = new vscode.Range(0, 0, 0, 300);
+        let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);
+
+        errorDiagnosticCollection.set(uri, [diagnostics]);
+      }
+    }
   });
 }
 
