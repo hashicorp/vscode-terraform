@@ -59,8 +59,8 @@ suite("Index Tests", () => {
             assert.equal(s.references.length, 1);
 
             let r = s.references[0];
-            assert.equal(r.type, "var");
-            assert.equal(r.name, "region");
+            assert.equal(r.type, "variable");
+            assert.equal(r.parts[0], "region");
             assert.equal(r.location.range.start.line, 0);
             assert.equal(r.location.range.start.character, 53);
             assert.equal(r.location.range.end.line, 0);

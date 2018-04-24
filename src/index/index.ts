@@ -75,16 +75,49 @@ export type Section = UntypedSection | TypedSection;
 
 export class Reference {
     readonly type: string;
-    readonly name: string;
+    readonly parts: string[];
     readonly location: vscode.Location;
 
-    constructor(typeAndName: string, location: vscode.Location) {
-        let parts = typeAndName.split('.', 2);
+    constructor(expr: string, location: vscode.Location) {
+        let parts = expr.split('.');
 
-        this.type = parts[0];
-        this.name = parts[1];
+        this.type = (parts[0] === "var") ? "variable" : parts[0];
+        this.parts = parts.slice(1);
 
         this.location = location;
+    }
+
+    getQuery(): QueryOptions {
+        if (this.type === "variable") {
+            return {
+                section_type: this.type,
+                name: this.parts[0]
+            }
+        }
+
+        if (this.type === "data") {
+            return {
+                section_type: this.type,
+                type: this.parts[0],
+                name: this.parts[1]
+            }
+        }
+
+        if (this.type === "module") {
+            // TODO: actually parse modules correctly, which will also
+            //   allow us to handle these references correctly
+            return {
+                section_type: this.type,
+                name: this.parts[0]
+            }
+        }
+
+        // assume resource
+        return {
+            section_type: "resource",
+            type: this.type,
+            name: this.parts[0]
+        }
     }
 }
 
