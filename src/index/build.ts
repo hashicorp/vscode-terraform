@@ -1,7 +1,7 @@
 
-import { FileIndex, UntypedSection, TypedSection } from './index';
+import { FileIndex, UntypedSection, TypedSection, Section, Reference } from './index';
 import { walk, NodeType } from './ast';
-import { Ast } from './hcl-hil';
+import { Ast, parseHilWithPosition, ParseError } from './hcl-hil';
 
 import * as vscode from 'vscode';
 
@@ -52,20 +52,87 @@ function typedSectionFromKeyItemNode(uri: vscode.Uri, item: any): TypedSection {
     return new TypedSection(sectionType, type, typeLoc, name, nameLoc, location);
 }
 
+function* walkHil(uri: vscode.Uri, exprs: Array<any>): Iterable<Reference> {
+    for (let expr of exprs) {
+        if (expr.Name && expr.Posx) {
+            let name = expr.Name as string;
+            let range = new vscode.Range(expr.Posx.Line - 1, expr.Posx.Column - 1,
+                expr.Posx.Line - 1, expr.Posx.Column - 1 + name.length);
+            let location = new vscode.Location(uri, range);
+            let reference = new Reference(expr.Name, location);
+            yield reference;
+        } else if (expr.Args) {
+            walkHil(uri, expr.Args as Array<any>);
+        }
+    }
+}
+
+function extractReferencesFromHil(uri: vscode.Uri, token: any): [Reference[], ParseError] {
+    let [hil, error] = parseHilWithPosition(token.Text, token.Pos.Column, token.Pos.Line, token.Filename);
+
+    if (error) {
+        // TODO: put somewhere
+        return [null, new ParseError(token, "Expression parse error")];
+    }
+
+    return [[...walkHil(uri, hil.Exprs)], null];
+}
+
 export function build(uri: vscode.Uri, ast: Ast): FileIndex {
     let result = new FileIndex(uri);
 
+    let currentSection: Section = null;
+    let currentDepth = 0;
     walk(ast, (type, node, path, index, array) => {
+        if (path.length === currentDepth && currentSection) {
+            // push section into index
+            currentDepth = 0;
+            result.add(currentSection);
+
+            currentSection = null;
+        }
+
         if (type === NodeType.Item) {
+            // detect section
             if (node.Keys.length === 2) {
-                result.untypedSections.push(untypedSectionFromKeyItemNode(uri, node));
+                currentDepth = path.length;
+                currentSection = untypedSectionFromKeyItemNode(uri, node);
+                return;
             }
 
             if (node.Keys.length === 3) {
-                result.typedSections.push(typedSectionFromKeyItemNode(uri, node));
+                currentDepth = path.length;
+                currentSection = typedSectionFromKeyItemNode(uri, node);
+                return;
+            }
+        }
+
+        if (type === NodeType.Value) {
+            // we can later use path to go up and detect what type
+            // of value we are currently processing but right now we are
+            // only using it to collect references
+            //
+            // the AST contains chains like this Val > Keys > Items > [Val > Token.Type==9]
+            // we only care about the second Val in the above example, we use
+            // Token.Type==9 to detect it
+            if (node.Token && node.Token.Type === 9) {
+                let [references, error] = extractReferencesFromHil(uri, node.Token);
+
+                if (error) {
+                    // TODO: handle
+                    return;
+                }
+
+                currentSection.references.push(...references);
+                return;
             }
         }
     });
+
+    // handle last section
+    if (currentSection) {
+        result.add(currentSection);
+    }
 
     return result;
 }

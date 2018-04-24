@@ -20,27 +20,29 @@ function getKind(sectionType: string): vscode.SymbolKind {
 }
 
 export class TypedSection extends vscode.SymbolInformation {
+    references: Reference[] = [];
+
     constructor(
-        readonly SectionType: string,
-        readonly Type: string,
-        readonly TypeLocation: vscode.Location,
-        readonly Name: string,
-        readonly NameLocation: vscode.Location,
-        Location: vscode.Location) {
-        super(Name, getKind(SectionType), "", Location)
+        readonly sectionType: string,
+        readonly type: string,
+        readonly typeLocation: vscode.Location,
+        readonly name: string,
+        readonly nameLocation: vscode.Location,
+        location: vscode.Location) {
+        super(name, getKind(sectionType), "", location)
     }
 
     match(options?: QueryOptions): boolean {
         if (!options)
             return true;
 
-        if (options.section_type && this.SectionType === options.section_type)
+        if (options.section_type && this.sectionType === options.section_type)
             return true;
 
-        if (options.type && this.Type.match(options.type))
+        if (options.type && this.type.match(options.type))
             return true;
 
-        if (options.name && this.Name.match(options.name))
+        if (options.name && this.name.match(options.name))
             return true;
 
         return false;
@@ -48,6 +50,8 @@ export class TypedSection extends vscode.SymbolInformation {
 }
 
 export class UntypedSection extends vscode.SymbolInformation {
+    references: Reference[] = [];
+
     constructor(
         readonly sectionType: string,
         name: string,
@@ -67,21 +71,34 @@ export class UntypedSection extends vscode.SymbolInformation {
     }
 }
 
-type Section = UntypedSection | TypedSection;
+export type Section = UntypedSection | TypedSection;
+
+export class Reference {
+    readonly type: string;
+    readonly name: string;
+    readonly location: vscode.Location;
+
+    constructor(typeAndName: string, location: vscode.Location) {
+        let parts = typeAndName.split('.', 2);
+
+        this.type = parts[0];
+        this.name = parts[1];
+
+        this.location = location;
+    }
+}
 
 export class FileIndex {
-    typedSections: TypedSection[] = [];
-    untypedSections: UntypedSection[] = [];
+    sections: Section[] = [];
 
     constructor(public uri: vscode.Uri) { }
 
-    *sections(options?: QueryOptions): IterableIterator<Section> {
-        for (let s of this.typedSections)
-            if (s.match(options))
-                yield s;
+    add(section: Section) {
+        this.sections.push(section);
+    }
 
-
-        for (let s of this.untypedSections)
+    *query(options?: QueryOptions): IterableIterator<Section> {
+        for (let s of this.sections)
             if (s.match(options))
                 yield s;
     }
@@ -111,7 +128,7 @@ export class Index {
 
         let indices = uris.map((u) => this.Files.get(u)).filter((i) => i != null);
 
-        return indices.reduce((a, i) => a.concat(...i.sections(options)), new Array<Section>());
+        return indices.reduce((a, i) => a.concat(...i.query(options)), new Array<Section>());
     }
 }
 
