@@ -3,7 +3,7 @@ import * as assert from 'assert';
 
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
-import { FileIndex, TypedSection, UntypedSection, Index } from '../../src/index/index';
+import { FileIndex, TypedSection, UntypedSection, Index, Reference } from '../../src/index/index';
 import { parseHcl } from '../../src/index/hcl-hil';
 import { build } from '../../src/index/build';
 
@@ -11,9 +11,42 @@ const template =
     `
 resource "aws_s3_bucket" "bucket" {}
 variable "region" {}
+data "template_file" "template" {}
 `;
 
 suite("Index Tests", () => {
+    suite("Reference Tests", () => {
+        const [ast, error] = parseHcl(template);
+        const index = build(null, ast);
+
+        test("Handles variable references", () => {
+            let r = new Reference("var.region", null);
+            assert.equal(r.type, "variable");
+
+            let s = [...index.query(r.getQuery())];
+            assert.equal(s.length, 1);
+            assert.equal(s[0].name, "region");
+        });
+
+        test("Handles data references", () => {
+            let r = new Reference("data.template_file.file.rendered", null);
+            assert.equal(r.type, "data");
+
+            let s = [...index.query(r.getQuery())];
+            assert.equal(s.length, 1);
+            assert.equal(s[0].name, "template");
+        });
+
+        test("Handles resource references", () => {
+            let r = new Reference("aws_s3_bucket.bucket.arn", null);
+            assert.equal(r.type, "aws_s3_bucket");
+
+            let s = [...index.query(r.getQuery())];
+            assert.equal(s.length, 1);
+            assert.equal(s[0].name, "bucket");
+        });
+    });
+
     suite("FileIndex Tests", () => {
         test("Returns all sections by default", () => {
             let [ast, error] = parseHcl(template);
@@ -21,7 +54,7 @@ suite("Index Tests", () => {
 
             let all = [...index.query()];
 
-            assert.equal(all.length, 2);
+            assert.equal(all.length, 3);
             assert.notEqual(all[0].name, all[1].name);
         });
 
