@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 suite("Index Tests", () => {
     suite("Parser Tests", () => {
         test("Can parse simple .tf", () => {
-            const ast = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
+            const [ast, error] = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
 
             assert.equal(ast.Node.Items.length, 1);
 
@@ -18,7 +18,7 @@ suite("Index Tests", () => {
         });
 
         test("Walk emits Item nodes", () => {
-            const a = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
+            const [a, error] = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
 
             let found = [];
             walk(a, (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => {
@@ -31,7 +31,7 @@ suite("Index Tests", () => {
         });
 
         test("Walk emits Key nodes with index and array", () => {
-            const ast = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
+            const [ast, error] = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
 
             let found = [];
             walk(ast, (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => {

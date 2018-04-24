@@ -1,0 +1,66 @@
+> console.log(JSON.stringify(hil.parseHil('"gamma-${lookup(var.region, var.smurf, "A")}"', 0, 0, "file"), null, 2));
+[
+  {
+    "Exprs": [
+      {
+        "Value": "\"gamma-",
+        "Typex": 8,
+        "Posx": {
+          "Column": 0,
+          "Line": 0,
+          "Filename": "file"
+        }
+      },
+      {
+        "Func": "lookup",
+        "Args": [
+          {
+            "Name": "var.region",
+            "Posx": {
+              "Column": 16,
+              "Line": 0,
+              "Filename": "file"
+            }
+          },
+          {
+            "Name": "var.smurf",
+            "Posx": {
+              "Column": 28,
+              "Line": 0,
+              "Filename": "file"
+            }
+          },
+          {
+            "Value": "A",
+            "Typex": 8,
+            "Posx": {
+              "Column": 40,
+              "Line": 0,
+              "Filename": "file"
+            }
+          }
+        ],
+        "Posx": {
+          "Column": 9,
+          "Line": 0,
+          "Filename": "file"
+        }
+      },
+      {
+        "Value": "\"",
+        "Typex": 8,
+        "Posx": {
+          "Column": 44,
+          "Line": 0,
+          "Filename": "file"
+        }
+      }
+    ],
+    "Posx": {
+      "Column": 0,
+      "Line": 0,
+      "Filename": "file"
+    }
+  },
+  null
+]

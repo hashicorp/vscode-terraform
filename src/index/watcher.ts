@@ -12,22 +12,23 @@ function updateDocument(index: Index, uri: vscode.Uri) {
     }
 
     try {
-      let ast = parseHcl(doc.getText());
-      let fileIndex = build(uri, ast);
-      index.add(fileIndex);
-    } catch (e) {
-      if (e instanceof ParseError) {
-        let range = new vscode.Range(e.line, e.column, e.line, 300);
-        let message = e.message === "" ? "Parse error" : e.message;
+      let [ast, error] = parseHcl(doc.getText());
+
+      if (error) {
+        let range = new vscode.Range(error.line, error.column, error.line, 300);
+        let message = error.message === "" ? "Parse error" : error.message;
         let diagnostics = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
 
         errorDiagnosticCollection.set(uri, [diagnostics]);
-      } else {
-        let range = new vscode.Range(0, 0, 0, 300);
-        let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);
-
-        errorDiagnosticCollection.set(uri, [diagnostics]);
       }
+
+      let fileIndex = build(uri, ast);
+      index.add(fileIndex);
+    } catch (e) {
+      let range = new vscode.Range(0, 0, 0, 300);
+      let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);
+
+      errorDiagnosticCollection.set(uri, [diagnostics]);
     }
   });
 }

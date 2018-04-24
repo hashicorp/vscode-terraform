@@ -20,12 +20,22 @@ export class ParseError extends Error {
   }
 }
 
-export function parseHcl(document: string): Ast {
+export function parseHcl(document: string): [Ast, ParseError] {
   let result = hcl.parseHcl(document);
 
   if (result[1]) {
-    throw new ParseError(result[1]);
+    return [null, new ParseError(result[1])];
   }
 
-  return result[0] as Ast;
+  return [result[0] as Ast, null];
+}
+
+export function parseHilWithPosition(document: string, column: number, line: number, fileName: string): [any, ParseError] {
+  let result = hcl.parseHil(document, column, line, fileName);
+
+  if (result[1]) {
+    return [null, new ParseError(result[1])];
+  }
+
+  return [result[0], null];
 }
