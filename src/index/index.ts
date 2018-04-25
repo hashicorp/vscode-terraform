@@ -89,6 +89,7 @@ export class Reference {
     readonly type: string;
     readonly parts: string[];
     readonly location: vscode.Location;
+    readonly targetId: string;
 
     constructor(expr: string, location: vscode.Location) {
         let parts = expr.split('.');
@@ -97,6 +98,14 @@ export class Reference {
         this.parts = parts.slice(1);
 
         this.location = location;
+
+        if (this.type === "variable") {
+            this.targetId = `var.${this.parts[0]}`;
+        } else if (this.type === "data") {
+            this.targetId = `data.${this.parts[0]}.${this.parts[1]}`;
+        } else {
+            this.targetId = `${this.type}.${this.parts[0]}`;
+        }
     }
 
     getQuery(): QueryOptions {
