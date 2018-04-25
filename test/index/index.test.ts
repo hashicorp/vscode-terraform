@@ -22,6 +22,7 @@ suite("Index Tests", () => {
         test("Handles variable references", () => {
             let r = new Reference("var.region", null);
             assert.equal(r.type, "variable");
+            assert.equal(r.targetId, "var.region");
 
             let s = [...index.query(r.getQuery())];
             assert.equal(s.length, 1);
@@ -31,6 +32,7 @@ suite("Index Tests", () => {
         test("Handles data references", () => {
             let r = new Reference("data.template_file.file.rendered", null);
             assert.equal(r.type, "data");
+            assert.equal(r.targetId, "data.template_file.file");
 
             let s = [...index.query(r.getQuery())];
             assert.equal(s.length, 1);
@@ -40,6 +42,7 @@ suite("Index Tests", () => {
         test("Handles resource references", () => {
             let r = new Reference("aws_s3_bucket.bucket.arn", null);
             assert.equal(r.type, "aws_s3_bucket");
+            assert.equal(r.targetId, "aws_s3_bucket.bucket");
 
             let s = [...index.query(r.getQuery())];
             assert.equal(s.length, 1);
