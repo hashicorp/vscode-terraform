@@ -5,7 +5,6 @@ import * as build from '../../src/index/build';
 
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
-import { TypedSection, UntypedSection } from '../../src/index';
 
 suite("Index Tests", () => {
     suite("Build Tests", () => {
@@ -18,7 +17,7 @@ suite("Index Tests", () => {
 
             assert.equal(index.sections.length, 1);
 
-            let s = index.sections[0] as TypedSection;
+            let s = index.sections[0];
             assert.equal(s.sectionType, "resource");
 
             let typeLocation = new vscode.Location(uri, new vscode.Range(0, 10, 0, 23));

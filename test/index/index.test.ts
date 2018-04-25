@@ -3,7 +3,7 @@ import * as assert from 'assert';
 
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
-import { FileIndex, TypedSection, UntypedSection, Index, Reference } from '../../src/index/index';
+import { FileIndex, Index, Reference, Section } from '../../src/index/index';
 import { parseHcl } from '../../src/index/hcl-hil';
 import { build } from '../../src/index/build';
 
@@ -44,6 +44,26 @@ suite("Index Tests", () => {
             let s = [...index.query(r.getQuery())];
             assert.equal(s.length, 1);
             assert.equal(s[0].name, "bucket");
+        });
+    });
+
+    suite("Section tests", () => {
+        test("variable ID", () => {
+            let variable = new Section("variable", null, null, "region", null, null, null);
+
+            assert.equal(variable.id(), "var.region");
+        });
+
+        test("resource ID", () => {
+            let resource = new Section("resource", "aws_s3_bucket", null, "bucket", null, null, null);
+
+            assert.equal(resource.id(), "aws_s3_bucket.bucket");
+        });
+
+        test("data ID", () => {
+            let data = new Section("data", "template_file", null, "template", null, null, null);
+
+            assert.equal(data.id(), "data.template_file.template");
         });
     });
 
