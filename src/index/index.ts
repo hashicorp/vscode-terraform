@@ -160,6 +160,7 @@ export class FileIndex {
 
 export class Index {
     private Files = new Map<string, FileIndex>();
+    private Sections = new Map<string, Section>();
 
     constructor(...indices: FileIndex[]) {
         indices.map((i) => this.add(i));
@@ -167,9 +168,20 @@ export class Index {
 
     add(index: FileIndex) {
         this.Files.set(index.uri.toString(), index);
+
+        index.sections.forEach((section) => {
+            this.Sections.set(section.id(), section);
+        })
     }
 
     delete(uri: vscode.Uri) {
+        let index = this.get(uri);
+        if (index) {
+            index.sections.forEach((section) => {
+                this.Sections.delete(section.id());
+            })
+        }
+
         this.Files.delete(uri.toString());
     }
 
