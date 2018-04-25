@@ -1,5 +1,5 @@
 
-import { FileIndex, UntypedSection, TypedSection, Section, Reference } from './index';
+import { FileIndex, Section, Reference } from './index';
 import { walk, NodeType } from './ast';
 import { Ast, parseHilWithPosition, ParseError } from './hcl-hil';
 
@@ -21,35 +21,34 @@ function createLocation(uri: vscode.Uri): vscode.Location {
     return null;
 }
 
-function untypedSectionFromKeyItemNode(uri: vscode.Uri, item: any): UntypedSection {
-    const type = item.Keys[0].Token.Text;
+function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
+    const isTypedSection = item.Keys.length === 3;
 
-    const name = stripQuotes(item.Keys[1].Token.Text);
-
-    const nameStart = createPosition(item.Keys[1].Token.Pos, 1);
-    const nameStop = nameStart.translate({ characterDelta: name.length });
-    const nameLoc = new vscode.Location(uri, new vscode.Range(nameStart, nameStop));
-
-    const location = new vscode.Location(uri, createRange(item.Keys[0].Token.Pos, item.Val.Rbrace));
-    return new UntypedSection(type, name, nameLoc, location);
-}
-
-function typedSectionFromKeyItemNode(uri: vscode.Uri, item: any): TypedSection {
     const sectionType = item.Keys[0].Token.Text;
 
-    const type = stripQuotes(item.Keys[1].Token.Text);
-    const typeStart = createPosition(item.Keys[1].Token.Pos, 1);
-    const typeEnd = typeStart.translate({ characterDelta: type.length });
-    const typeLoc = new vscode.Location(uri, new vscode.Range(typeStart, typeEnd));
+    let type: string = null;
+    let typeLoc: vscode.Location = null;
 
-    const name = stripQuotes(item.Keys[2].Token.Text);
-    const nameStart = createPosition(item.Keys[2].Token.Pos, 1);
+    // typed section has name at index 2, untyped at 1
+    let nameIndex = 1;
+
+    if (isTypedSection) {
+        nameIndex = 2;
+
+        type = stripQuotes(item.Keys[1].Token.Text);
+        const typeStart = createPosition(item.Keys[1].Token.Pos, 1);
+        const typeEnd = typeStart.translate({ characterDelta: type.length });
+        typeLoc = new vscode.Location(uri, new vscode.Range(typeStart, typeEnd));
+    }
+
+    const name = stripQuotes(item.Keys[nameIndex].Token.Text);
+    const nameStart = createPosition(item.Keys[nameIndex].Token.Pos, 1);
     const nameStop = nameStart.translate({ characterDelta: name.length });
     const nameLoc = new vscode.Location(uri, new vscode.Range(nameStart, nameStop));
 
     const location = new vscode.Location(uri, createRange(item.Keys[0].Token.Pos, item.Val.Rbrace));
 
-    return new TypedSection(sectionType, type, typeLoc, name, nameLoc, location);
+    return new Section(sectionType, type, typeLoc, name, nameLoc, location, item);
 }
 
 function* walkHil(uri: vscode.Uri, exprs: Array<any>): Iterable<Reference> {
@@ -94,15 +93,9 @@ export function build(uri: vscode.Uri, ast: Ast): FileIndex {
 
         if (type === NodeType.Item) {
             // detect section
-            if (node.Keys.length === 2) {
+            if (node.Keys.length === 2 || node.Keys.length === 3) {
                 currentDepth = path.length;
-                currentSection = untypedSectionFromKeyItemNode(uri, node);
-                return;
-            }
-
-            if (node.Keys.length === 3) {
-                currentDepth = path.length;
-                currentSection = typedSectionFromKeyItemNode(uri, node);
+                currentSection = sectionFromKeyItemNode(uri, node);
                 return;
             }
         }

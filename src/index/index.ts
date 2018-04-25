@@ -19,17 +19,37 @@ function getKind(sectionType: string): vscode.SymbolKind {
     return null;
 }
 
-export class TypedSection extends vscode.SymbolInformation {
+export class Section extends vscode.SymbolInformation {
     references: Reference[] = [];
 
+    // variable, resource or data (for example)
+    readonly sectionType: string;
+
+    // optional: but might for example be "aws_s3_bucket"
+    readonly type?: string;
+    readonly typeLocation?: vscode.Location;
+    readonly name: string;
+    readonly nameLocation: vscode.Location;
+    readonly location: vscode.Location;
+    readonly node: any;
+
     constructor(
-        readonly sectionType: string,
-        readonly type: string,
-        readonly typeLocation: vscode.Location,
-        readonly name: string,
-        readonly nameLocation: vscode.Location,
-        location: vscode.Location) {
+        sectionType: string,
+        type: string | null,
+        typeLocation: vscode.Location | null,
+        name: string,
+        nameLocation: vscode.Location,
+        location: vscode.Location,
+        node: any) {
         super(name, getKind(sectionType), "", location)
+
+        this.sectionType = sectionType;
+        this.type = type;
+        this.typeLocation = typeLocation;
+        this.name = name;
+        this.nameLocation = nameLocation;
+        this.location = location;
+        this.node = node;
     }
 
     match(options?: QueryOptions): boolean {
@@ -39,39 +59,31 @@ export class TypedSection extends vscode.SymbolInformation {
         if (options.section_type && this.sectionType === options.section_type)
             return true;
 
-        if (options.type && this.type.match(options.type))
-            return true;
+        if (this.type) {
+            if (options.type && this.type.match(options.type))
+                return true;
+        } else {
+            if (options.type)
+                return false;
+        }
 
         if (options.name && this.name.match(options.name))
             return true;
 
         return false;
     }
-}
 
-export class UntypedSection extends vscode.SymbolInformation {
-    references: Reference[] = [];
+    id(): string {
+        if (this.sectionType === "variable") {
+            return `var.${this.name}`;
+        }
 
-    constructor(
-        readonly sectionType: string,
-        name: string,
-        readonly nameLocation: vscode.Location,
-        location: vscode.Location) {
-        super(name, getKind(sectionType), "", location);
-    }
+        if (this.sectionType === "data")
+            return [this.sectionType, this.type, this.name].join(".");
 
-    match(options?: QueryOptions): boolean {
-        if (!options)
-            return true;
-
-        if (options.section_type && this.sectionType === options.section_type)
-            return true;
-
-        return options.name && !!this.name.match(options.name);
+        return [this.type, this.name].join(".");
     }
 }
-
-export type Section = UntypedSection | TypedSection;
 
 export class Reference {
     readonly type: string;
