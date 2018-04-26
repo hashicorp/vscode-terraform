@@ -20,7 +20,7 @@ suite("Index Tests", () => {
         const index = build(null, ast);
 
         test("Handles variable references", () => {
-            let r = new Reference("var.region", null);
+            let r = new Reference("var.region", null, null);
             assert.equal(r.type, "variable");
             assert.equal(r.targetId, "var.region");
 
@@ -30,7 +30,7 @@ suite("Index Tests", () => {
         });
 
         test("Handles data references", () => {
-            let r = new Reference("data.template_file.file.rendered", null);
+            let r = new Reference("data.template_file.file.rendered", null, null);
             assert.equal(r.type, "data");
             assert.equal(r.targetId, "data.template_file.file");
 
@@ -40,7 +40,7 @@ suite("Index Tests", () => {
         });
 
         test("Handles resource references", () => {
-            let r = new Reference("aws_s3_bucket.bucket.arn", null);
+            let r = new Reference("aws_s3_bucket.bucket.arn", null, null);
             assert.equal(r.type, "aws_s3_bucket");
             assert.equal(r.targetId, "aws_s3_bucket.bucket");
 
