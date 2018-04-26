@@ -168,6 +168,9 @@ export class Index {
     private Files = new Map<string, FileIndex>();
     private Sections = new Map<string, Section>();
 
+    private eventEmitter = new vscode.EventEmitter<void>();
+    onDidChange = this.eventEmitter.event;
+
     constructor(...indices: FileIndex[]) {
         indices.map((i) => this.add(i));
     }
@@ -177,7 +180,9 @@ export class Index {
 
         index.sections.forEach((section) => {
             this.Sections.set(section.id(), section);
-        })
+        });
+
+        this.eventEmitter.fire();
     }
 
     delete(uri: vscode.Uri) {
@@ -189,6 +194,7 @@ export class Index {
         }
 
         this.Files.delete(uri.toString());
+        this.eventEmitter.fire();
     }
 
     get(uri: vscode.Uri): FileIndex | null {
