@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { execFile } from 'child_process';
 
-import { errorDiagnosticCollection } from './extension';
+import { ErrorDiagnosticCollection } from './extension';
 import { outputChannel } from './extension';
 
 type Issue = {
@@ -29,19 +29,29 @@ function toDiagnostic(issue: Issue): vscode.Diagnostic {
     issue.message, typeToSeverity(issue.type));
 }
 
+export let LintDiagnosticsCollection = vscode.languages.createDiagnosticCollection("terraform-lint");
+
 export function lintCommand() {
   const configuration = vscode.workspace.getConfiguration("terraform");
-  const workspaceDir = vscode.workspace.rootPath;
+  const workspaceFolders = vscode.workspace.workspaceFolders;
 
-  if (workspaceDir === undefined) {
+  if (workspaceFolders === undefined) {
     vscode.window.showWarningMessage("terraform.lint can only be used when opening a folder");
     return;
   }
 
-  lint(configuration["lintPath"], configuration["lintConfig"], workspaceDir)
+  workspaceFolders.forEach((workspaceFolder) => {
+    if (workspaceFolder.uri.scheme !== "file") {
+      // TODO: show warning?
+      outputChannel.appendLine(`terraform.lint: Ignoring workspace folder ${workspaceFolder.name} with uri ${workspaceFolder.uri.toString()}, unsupported scheme.`);
+      return;
+    }
+
+    const workspaceDir = workspaceFolder.uri.toString();
+    lint(configuration["lintPath"], configuration["lintConfig"], workspaceDir)
     .then((issues) => {
       outputChannel.appendLine(`terraform.lint: ${issues.length} issues`);
-      errorDiagnosticCollection.clear();
+      LintDiagnosticsCollection.clear();
 
       // group by filename first
       let issuesByFile = new Map<string, vscode.Diagnostic[]>();
@@ -57,7 +67,7 @@ export function lintCommand() {
       // report diagnostics
       issuesByFile.forEach((diagnostics, file) => {
         outputChannel.appendLine(`terraform.lint: ${file}: ${diagnostics.length} issues`);
-        errorDiagnosticCollection.set(vscode.Uri.file(`${workspaceDir}/${file}`), diagnostics);
+        LintDiagnosticsCollection.set(vscode.Uri.file(`${workspaceDir}/${file}`), diagnostics);
       });
 
       outputChannel.appendLine("terraform.lint: Done");
@@ -66,6 +76,7 @@ export function lintCommand() {
       outputChannel.append(error);
       vscode.window.showErrorMessage("Linting failed, more information in the output tab.");
     });
+  });
 }
 
 function lint(execPath: string, lintConfig: string, workspaceDir: string): Promise<Issue[]> {
