@@ -6,7 +6,8 @@ import { liveIndex } from './live';
 import { CompletionProvider } from './autocompletion/completion-provider';
 import { DefinitionProvider, DocumentSymbolProvider, WorkspaceSymbolProvider, ReferenceProvider, RenameProvider } from './index/providers';
 import { initialCrawl, createWorkspaceWatcher } from './index/watcher';
-import { WorkspaceIndex } from './index';
+import { WorkspaceIndex, Section } from './index';
+import { CodeLensProvider, showReferencesCommand } from './codelense';
 
 export let errorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -26,6 +27,9 @@ export function activate(ctx: vscode.ExtensionContext) {
         // push
         vscode.commands.registerCommand('terraform.validate', () => { validateCommand(); }),
         vscode.commands.registerCommand('terraform.lint', () => { lintCommand(); }),
+        vscode.commands.registerCommand('terraform.showReferences', (section: Section) => {
+            showReferencesCommand(section);
+        }),
 
         // providers
         vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider, '.', '"'),
@@ -33,7 +37,8 @@ export function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider),
         vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider),
         vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider),
-        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider)
+        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider),
+        vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider)
     );
 
     // operations which should only work in a local context (as opposed to live-share)
