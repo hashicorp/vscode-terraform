@@ -23,7 +23,14 @@ export class SectionReferenceCodeLens extends vscode.CodeLens {
 }
 
 export class CodeLensProvider implements vscode.CodeLensProvider {
-  onDidChangeCodeLenses?: vscode.Event<void>;
+  private eventEmitter = new vscode.EventEmitter<void>();
+  onDidChangeCodeLenses = this.eventEmitter.event;
+
+  constructor() {
+    WorkspaceIndex.onDidChange(() => {
+      this.eventEmitter.fire();
+    });
+  }
 
   provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
     return WorkspaceIndex.getOrIndexDocument(document).sections.map((s) => {
