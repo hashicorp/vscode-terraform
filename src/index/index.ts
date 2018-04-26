@@ -74,18 +74,20 @@ export class Section extends vscode.SymbolInformation {
         return false;
     }
 
-    id(): string {
+    id(rename?: string): string {
+        let name = rename || this.name;
+
         if (this.sectionType === "variable") {
-            return `var.${this.name}`;
+            return `var.${name}`;
         }
 
         if (this.sectionType === "data")
-            return [this.sectionType, this.type, this.name].join(".");
+            return [this.sectionType, this.type, name].join(".");
 
         if (this.sectionType === "output")
             return this.name;
 
-        return [this.type, this.name].join(".");
+        return [this.type, name].join(".");
     }
 }
 
