@@ -8,6 +8,7 @@ import { DefinitionProvider, DocumentSymbolProvider, WorkspaceSymbolProvider, Re
 import { initialCrawl, createWorkspaceWatcher } from './index/watcher';
 import { WorkspaceIndex, Section } from './index';
 import { CodeLensProvider, showReferencesCommand } from './codelense';
+import { getConfiguration } from './configuration';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
