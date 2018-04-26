@@ -48,7 +48,9 @@ export function activate(ctx: vscode.ExtensionContext) {
         ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument(liveIndex));
 
         // start to build the index
-        ctx.subscriptions.push(createWorkspaceWatcher(WorkspaceIndex));
-        initialCrawl(WorkspaceIndex);
+        if (getConfiguration().indexing.enabled) {
+            ctx.subscriptions.push(createWorkspaceWatcher(WorkspaceIndex));
+            initialCrawl(WorkspaceIndex);
+        }
     }
 }
