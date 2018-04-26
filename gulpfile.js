@@ -34,7 +34,7 @@ gulp.task('generate-transpiled.js', ['generate-hcl-container'], () => {
         .pipe(gulp.dest('hcl-hil'));
 });
 
-gulp.task('generate-closure-container', (done) => {
+gulp.task('generate-closure-container', ['generate-transpiled.js'], (done) => {
     var docker = spawn('docker', [
         'build',
         '-t', 'gopher-hcl-closure-compiler',
@@ -50,7 +50,7 @@ gulp.task('generate-closure-container', (done) => {
     });
 });
 
-gulp.task('generate-hcl-hil.js', ['generate-transpiled.js', 'generate-closure-container'], () => {
+gulp.task('generate-hcl-hil.js', ['generate-closure-container'], () => {
     return run('docker run --rm gopher-hcl-closure-compiler', { verbosity: 1 }).exec()
         .pipe(rename('hcl-hil.js'))
         .pipe(gulp.dest('out/src'));
