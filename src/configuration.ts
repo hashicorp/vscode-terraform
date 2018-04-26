@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 
 interface TerraformIndexConfiguration {
   enabled: boolean;
-  indexerPath: string;
   liveIndexing: boolean;
   liveIndexingDelay: number;
 }
