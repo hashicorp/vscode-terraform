@@ -129,17 +129,12 @@
             "enabled": {
               "type": "boolean",
               "default": false,
-              "description": "If true, runs `terraform-index` enables indexing"
-            },
-            "indexerPath": {
-              "type": "string",
-              "default": "terraform-index",
-              "description": "Path to the `terraform-index` executable (download from: https://github.com/mauve/terraform-index/releases)"
+              "description": "Enables or disables the indexing"
             },
             "liveIndexing": {
               "type": "boolean",
               "default": true,
-              "description": "If true, runs `terraform-index` on the file currently being enabled (requires indexing to be enabled)"
+              "description": "Enables live indexing (requires indexing to be enabled)"
             },
             "liveIndexingDelay": {
               "type": "number",
@@ -148,12 +143,11 @@
             }
           },
           "default": {
-            "enabled": false,
-            "indexerPath": "terraform-index",
+            "enabled": true,
             "liveIndexing": true,
             "delay": 500
           },
-          "description": "Use `terraform-index` (download from: https://github.com/mauve/terraform-index/releases) to get live syntax errors, rename support, go to symbol, and much more..."
+          "description": "Indexes all terraform sources to get live syntax errors, rename support, go to symbol, and much more..."
         }
       }
     },
