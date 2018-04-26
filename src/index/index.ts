@@ -1,7 +1,8 @@
 
 import * as vscode from 'vscode';
 import { build } from './build';
-import { parseHcl } from './hcl-hil';
+import { parseHcl, ParseError } from './hcl-hil';
+import { ErrorDiagnosticCollection } from '../extension';
 
 export interface QueryOptions {
     name?: string;
@@ -215,8 +216,13 @@ export class Index {
 
         let [ast, error] = parseHcl(document.getText());
         if (error) {
-            // TODO: do something with the error instead
-            throw error;
+            let range = new vscode.Range(error.line, error.column, error.line, 300);
+            let message = error.message === "" ? "Parse error" : error.message;
+            let diagnostics = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
+
+            ErrorDiagnosticCollection.set(document.uri, [diagnostics]);
+
+            return null;
         }
 
         index = build(document.uri, ast);
