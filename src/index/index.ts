@@ -235,6 +235,8 @@ export class Index {
             return null;
         }
 
+        ErrorDiagnosticCollection.set(document.uri, []);
+
         let index = build(document.uri, ast);
         this.add(index);
         return index;
