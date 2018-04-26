@@ -214,6 +214,10 @@ export class Index {
             return index;
         }
 
+        return this.indexDocument(document);
+    }
+
+    indexDocument(document: vscode.TextDocument): FileIndex {
         let [ast, error] = parseHcl(document.getText());
         if (error) {
             let range = new vscode.Range(error.line, error.column, error.line, 300);
@@ -225,7 +229,7 @@ export class Index {
             return null;
         }
 
-        index = build(document.uri, ast);
+        let index = build(document.uri, ast);
         this.add(index);
         return index;
     }
