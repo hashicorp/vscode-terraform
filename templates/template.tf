@@ -6,32 +6,31 @@ variable "region" {
   default = "us-east-1"
 }
 
-
-
-terraform {
-
-}
+terraform {}
 
 variable "aws_test_var" {
   description = "test variable"
+
   default = {
-    string = "string"
+    string   = "string"
     variable = "${var.variable}"
-    number = 2
-    bool = true
-    list = []
+    number   = 2
+    bool     = true
+    list     = []
   }
 }
 
 variable "aws_test_var" {
   description = "test variable"
+
   default = <<EOF
     [
       "test1",
       "test2",
       "foo",
       "bar"
-    ]EOF
+    ]
+EOF
 }
 
 resource "aws_s3_bucket" "agent_bucket" {
