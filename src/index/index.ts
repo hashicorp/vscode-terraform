@@ -198,6 +198,28 @@ export class Index {
 
         return indices.reduce((a, i) => a.concat(...i.query(options)), new Array<Section>());
     }
+
+    getReferences(uri: "ALL_FILES" | vscode.Uri, target: Section | string): Reference[] {
+        let targetId = target instanceof Section ? target.id() : target;
+        return [].concat(...this.query(uri).map((s) => s.references.filter((r) => r.targetId === targetId)));
+    }
+
+    getOrIndexDocument(document: vscode.TextDocument): FileIndex {
+        let index = this.get(document.uri);
+        if (index) {
+            return index;
+        }
+
+        let [ast, error] = parseHcl(document.getText());
+        if (error) {
+            // TODO: do something with the error instead
+            throw error;
+        }
+
+        index = build(document.uri, ast);
+        this.add(index);
+        return index;
+    }
 }
 
 export let WorkspaceIndex = new Index;
