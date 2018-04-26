@@ -135,5 +135,36 @@ suite("Index Tests", () => {
             assert.equal(results.length, 1);
             assert.equal(results[0].name, "bucket");
         });
+
+        suite("References", () => {
+            let [astC, errorC] = parseHcl(`resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
+            let [astD, errorD] = parseHcl(`resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
+
+            let c = build(vscode.Uri.parse("c.tf"), astC);
+            let d = build(vscode.Uri.parse("d.tf"), astD);
+
+            test("getReferences returns results for all files", () => {
+                let index = new Index(a, b, c, d);
+
+                let references = index.getReferences("ALL_FILES", "var.region");
+
+                assert.equal(references.length, 2);
+            });
+
+            test("getReferences returns results for a single file", () => {
+                let index = new Index(a, b, c, d);
+
+                let references = index.getReferences(d.uri, "var.region");
+
+                assert.equal(references.length, 1);
+            });
+
+            test("getReferences supports section as a target instead of string", () => {
+                let index = new Index(a, b, c, d);
+
+                let references = index.getReferences("ALL_FILES", b.sections[0]);
+                assert.equal(references.length, 2);
+            });
+        });
     });
 });
