@@ -90,14 +90,16 @@ export class Reference {
     readonly parts: string[];
     readonly location: vscode.Location;
     readonly targetId: string;
+    readonly section: Section;
 
-    constructor(expr: string, location: vscode.Location) {
+    constructor(expr: string, location: vscode.Location, section: Section) {
         let parts = expr.split('.');
 
         this.type = (parts[0] === "var") ? "variable" : parts[0];
         this.parts = parts.slice(1);
 
         this.location = location;
+        this.section = section;
 
         if (this.type === "variable") {
             this.targetId = `var.${this.parts[0]}`;

@@ -51,22 +51,22 @@ function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
     return new Section(sectionType, type, typeLoc, name, nameLoc, location, item);
 }
 
-function* walkHil(uri: vscode.Uri, exprs: Array<any>): Iterable<Reference> {
+function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Iterable<Reference> {
     for (let expr of exprs) {
         if (expr.Name && expr.Posx) {
             let name = expr.Name as string;
             let range = new vscode.Range(expr.Posx.Line - 1, expr.Posx.Column - 1,
                 expr.Posx.Line - 1, expr.Posx.Column - 1 + name.length);
             let location = new vscode.Location(uri, range);
-            let reference = new Reference(expr.Name, location);
+            let reference = new Reference(expr.Name, location, currentSection);
             yield reference;
         } else if (expr.Args) {
-            walkHil(uri, expr.Args as Array<any>);
+            walkHil(uri, expr.Args as any[], currentSection);
         }
     }
 }
 
-function extractReferencesFromHil(uri: vscode.Uri, token: any): [Reference[], ParseError] {
+function extractReferencesFromHil(uri: vscode.Uri, token: any, currentSection: Section): [Reference[], ParseError] {
     let [hil, error] = parseHilWithPosition(token.Text, token.Pos.Column, token.Pos.Line, token.Filename);
 
     if (error) {
@@ -109,7 +109,12 @@ export function build(uri: vscode.Uri, ast: Ast): FileIndex {
             // we only care about the second Val in the above example, we use
             // Token.Type==9 to detect it
             if (node.Token && node.Token.Type === 9) {
-                let [references, error] = extractReferencesFromHil(uri, node.Token);
+                if (!currentSection) {
+                    // TODO: this happens in tfvars files, should probably handle those
+                    return;
+                }
+
+                let [references, error] = extractReferencesFromHil(uri, node.Token, currentSection);
 
                 if (error) {
                     // TODO: handle
