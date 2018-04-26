@@ -9,7 +9,7 @@ import { initialCrawl, createWorkspaceWatcher } from './index/watcher';
 import { WorkspaceIndex, Section } from './index';
 import { CodeLensProvider, showReferencesCommand } from './codelense';
 
-export let errorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
+export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 
 const documentSelector: vscode.DocumentSelector = [
@@ -18,7 +18,7 @@ const documentSelector: vscode.DocumentSelector = [
 ];
 
 export function activate(ctx: vscode.ExtensionContext) {
-    ctx.subscriptions.push(errorDiagnosticCollection);
+    ctx.subscriptions.push(ErrorDiagnosticCollection);
 
     let formattingProvider = new FormattingEditProvider;
     vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider);
