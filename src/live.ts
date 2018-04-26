@@ -2,12 +2,14 @@ import * as vscode from 'vscode';
 import { execFile } from 'child_process';
 
 import { getConfiguration } from './configuration';
-import { errorDiagnosticCollection } from './extension';
+import { ErrorDiagnosticCollection } from './extension';
+import { isTerraformDocument } from './helpers';
+import { WorkspaceIndex } from './index';
 
 let runner;
 
 function liveIndexEnabledForDocument(doc: vscode.TextDocument): boolean {
-  if (doc.languageId !== 'terraform') {
+  if (!isTerraformDocument(doc)) {
     return false;
   }
 
@@ -24,14 +26,6 @@ export function liveIndex(e: vscode.TextDocumentChangeEvent) {
     clearTimeout(runner);
   }
   runner = setTimeout(function () {
-    // process(e.document.getText())
-    //  .then((index) => {
-    //    errorDiagnosticCollection.set(e.document.uri, index.Errors.map(createDiagnostic));
-    //    runner = null;
-    //  })
-    //  .catch((err) => {
-    //    console.log("Error:", err);
-    //   runner = null;
-    //  });
+    WorkspaceIndex.getOrIndexDocument(e.document);
   }, getConfiguration().indexing.liveIndexingDelay);
 }
