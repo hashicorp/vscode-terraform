@@ -13,7 +13,7 @@ function updateDocument(index: Index, uri: vscode.Uri) {
     }
 
     try {
-      index.getOrIndexDocument(doc);
+      index.indexDocument(doc);
     } catch (e) {
       let range = new vscode.Range(0, 0, 0, 300);
       let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);

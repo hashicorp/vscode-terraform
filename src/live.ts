@@ -26,6 +26,6 @@ export function liveIndex(e: vscode.TextDocumentChangeEvent) {
     clearTimeout(runner);
   }
   runner = setTimeout(function () {
-    WorkspaceIndex.getOrIndexDocument(e.document);
+    WorkspaceIndex.indexDocument(e.document);
   }, getConfiguration().indexing.liveIndexingDelay);
 }
