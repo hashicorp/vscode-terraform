@@ -74,10 +74,19 @@ function extractReferencesFromHil(uri: vscode.Uri, token: any, currentSection: S
         return [null, new ParseError(token, "Expression parse error")];
     }
 
-    return [[...walkHil(uri, hil.Exprs)], null];
+    if (!hil.Exprs) {
+        // no expressions found in the HIL
+        return [[], null];
+    }
+
+    return [[...walkHil(uri, hil.Exprs, currentSection)], null];
 }
 
 export function build(uri: vscode.Uri, ast: Ast): FileIndex {
+    if (!ast) {
+        throw "ast cannot be null";
+    }
+
     let result = new FileIndex(uri);
 
     let currentSection: Section = null;
