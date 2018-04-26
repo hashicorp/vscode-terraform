@@ -24,7 +24,7 @@ export function parseHcl(document: string): [Ast, ParseError] {
   let result = hcl.parseHcl(document);
 
   if (result[1]) {
-    return [null, new ParseError(result[1])];
+    return [null, new ParseError(result[1], result[1].Err)];
   }
 
   return [result[0] as Ast, null];
@@ -34,7 +34,7 @@ export function parseHilWithPosition(document: string, column: number, line: num
   let result = hcl.parseHil(document, column, line, fileName);
 
   if (result[1]) {
-    return [null, new ParseError(result[1])];
+    return [null, new ParseError(result[1], result[1].Err)];
   }
 
   return [result[0], null];
