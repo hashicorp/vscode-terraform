@@ -74,6 +74,12 @@ suite("Index Tests", () => {
 
             assert.equal(output.id(), "template");
         });
+
+        test("accepts new name when returning id", () => {
+            let variable = new Section("variable", null, null, "region", null, null, null);
+
+            assert.equal(variable.id("newName"), "var.newName");
+        });
     });
 
     suite("FileIndex Tests", () => {

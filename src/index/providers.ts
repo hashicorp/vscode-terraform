@@ -34,25 +34,28 @@ export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
 export class RenameProvider implements vscode.RenameProvider {
   provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string): vscode.WorkspaceEdit {
     let range = document.getWordRangeAtPosition(position);
-    if (range === undefined) {
+    if (!range) {
       return null;
     }
 
+    // find section with nameLoc == range
     let symbol = document.getText(range);
-    let references = []; // TODO: implement references
+    let section = WorkspaceIndex.query(document.uri).filter((s) => s.nameLocation.range.isEqual(range))[0];
+    if (!section) {
+      return null;
+    }
+
+    let references = WorkspaceIndex.getReferences("ALL_FILES", section);
     if (references.length === 0) {
       return null;
     }
 
-    const magic = 4; // length("var.")
     let edit = new vscode.WorkspaceEdit;
     edit.replace(document.uri, range, newName);
-    references.forEach((location) => {
-      let r = new vscode.Range(
-        new vscode.Position(location.range.start.line, location.range.start.character + magic),
-        new vscode.Position(location.range.start.line, location.range.start.character + magic + symbol.length));
 
-      edit.replace(location.uri, r, newName);
+    const newId = section.id(newName);
+    references.forEach((reference) => {
+      edit.replace(reference.location.uri, reference.location.range, newId);
     });
     return edit;
   }
