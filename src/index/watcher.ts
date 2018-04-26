@@ -13,19 +13,7 @@ function updateDocument(index: Index, uri: vscode.Uri) {
     }
 
     try {
-      let [ast, error] = parseHcl(doc.getText());
-
-      if (error) {
-        let range = new vscode.Range(error.line, error.column, error.line, 300);
-        let message = error.message === "" ? "Parse error" : error.message;
-        let diagnostics = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
-
-        ErrorDiagnosticCollection.set(uri, [diagnostics]);
-        return;
-      }
-
-      let fileIndex = build(uri, ast);
-      index.add(fileIndex);
+      index.getOrIndexDocument(doc);
     } catch (e) {
       let range = new vscode.Range(0, 0, 0, 300);
       let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);
