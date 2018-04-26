@@ -20,6 +20,7 @@ function updateDocument(index: Index, uri: vscode.Uri) {
         let diagnostics = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
 
         errorDiagnosticCollection.set(uri, [diagnostics]);
+        return;
       }
 
       let fileIndex = build(uri, ast);
