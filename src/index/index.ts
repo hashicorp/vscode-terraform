@@ -81,6 +81,9 @@ export class Section extends vscode.SymbolInformation {
         if (this.sectionType === "data")
             return [this.sectionType, this.type, this.name].join(".");
 
+        if (this.sectionType === "output")
+            return this.name;
+
         return [this.type, this.name].join(".");
     }
 }

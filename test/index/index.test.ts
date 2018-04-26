@@ -68,6 +68,12 @@ suite("Index Tests", () => {
 
             assert.equal(data.id(), "data.template_file.template");
         });
+
+        test("output ID", () => {
+            let output = new Section("output", null, null, "template", null, null, null);
+
+            assert.equal(output.id(), "template");
+        });
     });
 
     suite("FileIndex Tests", () => {
