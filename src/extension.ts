@@ -9,6 +9,7 @@ import { initialCrawl, createWorkspaceWatcher } from './index/watcher';
 import { WorkspaceIndex, Section } from './index';
 import { CodeLensProvider, showReferencesCommand } from './codelense';
 import { getConfiguration } from './configuration';
+import { HoverProvider } from './hover';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -39,7 +40,8 @@ export function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider),
         vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider),
         vscode.languages.registerRenameProvider(documentSelector, new RenameProvider),
-        vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider)
+        vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider),
+        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider)
     );
 
     // operations which should only work in a local context (as opposed to live-share)
