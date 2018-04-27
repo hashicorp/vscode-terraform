@@ -30,9 +30,9 @@ suite("Index Tests", () => {
         });
 
         test("Handles data references", () => {
-            let r = new Reference("data.template_file.file.rendered", null, null);
+            let r = new Reference("data.template_file.template.rendered", null, null);
             assert.equal(r.type, "data");
-            assert.equal(r.targetId, "data.template_file.file");
+            assert.equal(r.targetId, "data.template_file.template");
 
             let s = [...index.query(r.getQuery())];
             assert.equal(s.length, 1);
@@ -158,7 +158,7 @@ suite("Index Tests", () => {
             test("getReferences returns results for all files", () => {
                 let index = new Index(a, b, c, d);
 
-                let references = index.getReferences("ALL_FILES", "var.region");
+                let references = index.queryReferences("ALL_FILES", { target: "var.region" });
 
                 assert.equal(references.length, 2);
             });
@@ -166,7 +166,7 @@ suite("Index Tests", () => {
             test("getReferences returns results for a single file", () => {
                 let index = new Index(a, b, c, d);
 
-                let references = index.getReferences(d.uri, "var.region");
+                let references = index.queryReferences(d.uri, { target: "var.region" });
 
                 assert.equal(references.length, 1);
             });
@@ -174,7 +174,7 @@ suite("Index Tests", () => {
             test("getReferences supports section as a target instead of string", () => {
                 let index = new Index(a, b, c, d);
 
-                let references = index.getReferences("ALL_FILES", b.sections[0]);
+                let references = index.queryReferences("ALL_FILES", { target: b.sections[0] });
                 assert.equal(references.length, 2);
             });
         });

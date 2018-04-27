@@ -8,6 +8,13 @@ export interface QueryOptions {
     name?: string;
     section_type?: string;
     type?: string;
+    name_position?: vscode.Position;
+    position?: vscode.Position;
+}
+
+export interface ReferenceQueryOptions {
+    target?: string | Section;
+    position?: vscode.Position;
 }
 
 function getKind(sectionType: string): vscode.SymbolKind {
@@ -57,21 +64,27 @@ export class Section extends vscode.SymbolInformation {
         if (!options)
             return true;
 
-        if (options.section_type && this.sectionType === options.section_type)
-            return true;
+        if (options.section_type && this.sectionType !== options.section_type)
+            return false;
 
         if (this.type) {
-            if (options.type && this.type.match(options.type))
-                return true;
+            if (options.type && !this.type.match(options.type))
+                return false;
         } else {
             if (options.type)
                 return false;
         }
 
-        if (options.name && this.name.match(options.name))
-            return true;
+        if (options.name && !this.name.match(options.name))
+            return false;
 
-        return false;
+        if (options.name_position && !this.nameLocation.range.contains(options.name_position))
+            return false;
+
+        if (options.position && !this.location.range.contains(options.position))
+            return false;
+
+        return true;
     }
 
     id(rename?: string): string {
@@ -114,6 +127,23 @@ export class Reference {
         } else {
             this.targetId = `${this.type}.${this.parts[0]}`;
         }
+    }
+
+    match(options?: ReferenceQueryOptions): boolean {
+        if (!options)
+            return true;
+
+        if (options.target) {
+            let targetId = options.target instanceof Section ? options.target.id() : options.target;
+            if (targetId !== this.targetId)
+                return false;
+        }
+
+        if (options.position && !this.location.range.contains(options.position)) {
+            return false;
+        }
+
+        return true;
     }
 
     getQuery(): QueryOptions {
@@ -204,6 +234,10 @@ export class Index {
     }
 
     query(uri: "ALL_FILES" | vscode.Uri, options?: QueryOptions): Section[] {
+        if (options && (options.name_position || options.position) && uri === "ALL_FILES") {
+            throw "Cannot use ALL_FILES when querying for position or name_position";
+        }
+
         let uris = uri === "ALL_FILES" ? [...this.Files.keys()] : [uri.toString()];
 
         let indices = uris.map((u) => this.Files.get(u)).filter((i) => i != null);
@@ -211,9 +245,12 @@ export class Index {
         return indices.reduce((a, i) => a.concat(...i.query(options)), new Array<Section>());
     }
 
-    getReferences(uri: "ALL_FILES" | vscode.Uri, target: Section | string): Reference[] {
-        let targetId = target instanceof Section ? target.id() : target;
-        return [].concat(...this.query(uri).map((s) => s.references.filter((r) => r.targetId === targetId)));
+    queryReferences(uri: "ALL_FILES" | vscode.Uri, options?: ReferenceQueryOptions): Reference[] {
+        if (options.position && uri === "ALL_FILES") {
+            throw "Cannot use ALL_FILES when querying for position";
+        }
+
+        return [].concat(...this.query(uri).map((s) => s.references.filter((r) => r.match(options))));
     }
 
     getOrIndexDocument(document: vscode.TextDocument): FileIndex {

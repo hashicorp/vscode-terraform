@@ -5,17 +5,25 @@ import { WorkspaceIndex } from '../index/index';
 
 export class DefinitionProvider implements vscode.DefinitionProvider {
   provideDefinition(document: vscode.TextDocument, position: vscode.Position): vscode.Location {
-    // TODO: need to parse hil
+    let reference = WorkspaceIndex.queryReferences(document.uri, { position: position })[0];
+    if (!reference)
+      return null;
 
-    return null;
+    let section = WorkspaceIndex.query("ALL_FILES", reference.getQuery())[0];
+    if (!section)
+      return null;
+    return section.location;
   }
 }
 
 export class ReferenceProvider implements vscode.ReferenceProvider {
   provideReferences(document: vscode.TextDocument, position: vscode.Position, context: vscode.ReferenceContext): vscode.Location[] {
-    // TODO: parse hil
+    let section = WorkspaceIndex.query(document.uri, { position: position })[0];
+    if (!section)
+      return [];
 
-    return [];
+    let references = WorkspaceIndex.queryReferences("ALL_FILES", { target: section });
+    return references.map((r) => r.location);
   }
 }
 
@@ -33,25 +41,18 @@ export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
 
 export class RenameProvider implements vscode.RenameProvider {
   provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string): vscode.WorkspaceEdit {
-    let range = document.getWordRangeAtPosition(position);
-    if (!range) {
-      return null;
-    }
-
-    // find section with nameLoc == range
-    let symbol = document.getText(range);
-    let section = WorkspaceIndex.query(document.uri).filter((s) => s.nameLocation.range.isEqual(range))[0];
+    let section = WorkspaceIndex.query(document.uri, { name_position: position })[0];
     if (!section) {
       return null;
     }
 
-    let references = WorkspaceIndex.getReferences("ALL_FILES", section);
+    let references = WorkspaceIndex.queryReferences("ALL_FILES", { target: section });
     if (references.length === 0) {
       return null;
     }
 
     let edit = new vscode.WorkspaceEdit;
-    edit.replace(document.uri, range, newName);
+    edit.replace(document.uri, section.nameLocation.range, newName);
 
     const newId = section.id(newName);
     references.forEach((reference) => {
