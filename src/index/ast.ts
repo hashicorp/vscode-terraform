@@ -35,6 +35,109 @@ function walkInternal(node: any, visitor: VisitorFunc, type: NodeType, path: Vis
     }
 }
 
-export function walk(node: any, visitor: VisitorFunc) {
-    return walkInternal(node, visitor, NodeType.Unknown, []);
+export function walk(ast: Ast, visitor: VisitorFunc) {
+    return walkInternal(ast, visitor, NodeType.Unknown, []);
+}
+
+export interface Ast {
+    Node: AstList;
+}
+
+export interface AstPosition {
+    Filename: string;
+    Offset: number;
+    Line: number;
+    Column: number;
+}
+
+export interface AstToken {
+    Type: number;
+    Pos: AstPosition;
+    Text: string;
+    JSON: boolean;
+}
+
+export interface AstList {
+    Items: AstItem[];
+}
+
+export interface AstTokenItem {
+    Token: AstToken;
+    LeadComment: any;
+    LineComment: any;
+}
+
+export interface AstVal {
+    Lbrace: AstPosition;
+    Rbrace: AstPosition;
+    List?: AstList | AstTokenItem[];
+    Token?: AstToken;
+    LeadComment: any;
+    LineComment: any;
+}
+
+export interface AstKey {
+    Token: AstToken;
+}
+
+export interface AstItem {
+    Keys: AstKey[];
+    Assign: AstPosition;
+    Val: AstVal,
+    LeadComment: any;
+    LineComment: any;
+}
+
+export function getText(token: AstToken, options?: { stripQuotes: boolean }): string {
+    if (options && options.stripQuotes) {
+        if (token.Type === 9) {
+            return token.Text.substr(1, token.Text.length - 2);
+        }
+    }
+
+    return token.Text;
+}
+
+export function getStringValue(value: AstVal, fallback: string, options?: { stripQuotes: boolean }): string {
+    if (!value)
+        return fallback;
+
+    if (value.Token)
+        return getText(value.Token, options);
+
+    return fallback;
+}
+
+export function getValue(value: AstVal, options?: { stripQuotes: boolean }): string | string[] | Map<string, string> {
+    if (value.Token)
+        return getText(value.Token, options);
+
+    // map
+    let astList = value.List as AstList;
+    if (astList.Items) {
+        let map = new Map<string, string>();
+        astList.Items.forEach((item) => {
+            let k = getText(item.Keys[0].Token);
+            let v = getStringValue(item.Val, "...");
+
+            map.set(k, v);
+        });
+        return map;
+    }
+
+    // array
+    let tokens = value.List as AstTokenItem[];
+    return tokens.map((t) => getText(t.Token, options));
+}
+
+export function findValue(item: AstItem, name: string): AstVal {
+    let values = (item.Val.List as AstList).Items;
+    if (!values) {
+        return null;
+    }
+
+    let value = values.find((v) => getText(v.Keys[0].Token) === name);
+    if (!value)
+        return null;
+    return value.Val;
 }

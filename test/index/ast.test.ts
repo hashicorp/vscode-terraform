@@ -1,7 +1,7 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 import { parseHcl } from '../../src/index/hcl-hil';
-import { walk, NodeType, VisitedNode } from '../../src/index/ast';
+import { walk, NodeType, VisitedNode, findValue, getText, AstList, getStringValue, getValue } from '../../src/index/ast';
 
 import * as vscode from 'vscode';
 
@@ -42,6 +42,68 @@ suite("Index Tests", () => {
 
             assert.deepEqual(found, [[0, 3], [1, 3], [2, 3]]);
         });
+    });
 
+    suite("Ast extraction", () => {
+        const [ast, error] = parseHcl('variable "region" { default = "defaultValue" }');
+
+        test("findValue return AstVal for existing key", () => {
+            let val = findValue(ast.Node.Items[0], "default");
+
+            assert.notEqual(val, null);
+        });
+
+        test("findValue does not fail if key is missing", () => {
+            let val = findValue(ast.Node.Items[0], "type");
+
+            assert.equal(val, null);
+        });
+
+        test("getText returns the text of a token", () => {
+            let list = ast.Node.Items[0].Val.List as AstList
+            let text = getText(list.Items[0].Keys[0].Token);
+
+            assert.equal(text, "default");
+        });
+
+        test("getText does not strip quotes by default", () => {
+            let val = findValue(ast.Node.Items[0], "default");
+            let text = getText(val.Token);
+
+            assert.equal(text, '"defaultValue"');
+        });
+
+        test("getText can strip quotes if requested", () => {
+            let val = findValue(ast.Node.Items[0], "default");
+            let text = getText(val.Token, { stripQuotes: true });
+
+            assert.equal(text, 'defaultValue');
+        });
+
+        test("getStringValue returns the string", () => {
+            let val = findValue(ast.Node.Items[0], "default");
+            let text = getStringValue(val, "...");
+
+            assert.equal(text, '"defaultValue"');
+        });
+
+        test("getStringValue can strip quotes", () => {
+            let val = findValue(ast.Node.Items[0], "default");
+            let text = getStringValue(val, "...", { stripQuotes: true });
+
+            assert.equal(text, 'defaultValue');
+        });
+
+        test("getStringValue returns the fallback", () => {
+            let text = getStringValue(null, "fallback");
+
+            assert.equal(text, "fallback");
+        });
+
+        test("getValue can return a Map<string, string>", () => {
+            let map = getValue(ast.Node.Items[0].Val) as Map<string, string>;
+
+            assert.equal(map.get("default"), '"defaultValue"');
+        })
     });
 });

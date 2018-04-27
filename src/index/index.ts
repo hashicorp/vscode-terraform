@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { build } from './build';
 import { parseHcl, ParseError } from './hcl-hil';
 import { ErrorDiagnosticCollection } from '../extension';
+import { AstItem } from './ast';
 
 export interface QueryOptions {
     name?: string;
@@ -39,7 +40,7 @@ export class Section extends vscode.SymbolInformation {
     readonly name: string;
     readonly nameLocation: vscode.Location;
     readonly location: vscode.Location;
-    readonly node: any;
+    readonly node: AstItem;
 
     constructor(
         sectionType: string,
@@ -48,7 +49,7 @@ export class Section extends vscode.SymbolInformation {
         name: string,
         nameLocation: vscode.Location,
         location: vscode.Location,
-        node: any) {
+        node: AstItem) {
         super(name, getKind(sectionType), "", location)
 
         this.sectionType = sectionType;
