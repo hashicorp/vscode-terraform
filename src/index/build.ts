@@ -1,7 +1,7 @@
 
 import { FileIndex, Section, Reference } from './index';
-import { walk, NodeType } from './ast';
-import { Ast, parseHilWithPosition, ParseError } from './hcl-hil';
+import { walk, NodeType, Ast } from './ast';
+import { parseHilWithPosition, ParseError } from './hcl-hil';
 
 import * as vscode from 'vscode';
 

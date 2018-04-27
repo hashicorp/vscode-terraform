@@ -1,8 +1,6 @@
-const hcl = require('../hcl-hil.js');
+import { Ast } from "./ast";
 
-export interface Ast {
-  Node: any;
-}
+const hcl = require('../hcl-hil.js');
 
 export class ParseError extends Error {
   readonly fileName: string;
