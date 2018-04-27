@@ -11,7 +11,7 @@ export class SectionReferenceCodeLens extends vscode.CodeLens {
   }
 
   createCommand(): vscode.Command {
-    let references = WorkspaceIndex.getReferences("ALL_FILES", this.section);
+    let references = WorkspaceIndex.queryReferences("ALL_FILES", { target: this.section });
 
     return {
       title: `${references.length} references`,
@@ -68,7 +68,7 @@ export class ReferenceQuickPick implements vscode.QuickPickItem {
 }
 
 export function showReferencesCommand(section: Section) {
-  let picks = WorkspaceIndex.getReferences("ALL_FILES", section).map((r) => new ReferenceQuickPick(r));
+  let picks = WorkspaceIndex.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
 
   vscode.window.showQuickPick(picks, {
     onDidSelectItem: (r: ReferenceQuickPick) => r.goto()
