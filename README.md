@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 <h1 align="center">
   <br>
     <img src="https://raw.githubusercontent.com/mauve/vscode-terraform/master/terraform.png" alt="logo" width="200">
@@ -17,6 +18,8 @@
     <img src="https://img.shields.io/github/release/mauve/vscode-terraform.svg" alt="Release">
   </a>
 </p>
+<!-- markdownlint-enable -->
+<!-- markdownlint-disable MD002 MD013 MD041 -->
 
 ## Features at a glance
 
@@ -30,14 +33,14 @@
 - Automatically closes braces and quotes
 - Adds a command for running `terraform validate`
 - Linting support with the help of [tflint](https://github.com/wata727/tflint)
-- ***EXPERIMENTAL***:
-  - Browse document symbols
-  - Browse workspace symbols
-  - Peek definition
-  - Goto definition
-  - Find references
-  - Completion for variables and outputs
-  - Rename variables (and all usages)
+- Browse document symbols
+- Browse workspace symbols
+- Peek definition
+- Goto definition
+- Find references
+- Completion for variables and outputs
+- Rename variables, resource, and data types and all references
+- Show variable values on hover
 
 ## Syntax Highlighting
 
@@ -49,7 +52,9 @@
 
 ## Formatting support
 
-The plugin also ships a formatter integration which uses `terraform fmt` for formatting editors. Formatting can be disabled by setting `terraform.format.enable` to `false`.
+The plugin also ships a formatter integration which uses `terraform fmt` for
+formatting files. Formatting can be disabled by setting `terraform.format.enable`
+to `false`.
 
 ## Linting
 
@@ -112,7 +117,7 @@ Press `Ctrl+Space` (also triggered automatically after `.` and `"`) for simple c
 
 ![Complete variables](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-complete-variables.png)
 
-### Rename variable and 
+### Rename variables, resources and its references
 
 Press `F2` to automatically rename a variable and its usages.
 
