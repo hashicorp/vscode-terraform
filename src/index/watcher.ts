@@ -5,8 +5,8 @@ import { parseHcl, ParseError } from './hcl-hil';
 import { build } from './build';
 import { ErrorDiagnosticCollection } from '../extension';
 
-function updateDocument(index: Index, uri: vscode.Uri) {
-  vscode.workspace.openTextDocument(uri).then((doc) => {
+function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
+  return vscode.workspace.openTextDocument(uri).then((doc) => {
     if (doc.isDirty || doc.languageId !== "terraform") {
       // ignore
       return;
@@ -34,8 +34,16 @@ export function createWorkspaceWatcher(index: Index): vscode.FileSystemWatcher {
 export function initialCrawl(index: Index): Thenable<vscode.Uri[]> {
   return vscode.workspace.findFiles("**/*.{tf,tfvars}", "")
     .then((uris) => {
-      uris.forEach((uri) => updateDocument(index, uri));
+      return vscode.window.withProgress({
+        location: vscode.ProgressLocation.Window,
+        title: "Indexing terraform templates"
+      }, async (progress) => {
+        for (let uri of uris) {
+          progress.report({ message: `Indexing ${uri.toString()}` });
+          await updateDocument(index, uri);
+        }
 
-      return uris;
+        return uris;
+      });
     });
 }

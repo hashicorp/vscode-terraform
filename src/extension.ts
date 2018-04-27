@@ -6,7 +6,7 @@ import { liveIndex } from './live';
 import { CompletionProvider } from './autocompletion/completion-provider';
 import { DefinitionProvider, DocumentSymbolProvider, WorkspaceSymbolProvider, ReferenceProvider, RenameProvider } from './index/providers';
 import { initialCrawl, createWorkspaceWatcher } from './index/watcher';
-import { WorkspaceIndex, Section } from './index';
+import { Section, Index } from './index';
 import { CodeLensProvider, showReferencesCommand } from './codelense';
 import { getConfiguration } from './configuration';
 import { HoverProvider } from './hover';
@@ -20,6 +20,8 @@ const documentSelector: vscode.DocumentSelector = [
 ];
 
 export function activate(ctx: vscode.ExtensionContext) {
+    let index = new Index();
+
     ctx.subscriptions.push(ErrorDiagnosticCollection);
 
     let formattingProvider = new FormattingEditProvider;
@@ -30,30 +32,35 @@ export function activate(ctx: vscode.ExtensionContext) {
         vscode.commands.registerCommand('terraform.validate', () => { validateCommand(); }),
         vscode.commands.registerCommand('terraform.lint', () => { lintCommand(); }),
         vscode.commands.registerCommand('terraform.showReferences', (section: Section) => {
-            showReferencesCommand(section);
+            showReferencesCommand(index, section);
+        }),
+        vscode.commands.registerCommand('terraform.reindex', () => {
+            if (getConfiguration().indexing.enabled) {
+                initialCrawl(index);
+            }
         }),
 
         // providers
-        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider, '.', '"'),
-        vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider),
-        vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider),
-        vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider),
-        vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider),
-        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider),
-        vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider),
-        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider)
+        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(index), '.', '"'),
+        vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(index)),
+        vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(index)),
+        vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(index)),
+        vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(index)),
+        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(index)),
+        vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(index)),
+        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(index))
     );
 
     // operations which should only work in a local context (as opposed to live-share)
     if (vscode.workspace.rootPath) {
         // we need to manually handle save events otherwise format on autosave does not work
         ctx.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => formattingProvider.onSave(doc)));
-        ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument(liveIndex));
+        ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(index, e)));
 
         // start to build the index
         if (getConfiguration().indexing.enabled) {
-            ctx.subscriptions.push(createWorkspaceWatcher(WorkspaceIndex));
-            initialCrawl(WorkspaceIndex);
+            ctx.subscriptions.push(createWorkspaceWatcher(index));
+            initialCrawl(index);
         }
     }
 }

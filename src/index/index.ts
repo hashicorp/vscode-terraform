@@ -282,5 +282,3 @@ export class Index {
         return index;
     }
 }
-
-export let WorkspaceIndex = new Index;

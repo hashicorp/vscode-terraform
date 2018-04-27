@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as _ from "lodash"
 
-import { WorkspaceIndex } from '../index/index';
 import { terraformConfigAutoComplete, allProviders, IFieldDef } from './model';
+import { Index } from '../index';
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
@@ -15,8 +15,10 @@ const modules = ["module", "provider"];
 const interfaces = ["resource", "data"];
 
 export class CompletionProvider implements vscode.CompletionItemProvider {
+  constructor(private index: Index) { }
+
   private getVariables(position: vscode.Position, includePrefix: boolean, match?: string): vscode.CompletionItem[] {
-    return WorkspaceIndex.query("ALL_FILES", { type: "variable", name: match }).map((variable) => {
+    return this.index.query("ALL_FILES", { type: "variable", name: match }).map((variable) => {
       let item = new vscode.CompletionItem(variable.name);
       item.kind = vscode.CompletionItemKind.Variable;
       if (includePrefix) {
@@ -28,7 +30,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
   }
 
   private getOutputs(match?: string): vscode.CompletionItem[] {
-    return WorkspaceIndex.query("ALL_FILES", { type: "output", name: match }).map((output) => {
+    return this.index.query("ALL_FILES", { type: "output", name: match }).map((output) => {
       let item = new vscode.CompletionItem(output.name);
       item.kind = vscode.CompletionItemKind.Property;
       return item;

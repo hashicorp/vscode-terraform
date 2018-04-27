@@ -4,7 +4,7 @@ import { execFile } from 'child_process';
 import { getConfiguration } from './configuration';
 import { ErrorDiagnosticCollection } from './extension';
 import { isTerraformDocument } from './helpers';
-import { WorkspaceIndex } from './index';
+import { Index } from './index';
 
 let runner;
 
@@ -17,7 +17,7 @@ function liveIndexEnabledForDocument(doc: vscode.TextDocument): boolean {
   return cfg.enabled && cfg.liveIndexing;
 }
 
-export function liveIndex(e: vscode.TextDocumentChangeEvent) {
+export function liveIndex(index: Index, e: vscode.TextDocumentChangeEvent) {
   if (!liveIndexEnabledForDocument(e.document)) {
     return;
   }
@@ -26,6 +26,6 @@ export function liveIndex(e: vscode.TextDocumentChangeEvent) {
     clearTimeout(runner);
   }
   runner = setTimeout(function () {
-    WorkspaceIndex.indexDocument(e.document);
+    index.indexDocument(e.document);
   }, getConfiguration().indexing.liveIndexingDelay);
 }

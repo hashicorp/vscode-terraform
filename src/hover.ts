@@ -1,14 +1,16 @@
 import * as vscode from 'vscode';
-import { WorkspaceIndex, Section } from './index';
+import { Section, Index } from './index';
 import { findValue, getStringValue, getValue } from './index/ast';
 
 export class HoverProvider implements vscode.HoverProvider {
+  constructor(private index: Index) { }
+
   provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
-    let reference = WorkspaceIndex.queryReferences(document.uri, { position: position })[0];
+    let reference = this.index.queryReferences(document.uri, { position: position })[0];
     if (!reference)
       return null;
 
-    let section = WorkspaceIndex.query("ALL_FILES", reference.getQuery())[0];
+    let section = this.index.query("ALL_FILES", reference.getQuery())[0];
     if (section.sectionType !== "variable")
       return null;
 

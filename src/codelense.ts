@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 
-import { WorkspaceIndex, Section, Reference } from './index/index';
+import { Section, Reference, Index } from './index/index';
 
 export class SectionReferenceCodeLens extends vscode.CodeLens {
   constructor(
+    private index: Index,
     range: vscode.Range,
     readonly section: Section,
     command?: vscode.Command) {
@@ -11,7 +12,7 @@ export class SectionReferenceCodeLens extends vscode.CodeLens {
   }
 
   createCommand(): vscode.Command {
-    let references = WorkspaceIndex.queryReferences("ALL_FILES", { target: this.section });
+    let references = this.index.queryReferences("ALL_FILES", { target: this.section });
 
     return {
       title: `${references.length} references`,
@@ -26,16 +27,16 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
   private eventEmitter = new vscode.EventEmitter<void>();
   onDidChangeCodeLenses = this.eventEmitter.event;
 
-  constructor() {
-    WorkspaceIndex.onDidChange(() => {
+  constructor(private index: Index) {
+    this.index.onDidChange(() => {
       this.eventEmitter.fire();
     });
   }
 
   provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
-    return WorkspaceIndex.getOrIndexDocument(document).sections.map((s) => {
+    return this.index.getOrIndexDocument(document).sections.map((s) => {
       let firstLineOfSection = new vscode.Range(s.location.range.start, new vscode.Position(s.location.range.start.line, 100000));
-      return new SectionReferenceCodeLens(firstLineOfSection, s);
+      return new SectionReferenceCodeLens(this.index, firstLineOfSection, s);
     });
   }
 
@@ -67,8 +68,8 @@ export class ReferenceQuickPick implements vscode.QuickPickItem {
   }
 }
 
-export function showReferencesCommand(section: Section) {
-  let picks = WorkspaceIndex.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
+export function showReferencesCommand(index: Index, section: Section) {
+  let picks = index.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
 
   vscode.window.showQuickPick(picks, {
     onDidSelectItem: (r: ReferenceQuickPick) => r.goto()
