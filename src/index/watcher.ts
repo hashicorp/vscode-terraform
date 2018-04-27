@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import { Index } from './index';
-import { parseHcl, ParseError, Ast } from './hcl-hil';
+import { parseHcl, ParseError } from './hcl-hil';
 import { build } from './build';
 import { ErrorDiagnosticCollection } from '../extension';
 
