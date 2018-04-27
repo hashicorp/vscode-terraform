@@ -41,6 +41,16 @@
 - Completion for variables and outputs
 - Rename variables, resource, and data types and all references
 - Show variable values on hover
+- CodeLens shows if a section is referenced
+
+## News in 1.0.0
+
+- Indexing support is no longer experimental
+- Indexing support no longer requires a separate tool (HCL parsing is now built directly into the plugin)
+- *Rename refactoring* now supports all types
+- Hovering a variable shows the default value
+- A code lens shows how often a resource (or variable, or data) is referenced
+- Terraform now works with *Visual Studio LiveShare* (thanks to [@lostintangent](https://github.com/lostintangent))
 
 ## Syntax Highlighting
 
@@ -78,12 +88,12 @@ workspace root).
 
 Because the output of `terraform validate` is not parseable the output is just dumped into the output tab.
 
-### Experimental Indexing support
+### Indexing support
 
-Enabling indexing support requires the tool [terraform-index](https://github.com/mauve/terraform-index) to be
-available and the feature to be enabled by setting `terraform.indexing.enabled` to `true` (it defaults to `false`).
+The plugin indexes all the terraform files in the workspace by default and enables some advanced features,
+like *Goto Definition* and *Show references* based on information gathered during indexing.
 
-Currently only `resource`, `output` and `variable` are supported, and sometimes even limited.
+Indexing is enabled by default but can be disabled using `terraform.indexing.enable`.
 
 ### Browse Document Symbols
 
@@ -123,3 +133,11 @@ Press `F2` to automatically rename a variable and its usages.
 
 ![Rename variable (before)](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-rename-variable-before.png)
 ![Rename variable (after)](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-rename-variable-after.png)
+
+### Show variable default on hover
+
+![Hover over variable](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-hover-variable.png)
+
+### CodeLens support
+
+![CodeLens shows number of references](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-codelens-references.png)

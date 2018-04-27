@@ -1,3 +1,14 @@
+# 1.0.0
+
+## New Features
+
+- Indexing support is no longer experimental
+- Indexing support no longer requires a separate tool (HCL parsing is now built directly into the plugin)
+- *Rename refactoring* now supports all types
+- Hovering a variable shows the default value
+- A code lens shows how often a resource (or variable, or data) is referenced
+- Terraform now works with *Visual Studio LiveShare* (thanks to [@lostintangent](https://github.com/lostintangent))
+
 # 0.0.23
 
 ## Fixes
