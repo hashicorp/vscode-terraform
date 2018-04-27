@@ -1,3 +1,9 @@
+# 1.0.1 (bugfix)
+
+## Fixes
+
+- Fix racecondition during startup of larger projects
+
 # 1.0.0
 
 ## New Features
