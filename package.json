@@ -52,7 +52,7 @@
           ".tfvars",
           ".hcl"
         ],
-        "configuration": "./terraform.configuration.json"
+        "configuration": "./language-configuration.json"
       },
       {
         "id": "json",
