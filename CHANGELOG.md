@@ -1,3 +1,8 @@
+# 1.0.4
+
+## Fixes
+- Correctly add `minimatch` to dependencies (Closes #74)
+
 # 1.0.3
 
 ## New Features
