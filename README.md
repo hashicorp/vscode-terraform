@@ -144,4 +144,4 @@ Press `F2` to automatically rename a variable and its usages.
 
 ### Document Link support
 
-![Click on resource type to go to documentation]((https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-document-link.png)
+![Click on resource type to go to documentation](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-document-link.png)
