@@ -2,6 +2,7 @@
 
 ## New Features
 - CodeLens contribution can be disabled via configuration (closes #73)
+- Make it possible to exclude paths from indexing (by default excludes `.terraform`, closes #72)
 
 # 1.0.1 (bugfix)
 
