@@ -1,3 +1,8 @@
+# 1.0.2
+
+## New Features
+- CodeLens contribution can be disabled via configuration (closes #73)
+
 # 1.0.1 (bugfix)
 
 ## Fixes

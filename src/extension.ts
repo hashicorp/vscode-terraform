@@ -47,9 +47,12 @@ export function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(index)),
         vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(index)),
         vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(index)),
-        vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(index)),
         vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(index))
     );
+
+    if (getConfiguration().codelens.enabled) {
+        ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(index)));
+    }
 
     // operations which should only work in a local context (as opposed to live-share)
     if (vscode.workspace.rootPath) {

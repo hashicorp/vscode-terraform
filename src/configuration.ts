@@ -6,6 +6,10 @@ interface TerraformIndexConfiguration {
   liveIndexingDelay: number;
 }
 
+interface TerraformCodeLensConfiguration {
+  enabled: boolean;
+}
+
 interface TerraformConfiguration {
   formatOnSave: boolean;
   formatVarsOnSave?: boolean;
@@ -14,6 +18,7 @@ interface TerraformConfiguration {
   lintPath: string;
   lintConfig?: string;
   indexing: TerraformIndexConfiguration;
+  codelens: TerraformCodeLensConfiguration;
 }
 
 export function getConfiguration(): TerraformConfiguration {
@@ -27,7 +32,8 @@ export function getConfiguration(): TerraformConfiguration {
     templateDirectory: raw.templateDirectory,
     lintPath: raw.lintPath,
     lintConfig: raw.lintConfig,
-    indexing: raw.indexing
+    indexing: raw.indexing,
+    codelens: raw.codelens
   };
 
   return <TerraformConfiguration>convertible;

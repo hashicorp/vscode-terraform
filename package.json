@@ -152,6 +152,11 @@
             "delay": 500
           },
           "description": "Indexes all terraform sources to get live syntax errors, rename support, go to symbol, and much more..."
+        },
+        "terraform.codelens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable the CodeLens feature"
         }
       }
     },
