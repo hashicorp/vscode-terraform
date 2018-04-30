@@ -1,5 +1,7 @@
 
 import * as vscode from 'vscode';
+import * as minimatch from 'minimatch';
+
 import { build } from './build';
 import { parseHcl, ParseError } from './hcl-hil';
 import { ErrorDiagnosticCollection } from '../extension';
@@ -197,6 +199,10 @@ export class FileIndex {
     }
 }
 
+export interface IndexOptions {
+    exclude?: string[];
+};
+
 export class Index {
     private Files = new Map<string, FileIndex>();
     private Sections = new Map<string, Section>();
@@ -254,16 +260,27 @@ export class Index {
         return [].concat(...this.query(uri).map((s) => s.references.filter((r) => r.match(options))));
     }
 
-    getOrIndexDocument(document: vscode.TextDocument): FileIndex {
+    getOrIndexDocument(document: vscode.TextDocument, options: IndexOptions = {}): FileIndex {
         let index = this.get(document.uri);
         if (index) {
             return index;
         }
 
-        return this.indexDocument(document);
+        return this.indexDocument(document, options);
     }
 
-    indexDocument(document: vscode.TextDocument): FileIndex {
+    indexDocument(document: vscode.TextDocument, options: IndexOptions = {}): FileIndex {
+        if (options.exclude) {
+            let path = vscode.workspace.asRelativePath(document.uri).replace('\\', '/');
+            let matches = options.exclude.map((pattern) => {
+                return minimatch(path, pattern);
+            });
+            if (matches.some((v) => v)) {
+                // ignore
+                return;
+            }
+        }
+
         let [ast, error] = parseHcl(document.getText());
         if (error) {
             let range = new vscode.Range(error.line, error.column, error.line, 300);

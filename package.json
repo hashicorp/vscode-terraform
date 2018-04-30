@@ -132,24 +132,28 @@
           "properties": {
             "enabled": {
               "type": "boolean",
-              "default": false,
               "description": "Enables or disables the indexing"
             },
             "liveIndexing": {
               "type": "boolean",
-              "default": true,
               "description": "Enables live indexing (requires indexing to be enabled)"
             },
             "liveIndexingDelay": {
               "type": "number",
-              "default": 500,
               "description": "The number of milliseconds to delay before execution. Resets with each keystroke."
+            },
+            "exclude": {
+              "type": "array",
+              "description": "Paths to exclude from indexing."
             }
           },
           "default": {
             "enabled": true,
             "liveIndexing": true,
-            "delay": 500
+            "delay": 500,
+            "exclude": [
+              ".terraform/**/*"
+            ]
           },
           "description": "Indexes all terraform sources to get live syntax errors, rename support, go to symbol, and much more..."
         },
@@ -179,6 +183,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.108",
+    "@types/minimatch": "^3.0.3",
     "@types/mocha": "^2.2.48",
     "@types/node": "^6.0.106",
     "gulp": "^3.9.1",
@@ -187,6 +192,7 @@
     "gulp-tslint": "^8.1.3",
     "gulp-typescript": "^4.0.2",
     "gulp-using": "^0.1.1",
+    "minimatch": "^3.0.4",
     "mocha": "^2.3.3",
     "pump": "^3.0.0",
     "tslint": "^5.9.1",

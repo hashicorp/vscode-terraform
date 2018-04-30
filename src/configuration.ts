@@ -1,16 +1,17 @@
 import * as vscode from 'vscode';
 
-interface TerraformIndexConfiguration {
+export interface TerraformIndexConfiguration {
   enabled: boolean;
   liveIndexing: boolean;
   liveIndexingDelay: number;
+  exclude: string[];
 }
 
-interface TerraformCodeLensConfiguration {
+export interface TerraformCodeLensConfiguration {
   enabled: boolean;
 }
 
-interface TerraformConfiguration {
+export interface TerraformConfiguration {
   formatOnSave: boolean;
   formatVarsOnSave?: boolean;
   path: string;

@@ -1,9 +1,11 @@
 
 import * as vscode from 'vscode';
+import * as minimatch from 'minimatch';
 import { Index } from './index';
 import { parseHcl, ParseError } from './hcl-hil';
 import { build } from './build';
 import { ErrorDiagnosticCollection } from '../extension';
+import { getConfiguration } from '../configuration';
 
 function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
   return vscode.workspace.openTextDocument(uri).then((doc) => {
@@ -13,7 +15,7 @@ function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
     }
 
     try {
-      index.indexDocument(doc);
+      index.indexDocument(doc, { exclude: getConfiguration().indexing.exclude });
     } catch (e) {
       let range = new vscode.Range(0, 0, 0, 300);
       let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);

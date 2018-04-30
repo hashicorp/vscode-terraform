@@ -1,24 +1,26 @@
 import * as vscode from 'vscode';
+
 import { execFile } from 'child_process';
 
-import { getConfiguration } from './configuration';
+import { getConfiguration, TerraformIndexConfiguration } from './configuration';
 import { ErrorDiagnosticCollection } from './extension';
 import { isTerraformDocument } from './helpers';
 import { Index } from './index';
 
 let runner;
 
-function liveIndexEnabledForDocument(doc: vscode.TextDocument): boolean {
+function liveIndexEnabledForDocument(cfg: TerraformIndexConfiguration, doc: vscode.TextDocument): boolean {
   if (!isTerraformDocument(doc)) {
     return false;
   }
 
-  let cfg = getConfiguration().indexing;
   return cfg.enabled && cfg.liveIndexing;
 }
 
 export function liveIndex(index: Index, e: vscode.TextDocumentChangeEvent) {
-  if (!liveIndexEnabledForDocument(e.document)) {
+  const cfg = getConfiguration().indexing;
+
+  if (!liveIndexEnabledForDocument(cfg, e.document)) {
     return;
   }
 
@@ -26,6 +28,6 @@ export function liveIndex(index: Index, e: vscode.TextDocumentChangeEvent) {
     clearTimeout(runner);
   }
   runner = setTimeout(function () {
-    index.indexDocument(e.document);
-  }, getConfiguration().indexing.liveIndexingDelay);
+    index.indexDocument(e.document, { exclude: cfg.exclude });
+  }, cfg.liveIndexingDelay);
 }
