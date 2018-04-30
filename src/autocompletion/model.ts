@@ -34,3 +34,11 @@ export interface ITerraformConfigAutoComplete {
     output: IFieldDef[];
     module: IFieldDef[];
 }
+
+export function findResourceFormat(sectionType: string, resourceType: string): IResourceFormat {
+    let types = allProviders[sectionType];
+    if (!types)
+        return null;
+
+    return types[resourceType];
+}

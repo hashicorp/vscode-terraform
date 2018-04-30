@@ -10,6 +10,7 @@ import { Section, Index } from './index';
 import { CodeLensProvider, showReferencesCommand } from './codelense';
 import { getConfiguration } from './configuration';
 import { HoverProvider } from './hover';
+import { DocumentLinkProvider } from './documentlink';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -47,7 +48,8 @@ export function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(index)),
         vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(index)),
         vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(index)),
-        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(index))
+        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(index)),
+        vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(index))
     );
 
     if (getConfiguration().codelens.enabled) {
