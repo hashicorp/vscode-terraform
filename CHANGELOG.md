@@ -1,3 +1,9 @@
+# 1.0.3
+
+## New Features
+- Support region for code-folding (`#region`, `#endregion`) (closes #63)
+- Add document links to the official terraform documentation (closes #68)
+
 # 1.0.2
 
 ## New Features

@@ -141,3 +141,7 @@ Press `F2` to automatically rename a variable and its usages.
 ### CodeLens support
 
 ![CodeLens shows number of references](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-codelens-references.png)
+
+### Document Link support
+
+![Click on resource type to go to documentation]((https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-document-link.png)
