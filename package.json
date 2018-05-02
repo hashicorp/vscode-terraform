@@ -178,7 +178,7 @@
     "gulp": "gulp",
     "vscode:prepublish": "npm install --no-save && npm run gulp",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test",
+    "test": "CODE_TESTS_WORKSPACE=templates node ./node_modules/vscode/bin/test",
     "publish": "npm run clean && vsce publish"
   },
   "devDependencies": {
