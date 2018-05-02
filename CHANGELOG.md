@@ -1,17 +1,26 @@
+# 1.0.5
+
+## Fixes
+
+- Correctly parse references to list and map variables as well as references in nested expressions (Closes #75)
+
 # 1.0.4
 
 ## Fixes
+
 - Correctly add `minimatch` to dependencies (Closes #74)
 
 # 1.0.3
 
 ## New Features
+
 - Support region for code-folding (`#region`, `#endregion`) (closes #63)
 - Add document links to the official terraform documentation (closes #68)
 
 # 1.0.2
 
 ## New Features
+
 - CodeLens contribution can be disabled via configuration (closes #73)
 - Make it possible to exclude paths from indexing (by default excludes `.terraform`, closes #72)
 
