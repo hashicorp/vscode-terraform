@@ -60,8 +60,15 @@ function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Itera
             let location = new vscode.Location(uri, range);
             let reference = new Reference(expr.Name, location, currentSection);
             yield reference;
-        } else if (expr.Args) {
-            walkHil(uri, expr.Args as any[], currentSection);
+        }
+        if (expr.Key) {
+            yield* walkHil(uri, [expr.Key], currentSection);
+        }
+        if (expr.Target) {
+            yield* walkHil(uri, [expr.Target], currentSection);
+        }
+        if (expr.Args) {
+            yield* walkHil(uri, expr.Args as any[], currentSection);
         }
     }
 }

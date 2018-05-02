@@ -45,7 +45,7 @@ suite("Index Tests", () => {
             assert.deepEqual(index.sections[0].nameLocation, nameLocation, "name location");
         });
 
-        test("Collects references", () => {
+        test("Collects string references", () => {
             const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region}" }');
 
             let index = build.build(uri, ast);
@@ -64,6 +64,78 @@ suite("Index Tests", () => {
             assert.equal(r.location.range.start.character, 53);
             assert.equal(r.location.range.end.line, 0);
             assert.equal(r.location.range.end.character, 63);
+        });
+
+        test("Collects map references", () => {
+            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region["key"]}" }');
+
+            let index = build.build(uri, ast);
+
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "resource");
+
+            assert.equal(s.references.length, 1);
+
+            let r = s.references[0];
+            assert.equal(r.type, "variable");
+            assert.equal(r.parts[0], "region");
+            assert.equal(r.location.range.start.line, 0);
+            assert.equal(r.location.range.start.character, 53);
+            assert.equal(r.location.range.end.line, 0);
+            assert.equal(r.location.range.end.character, 63);
+        });
+
+        test("Collects list references", () => {
+            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[0]}" }');
+
+            let index = build.build(uri, ast);
+
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "resource");
+
+            assert.equal(s.references.length, 1);
+
+            let r = s.references[0];
+            assert.equal(r.type, "variable");
+            assert.equal(r.parts[0], "region");
+            assert.equal(r.location.range.start.line, 0);
+            assert.equal(r.location.range.start.character, 53);
+            assert.equal(r.location.range.end.line, 0);
+            assert.equal(r.location.range.end.character, 63);
+        });
+
+        test("Collects nested references", () => {
+            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[lookup(var.map, "key")]}" }');
+
+            let index = build.build(uri, ast);
+
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "resource");
+
+            assert.equal(s.references.length, 2);
+
+            let r = s.references[1];
+            assert.equal(r.type, "variable");
+            assert.equal(r.parts[0], "region");
+            assert.equal(r.location.range.start.line, 0);
+            assert.equal(r.location.range.start.character, 53);
+            assert.equal(r.location.range.end.line, 0);
+            assert.equal(r.location.range.end.character, 63);
+
+            let m = s.references[0];
+            assert.equal(m.type, "variable");
+            assert.equal(m.parts[0], "map");
+            assert.equal(m.location.range.start.line, 0);
+            assert.equal(m.location.range.start.character, 71);
+            assert.equal(m.location.range.end.line, 0);
+            assert.equal(m.location.range.end.character, 78);
+
         });
 
         test("Associates references for the correct section", () => {
