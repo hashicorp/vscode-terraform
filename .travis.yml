@@ -17,8 +17,7 @@ before_install:
 
 install:
   - npm install --no-save
-  - npm run compile
 
 script:
-  - npm run compile
+  - npm run gulp
   - npm run test
