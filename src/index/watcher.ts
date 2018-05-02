@@ -15,7 +15,12 @@ function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
     }
 
     try {
-      index.indexDocument(doc, { exclude: getConfiguration().indexing.exclude });
+      if (!index.indexDocument(doc, { exclude: getConfiguration().indexing.exclude })) {
+        console.log(`Index not generated for: ${uri.toString()}`);
+      } else {
+        console.log(`Indexed ${uri.toString()}`);
+      }
+
     } catch (e) {
       let range = new vscode.Range(0, 0, 0, 300);
       let diagnostics = new vscode.Diagnostic(range, `Unhandled error parsing document: ${e}`, vscode.DiagnosticSeverity.Error);
@@ -34,6 +39,7 @@ export function createWorkspaceWatcher(index: Index): vscode.FileSystemWatcher {
 }
 
 export function initialCrawl(index: Index): Thenable<vscode.Uri[]> {
+  console.log("Crawling workspace for terraform files...");
   return vscode.workspace.findFiles("**/*.{tf,tfvars}", "")
     .then((uris) => {
       return vscode.window.withProgress({
