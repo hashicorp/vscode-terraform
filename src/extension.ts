@@ -36,6 +36,7 @@ export function activate(ctx: vscode.ExtensionContext) {
             showReferencesCommand(index, section);
         }),
         vscode.commands.registerCommand('terraform.reindex', () => {
+            index.clear();
             if (getConfiguration().indexing.enabled) {
                 initialCrawl(index);
             }

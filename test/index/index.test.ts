@@ -148,6 +148,17 @@ suite("Index Tests", () => {
             assert.equal(results[0].name, "bucket");
         });
 
+        test("clear clears", () => {
+            let index = new Index(a, b);
+
+            assert.notEqual(index.query("ALL_FILES").length, 0);
+
+            // TODO: check callback aswell
+            index.clear();
+
+            assert.equal(index.query("ALL_FILES").length, 0);
+        });
+
         suite("References", () => {
             let [astC, errorC] = parseHcl(`resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
             let [astD, errorD] = parseHcl(`resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);

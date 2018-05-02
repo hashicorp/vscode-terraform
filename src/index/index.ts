@@ -236,6 +236,13 @@ export class Index {
         this.eventEmitter.fire();
     }
 
+    clear(silent: boolean = true) {
+        this.Files.clear();
+        this.Sections.clear();
+        if (!silent)
+            this.eventEmitter.fire();
+    }
+
     get(uri: vscode.Uri): FileIndex | null {
         return this.Files.get(uri.toString());
     }
