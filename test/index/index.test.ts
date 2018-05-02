@@ -159,6 +159,17 @@ suite("Index Tests", () => {
             assert.equal(index.query("ALL_FILES").length, 0);
         });
 
+        test("does not index documents from excluded paths", async () => {
+            let index = new Index;
+
+            let base = vscode.workspace.workspaceFolders[0].uri;
+            let doc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`${base.toString()}/template.tf`));
+
+            assert.equal(index.indexDocument(doc, { exclude: ["*"] }), null, "should not index document when all paths are excluded");
+
+            assert.notEqual(index.indexDocument(doc), null, "should index doc");
+        });
+
         suite("References", () => {
             let [astC, errorC] = parseHcl(`resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
             let [astD, errorD] = parseHcl(`resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
