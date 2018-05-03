@@ -14,37 +14,46 @@ export class HoverProvider implements vscode.HoverProvider {
     if (!section)
       return new vscode.Hover(new vscode.MarkdownString(`Unknown target \`${reference.targetId}\``), reference.location.range);
 
-    if (section.sectionType !== "variable")
-      return null;
-
-    let defaultValueNode = findValue(section.node, "default");
-    if (!defaultValueNode)
-      return new vscode.Hover("no default specified", reference.location.range);
-
-    let defaultString = "";
-
-    // guess type (ignore type= key because it might be missing anyway)
-    if (defaultValueNode.List && (defaultValueNode.List as AstList).Items) {
-      // map
-      let map = getValue(defaultValueNode, { stripQuotes: true }) as Map<string, string>;
-      let pairs = [...map.entries()].map((v) => v.map((i) => `\`${i}\``).join(' = ')).map((i) => ` - ${i}`);
-      if (pairs.length === 0)
-        defaultString = "default: *empty map*";
-      else
-        defaultString = "default:\n" + pairs.join("\n");
-    } else if (defaultValueNode.List) {
-      // list
-      let list = getValue(defaultValueNode, { stripQuotes: true }) as string[];
-      if (list.length === 0)
-        defaultString = "default: *empty list*";
-      else
-        defaultString = "default:\n" + list.map((i, idx) => `${idx}. \`${i}\``).join("\n");
+    let valuePath = reference.valuePath();
+    if (section.sectionType === "variable") {
+      // valuePath should actually be empty for variables
+      valuePath = ["default"];
     } else {
-      // string
-      defaultString = getStringValue(defaultValueNode, "<failed to extract value>", { stripQuotes: true });
-      defaultString = `default: \`${defaultString}\``;
+      // we need an attribute to read and it cannot be a splat
+      if (valuePath.length === 0 || valuePath[0] === "*") {
+        return null;
+      }
     }
 
-    return new vscode.Hover(new vscode.MarkdownString(defaultString), reference.location.range);
+    // for now only support single level value extraction
+    let valueNode = findValue(section.node, valuePath[0]);
+    if (!valueNode)
+      return new vscode.Hover(`\`${valuePath[0]}\` not specified`, reference.location.range);
+
+    let formattedString = "";
+
+    // guess type (ignore type= key because it might be missing anyway)
+    if (valueNode.List && (valueNode.List as AstList).Items) {
+      // map
+      let map = getValue(valueNode, { stripQuotes: true }) as Map<string, string>;
+      let pairs = [...map.entries()].map((v) => v.map((i) => `\`${i}\``).join(' = ')).map((i) => ` - ${i}`);
+      if (pairs.length === 0)
+        formattedString = `${valuePath[0]}: *empty map*`;
+      else
+        formattedString = `${valuePath[0]}:\n` + pairs.join("\n");
+    } else if (valueNode.List) {
+      // list
+      let list = getValue(valueNode, { stripQuotes: true }) as string[];
+      if (list.length === 0)
+        formattedString = `${valuePath[0]}: *empty list*`;
+      else
+        formattedString = `${valuePath[0]}:\n` + list.map((i, idx) => `${idx}. \`${i}\``).join("\n");
+    } else {
+      // string
+      formattedString = getStringValue(valueNode, "<failed to extract value>", { stripQuotes: true });
+      formattedString = `${valuePath[0]}: \`${formattedString}\``;
+    }
+
+    return new vscode.Hover(new vscode.MarkdownString(formattedString), reference.location.range);
   }
 }

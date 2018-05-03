@@ -1,5 +1,9 @@
 # 1.0.5
 
+## New Features
+
+- The Hover now shows values of more references (previously only variable `default` were shown)
+
 ## Fixes
 
 - Correctly parse references to list and map variables as well as references in nested expressions (Closes #75)
