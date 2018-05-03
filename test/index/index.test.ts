@@ -48,6 +48,16 @@ suite("Index Tests", () => {
             assert.equal(s.length, 1);
             assert.equal(s[0].name, "bucket");
         });
+
+        test("Returns correct valuePath for resources", () => {
+            let r = new Reference("aws_s3_bucket.bucket.arn", null, null);
+            assert.deepEqual(r.valuePath(), ["arn"]);
+        });
+
+        test("Returns correct valuePath for data", () => {
+            let r = new Reference("data.template_file.template.rendered", null, null);
+            assert.deepEqual(r.valuePath(), ["rendered"]);
+        });
     });
 
     suite("Section tests", () => {

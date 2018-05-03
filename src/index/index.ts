@@ -181,6 +181,14 @@ export class Reference {
             name: this.parts[0]
         }
     }
+
+    valuePath(): string[] {
+        if (this.type === "data") {
+            return this.parts.slice(2);
+        }
+
+        return this.parts.slice(1);
+    }
 }
 
 export class FileIndex {
