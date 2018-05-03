@@ -55,6 +55,11 @@ function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Itera
     for (let expr of exprs) {
         if (expr.Name && expr.Posx) {
             let name = expr.Name as string;
+
+            // for now ignore self. and count.
+            if (name.startsWith("self.") || name.startsWith("count.")) {
+                return;
+            }
             let range = new vscode.Range(expr.Posx.Line - 1, expr.Posx.Column - 1,
                 expr.Posx.Line - 1, expr.Posx.Column - 1 + name.length);
             let location = new vscode.Location(uri, range);

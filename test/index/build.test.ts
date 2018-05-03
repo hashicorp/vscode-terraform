@@ -135,7 +135,19 @@ suite("Index Tests", () => {
             assert.equal(m.location.range.start.character, 71);
             assert.equal(m.location.range.end.line, 0);
             assert.equal(m.location.range.end.character, 78);
+        });
 
+        test("Ignores self.* and count.* references", () => {
+            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${self.value}" cool_dude = "${count.index}" }');
+
+            let index = build.build(uri, ast);
+
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "resource");
+
+            assert.equal(s.references.length, 0);
         });
 
         test("Associates references for the correct section", () => {

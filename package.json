@@ -179,7 +179,8 @@
     "vscode:prepublish": "npm install --no-save && npm run gulp",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "CODE_TESTS_WORKSPACE=templates node ./node_modules/vscode/bin/test",
-    "publish": "npm run clean && vsce publish"
+    "publish": "npm run clean && vsce publish",
+    "package": "npm run clean && vsce package"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.108",
