@@ -206,6 +206,7 @@
     "vscode": "^1.1.14"
   },
   "dependencies": {
+    "graphlib-dot": "^0.6.2",
     "lodash": "^4.17.10",
     "minimatch": "^3.0.4",
     "viz.js": "^1.8.1"

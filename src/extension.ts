@@ -50,7 +50,16 @@ export function activate(ctx: vscode.ExtensionContext) {
             }
         }),
         vscode.commands.registerCommand('terraform.preview-graph', () => {
-            graphCommand(graphProvider);
+            graphCommand(index, graphProvider);
+        }),
+        vscode.commands.registerCommand('terraform.navigate-to-section', async (args: { targetId: string }) => {
+            let section = index.section(args.targetId);
+            if (!section) {
+                await vscode.window.showErrorMessage(`No section with id ${args.targetId}`);
+                return;
+            }
+
+            await vscode.window.showTextDocument(section.location.uri, { selection: section.location.range });
         }),
 
         // providers

@@ -255,6 +255,10 @@ export class Index {
         return this.Files.get(uri.toString());
     }
 
+    section(id: string): Section | null {
+        return this.Sections.get(id);
+    }
+
     query(uri: "ALL_FILES" | vscode.Uri, options?: QueryOptions): Section[] {
         if (options && (options.name_position || options.position) && uri === "ALL_FILES") {
             throw "Cannot use ALL_FILES when querying for position or name_position";
