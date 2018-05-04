@@ -1,7 +1,12 @@
 import * as vscode from 'vscode';
+
 import { runTerraform } from './runner';
 import { getConfiguration } from './configuration';
 import { Index, Section } from './index';
+import { outputChannel } from './extension';
+import { readFile } from 'fs';
+import { read } from './helpers';
+import { loadTemplate } from './template';
 
 const Viz = require('viz.js');
 const Dot = require('graphlib-dot');
@@ -15,63 +20,21 @@ export class GraphContentProvider implements vscode.TextDocumentContentProvider 
 
   onDidChange = this._onDidChange.event;
 
-  provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
+  constructor(private ctx: vscode.ExtensionContext) {}
+
+  async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
+    let template = await read(this.ctx.asAbsolutePath('out/src/ui/graph.html'));
+
     let svgDoc: string = Viz(this.dot);
     let start = svgDoc.indexOf('<svg');
     let end = svgDoc.indexOf('</svg>', start);
 
     let element = svgDoc.substr(start, end - start + 6);
 
-    return `<!DOCTYPE html>
-<html>
-<body>
-<h1>Graph (${this.type})</h1>
-${element}
-<a style="display: none" id="#hidden-link"></a>
-</body>
-<script>
-    // body style
-    let style = window.getComputedStyle(document.querySelector('body'), null);
-    console.log(\`color: \${style.color}\`);
-    console.log(\`fontSize: \${style.fontSize}\`);
-    console.log(\`fontFamily: \${style.fontFamily}\`);
-
-    // change style
-    let texts = document.querySelectorAll('text');
-    for (let text of texts) {
-      text.style.fontFamily = style.fontFamily;
-      text.style.fontSize = style.fontSize;
-      text.style.fill = style.color;
-    }
-
-    // link style
-    let linkStyle = window.getComputedStyle(document.getElementById('#hidden-link'), null);
-
-    let anchors = document.querySelectorAll('a');
-    for (let anchor of anchors) {
-      let label = anchor.querySelector('text');
-      label.style.fill = linkStyle.color;
-      label.style.textDecoration = 'underline';
-
-      console.log(anchor.href, anchor.style.color, linkStyle.color);
-      anchor.addEventListener('click', (event) => {
-        const target = event.currentTarget;
-        const uri = target.attributes['xlink:href'].value;
-
-        const parts = uri.split(':', 2);
-
-        if (parts[0] === 'terraform-section' && parts[1] !== '') {
-          const sectionId = parts[1];
-          const args = { targetId: sectionId };
-          window.parent.postMessage({
-            command: 'did-click-link',
-            data: 'command:terraform.navigate-to-section?' + encodeURIComponent(JSON.stringify(args))
-          }, 'file://');
-        }
-      });
-    }
-</script>
-</html>`;
+    return loadTemplate(this.ctx.asAbsolutePath('out/src/ui/graph.html'), {
+      type: this.type,
+      element: element
+    });
   }
 
   update(dot: string, type: string) {
@@ -107,14 +70,33 @@ export async function graphCommand(index: Index, provider: GraphContentProvider)
     'validate', 'input', 'refresh'];
   let type = await vscode.window.showQuickPick(types, { placeHolder: "Choose graph type" });
 
-  let dot = await runTerraform(["graph", "-draw-cycles", `-type=${type}`, getConfiguration().templateDirectory]);
+  let workspaceFolder = vscode.workspace.workspaceFolders[0];
+  if (workspaceFolder.uri.scheme !== "file") {
+    vscode.window.showErrorMessage("Workspace folder needs to use the file:/// uri scheme.");
+    return;
+  }
 
-  let processedDot = replaceNodesWithLinks(index, dot);
+  let templateDirectory = workspaceFolder.uri.with({
+    path: workspaceFolder.uri.path // + '/' + getConfiguration().templateDirectory
+  });
 
-  // make background transparent
-  processedDot = processedDot.replace('digraph {\n', 'digraph {\n  bgcolor="transparent";\n');
+  try {
+    let dot = await runTerraform(["graph", "-draw-cycles", `-type=${type}`, templateDirectory.fsPath]);
 
-  provider.update(processedDot, type);
+    let processedDot = replaceNodesWithLinks(index, dot);
 
-  await vscode.commands.executeCommand('vscode.previewHtml', graphPreviewUri, vscode.ViewColumn.Active, 'Terraform Graph');
+    // make background transparent
+    processedDot = processedDot.replace('digraph {\n', 'digraph {\n  bgcolor="transparent";\n');
+
+    provider.update(processedDot, type);
+
+    await vscode.commands.executeCommand('vscode.previewHtml', graphPreviewUri, vscode.ViewColumn.Active, 'Terraform Graph');
+  } catch (e) {
+    outputChannel.appendLine('Generating graph preview failed:');
+    let lines = e.split(/[\r?\n]+/);
+    for (let line of lines)
+      outputChannel.appendLine('\t' + line);
+    outputChannel.show();
+    await vscode.window.showErrorMessage(`Error generating graph, see output view.`);
+  }
 }

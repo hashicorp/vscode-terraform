@@ -31,7 +31,7 @@ export function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider)
     );
 
-    let graphProvider = new GraphContentProvider;
+    let graphProvider = new GraphContentProvider(ctx);
     ctx.subscriptions.push(
         vscode.workspace.registerTextDocumentContentProvider('terraform-graph', graphProvider)
     );

@@ -66,6 +66,15 @@ gulp.task('copy-autocompletion-data', () =>
 );
 
 //
+// copy templates
+//
+gulp.task('copy-html-templates', () => {
+    gulp.src('src/ui/*.html')
+        .pipe(using({ prefix: 'Bundling html templates', filesize: true }))
+        .pipe(gulp.dest('out/src/ui'))
+});
+
+//
 // tslint
 //
 gulp.task('lint', () =>
@@ -89,4 +98,4 @@ gulp.task('compile', () =>
 //
 // default
 //
-gulp.task('default', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'lint', 'compile']);
+gulp.task('default', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'lint', 'compile']);
