@@ -34,9 +34,9 @@ EOF
 }
 
 resource "aws_s3_bucket" "agent_bucket" {
-  bucket   = "${var.stage_test}-${var.region.test}-${var.stage}mybucket"
+  bucket   = "${var.stage_test}-${var.region}-${var.stage}mybucket"
   acl      = "private"
-  property = "${var.foo-bar.variable}"
+  property = "${var.foo-bar}"
 
   smurf = <<HEREDOC
 Lorem ${var.ipsum} dolor sit amet, consectetur adipiscing elit,
