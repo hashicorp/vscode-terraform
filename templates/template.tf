@@ -13,14 +13,14 @@ variable "aws_test_var" {
 
   default = {
     string   = "string"
-    variable = "${var.variable}"
+    variable = "$${var.variable}"
     number   = 2
     bool     = true
     list     = []
   }
 }
 
-variable "aws_test_var" {
+variable "aws_test_var_2" {
   description = "test variable"
 
   default = <<EOF
@@ -33,10 +33,16 @@ variable "aws_test_var" {
 EOF
 }
 
+variable "ipsum" {
+  default = {
+    dolor = "dolor"
+  }
+}
+
 resource "aws_s3_bucket" "agent_bucket" {
-  bucket   = "${var.stage_test}-${var.region}-${var.stage}mybucket"
-  acl      = "private"
-  property = "${var.foo-bar}"
+  bucket = "${var.stage}-${var.region}-${var.stage}mybucket"
+  acl    = "private"
+
 
   smurf = <<HEREDOC
 Lorem ${var.ipsum} dolor sit amet, consectetur adipiscing elit,
