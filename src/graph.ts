@@ -11,6 +11,7 @@ export let graphPreviewUri = vscode.Uri.parse('terraform-graph://authority/terra
 export class GraphContentProvider implements vscode.TextDocumentContentProvider {
   private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
   private dot: string = "";
+  private type: string = "";
 
   onDidChange = this._onDidChange.event;
 
@@ -24,11 +25,35 @@ export class GraphContentProvider implements vscode.TextDocumentContentProvider 
     return `<!DOCTYPE html>
 <html>
 <body>
+<h1>Graph (${this.type})</h1>
 ${element}
+<a style="display: none" id="#hidden-link"></a>
 </body>
 <script>
+    // body style
+    let style = window.getComputedStyle(document.querySelector('body'), null);
+    console.log(\`color: \${style.color}\`);
+    console.log(\`fontSize: \${style.fontSize}\`);
+    console.log(\`fontFamily: \${style.fontFamily}\`);
+
+    // change style
+    let texts = document.querySelectorAll('text');
+    for (let text of texts) {
+      text.style.fontFamily = style.fontFamily;
+      text.style.fontSize = style.fontSize;
+      text.style.fill = style.color;
+    }
+
+    // link style
+    let linkStyle = window.getComputedStyle(document.getElementById('#hidden-link'), null);
+
     let anchors = document.querySelectorAll('a');
     for (let anchor of anchors) {
+      let label = anchor.querySelector('text');
+      label.style.fill = linkStyle.color;
+      label.style.textDecoration = 'underline';
+
+      console.log(anchor.href, anchor.style.color, linkStyle.color);
       anchor.addEventListener('click', (event) => {
         const target = event.currentTarget;
         const uri = target.attributes['xlink:href'].value;
@@ -49,8 +74,9 @@ ${element}
 </html>`;
   }
 
-  update(dot: string) {
+  update(dot: string, type: string) {
     this.dot = dot;
+    this.type = type;
     this._onDidChange.fire();
   }
 }
@@ -77,15 +103,18 @@ function replaceNodesWithLinks(index: Index, dot: string): string {
 }
 
 export async function graphCommand(index: Index, provider: GraphContentProvider): Promise<void> {
-  try {
-    let dot = await runTerraform(["graph", "-draw-cycles", "-type=plan", getConfiguration().templateDirectory]);
+  const types = ['plan', 'plan-destroy', 'apply',
+    'validate', 'input', 'refresh'];
+  let type = await vscode.window.showQuickPick(types, { placeHolder: "Choose graph type" });
 
-    let processedDot = replaceNodesWithLinks(index, dot);
+  let dot = await runTerraform(["graph", "-draw-cycles", `-type=${type}`, getConfiguration().templateDirectory]);
 
-    provider.update(processedDot);
+  let processedDot = replaceNodesWithLinks(index, dot);
 
-    await vscode.commands.executeCommand('vscode.previewHtml', graphPreviewUri, vscode.ViewColumn.Active, 'Terraform Graph');
-  } catch (e) {
-    vscode.window.showErrorMessage(`Failed to do something: ${e}`);
-  }
+  // make background transparent
+  processedDot = processedDot.replace('digraph {\n', 'digraph {\n  bgcolor="transparent";\n');
+
+  provider.update(processedDot, type);
+
+  await vscode.commands.executeCommand('vscode.previewHtml', graphPreviewUri, vscode.ViewColumn.Active, 'Terraform Graph');
 }
