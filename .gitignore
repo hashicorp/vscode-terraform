@@ -5,3 +5,4 @@ out/
 .vscode-test
 npm-debug.log
 hcl-hil/*.js
+.terraform
