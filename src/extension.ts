@@ -11,6 +11,7 @@ import { CodeLensProvider, showReferencesCommand } from './codelense';
 import { getConfiguration } from './configuration';
 import { HoverProvider } from './hover';
 import { DocumentLinkProvider } from './documentlink';
+import { GraphContentProvider, graphCommand } from './graph';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -26,7 +27,14 @@ export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(ErrorDiagnosticCollection);
 
     let formattingProvider = new FormattingEditProvider;
-    vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider);
+    ctx.subscriptions.push(
+        vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider)
+    );
+
+    let graphProvider = new GraphContentProvider;
+    ctx.subscriptions.push(
+        vscode.workspace.registerTextDocumentContentProvider('terraform-graph', graphProvider)
+    );
 
     ctx.subscriptions.push(
         // push
@@ -40,6 +48,9 @@ export function activate(ctx: vscode.ExtensionContext) {
             if (getConfiguration().indexing.enabled) {
                 initialCrawl(index);
             }
+        }),
+        vscode.commands.registerCommand('terraform.preview-graph', () => {
+            graphCommand(graphProvider);
         }),
 
         // providers

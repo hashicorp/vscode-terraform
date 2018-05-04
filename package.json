@@ -22,7 +22,9 @@
   "activationEvents": [
     "onLanguage:terraform",
     "onCommand:terraform.validate",
-    "onCommand:terraform.lint"
+    "onCommand:terraform.lint",
+    "onCommand:terraform.reindex",
+    "onCommand:terraform.preview-graph"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -38,6 +40,10 @@
       {
         "command": "terraform.reindex",
         "title": "Terraform: Reindex terraform files"
+      },
+      {
+        "command": "terraform.preview-graph",
+        "title": "Terraform: Preview Graph"
       }
     ],
     "languages": [
@@ -201,6 +207,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.10",
-    "minimatch": "^3.0.4"
+    "minimatch": "^3.0.4",
+    "viz.js": "^1.8.1"
   }
 }
