@@ -1,19 +1,15 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import { parseHcl } from '../../src/index/hcl-hil';
-import * as build from '../../src/index/build';
-
 import * as vscode from 'vscode';
-import { Uri } from 'vscode';
+
+import { FileIndex } from '../../src/index';
 
 suite("Index Tests", () => {
     suite("Build Tests", () => {
         const uri = vscode.Uri.parse("untitled:file");
 
         test("Collects typed sections", () => {
-            const [ast, error] = parseHcl(`resource "aws_s3_bucket" "bucket" {}`);
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" {}`);
 
             assert.equal(index.sections.length, 1);
 
@@ -33,9 +29,7 @@ suite("Index Tests", () => {
         });
 
         test("Collects untyped sections", () => {
-            const [ast, error] = parseHcl(`variable "region" {}`);
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, `variable "region" {}`);
 
             assert.equal(index.sections.length, 1);
             assert.equal(index.sections[0].sectionType, "variable");
@@ -46,9 +40,7 @@ suite("Index Tests", () => {
         });
 
         test("Collects string references", () => {
-            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region}" }');
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region}" }');
 
             assert.equal(index.sections.length, 1);
 
@@ -67,9 +59,7 @@ suite("Index Tests", () => {
         });
 
         test("Collects map references", () => {
-            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region["key"]}" }');
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region["key"]}" }');
 
             assert.equal(index.sections.length, 1);
 
@@ -88,9 +78,7 @@ suite("Index Tests", () => {
         });
 
         test("Collects list references", () => {
-            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[0]}" }');
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[0]}" }');
 
             assert.equal(index.sections.length, 1);
 
@@ -109,9 +97,7 @@ suite("Index Tests", () => {
         });
 
         test("Collects nested references", () => {
-            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[lookup(var.map, "key")]}" }');
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[lookup(var.map, "key")]}" }');
 
             assert.equal(index.sections.length, 1);
 
@@ -138,9 +124,7 @@ suite("Index Tests", () => {
         });
 
         test("Ignores self.* and count.* references", () => {
-            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${self.value}" cool_dude = "${count.index}" }');
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${self.value}" cool_dude = "${count.index}" }');
 
             assert.equal(index.sections.length, 1);
 
@@ -151,9 +135,7 @@ suite("Index Tests", () => {
         });
 
         test("Associates references for the correct section", () => {
-            const [ast, error] = parseHcl('resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region}" } variable "region" {}');
-
-            let index = build.build(uri, ast);
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region}" } variable "region" {}');
 
             assert.equal(index.sections.length, 2);
 

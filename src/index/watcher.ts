@@ -2,8 +2,6 @@
 import * as vscode from 'vscode';
 import * as minimatch from 'minimatch';
 import { Index } from './index';
-import { parseHcl, ParseError } from './hcl-hil';
-import { build } from './build';
 import { ErrorDiagnosticCollection } from '../extension';
 import { getConfiguration } from '../configuration';
 

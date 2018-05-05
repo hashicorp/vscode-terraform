@@ -2,10 +2,8 @@
 import * as assert from 'assert';
 
 import * as vscode from 'vscode';
-import { Uri } from 'vscode';
 import { FileIndex, Index, Reference, Section } from '../../src/index/index';
 import { parseHcl } from '../../src/index/hcl-hil';
-import { build } from '../../src/index/build';
 
 const template =
     `
@@ -16,8 +14,7 @@ data "template_file" "template" {}
 
 suite("Index Tests", () => {
     suite("Reference Tests", () => {
-        const [ast, error] = parseHcl(template);
-        const index = build(null, ast);
+        const [index, error] = FileIndex.fromString(null, template);
 
         test("Handles variable references", () => {
             let r = new Reference("var.region", null, null);
@@ -94,8 +91,7 @@ suite("Index Tests", () => {
 
     suite("FileIndex Tests", () => {
         test("Returns all sections by default", () => {
-            let [ast, error] = parseHcl(template);
-            let index = build(null, ast);
+            let [index, error] = FileIndex.fromString(null, template);
 
             let all = [...index.query()];
 
@@ -104,8 +100,7 @@ suite("Index Tests", () => {
         });
 
         test("Returns only sections which match the name", () => {
-            let [ast, error] = parseHcl(template);
-            let index = build(null, ast);
+            let [index, error] = FileIndex.fromString(null, template);
 
             let r = [...index.query({ name: "uck" })];
 
@@ -114,8 +109,7 @@ suite("Index Tests", () => {
         });
 
         test("Returns only sections which match the type", () => {
-            let [ast, error] = parseHcl(template);
-            let index = build(null, ast);
+            let [index, error] = FileIndex.fromString(null, template);
 
             let r = [...index.query({ section_type: "resource" })];
 
@@ -124,8 +118,7 @@ suite("Index Tests", () => {
         });
 
         test("Returns only sections which match the type", () => {
-            let [ast, error] = parseHcl(template);
-            let index = build(null, ast);
+            let [index, error] = FileIndex.fromString(null, template);
 
             let r = [...index.query({ type: "aws_s3_bucket" })];
 
@@ -135,11 +128,8 @@ suite("Index Tests", () => {
     });
 
     suite("Index Tests", () => {
-        let [astA, errorA] = parseHcl(`resource "aws_s3_bucket" "bucket" {}`);
-        let [astB, errorB] = parseHcl(`variable "region" {}`);
-
-        let a = build(vscode.Uri.parse("a.tf"), astA);
-        let b = build(vscode.Uri.parse("b.tf"), astB);
+        let [a, errorA] = FileIndex.fromString(vscode.Uri.parse("a.tf"), `resource "aws_s3_bucket" "bucket" {}`);
+        let [b, errorB] = FileIndex.fromString(vscode.Uri.parse("b.tf"), `variable "region" {}`);
 
         test("query can return results for ALL files", () => {
             let index = new Index(a, b);
@@ -181,11 +171,8 @@ suite("Index Tests", () => {
         });
 
         suite("References", () => {
-            let [astC, errorC] = parseHcl(`resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
-            let [astD, errorD] = parseHcl(`resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
-
-            let c = build(vscode.Uri.parse("c.tf"), astC);
-            let d = build(vscode.Uri.parse("d.tf"), astD);
+            let [c, errorC] = FileIndex.fromString(vscode.Uri.parse("c.tf"), `resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
+            let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
 
             test("getReferences returns results for all files", () => {
                 let index = new Index(a, b, c, d);

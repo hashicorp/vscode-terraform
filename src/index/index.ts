@@ -205,6 +205,19 @@ export class FileIndex {
             if (s.match(options))
                 yield s;
     }
+
+    static fromString(uri: vscode.Uri, source: string): [FileIndex, vscode.Diagnostic] {
+        let [ast, error] = parseHcl(source);
+        if (error) {
+            let range = new vscode.Range(error.line, error.column, error.line, 300);
+            let message = error.message === "" ? "Parse error" : error.message;
+            let diagnostic = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
+
+            return [null, diagnostic];
+        }
+
+        return [build(uri, ast), null];
+    }
 }
 
 export interface IndexOptions {
@@ -300,20 +313,13 @@ export class Index {
             }
         }
 
-        let [ast, error] = parseHcl(document.getText());
-        if (error) {
-            let range = new vscode.Range(error.line, error.column, error.line, 300);
-            let message = error.message === "" ? "Parse error" : error.message;
-            let diagnostics = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
-
-            ErrorDiagnosticCollection.set(document.uri, [diagnostics]);
-
+        let [index, diagnostic] = FileIndex.fromString(document.uri, document.getText());
+        if (diagnostic) {
+            ErrorDiagnosticCollection.set(document.uri, [diagnostic]);
             return null;
         }
 
         ErrorDiagnosticCollection.set(document.uri, []);
-
-        let index = build(document.uri, ast);
         this.add(index);
         return index;
     }
