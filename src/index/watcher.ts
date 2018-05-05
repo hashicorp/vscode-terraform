@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import * as minimatch from 'minimatch';
 import { Index } from './index';
-import { ErrorDiagnosticCollection } from '../extension';
+import { ErrorDiagnosticCollection, outputChannel } from '../extension';
 import { getConfiguration } from '../configuration';
 
 function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
@@ -14,9 +14,9 @@ function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
 
     try {
       if (!index.indexDocument(doc, { exclude: getConfiguration().indexing.exclude })) {
-        console.log(`Index not generated for: ${uri.toString()}`);
+        outputChannel.appendLine(`terraform.crawler: Index not generated for: ${uri.toString()}`);
       } else {
-        console.log(`Indexed ${uri.toString()}`);
+        outputChannel.appendLine(`terraform.crawler: Indexed ${uri.toString()}`);
       }
 
     } catch (e) {
@@ -37,7 +37,7 @@ export function createWorkspaceWatcher(index: Index): vscode.FileSystemWatcher {
 }
 
 export function initialCrawl(index: Index): Thenable<vscode.Uri[]> {
-  console.log("Crawling workspace for terraform files...");
+  outputChannel.appendLine("terraform.crawler: Crawling workspace for terraform files...");
   return vscode.workspace.findFiles("**/*.{tf,tfvars}", "")
     .then((uris) => {
       return vscode.window.withProgress({
