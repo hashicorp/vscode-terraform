@@ -49,6 +49,15 @@ export function activate(ctx: vscode.ExtensionContext) {
                 initialCrawl(index);
             }
         }),
+        vscode.commands.registerCommand('terraform.index-document', (uri: vscode.Uri): boolean => {
+            let doc = vscode.workspace.textDocuments.find((d) => d.uri.toString() === uri.toString());
+            if (!doc) {
+                vscode.window.showErrorMessage(`No open document with uri ${uri.toString()} found`);
+                return false;
+            }
+
+            return !!index.indexDocument(doc);
+        }),
         vscode.commands.registerCommand('terraform.preview-graph', () => {
             graphCommand(index, graphProvider);
         }),
