@@ -18,7 +18,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
   constructor(private index: Index) { }
 
   private getVariables(position: vscode.Position, includePrefix: boolean, match?: string): vscode.CompletionItem[] {
-    return this.index.query("ALL_FILES", { type: "variable", name: match }).map((variable) => {
+    return this.index.query("ALL_FILES", { section_type: "variable", name: match }).map((variable) => {
       let item = new vscode.CompletionItem(variable.name);
       item.kind = vscode.CompletionItemKind.Variable;
       if (includePrefix) {
@@ -30,7 +30,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
   }
 
   private getOutputs(match?: string): vscode.CompletionItem[] {
-    return this.index.query("ALL_FILES", { type: "output", name: match }).map((output) => {
+    return this.index.query("ALL_FILES", { section_type: "output", name: match }).map((output) => {
       let item = new vscode.CompletionItem(output.name);
       item.kind = vscode.CompletionItemKind.Property;
       return item;
