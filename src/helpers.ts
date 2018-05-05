@@ -16,3 +16,13 @@ export function read(path: string): Promise<string> {
     });
   });
 }
+
+export function uriFromRelativePath(path: string, folder?: vscode.WorkspaceFolder): vscode.Uri {
+  if (!folder) {
+    folder = vscode.workspace.workspaceFolders[0];
+  }
+
+  return folder.uri.with({
+    path: [folder.uri.path, path].join('/')
+  });
+}
