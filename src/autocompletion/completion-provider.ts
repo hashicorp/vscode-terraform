@@ -2,7 +2,11 @@ import * as vscode from 'vscode';
 import * as _ from "lodash"
 
 import { terraformConfigAutoComplete, allProviders, IFieldDef } from './model';
-import { Index } from '../index';
+import { Index, Section, QueryOptions } from '../index';
+import { backwardsSearch } from '../helpers';
+import { InterpolationFunctionDefinition, GetKnownFunctions } from './builtin-functions';
+import { parseHcl } from '../index/hcl-hil';
+import { AstPosition, getTokenAtPosition } from '../index/ast';
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
@@ -17,39 +21,110 @@ const interfaces = ["resource", "data"];
 export class CompletionProvider implements vscode.CompletionItemProvider {
   constructor(private index: Index) { }
 
-  private getVariables(position: vscode.Position, includePrefix: boolean, match?: string): vscode.CompletionItem[] {
-    return this.index.query("ALL_FILES", { section_type: "variable", name: match }).map((variable) => {
-      let item = new vscode.CompletionItem(variable.name);
-      item.kind = vscode.CompletionItemKind.Variable;
-      if (includePrefix) {
-        let range = new vscode.Range(position, position);
-        item.textEdit = new vscode.TextEdit(range, `var.${variable.name}`);
-      }
-      return item;
-    });
+  private sectionToCompletionItem(section: Section, needInterpolation: boolean, range?: vscode.Range): vscode.CompletionItem {
+    let item = new vscode.CompletionItem(section.id());
+    switch (section.sectionType) {
+      case "variable": item.kind = vscode.CompletionItemKind.Variable; break;
+      case "data": item.kind = vscode.CompletionItemKind.Struct; break;
+      case "resource": item.kind = vscode.CompletionItemKind.Class; break;
+    }
+    if (needInterpolation) {
+      item.insertText = '${' + item.label + '}';
+    }
+    if (range) {
+      item.range = range;
+    }
+    return item;
   }
 
-  private getOutputs(match?: string): vscode.CompletionItem[] {
-    return this.index.query("ALL_FILES", { section_type: "output", name: match }).map((output) => {
-      let item = new vscode.CompletionItem(output.name);
-      item.kind = vscode.CompletionItemKind.Property;
-      return item;
+  private knownFunctionToCompletionItem(fd: InterpolationFunctionDefinition, needInterpolation: boolean, range?: vscode.Range): vscode.CompletionItem {
+    let prototype = fd.name + '(' + fd.parameters.join(", ") + ')';
+    let item = new vscode.CompletionItem(prototype);
+    item.kind = vscode.CompletionItemKind.Function;
+    let snippet = new vscode.SnippetString();
+    if (needInterpolation) {
+      snippet.appendText('${');
+    }
+    snippet.appendText(fd.name);
+    snippet.appendText('(');
+    fd.parameters.forEach((parameter, index, array) => {
+      snippet.appendPlaceholder(parameter);
+      if (index !== array.length - 1)
+        snippet.appendText(', ');
     });
+    snippet.appendText(')');
+    if (needInterpolation) {
+      snippet.appendText('}');
+    }
+    item.insertText = snippet;
+    if (range) {
+      item.range = range;
+    }
+    return item;
+  }
+
+  private interpolationCompletions(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] | undefined {
+    let beforeRange = new vscode.Range(new vscode.Position(position.line, 0), position);
+    let before = document.getText(beforeRange);
+
+    let start = before.lastIndexOf("${");
+    let needInterpolation = false; // do we need to insert ${ aswell?
+    let interpolation = "";
+    if (start === -1) {
+      if (before[before.length - 1] === '"') {
+        needInterpolation = true;
+        interpolation = "";
+      } else {
+        return [];
+      }
+    } else {
+      // everything except ${
+      interpolation = before.substring(start + 2);
+    }
+
+    // we are inside a string interpolation
+    let filterStartPos = backwardsSearch(interpolation, (ch) => '({[ -+/]})'.indexOf(ch) !== -1);
+    if (filterStartPos === -1)
+      filterStartPos = 0; // use entire string after ${ as filter
+    else
+      filterStartPos += 1; // do not include matching character
+
+    let filter = interpolation.substring(filterStartPos).trim();
+    if (filter.length === 0) {
+      return this.index.query("ALL_FILES").map((s) => {
+        return this.sectionToCompletionItem(s, needInterpolation);
+      }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation)));
+    }
+
+    let replaceRange = new vscode.Range(
+      position.translate(0, -filter.length),
+      document.getWordRangeAtPosition(position).end
+    );
+    return this.index.query("ALL_FILES", { id: filter }).map((s) => {
+      return this.sectionToCompletionItem(s, needInterpolation, replaceRange);
+    }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation, replaceRange)));
   }
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
-    let range = new vscode.Range(new vscode.Position(position.line, 0), position);
-    let before = document.getText(range);
-
-    if (before.endsWith("var.")) {
-      return this.getVariables(position, false);
-    } else if (before.endsWith("${")) {
-      let variables = this.getVariables(position, true);
-      let outputs = this.getOutputs();
-
-      return variables.concat(outputs);
+    // figure out if we are inside a string
+    const [ast, error] = parseHcl(document.getText());
+    if (ast) {
+      let offset1 = document.offsetAt(position);
+      let pos: AstPosition = {
+        Line: position.line + 1,
+        Column: position.character + 1,
+        Offset: 0,
+        Filename: ''
+      };
+      let token = getTokenAtPosition(ast, pos);
+      if (token) {
+        let interpolationCompletions = this.interpolationCompletions(document, position);
+        if (interpolationCompletions.length !== 0)
+          return interpolationCompletions;
+      }
     }
 
+    // TODO: refactor to use ast here aswell
     let lineText = document.lineAt(position.line).text;
     let lineTillCurrentPosition = lineText.substr(0, position.character);
 
