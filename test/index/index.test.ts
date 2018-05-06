@@ -125,6 +125,15 @@ suite("Index Tests", () => {
             assert.equal(r.length, 1);
             assert.equal(r[0].name, "bucket");
         });
+
+        test("Returns only sections which match the id", () => {
+            let [index, error] = FileIndex.fromString(null, template);
+
+            let r = [...index.query({ id: "aws_s3_bucket.bucket" })];
+
+            assert.equal(r.length, 1);
+            assert.equal(r[0].name, "bucket");
+        });
     });
 
     suite("Index Tests", () => {

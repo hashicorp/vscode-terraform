@@ -13,6 +13,7 @@ export interface QueryOptions {
     type?: string;
     name_position?: vscode.Position;
     position?: vscode.Position;
+    id?: string;
 }
 
 export interface ReferenceQueryOptions {
@@ -66,6 +67,9 @@ export class Section extends vscode.SymbolInformation {
     match(options?: QueryOptions): boolean {
         if (!options)
             return true;
+
+        if (options.id && !this.id().match(options.id))
+            return false;
 
         if (options.section_type && this.sectionType !== options.section_type)
             return false;
