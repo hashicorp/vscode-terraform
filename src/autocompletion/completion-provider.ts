@@ -7,16 +7,12 @@ import { backwardsSearch } from '../helpers';
 import { InterpolationFunctionDefinition, GetKnownFunctions } from './builtin-functions';
 import { parseHcl } from '../index/hcl-hil';
 import { AstPosition, getTokenAtPosition } from '../index/ast';
+import { SectionCompletions } from './section-completions';
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const nestedRegexes: RegExp[] = [/\w[A-Za-z0-9\-_]*(\s*){/, /\w[A-Za-z0-9\-_]*(\s*)=(\s*){/];
 const propertyExp = new RegExp("^([\\w_-]+)$");
-
-const variablesAndFields = ["variable", "output"];
-const classes = ["locals"];
-const modules = ["module", "provider"];
-const interfaces = ["resource", "data"];
 
 export class CompletionProvider implements vscode.CompletionItemProvider {
   constructor(private index: Index) { }
@@ -250,24 +246,14 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
   }
 
   private getFilteredTerraformTypes(line: string): vscode.CompletionItem[] {
-    let items = this.getMergedTerraformTypes();
     if (line.length === 0) {
-      return items;
+      return SectionCompletions;
     } else {
-      return items.filter(v => v.label.indexOf(line) === 0);
+      return SectionCompletions.filter(v => v.label.indexOf(line) === 0);
     }
   }
 
   private isTerraformTypes(line: string): boolean {
-    let items = this.getMergedTerraformTypes();
-    return items.findIndex(v => v.label.indexOf(line) === 0) !== -1;
-  }
-
-  private getMergedTerraformTypes(): vscode.CompletionItem[] {
-    let items = this.getAutoCompletion(variablesAndFields, vscode.CompletionItemKind.Variable);
-    items.push(...this.getAutoCompletion(classes, vscode.CompletionItemKind.Class));
-    items.push(...this.getAutoCompletion(modules, vscode.CompletionItemKind.Module));
-    items.push(...this.getAutoCompletion(interfaces, vscode.CompletionItemKind.Interface));
-    return items;
+    return SectionCompletions.findIndex(v => v.label.indexOf(line) === 0) !== -1;
   }
 }
