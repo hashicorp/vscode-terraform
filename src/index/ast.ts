@@ -1,6 +1,7 @@
 
 
 import * as hcl from './hcl-hil';
+import { count } from '../helpers';
 
 export enum NodeType {
     Unknown = "UNKNOWN",
@@ -140,4 +141,30 @@ export function findValue(item: AstItem, name: string): AstVal {
     if (!value)
         return null;
     return value.Val;
+}
+
+export function getTokenAtPosition(ast: Ast, pos: AstPosition): AstToken {
+    let found: AstToken = null;
+    walk(ast, (type: NodeType, node: any, path: VisitedNode[]) => {
+        if (node.Token && path.findIndex((n) => n.type === NodeType.Value) !== -1) {
+            let token = node.Token as AstToken;
+            if (token.Type === 9) {
+                // string
+                if (pos.Line !== token.Pos.Line)
+                    return;
+
+                if (token.Pos.Column < pos.Column && (token.Pos.Column + token.Text.length) > pos.Column) {
+                    found = token;
+                }
+            } else if (token.Type === 10) {
+                // heredoc
+                const numLines = count(token.Text, '\n');
+                if (pos.Line > token.Pos.Line && pos.Line < (token.Pos.Line + numLines)) {
+                    found = token;
+                }
+            }
+
+        }
+    });
+    return found;
 }
