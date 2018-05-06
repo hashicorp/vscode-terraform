@@ -27,6 +27,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       case "variable": item.kind = vscode.CompletionItemKind.Variable; break;
       case "data": item.kind = vscode.CompletionItemKind.Struct; break;
       case "resource": item.kind = vscode.CompletionItemKind.Class; break;
+      case "output": item.kind = vscode.CompletionItemKind.Value; break;
     }
     if (needInterpolation) {
       item.insertText = '${' + item.label + '}';

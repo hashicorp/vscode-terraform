@@ -72,7 +72,7 @@ export function activate(ctx: vscode.ExtensionContext) {
         }),
 
         // providers
-        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(index), '.', '"'),
+        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(index), '.', '"', '{', '(', '['),
         vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(index)),
         vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(index)),
         vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(index)),
