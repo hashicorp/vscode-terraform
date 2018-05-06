@@ -1,10 +1,5 @@
 import * as vscode from 'vscode';
 
-const variablesAndFields = ["variable", "output"];
-const classes = ["locals"];
-const modules = ["module", "provider"];
-const interfaces = ["resource", "data"];
-
 function variableCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("variable", vscode.CompletionItemKind.Variable);
     let snippet = 'variable "${1:name}" {\n' +
