@@ -70,5 +70,6 @@ export const SectionCompletions: vscode.CompletionItem[] = [
     resourceCompletion(),
     dataCompletion(),
     localsCompletion(),
-    moduleCompletion()
+    moduleCompletion(),
+    providerCompletion()
 ];

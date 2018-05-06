@@ -169,7 +169,7 @@ suite("Autocompletion Tests", () => {
             assert(!!shouldHaveCompletion(completions, "variable", vscode.CompletionItemKind.Variable), "should have variable completion");
             assert(!!shouldHaveCompletion(completions, "output", vscode.CompletionItemKind.Variable), "should have output completion");
             assert(!!shouldHaveCompletion(completions, "module", vscode.CompletionItemKind.Module), "should have resource completion");
-            assert(!!shouldHaveCompletion(completions, "provider", vscode.CompletionItemKind.Module), "should have data completion");
+            assert(!!shouldHaveCompletion(completions, "provider", vscode.CompletionItemKind.Module), "should have provider completion");
             assert(!!shouldHaveCompletion(completions, "locals", vscode.CompletionItemKind.Class), "should have locals completion");
         });
 
