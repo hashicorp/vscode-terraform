@@ -3,12 +3,12 @@
 import * as hcl from './hcl-hil';
 
 export enum NodeType {
-    Unknown,
-    Node,
-    Item,
-    Key,
-    Value,
-    List
+    Unknown = "UNKNOWN",
+    Node    = "NODE",
+    Item    = "ITEM",
+    Key     = "KEY",
+    Value   = "VALUE",
+    List    = "LIST"
 }
 
 export type VisitorFunc = (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => void;
