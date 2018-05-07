@@ -1,9 +1,5 @@
 import * as vscode from 'vscode';
-
-import { execFile } from 'child_process';
-
-import { getConfiguration, TerraformIndexConfiguration } from './configuration';
-import { ErrorDiagnosticCollection } from './extension';
+import { TerraformIndexConfiguration, getConfiguration } from './configuration';
 import { isTerraformDocument } from './helpers';
 import { Index } from './index';
 

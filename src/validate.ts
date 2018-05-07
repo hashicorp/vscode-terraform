@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
 import { execFile } from 'child_process';
+import * as vscode from 'vscode';
 import { outputChannel } from './extension';
 
 export function validateCommand() {

@@ -1,15 +1,12 @@
-
-
-import * as hcl from './hcl-hil';
 import { count } from '../helpers';
 
 export enum NodeType {
     Unknown = "UNKNOWN",
-    Node    = "NODE",
-    Item    = "ITEM",
-    Key     = "KEY",
-    Value   = "VALUE",
-    List    = "LIST"
+    Node = "NODE",
+    Item = "ITEM",
+    Key = "KEY",
+    Value = "VALUE",
+    List = "LIST"
 }
 
 export type VisitorFunc = (type: NodeType, node: any, path: VisitedNode[], index?: number, array?: any[]) => void;

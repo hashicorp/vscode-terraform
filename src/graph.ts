@@ -1,11 +1,8 @@
 import * as vscode from 'vscode';
-
-import { runTerraform } from './runner';
-import { getConfiguration } from './configuration';
-import { Index, Section } from './index';
 import { outputChannel } from './extension';
-import { readFile } from 'fs';
 import { read } from './helpers';
+import { Index, Section } from './index';
+import { runTerraform } from './runner';
 import { loadTemplate } from './template';
 
 const Viz = require('viz.js');
@@ -20,7 +17,7 @@ export class GraphContentProvider implements vscode.TextDocumentContentProvider 
 
   onDidChange = this._onDidChange.event;
 
-  constructor(private ctx: vscode.ExtensionContext) {}
+  constructor(private ctx: vscode.ExtensionContext) { }
 
   async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
     let template = await read(this.ctx.asAbsolutePath('out/src/ui/graph.html'));

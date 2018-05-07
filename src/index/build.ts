@@ -1,9 +1,7 @@
-
-import { FileIndex, Section, Reference } from './index';
-import { walk, NodeType, Ast } from './ast';
-import { parseHilWithPosition, ParseError } from './hcl-hil';
-
 import * as vscode from 'vscode';
+import { Ast, NodeType, walk } from './ast';
+import { ParseError, parseHilWithPosition } from './hcl-hil';
+import { FileIndex, Reference, Section } from './index';
 
 function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);

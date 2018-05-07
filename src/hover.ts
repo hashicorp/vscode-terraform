@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { Section, Index } from './index';
-import { findValue, getStringValue, getValue, AstList } from './index/ast';
+import { Index } from './index';
+import { AstList, findValue, getStringValue, getValue } from './index/ast';
 
 export class HoverProvider implements vscode.HoverProvider {
   constructor(private index: Index) { }

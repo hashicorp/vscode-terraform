@@ -1,17 +1,17 @@
 import * as vscode from 'vscode';
-import { FormattingEditProvider } from './format';
-import { validateCommand } from './validate';
-import { lintCommand } from './lint';
-import { liveIndex } from './live';
 import { CompletionProvider } from './autocompletion/completion-provider';
-import { DefinitionProvider, DocumentSymbolProvider, WorkspaceSymbolProvider, ReferenceProvider, RenameProvider } from './index/providers';
-import { initialCrawl, createWorkspaceWatcher } from './index/watcher';
-import { Section, Index } from './index';
 import { CodeLensProvider, showReferencesCommand } from './codelense';
 import { getConfiguration } from './configuration';
-import { HoverProvider } from './hover';
 import { DocumentLinkProvider } from './documentlink';
+import { FormattingEditProvider } from './format';
 import { GraphContentProvider, graphCommand } from './graph';
+import { HoverProvider } from './hover';
+import { Index, Section } from './index';
+import { DefinitionProvider, DocumentSymbolProvider, ReferenceProvider, RenameProvider, WorkspaceSymbolProvider } from './index/providers';
+import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
+import { lintCommand } from './lint';
+import { liveIndex } from './live';
+import { validateCommand } from './validate';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");

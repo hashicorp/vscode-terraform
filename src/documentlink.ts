@@ -1,16 +1,15 @@
 import * as vscode from 'vscode';
-import { Index } from './index';
-import { getConfiguration } from './configuration';
 import { findResourceFormat } from './autocompletion/model';
-import { Uri } from 'vscode';
+import { getConfiguration } from './configuration';
+import { Index } from './index';
 
 export class DocumentLinkProvider implements vscode.DocumentLinkProvider {
-    constructor(private index: Index) {}
+    constructor(private index: Index) { }
 
     provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]> {
         let index = this.index.getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
         if (!index)
-          return [];
+            return [];
         return index.sections.map((s) => {
             if (!s.type)
                 return null;

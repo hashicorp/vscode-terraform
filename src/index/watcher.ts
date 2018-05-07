@@ -1,9 +1,7 @@
-
 import * as vscode from 'vscode';
-import * as minimatch from 'minimatch';
-import { Index } from './index';
-import { ErrorDiagnosticCollection, outputChannel } from '../extension';
 import { getConfiguration } from '../configuration';
+import { ErrorDiagnosticCollection, outputChannel } from '../extension';
+import { Index } from './index';
 
 function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
   return vscode.workspace.openTextDocument(uri).then((doc) => {

@@ -3,7 +3,7 @@ const azureResources: ITerraformData = require("../data/terraform-provider-azure
 const googleResources: ITerraformData = require("../data/terraform-provider-google.json");
 export const terraformConfigAutoComplete: ITerraformConfigAutoComplete = require("../data/terraform-config.json");
 
-import * as _ from "lodash"
+import * as _ from "lodash";
 
 export const allProviders: ITerraformData = _.merge({}, awsResources, azureResources, googleResources);
 

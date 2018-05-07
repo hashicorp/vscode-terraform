@@ -1,11 +1,10 @@
 
-import * as vscode from 'vscode';
 import * as minimatch from 'minimatch';
-
-import { build } from './build';
-import { parseHcl, ParseError } from './hcl-hil';
+import * as vscode from 'vscode';
 import { ErrorDiagnosticCollection } from '../extension';
 import { AstItem } from './ast';
+import { build } from './build';
+import { parseHcl } from './hcl-hil';
 
 export interface QueryOptions {
     name?: string;

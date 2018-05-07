@@ -1,12 +1,11 @@
+import * as _ from "lodash";
 import * as vscode from 'vscode';
-import * as _ from "lodash"
-
-import { terraformConfigAutoComplete, allProviders, IFieldDef } from './model';
-import { Index, Section, QueryOptions } from '../index';
 import { backwardsSearch } from '../helpers';
-import { InterpolationFunctionDefinition, GetKnownFunctions } from './builtin-functions';
-import { parseHcl } from '../index/hcl-hil';
+import { Index, Section } from '../index';
 import { AstPosition, getTokenAtPosition } from '../index/ast';
+import { parseHcl } from '../index/hcl-hil';
+import { GetKnownFunctions, InterpolationFunctionDefinition } from './builtin-functions';
+import { IFieldDef, allProviders, terraformConfigAutoComplete } from './model';
 import { SectionCompletions } from './section-completions';
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");

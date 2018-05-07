@@ -1,8 +1,7 @@
-import * as vscode from 'vscode';
-
-import { getConfiguration } from "./configuration";
 import { execFile } from "child_process";
+import * as vscode from 'vscode';
 import { stripAnsi } from "./ansi";
+import { getConfiguration } from "./configuration";
 
 export interface TerraformInvocationOptions {
   input?: string;

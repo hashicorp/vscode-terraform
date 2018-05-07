@@ -1,9 +1,8 @@
-import * as vscode from 'vscode';
 import { execFile } from 'child_process';
-
+import * as vscode from 'vscode';
 import { stripAnsi } from './ansi';
-import { isTerraformDocument } from './helpers';
 import { outputChannel } from './extension';
+import { isTerraformDocument } from './helpers';
 
 export class FormattingEditProvider implements vscode.DocumentFormattingEditProvider {
   private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
