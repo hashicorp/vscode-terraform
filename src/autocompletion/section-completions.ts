@@ -1,18 +1,44 @@
 import * as vscode from 'vscode';
 
-function variableCompletion(): vscode.CompletionItem {
+function variableEmptyCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("variable", vscode.CompletionItemKind.Variable);
+    item.detail = "empty";
     let snippet = 'variable "${1:name}" {\n' +
-        '  default = ${2:value}\n' +
+        '  $0\n' +
         '}\n';
+    item.insertText = new vscode.SnippetString(snippet);
+    return item;
+}
+
+function variableWithDefaultCompletion(): vscode.CompletionItem {
+    let item = new vscode.CompletionItem("variable", vscode.CompletionItemKind.Variable);
+    item.detail = "with default";
+    let snippet =
+        'variable "${1:name}" {\n' +
+        '  default = "${2:value}"\n' +
+        '}\n';
+    item.insertText = new vscode.SnippetString(snippet);
+    return item;
+}
+
+function variableWithDocumentationAndValueCompletion(): vscode.CompletionItem {
+    let item = new vscode.CompletionItem("variable", vscode.CompletionItemKind.Variable);
+    item.detail = "with default and description";
+    let snippet =
+        'variable "${1:name}" {\n' +
+        '  description = "${2:description}"\n' +
+        '  default = "${2:value}"\n' +
+        '}\n' +
+        '$0';
     item.insertText = new vscode.SnippetString(snippet);
     return item;
 }
 
 function outputCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("output", vscode.CompletionItemKind.Variable);
-    let snippet = 'output "${1:name}" {\n' +
-        '  default = ${2:value}\n' +
+    let snippet =
+        'output "${1:name}" {\n' +
+        '  value = "${2:value}"\n' +
         '}\n';
     item.insertText = new vscode.SnippetString(snippet);
     return item;
@@ -20,7 +46,8 @@ function outputCompletion(): vscode.CompletionItem {
 
 function resourceCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("resource", vscode.CompletionItemKind.Interface);
-    let snippet = 'resource "${1:type}" "${2:type}" {\n' +
+    let snippet =
+        'resource "${1:type}" "${2:name}" {\n' +
         '  $0\n' +
         '}\n';
     item.insertText = new vscode.SnippetString(snippet);
@@ -29,7 +56,8 @@ function resourceCompletion(): vscode.CompletionItem {
 
 function dataCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("data", vscode.CompletionItemKind.Interface);
-    let snippet = 'data "${1:type}" "${2:name}" {\n' +
+    let snippet =
+        'data "${1:type}" "${2:name}" {\n' +
         '  $0\n' +
         '}\n';
     item.insertText = new vscode.SnippetString(snippet);
@@ -38,7 +66,8 @@ function dataCompletion(): vscode.CompletionItem {
 
 function localsCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("locals", vscode.CompletionItemKind.Class);
-    let snippet = 'locals {\n' +
+    let snippet =
+        'locals {\n' +
         '  $0\n' +
         '}\n';
     item.insertText = new vscode.SnippetString(snippet);
@@ -47,7 +76,8 @@ function localsCompletion(): vscode.CompletionItem {
 
 function moduleCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("module", vscode.CompletionItemKind.Module);
-    let snippet = 'module "${1:name}" {\n' +
+    let snippet =
+        'module "${1:name}" {\n' +
         '  source = "${2:source}"\n' +
         '  $0\n' +
         '}\n';
@@ -57,7 +87,8 @@ function moduleCompletion(): vscode.CompletionItem {
 
 function providerCompletion(): vscode.CompletionItem {
     let item = new vscode.CompletionItem("provider", vscode.CompletionItemKind.Module);
-    let snippet = 'provider "${1:name}" {\n' +
+    let snippet =
+        'provider "${1:name}" {\n' +
         '  $0\n' +
         '}\n';
     item.insertText = new vscode.SnippetString(snippet);
@@ -65,7 +96,9 @@ function providerCompletion(): vscode.CompletionItem {
 }
 
 export const SectionCompletions: vscode.CompletionItem[] = [
-    variableCompletion(),
+    variableEmptyCompletion(),
+    variableWithDefaultCompletion(),
+    variableWithDocumentationAndValueCompletion(),
     outputCompletion(),
     resourceCompletion(),
     dataCompletion(),
