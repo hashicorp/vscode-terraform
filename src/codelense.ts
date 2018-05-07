@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
-
-import { Section, Reference, Index } from './index/index';
-import { getCiphers } from 'crypto';
 import { getConfiguration } from './configuration';
+import { Index, Reference, Section } from './index/index';
 
 export class SectionReferenceCodeLens extends vscode.CodeLens {
   constructor(
@@ -40,7 +38,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
     if (!index)
       return [];
     return index.sections.map((s) => {
-      let firstLineOfSection = new vscode.Range(s.location.range.start, new vscode.Position(s.location.range.start.line, 100000));
+      let firstLineOfSection = document.lineAt(s.location.range.start.line).range;
       return new SectionReferenceCodeLens(this.index, firstLineOfSection, s);
     });
   }
