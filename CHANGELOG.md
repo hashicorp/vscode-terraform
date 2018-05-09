@@ -1,3 +1,20 @@
+# 1.0.6
+
+## New Features
+
+- Autocomplete now autocomplete builtin interpolation functions
+- Autocomplete in interpolation should be more robust
+- `.tfvars` Files are now correctly indexed so that *Go To definition*, *Rename* more now work as expected (Closes #80)
+- Autocomplete of top-level sections (e.g. `resource`, `variable` for example) now uses snippets to speed up authoring
+
+## Experimental features
+
+- Invoking the command `terraform.preview-graph` (*Terraform: Preview Graph*) will generate and show a clickable resource dependency graph
+
+## Fixes
+
+- Correctly syntax highlight the `locals {}` keyword
+
 # 1.0.5
 
 ## New Features

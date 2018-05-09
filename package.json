@@ -3,15 +3,15 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
     "vscode": "^1.17.0"
   },
   "categories": [
+    "Programming Languages",
     "Other",
-    "Languages",
     "Formatters",
     "Linters"
   ],
@@ -192,7 +192,7 @@
     "@types/lodash": "^4.14.108",
     "@types/minimatch": "^3.0.3",
     "@types/mocha": "^2.2.48",
-    "@types/node": "^6.0.106",
+    "@types/node": "^6.0.109",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
     "gulp-run": "^1.7.1",
@@ -201,14 +201,14 @@
     "gulp-using": "^0.1.1",
     "mocha": "^2.3.3",
     "pump": "^3.0.0",
-    "tslint": "^5.9.1",
+    "tslint": "^5.10.0",
     "typescript": "^2.8.3",
-    "vscode": "^1.1.14"
+    "vscode": "^1.1.17"
   },
   "dependencies": {
     "graphlib-dot": "^0.6.2",
     "lodash": "^4.17.10",
     "minimatch": "^3.0.4",
-    "viz.js": "^1.8.1"
+    "viz.js": "^1.8.2"
   }
 }
