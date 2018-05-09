@@ -6,6 +6,10 @@ variable "amis" {
   type = "map"
 }
 
+locals {
+  a = "a"
+}
+
 variable "region" {
   default = "us-east-1"
 }
