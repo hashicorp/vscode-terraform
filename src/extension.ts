@@ -7,10 +7,11 @@ import { FormattingEditProvider } from './format';
 import { GraphContentProvider, graphCommand } from './graph';
 import { HoverProvider } from './hover';
 import { Index, Section } from './index';
-import { DefinitionProvider, DocumentSymbolProvider, ReferenceProvider, RenameProvider, WorkspaceSymbolProvider } from './index/providers';
+import { DefinitionProvider, DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
 import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
 import { lintCommand } from './lint';
 import { liveIndex } from './live';
+import { RenameProvider } from './rename';
 import { validateCommand } from './validate';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
