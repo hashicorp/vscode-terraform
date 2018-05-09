@@ -1,7 +1,6 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-
 import { FileIndex } from '../../src/index';
 
 suite("Index Tests", () => {
@@ -146,6 +145,37 @@ suite("Index Tests", () => {
             let variable = index.sections[1];
             assert.equal(variable.sectionType, "variable");
             assert.equal(variable.references.length, 0);
+        });
+    });
+
+    suite("handles .tfvars syntax", () => {
+        const uri = vscode.Uri.parse("untitled:file");
+
+        test("Handle map", () => {
+            let [index, error] = FileIndex.fromString(uri, 'amis = { A = "B" }');
+
+            assert.equal(index.sections.length, 0);
+            assert.equal(index.assignments.length, 1);
+
+            assert.equal(index.assignments[0].targetId, "var.amis");
+        });
+
+        test("Handle list", () => {
+            let [index, error] = FileIndex.fromString(uri, 'amis = [ "list" ]');
+
+            assert.equal(index.sections.length, 0);
+            assert.equal(index.assignments.length, 1);
+
+            assert.equal(index.assignments[0].targetId, "var.amis");
+        });
+
+        test("Handle string", () => {
+            let [index, error] = FileIndex.fromString(uri, 'amis = "list"');
+
+            assert.equal(index.sections.length, 0);
+            assert.equal(index.assignments.length, 1);
+
+            assert.equal(index.assignments[0].targetId, "var.amis");
         });
     });
 });

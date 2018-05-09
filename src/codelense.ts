@@ -58,8 +58,15 @@ export class ReferenceQuickPick implements vscode.QuickPickItem {
 
   constructor(reference: Reference) {
     this.reference = reference;
-    this.label = reference.section.id();
-    this.description = reference.section.sectionType;
+
+    if (reference.section) {
+      this.label = reference.section.id();
+      this.description = reference.section.sectionType;
+    } else {
+      // tfvars
+      this.label = "(assignment)";
+      this.description = reference.location.uri.path;
+    }
   }
 
   goto() {

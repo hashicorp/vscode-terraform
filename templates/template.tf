@@ -2,6 +2,10 @@ variable "stage" {
   default = "gamma"
 }
 
+variable "amis" {
+  type = "map"
+}
+
 variable "region" {
   default = "us-east-1"
 }
@@ -42,7 +46,6 @@ variable "ipsum" {
 resource "aws_s3_bucket" "agent_bucket" {
   bucket = "${var.stage}-${var.region}-${var.stage}mybucket"
   acl    = "private"
-
 
   smurf = <<HEREDOC
 Lorem ${var.ipsum} dolor sit amet, consectetur adipiscing elit,

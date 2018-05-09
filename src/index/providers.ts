@@ -64,7 +64,13 @@ export class RenameProvider implements vscode.RenameProvider {
 
     const newId = section.id(newName);
     references.forEach((reference) => {
-      edit.replace(reference.location.uri, reference.location.range, newId);
+      if (!reference.nameRange) {
+        // references in .tf
+        edit.replace(reference.location.uri, reference.location.range, newId);
+      } else {
+        // references in .tfvars
+        edit.replace(reference.location.uri, reference.nameRange, newName);
+      }
     });
     return edit;
   }

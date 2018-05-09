@@ -113,9 +113,10 @@ export class Section extends vscode.SymbolInformation {
 export class Reference {
     readonly type: string;
     readonly parts: string[];
+    nameRange: vscode.Range; // only for .tfvars assignments
     readonly location: vscode.Location;
     readonly targetId: string;
-    readonly section: Section;
+    readonly section: Section; // in .tfvars files this is null
 
     constructor(expr: string, location: vscode.Location, section: Section) {
         let parts = expr.split('.');
@@ -196,6 +197,7 @@ export class Reference {
 
 export class FileIndex {
     sections: Section[] = [];
+    assignments: Reference[] = [];
 
     constructor(public uri: vscode.Uri) { }
 
@@ -207,6 +209,20 @@ export class FileIndex {
         for (let s of this.sections)
             if (s.match(options))
                 yield s;
+    }
+
+    *queryReferences(options?: ReferenceQueryOptions): IterableIterator<Reference> {
+        for (let s of this.sections) {
+            for (let r of s.references) {
+                if (r.match(options))
+                    yield r;
+            }
+        }
+
+        for (let a of this.assignments) {
+            if (a.match(options))
+                yield a;
+        }
     }
 
     static fromString(uri: vscode.Uri, source: string): [FileIndex, vscode.Diagnostic] {
@@ -267,6 +283,17 @@ export class Index {
             this.eventEmitter.fire();
     }
 
+    indices(uri: "ALL_FILES" | vscode.Uri): FileIndex[] {
+        if (uri === "ALL_FILES")
+            return [...this.Files.values()];
+        else {
+            const index = this.get(uri);
+            if (!index)
+                return [];
+            return [index];
+        }
+    }
+
     get(uri: vscode.Uri): FileIndex | null {
         return this.Files.get(uri.toString());
     }
@@ -292,7 +319,7 @@ export class Index {
             throw "Cannot use ALL_FILES when querying for position";
         }
 
-        return [].concat(...this.query(uri).map((s) => s.references.filter((r) => r.match(options))));
+        return [].concat(...this.indices(uri).map((f) => [...f.queryReferences(options)]));
     }
 
     getOrIndexDocument(document: vscode.TextDocument, options: IndexOptions = {}): FileIndex {

@@ -49,6 +49,25 @@ function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
     return new Section(sectionType, type, typeLoc, name, nameLoc, location, item);
 }
 
+function assignmentFromItemNode(uri: vscode.Uri, item: any): Reference {
+    const name = item.Keys[0].Token.Text;
+
+    const start = createPosition(item.Keys[0].Token.Pos);
+
+    // for maps and lists:
+    let end: vscode.Position;
+    if (item.Val.Rbrace || item.Val.Rbrack)
+        end = createPosition(item.Val.Rbrace || item.Val.Rbrack, 1); // for maps/lists
+    else
+        end = createPosition(item.Val.Token.Pos, item.Val.Token.Text.length); // for strings
+    const location = new vscode.Location(uri, new vscode.Range(start, end));
+
+    let reference = new Reference(`var.${name}`, location, null);
+    reference.nameRange = new vscode.Range(start, start.translate({ characterDelta: name.length }));
+
+    return reference;
+}
+
 function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Iterable<Reference> {
     for (let expr of exprs) {
         if (expr.Name && expr.Posx) {
@@ -111,6 +130,23 @@ export function build(uri: vscode.Uri, ast: Ast): FileIndex {
         }
 
         if (type === NodeType.Item) {
+            // detect variable assignment
+            if (node.Keys.length === 1 && !currentSection) {
+                if (node.Keys[0].Token.Text === "terraform" || node.Keys[0].Token.Text === "locals")
+                    return;
+
+                // TODO: we should part move this parsing into a separate
+                //       parser which only handles tfvars files
+                if (path.length === 2) {
+                    // only top-level assignments
+                    let assignment = assignmentFromItemNode(uri, node);
+                    if (assignment) {
+                        result.assignments.push(assignment);
+                    }
+                }
+                return;
+            }
+
             // detect section
             if (node.Keys.length === 2 || node.Keys.length === 3) {
                 currentDepth = path.length;
