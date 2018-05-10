@@ -29,6 +29,11 @@ function walkInternal(node: any, visitor: VisitorFunc, type: NodeType, path: Vis
             walkInternal(node.Val, visitor, NodeType.Value, path.concat(current));
     } else if (node.hasOwnProperty("List")) {
         walkInternal(node.List, visitor, NodeType.List, path.concat(current));
+    } else if (type === NodeType.List) {
+        // value list
+        node.forEach((value, idx, values) => {
+            walkInternal(value, visitor, NodeType.Value, path.concat(current), idx, values);
+        });
     }
 }
 
