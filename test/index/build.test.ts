@@ -146,6 +146,26 @@ suite("Index Tests", () => {
             assert.equal(variable.sectionType, "variable");
             assert.equal(variable.references.length, 0);
         });
+
+        test("Handles locals", () => {
+            let [index, error] = FileIndex.fromString(uri, 'variable "local-test" {}\nlocals {\n  local1 = "${var.local-test}"\n  local2 = [ "${var.local-test}" ]\n}\n');
+
+            assert.equal(index.sections.length, 3);
+
+            let resource = index.sections[0];
+            assert.equal(resource.sectionType, "variable");
+
+            let local1 = index.sections[1];
+            assert.equal(local1.id(), "local.local1");
+            assert.equal(local1.references.length, 1);
+            assert.equal(local1.references[0].targetId, "var.local-test");
+
+            let local2 = index.sections[2];
+            assert.equal(local2.id(), "local.local2");
+            assert.equal(local2.references.length, 1);
+            assert.equal(local2.references[0].targetId, "var.local-test");
+        });
+
     });
 
     suite("handles .tfvars syntax", () => {

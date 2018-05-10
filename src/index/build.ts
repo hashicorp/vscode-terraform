@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Ast, NodeType, walk } from './ast';
+import { Ast, NodeType, walk, AstList, VisitedNode, AstItem, AstVal } from './ast';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
 import { FileIndex, Reference, Section } from './index';
 
@@ -55,6 +55,21 @@ function endPosFromVal(val: AstVal): vscode.Position {
 
     return createPosition(val.Token.Pos, val.Token.Text.length); // for strings
 }
+
+function sectionFromSingleKeyItemNode(uri: vscode.Uri, item: any): Section {
+    let type: string = null;
+    let typeLoc: vscode.Location = null;
+
+    const name = item.Keys[0].Token.Text;
+    const nameStart = createPosition(item.Keys[0].Token.Pos);
+    const nameStop = nameStart.translate({ characterDelta: name.length });
+    const nameLoc = new vscode.Location(uri, new vscode.Range(nameStart, nameStop));
+
+    const location = new vscode.Location(uri, new vscode.Range(createPosition(item.Keys[0].Token.Pos), endPosFromVal(item.Val)));
+
+    return new Section("local", null, null, name, nameLoc, location, item);
+}
+
 function assignmentFromItemNode(uri: vscode.Uri, item: any): Reference {
     const name = item.Keys[0].Token.Text;
 
@@ -112,6 +127,20 @@ function extractReferencesFromHil(uri: vscode.Uri, token: any, currentSection: S
     return [[...walkHil(uri, hil.Exprs, currentSection)], null];
 }
 
+function childOfLocalsSection(p: VisitedNode[]): boolean {
+    if (p.length < 3)
+        return false;
+
+    if (p[p.length - 3].type !== NodeType.Item)
+        return false;
+
+    const item = p[p.length - 3].node as AstItem;
+    if (item.Keys.length === 0)
+        return false;
+
+    return item.Keys[0].Token.Text === "locals";
+}
+
 export function build(uri: vscode.Uri, ast: Ast): FileIndex {
     if (!ast) {
         throw "ast cannot be null";
@@ -131,25 +160,39 @@ export function build(uri: vscode.Uri, ast: Ast): FileIndex {
         }
 
         if (type === NodeType.Item) {
-            // detect variable assignment
-            if (node.Keys.length === 1 && !currentSection) {
-                if (node.Keys[0].Token.Text === "terraform" || node.Keys[0].Token.Text === "locals")
-                    return;
-
-                // TODO: we should part move this parsing into a separate
-                //       parser which only handles tfvars files
+            // detect variable assignments
+            if (node.Keys.length === 1) {
+                // handle top-level things
                 if (path.length === 2) {
+                    // assignment nodes (like we want) have an actual valid assignment
+                    // position, whereas single key sections (like terraform, locals)
+                    // do not
+                    if (node.Assign.Line === 0 && node.Assign.Column === 0)
+                        return;
+
+                    // TODO: we should part move this parsing into a separate
+                    //       parser which only handles tfvars files
                     // only top-level assignments
                     let assignment = assignmentFromItemNode(uri, node);
                     if (assignment) {
                         result.assignments.push(assignment);
                     }
+                    return;
+                } else {
+                    if (childOfLocalsSection(path)) {
+                        currentDepth = path.length;
+                        currentSection = sectionFromSingleKeyItemNode(uri, node);
+                        return;
+                    }
                 }
-                return;
             }
 
             // detect section
             if (node.Keys.length === 2 || node.Keys.length === 3) {
+                if (currentSection) {
+                    result.add(currentSection);
+                }
+
                 currentDepth = path.length;
                 currentSection = sectionFromKeyItemNode(uri, node);
                 return;
