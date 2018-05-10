@@ -82,6 +82,12 @@ suite("Index Tests", () => {
             assert.equal(output.id(), "template");
         });
 
+        test("local ID", () => {
+            let output = new Section("local", null, null, "my-cool-variable", null, null, null);
+
+            assert.equal(output.id(), "local.my-cool-variable");
+        });
+
         test("accepts new name when returning id", () => {
             let variable = new Section("variable", null, null, "region", null, null, null);
 

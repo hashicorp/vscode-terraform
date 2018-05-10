@@ -99,6 +99,9 @@ export class Section extends vscode.SymbolInformation {
         if (this.sectionType === "variable") {
             return `var.${name}`;
         }
+        if (this.sectionType === "local") {
+            return `local.${name}`;
+        }
 
         if (this.sectionType === "data")
             return [this.sectionType, this.type, name].join(".");
