@@ -70,8 +70,10 @@ export interface AstTokenItem {
 }
 
 export interface AstVal {
-    Lbrace: AstPosition;
-    Rbrace: AstPosition;
+    Lbrace: AstPosition | null;
+    Rbrace: AstPosition | null;
+    Lbrack: AstPosition | null;
+    Rbrack: AstPosition | null;
     List?: AstList | AstTokenItem[];
     Token?: AstToken;
     LeadComment: any;

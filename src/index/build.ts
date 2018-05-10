@@ -49,17 +49,18 @@ function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
     return new Section(sectionType, type, typeLoc, name, nameLoc, location, item);
 }
 
+function endPosFromVal(val: AstVal): vscode.Position {
+    if (val.Rbrace || val.Rbrack)
+        return createPosition(val.Rbrace || val.Rbrack, 1); // for maps/lists
+
+    return createPosition(val.Token.Pos, val.Token.Text.length); // for strings
+}
 function assignmentFromItemNode(uri: vscode.Uri, item: any): Reference {
     const name = item.Keys[0].Token.Text;
 
     const start = createPosition(item.Keys[0].Token.Pos);
+    const end = endPosFromVal(item.Val);
 
-    // for maps and lists:
-    let end: vscode.Position;
-    if (item.Val.Rbrace || item.Val.Rbrack)
-        end = createPosition(item.Val.Rbrace || item.Val.Rbrack, 1); // for maps/lists
-    else
-        end = createPosition(item.Val.Token.Pos, item.Val.Token.Text.length); // for strings
     const location = new vscode.Location(uri, new vscode.Range(start, end));
 
     let reference = new Reference(`var.${name}`, location, null);
