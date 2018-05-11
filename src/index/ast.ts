@@ -134,7 +134,11 @@ export function getValue(value: AstVal, options?: { stripQuotes: boolean }): str
     return tokens.map((t) => getText(t.Token, options));
 }
 
-export function findValue(item: AstItem, name: string): AstVal {
+export function findValue(item: AstItem, name?: string): AstVal {
+    if (!name) {
+        return item.Val;
+    }
+
     let values = (item.Val.List as AstList).Items;
     if (!values) {
         return null;
@@ -149,8 +153,8 @@ export function findValue(item: AstItem, name: string): AstVal {
 function count(haystack: string, character: string): number {
     let result = 0;
     for (let i = 0; i < haystack.length; i++) {
-      if (haystack[i] === character)
-        result++;
+        if (haystack[i] === character)
+            result++;
     }
     return result;
 }
