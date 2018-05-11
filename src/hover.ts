@@ -15,9 +15,13 @@ export class HoverProvider implements vscode.HoverProvider {
       return new vscode.Hover(new vscode.MarkdownString(`Unknown target \`${reference.targetId}\``), reference.location.range);
 
     let valuePath = reference.valuePath();
+    let label = valuePath[0];
     if (section.sectionType === "variable") {
-      // valuePath should actually be empty for variables
       valuePath = ["default"];
+      label = valuePath[0];
+    } else if (section.sectionType === "local") {
+      valuePath = [null];
+      label = section.name;
     } else {
       // we need an attribute to read and it cannot be a splat
       if (valuePath.length === 0 || valuePath[0] === "*") {
@@ -28,7 +32,7 @@ export class HoverProvider implements vscode.HoverProvider {
     // for now only support single level value extraction
     let valueNode = findValue(section.node, valuePath[0]);
     if (!valueNode)
-      return new vscode.Hover(`\`${valuePath[0]}\` not specified`, reference.location.range);
+      return new vscode.Hover(`\`${label}\` not specified`, reference.location.range);
 
     let formattedString = "";
 
@@ -38,20 +42,20 @@ export class HoverProvider implements vscode.HoverProvider {
       let map = getValue(valueNode, { stripQuotes: true }) as Map<string, string>;
       let pairs = [...map.entries()].map((v) => v.map((i) => `\`${i}\``).join(' = ')).map((i) => ` - ${i}`);
       if (pairs.length === 0)
-        formattedString = `${valuePath[0]}: *empty map*`;
+        formattedString = `${label}: *empty map*`;
       else
-        formattedString = `${valuePath[0]}:\n` + pairs.join("\n");
+        formattedString = `${label}:\n` + pairs.join("\n");
     } else if (valueNode.List) {
       // list
       let list = getValue(valueNode, { stripQuotes: true }) as string[];
       if (list.length === 0)
-        formattedString = `${valuePath[0]}: *empty list*`;
+        formattedString = `${label}: *empty list*`;
       else
-        formattedString = `${valuePath[0]}:\n` + list.map((i, idx) => `${idx}. \`${i}\``).join("\n");
+        formattedString = `${label}:\n` + list.map((i, idx) => `${idx}. \`${i}\``).join("\n");
     } else {
       // string
       formattedString = getStringValue(valueNode, "<failed to extract value>", { stripQuotes: true });
-      formattedString = `${valuePath[0]}: \`${formattedString}\``;
+      formattedString = `${label}: \`${formattedString}\``;
     }
 
     return new vscode.Hover(new vscode.MarkdownString(formattedString), reference.location.range);
