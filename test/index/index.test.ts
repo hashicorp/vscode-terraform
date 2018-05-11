@@ -1,15 +1,17 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-
 import * as vscode from 'vscode';
 import { FileIndex, Index, Reference, Section } from '../../src/index/index';
-import { parseHcl } from '../../src/index/hcl-hil';
+
 
 const template =
     `
 resource "aws_s3_bucket" "bucket" {}
 variable "region" {}
 data "template_file" "template" {}
+locals {
+    local = "local-string"
+}
 `;
 
 suite("Index Tests", () => {
@@ -44,6 +46,16 @@ suite("Index Tests", () => {
             let s = [...index.query(r.getQuery())];
             assert.equal(s.length, 1);
             assert.equal(s[0].name, "bucket");
+        });
+
+        test("Handles locals references", () => {
+            let r = new Reference("local.local", null, null);
+            assert.equal(r.type, "local");
+            assert.equal(r.targetId, "local.local");
+
+            let s = [...index.query(r.getQuery())];
+            assert.equal(s.length, 1);
+            assert.equal(s[0].name, "local");
         });
 
         test("Returns correct valuePath for resources", () => {
@@ -101,8 +113,10 @@ suite("Index Tests", () => {
 
             let all = [...index.query()];
 
-            assert.equal(all.length, 3);
-            assert.notEqual(all[0].name, all[1].name);
+            assert.equal(all.length, 4);
+            let allIds = all.map((s) => s.id());
+            let uniqueIds = [...new Set<string>(allIds)];
+            assert.deepEqual(allIds, uniqueIds);
         });
 
         test("Returns only sections which match the name", () => {
