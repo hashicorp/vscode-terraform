@@ -25,6 +25,7 @@ function getKind(sectionType: string): vscode.SymbolKind {
         case "resource": return vscode.SymbolKind.Interface;
         case "output": return vscode.SymbolKind.Property;
         case "variable": return vscode.SymbolKind.Variable;
+        case "local": return vscode.SymbolKind.Variable;
     }
 
     return null;
@@ -177,6 +178,13 @@ export class Reference {
             //   allow us to handle these references correctly
             return {
                 section_type: this.type,
+                name: this.parts[0]
+            }
+        }
+
+        if (this.type === "local") {
+            return {
+                section_type: "local",
                 name: this.parts[0]
             }
         }
