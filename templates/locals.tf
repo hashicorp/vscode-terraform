@@ -7,7 +7,6 @@ locals {
   }
 }
 
-// resource "some_type" "name" {
-//  property = "${local.c}"
-// }
-
+resource "some_type" "name" {
+  property = "${local.a}"
+}
