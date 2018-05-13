@@ -1,3 +1,13 @@
+# 1.0.7
+
+## New Features
+
+- Correctly index and support `locals {}` in hover, references and so on...
+
+## Fixes
+
+- Ensure `tflint` execution errors show up in the *Output* tab
+
 # 1.0.6
 
 ## New Features
