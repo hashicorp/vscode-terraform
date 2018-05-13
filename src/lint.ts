@@ -70,8 +70,7 @@ export function lintCommand() {
 
         outputChannel.appendLine("terraform.lint: Done");
       }).catch((error) => {
-        outputChannel.appendLine("terraform.lint: Failed:");
-        outputChannel.append(error);
+        outputChannel.appendLine(`terraform.lint: Failed: ${error}`);
         vscode.window.showErrorMessage("Linting failed, more information in the output tab.");
       });
   });
@@ -90,7 +89,7 @@ function lint(execPath: string, lintConfig: string, workspaceDir: string): Promi
       maxBuffer: 1024 * 1024
     }, (error, stdout, stderr) => {
       if (error) {
-        reject(stderr);
+        reject(error);
       } else {
         try {
           let result = JSON.parse(stdout);
