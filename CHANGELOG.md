@@ -1,3 +1,9 @@
+# 1.0.8
+
+## Fixes
+
+- Correctly set current working directory when calling `tflint` (Closes #82)
+
 # 1.0.7
 
 ## New Features
