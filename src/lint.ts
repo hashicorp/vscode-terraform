@@ -45,7 +45,7 @@ export function lintCommand() {
       return;
     }
 
-    const workspaceDir = workspaceFolder.uri.toString();
+    const workspaceDir = workspaceFolder.uri.fsPath;
     lint(configuration["lintPath"], configuration["lintConfig"], workspaceDir)
       .then((issues) => {
         outputChannel.appendLine(`terraform.lint: ${issues.length} issues`);
