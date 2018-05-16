@@ -6,8 +6,10 @@ var tslint = require('gulp-tslint');
 var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var using = require('gulp-using');
+var mkdirp = require('mkdirp');
 
 var spawn = require('child_process').spawn;
+var fs = require('fs');
 
 //
 // generate hcl wrapper
@@ -71,7 +73,7 @@ gulp.task('copy-autocompletion-data', () =>
 gulp.task('copy-html-templates', () => {
     gulp.src('src/ui/*.html')
         .pipe(using({ prefix: 'Bundling html templates', filesize: true }))
-        .pipe(gulp.dest('out/src/ui'))
+        .pipe(gulp.dest('out/src/ui'));
 });
 
 //
@@ -96,6 +98,23 @@ gulp.task('compile', () =>
 );
 
 //
+// generate telemetry file (depend on copy-html-templates so that directory is created)
+//
+gulp.task('generate-constants-keyfile', (callback) => {
+    let contents = {
+        APPINSIGHTS_KEY: process.env.APPINSIGHTS_KEY
+    };
+
+    mkdirp('out/src', (err) => {
+        if (err) {
+            done(new Error(`mkdirp out/src failed: ${err}`));
+        } else {
+            fs.writeFile('out/src/constants.json', JSON.stringify(contents), callback);
+        }
+    });
+});
+
+//
 // default
 //
-gulp.task('default', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'lint', 'compile']);
+gulp.task('default', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', 'lint', 'compile']);
