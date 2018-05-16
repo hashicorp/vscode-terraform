@@ -13,6 +13,7 @@ import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
 import { lintCommand } from './lint';
 import { liveIndex } from './live';
 import { RenameProvider } from './rename';
+import * as telemetry from './telemetry';
 import { validateCommand } from './validate';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
@@ -25,6 +26,8 @@ const documentSelector: vscode.DocumentSelector = [
 
 export function activate(ctx: vscode.ExtensionContext) {
     let index = new Index();
+
+    telemetry.activate(ctx);
 
     ctx.subscriptions.push(ErrorDiagnosticCollection);
 
@@ -100,4 +103,10 @@ export function activate(ctx: vscode.ExtensionContext) {
             initialCrawl(index);
         }
     }
+
+    telemetry.Reporter.sendTelemetryEvent('activated');
+}
+
+export async function deactivate(): Promise<any> {
+    return await telemetry.deactivate();
 }
