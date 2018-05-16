@@ -1,5 +1,6 @@
 import { ExtensionContext } from "vscode";
 import TelemetryReporter from "vscode-extension-telemetry";
+import { getConfiguration } from "./configuration";
 
 export interface IReporter {
   sendTelemetryEvent(eventName: string, properties?: { [key: string]: string; }, measures?: { [key: string]: number; }): void;
@@ -23,7 +24,7 @@ export let Reporter: IReporter;
 export function activate(ctx: ExtensionContext) {
   const packageJson = require(ctx.asAbsolutePath('./package.json'));
   const aiKey = require('./constants.json').APPINSIGHTS_KEY;
-  if (aiKey) {
+  if (aiKey && getConfiguration().telemetry.enabled) {
     Reporter = new TelemetryReporter(`${packageJson.publisher}.${packageJson.name}`, packageJson.version, aiKey);
     ctx.subscriptions.push(Reporter);
   } else {

@@ -11,6 +11,10 @@ export interface TerraformCodeLensConfiguration {
   enabled: boolean;
 }
 
+export interface TerraformTelemetryConfiguration {
+  enabled: boolean;
+}
+
 export interface TerraformConfiguration {
   formatOnSave: boolean;
   formatVarsOnSave?: boolean;
@@ -20,6 +24,7 @@ export interface TerraformConfiguration {
   lintConfig?: string;
   indexing: TerraformIndexConfiguration;
   codelens: TerraformCodeLensConfiguration;
+  telemetry: TerraformTelemetryConfiguration;
 }
 
 export function getConfiguration(): TerraformConfiguration {
@@ -34,7 +39,8 @@ export function getConfiguration(): TerraformConfiguration {
     lintPath: raw.lintPath,
     lintConfig: raw.lintConfig,
     indexing: raw.indexing,
-    codelens: raw.codelens
+    codelens: raw.codelens,
+    telemetry: raw.telemetry
   };
 
   return <TerraformConfiguration>convertible;
