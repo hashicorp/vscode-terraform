@@ -167,6 +167,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable/disable the CodeLens feature"
+        },
+        "terraform.telemetry.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable telemetry reporting for this plugin. The global `telemetry.enableTelemetry` is also respected. If the global is disabled, this setting has no effect."
         }
       }
     },
