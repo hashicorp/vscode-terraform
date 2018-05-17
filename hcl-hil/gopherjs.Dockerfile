@@ -5,6 +5,6 @@ RUN go get github.com/hashicorp/hcl
 RUN go get github.com/hashicorp/hil
 
 ADD main.go ./
-RUN gopherjs build main.go -o build.js
+RUN gopherjs build main.go -o build.js -v
 
 CMD ["cat", "build.js"]

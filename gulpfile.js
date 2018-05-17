@@ -30,10 +30,26 @@ gulp.task('generate-hcl-container', (done) => {
     });
 });
 
-gulp.task('generate-transpiled.js', ['generate-hcl-container'], () => {
-    return run('docker run --rm gopher-hcl-gopherjs', { verbosity: 1 }).exec()
-        .pipe(rename('transpiled.js'))
-        .pipe(gulp.dest('hcl-hil'));
+gulp.task('generate-transpiled.js', ['generate-hcl-container'], (done) => {
+    var docker = spawn('docker', [
+        'run',
+        '--rm', 'gopher-hcl-gopherjs'
+    ], { stdio: ['ignore', 'pipe', 'inherit'] });
+
+    var stream = fs.createWriteStream('hcl-hil/transpiled.js', { flags: 'w+' });
+
+    docker.stdout.pipe(stream);
+    docker.on('close', (code) => {
+        if (code !== 0) {
+            done(new Error(`docker run gopher-hcl-gopherjs failed with code ${code}`));
+        } else {
+            done();
+        }
+    });
+});
+
+gulp.task('create-output-directory', (done) => {
+    mkdirp('out/src', done);
 });
 
 gulp.task('generate-closure-container', ['generate-transpiled.js'], (done) => {
@@ -52,10 +68,22 @@ gulp.task('generate-closure-container', ['generate-transpiled.js'], (done) => {
     });
 });
 
-gulp.task('generate-hcl-hil.js', ['generate-closure-container'], () => {
-    return run('docker run --rm gopher-hcl-closure-compiler', { verbosity: 1 }).exec()
-        .pipe(rename('hcl-hil.js'))
-        .pipe(gulp.dest('out/src'));
+gulp.task('generate-hcl-hil.js', ['create-output-directory', 'generate-closure-container'], (done) => {
+    var docker = spawn('docker', [
+        'run',
+        '--rm', 'gopher-hcl-closure-compiler'
+    ], { stdio: ['ignore', 'pipe', 'inherit'] });
+
+    var stream = fs.createWriteStream('out/src/hcl-hil.js', { flags: 'w+' });
+
+    docker.stdout.pipe(stream);
+    docker.on('close', (code) => {
+        if (code !== 0) {
+            done(new Error(`docker run gopher-hcl-gopherjs failed with code ${code}`));
+        } else {
+            done();
+        }
+    });
 });
 
 //
@@ -100,18 +128,12 @@ gulp.task('compile', () =>
 //
 // generate telemetry file (depend on copy-html-templates so that directory is created)
 //
-gulp.task('generate-constants-keyfile', (callback) => {
+gulp.task('generate-constants-keyfile', ['create-output-directory'], (done) => {
     let contents = {
         APPINSIGHTS_KEY: process.env.APPINSIGHTS_KEY
     };
 
-    mkdirp('out/src', (err) => {
-        if (err) {
-            done(new Error(`mkdirp out/src failed: ${err}`));
-        } else {
-            fs.writeFile('out/src/constants.json', JSON.stringify(contents), callback);
-        }
-    });
+    fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
 });
 
 //
