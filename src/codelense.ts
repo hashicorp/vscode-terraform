@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { getConfiguration } from './configuration';
-import { Index, Reference, Section } from './index/index';
+import { Index } from './index/index';
+import { Reference } from './index/reference';
+import { Section } from './index/section';
 
 export class SectionReferenceCodeLens extends vscode.CodeLens {
   constructor(

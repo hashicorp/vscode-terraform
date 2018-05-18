@@ -1,7 +1,8 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { FileIndex, Index, Reference, Section } from '../../src/index/index';
+import { FileIndex } from '../../src/index/file-index';
+import { Index } from '../../src/index/index';
 
 
 const template =
@@ -15,147 +16,6 @@ locals {
 `;
 
 suite("Index Tests", () => {
-    suite("Reference Tests", () => {
-        const [index, error] = FileIndex.fromString(null, template);
-
-        test("Handles variable references", () => {
-            let r = new Reference("var.region", null, null);
-            assert.equal(r.type, "variable");
-            assert.equal(r.targetId, "var.region");
-
-            let s = [...index.query(r.getQuery())];
-            assert.equal(s.length, 1);
-            assert.equal(s[0].name, "region");
-        });
-
-        test("Handles data references", () => {
-            let r = new Reference("data.template_file.template.rendered", null, null);
-            assert.equal(r.type, "data");
-            assert.equal(r.targetId, "data.template_file.template");
-
-            let s = [...index.query(r.getQuery())];
-            assert.equal(s.length, 1);
-            assert.equal(s[0].name, "template");
-        });
-
-        test("Handles resource references", () => {
-            let r = new Reference("aws_s3_bucket.bucket.arn", null, null);
-            assert.equal(r.type, "aws_s3_bucket");
-            assert.equal(r.targetId, "aws_s3_bucket.bucket");
-
-            let s = [...index.query(r.getQuery())];
-            assert.equal(s.length, 1);
-            assert.equal(s[0].name, "bucket");
-        });
-
-        test("Handles locals references", () => {
-            let r = new Reference("local.local", null, null);
-            assert.equal(r.type, "local");
-            assert.equal(r.targetId, "local.local");
-
-            let s = [...index.query(r.getQuery())];
-            assert.equal(s.length, 1);
-            assert.equal(s[0].name, "local");
-        });
-
-        test("Returns correct valuePath for resources", () => {
-            let r = new Reference("aws_s3_bucket.bucket.arn", null, null);
-            assert.deepEqual(r.valuePath(), ["arn"]);
-        });
-
-        test("Returns correct valuePath for data", () => {
-            let r = new Reference("data.template_file.template.rendered", null, null);
-            assert.deepEqual(r.valuePath(), ["rendered"]);
-        });
-    });
-
-    suite("Section tests", () => {
-        test("variable ID", () => {
-            let variable = new Section("variable", null, null, "region", null, null, null);
-
-            assert.equal(variable.id(), "var.region");
-        });
-
-        test("resource ID", () => {
-            let resource = new Section("resource", "aws_s3_bucket", null, "bucket", null, null, null);
-
-            assert.equal(resource.id(), "aws_s3_bucket.bucket");
-        });
-
-        test("data ID", () => {
-            let data = new Section("data", "template_file", null, "template", null, null, null);
-
-            assert.equal(data.id(), "data.template_file.template");
-        });
-
-        test("output ID", () => {
-            let output = new Section("output", null, null, "template", null, null, null);
-
-            assert.equal(output.id(), "template");
-        });
-
-        test("local ID", () => {
-            let output = new Section("local", null, null, "my-cool-variable", null, null, null);
-
-            assert.equal(output.id(), "local.my-cool-variable");
-        });
-
-        test("accepts new name when returning id", () => {
-            let variable = new Section("variable", null, null, "region", null, null, null);
-
-            assert.equal(variable.id("newName"), "var.newName");
-        });
-    });
-
-    suite("FileIndex Tests", () => {
-        test("Returns all sections by default", () => {
-            let [index, error] = FileIndex.fromString(null, template);
-
-            let all = [...index.query()];
-
-            assert.equal(all.length, 4);
-            let allIds = all.map((s) => s.id());
-            let uniqueIds = [...new Set<string>(allIds)];
-            assert.deepEqual(allIds, uniqueIds);
-        });
-
-        test("Returns only sections which match the name", () => {
-            let [index, error] = FileIndex.fromString(null, template);
-
-            let r = [...index.query({ name: "uck" })];
-
-            assert.equal(r.length, 1);
-            assert.equal(r[0].name, "bucket");
-        });
-
-        test("Returns only sections which match the type", () => {
-            let [index, error] = FileIndex.fromString(null, template);
-
-            let r = [...index.query({ section_type: "resource" })];
-
-            assert.equal(r.length, 1);
-            assert.equal(r[0].name, "bucket");
-        });
-
-        test("Returns only sections which match the type", () => {
-            let [index, error] = FileIndex.fromString(null, template);
-
-            let r = [...index.query({ type: "aws_s3_bucket" })];
-
-            assert.equal(r.length, 1);
-            assert.equal(r[0].name, "bucket");
-        });
-
-        test("Returns only sections which match the id", () => {
-            let [index, error] = FileIndex.fromString(null, template);
-
-            let r = [...index.query({ id: "aws_s3_bucket.bucket" })];
-
-            assert.equal(r.length, 1);
-            assert.equal(r[0].name, "bucket");
-        });
-    });
-
     suite("Index Tests", () => {
         let [a, errorA] = FileIndex.fromString(vscode.Uri.parse("a.tf"), `resource "aws_s3_bucket" "bucket" {}`);
         let [b, errorB] = FileIndex.fromString(vscode.Uri.parse("b.tf"), `variable "region" {}`);

@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { outputChannel } from './extension';
 import { read } from './helpers';
-import { Index, Section } from './index';
+import { Index } from './index';
+import { Section } from './index/section';
 import { runTerraform } from './runner';
 import { loadTemplate } from './template';
 

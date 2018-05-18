@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import { Ast, NodeType, walk, AstList, VisitedNode, AstItem, AstVal } from './ast';
+import { Ast, AstItem, AstVal, NodeType, VisitedNode, walk } from './ast';
+import { FileIndex } from './file-index';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
-import { FileIndex, Reference, Section } from './index';
+import { Reference } from './reference';
+import { Section } from './section';
 
 function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);

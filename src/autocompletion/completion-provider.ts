@@ -1,9 +1,10 @@
 import * as _ from "lodash";
 import * as vscode from 'vscode';
 import { backwardsSearch } from '../helpers';
-import { Index, Section } from '../index';
+import { Index } from '../index';
 import { AstPosition, getTokenAtPosition } from '../index/ast';
 import { parseHcl } from '../index/hcl-hil';
+import { Section } from "../index/section";
 import { GetKnownFunctions, InterpolationFunctionDefinition } from './builtin-functions';
 import { IFieldDef, allProviders, terraformConfigAutoComplete } from './model';
 import { SectionCompletions } from './section-completions';

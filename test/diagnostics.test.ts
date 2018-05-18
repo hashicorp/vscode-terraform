@@ -1,9 +1,5 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-
-import { FileIndex, Index } from '../src/index';
-import { HoverProvider } from '../src/hover';
-import { uriFromRelativePath } from '../src/helpers';
 import { ErrorDiagnosticCollection } from '../src/extension';
 
 suite("Diagnostics Tests", () => {
