@@ -8,7 +8,7 @@
   <br>
 </h1>
 
-<h4 align="center">Adds syntax highlightning and other editing features for <a href="https://www.terraform.io/">Terraform</a> files</h4>
+<h4 align="center">Adds syntax highlighting and other editing features for <a href="https://www.terraform.io/">Terraform</a> files</h4>
 
 <p align="center">
   <a href="https://travis-ci.org/mauve/vscode-terraform">
@@ -28,7 +28,7 @@
   2. `resource` types `(aws_dynamodb_table ...)` auto completion support for `aws, azure & google`
   3. `resource | data | module | output | variable` property types auto completion support
   4. `resource | data` 1-level nested block property types auto completion support
-- Syntax highlightning for `.tf` and `.tfvars` files (and `.hcl`)
+- Syntax highlighting for `.tf` and `.tfvars` files (and `.hcl`)
 - Automatic formatting using `terraform fmt`
 - Automatically closes braces and quotes
 - Adds a command for running `terraform validate`
