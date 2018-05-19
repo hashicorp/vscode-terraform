@@ -111,13 +111,18 @@ export class Index {
         }
 
         let [index, diagnostic] = FileIndex.fromString(document.uri, document.getText());
+        let diagnostics: vscode.Diagnostic[] = [];
+
         if (diagnostic) {
-            ErrorDiagnosticCollection.set(document.uri, [diagnostic]);
-            return null;
+            diagnostics.push(diagnostic);
         }
 
-        ErrorDiagnosticCollection.set(document.uri, []);
-        this.add(index);
+        if (index) {
+            diagnostics.push(...index.diagnostics);
+            this.add(index);
+        }
+
+        ErrorDiagnosticCollection.set(document.uri, diagnostics);
         return index;
     }
 }

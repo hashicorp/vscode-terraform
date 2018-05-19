@@ -7,6 +7,7 @@ import { QueryOptions, Section } from './section';
 export class FileIndex {
   sections: Section[] = [];
   assignments: Reference[] = [];
+  diagnostics: vscode.Diagnostic[] = [];
 
   constructor(public uri: vscode.Uri) { }
 
@@ -36,14 +37,17 @@ export class FileIndex {
 
   static fromString(uri: vscode.Uri, source: string): [FileIndex, vscode.Diagnostic] {
     let [ast, error] = parseHcl(source);
+
+    let index = ast ? build(uri, ast) : null;
+
     if (error) {
       let range = new vscode.Range(error.line, error.column, error.line, 300);
       let message = error.message === "" ? "Parse error" : error.message;
       let diagnostic = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
 
-      return [null, diagnostic];
+      return [index, diagnostic];
     }
 
-    return [build(uri, ast), null];
+    return [index, null];
   }
 }

@@ -117,8 +117,7 @@ function extractReferencesFromHil(uri: vscode.Uri, token: any, currentSection: S
     let [hil, error] = parseHilWithPosition(token.Text, token.Pos.Column, token.Pos.Line, token.Filename);
 
     if (error) {
-        // TODO: put somewhere
-        return [null, new ParseError(token, "Expression parse error")];
+        return [null, new ParseError(token, error.message)];
     }
 
     if (!hil.Exprs) {
@@ -218,7 +217,15 @@ export function build(uri: vscode.Uri, ast: Ast): FileIndex {
                 let [references, error] = extractReferencesFromHil(uri, node.Token, currentSection);
 
                 if (error) {
-                    // TODO: handle
+                    const range = new vscode.Range(error.line, error.column, error.line, node.Token.Pos.Column - 1 + node.Token.Text.length);
+                    let message = error.message;
+                    if (!message) {
+                        message = "Could not parse expression";
+                    }
+
+                    message = message.replace(/^parse error at undefined:[0-9]+:[0-9]+:\s+/, '');
+                    const diagnostic = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
+                    result.diagnostics.push(diagnostic);
                     return;
                 }
 

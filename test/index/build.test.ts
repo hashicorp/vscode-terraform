@@ -166,6 +166,21 @@ suite("Index Tests", () => {
             assert.equal(local2.references[0].targetId, "var.local-test");
         });
 
+        test("Collects HIL parse errors", () => {
+            let [index, error] = FileIndex.fromString(uri, 'locals {\n  local1 = "${lookup(}"\n}');
+
+            assert(index, "index should not be null");
+            assert(!error, "there should not be an error");
+
+            assert.equal(index.diagnostics.length, 1);
+
+            let d = index.diagnostics[0];
+            assert.equal(d.message, 'expected expression but found "}"');
+            assert.equal(d.range.start.line, 1);
+            assert.equal(d.range.start.character, 11);
+            assert.equal(d.range.end.line, 1);
+            assert.equal(d.range.end.character, 23);
+        });
     });
 
     suite("handles .tfvars syntax", () => {
