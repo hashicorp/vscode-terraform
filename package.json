@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
@@ -212,10 +212,10 @@
     "vscode": "^1.1.17"
   },
   "dependencies": {
+    "applicationinsights": "^1.0.2",
     "graphlib-dot": "^0.6.2",
     "lodash": "^4.17.10",
     "minimatch": "^3.0.4",
-    "viz.js": "^1.8.2",
-    "vscode-extension-telemetry": "0.0.17"
+    "viz.js": "^1.8.2"
   }
 }

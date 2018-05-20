@@ -117,7 +117,7 @@ export function activate(ctx: vscode.ExtensionContext) {
         }
     }
 
-    telemetry.Reporter.sendTelemetryEvent('activated');
+    telemetry.Reporter.trackEvent('activated');
 }
 
 export async function deactivate(): Promise<any> {
