@@ -3,6 +3,7 @@ import { getConfiguration } from './configuration';
 import { Index } from './index/index';
 import { Reference } from './index/reference';
 import { Section } from './index/section';
+import { IndexLocator } from './index/index-locator';
 
 export class SectionReferenceCodeLens extends vscode.CodeLens {
   constructor(
@@ -29,19 +30,20 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
   private eventEmitter = new vscode.EventEmitter<void>();
   onDidChangeCodeLenses = this.eventEmitter.event;
 
-  constructor(private index: Index) {
-    this.index.onDidChange(() => {
+  constructor(private indexLocator: IndexLocator) {
+    this.indexLocator.onChanged(() => {
       this.eventEmitter.fire();
     });
   }
 
   provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
-    let index = this.index.getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
-    if (!index)
+    let index = this.indexLocator.getIndexForDoc(document);
+    let fileIndex = index.getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
+    if (!fileIndex)
       return [];
-    return index.sections.map((s) => {
+    return fileIndex.sections.map((s) => {
       let firstLineOfSection = document.lineAt(s.location.range.start.line).range;
-      return new SectionReferenceCodeLens(this.index, firstLineOfSection, s);
+      return new SectionReferenceCodeLens(index, firstLineOfSection, s);
     });
   }
 
