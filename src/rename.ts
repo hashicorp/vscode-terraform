@@ -1,16 +1,18 @@
 import * as vscode from 'vscode';
 import { Index } from './index';
+import { IndexLocator } from './index/index-locator';
 
 export class RenameProvider implements vscode.RenameProvider {
-  constructor(private index: Index) { }
+  constructor(private indexLocator: IndexLocator) { }
 
   provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string): vscode.WorkspaceEdit {
-    let section = this.index.query(document.uri, { name_position: position })[0];
+    let index = this.indexLocator.getIndexForDoc(document);
+    let section = index.query(document.uri, { name_position: position })[0];
     if (!section) {
       return null;
     }
 
-    let references = this.index.queryReferences("ALL_FILES", { target: section });
+    let references = index.queryReferences("ALL_FILES", { target: section });
     if (references.length === 0) {
       return null;
     }
