@@ -1,16 +1,18 @@
 import * as vscode from 'vscode';
 import { Index } from './index';
 import { AstList, findValue, getStringValue, getValue } from './index/ast';
+import { IndexLocator } from './index/index-locator';
 
 export class HoverProvider implements vscode.HoverProvider {
-  constructor(private index: Index) { }
+  constructor(private indexLocator: IndexLocator) { }
 
   provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
-    let reference = this.index.queryReferences(document.uri, { position: position })[0];
+    let index = this.indexLocator.getIndexForDoc(document);
+    let reference = index.queryReferences(document.uri, { position: position })[0];
     if (!reference)
       return null;
 
-    let section = this.index.query("ALL_FILES", reference.getQuery())[0];
+    let section = index.query("ALL_FILES", reference.getQuery())[0];
     if (!section)
       return new vscode.Hover(new vscode.MarkdownString(`Unknown target \`${reference.targetId}\``), reference.location.range);
 
