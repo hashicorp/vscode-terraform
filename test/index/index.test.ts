@@ -21,7 +21,7 @@ suite("Index Tests", () => {
         let [b, errorB] = FileIndex.fromString(vscode.Uri.parse("b.tf"), `variable "region" {}`);
 
         test("query can return results for ALL files", () => {
-            let index = new Index(a, b);
+            let index = new Index(null, a, b);
 
             let results = index.query("ALL_FILES");
 
@@ -29,7 +29,7 @@ suite("Index Tests", () => {
         });
 
         test("query returns results for a single file", () => {
-            let index = new Index(a, b);
+            let index = new Index(null, a, b);
 
             let results = index.query(vscode.Uri.parse("a.tf"));
 
@@ -38,7 +38,7 @@ suite("Index Tests", () => {
         });
 
         test("clear clears", () => {
-            let index = new Index(a, b);
+            let index = new Index(null, a, b);
 
             assert.notEqual(index.query("ALL_FILES").length, 0);
 
@@ -49,7 +49,7 @@ suite("Index Tests", () => {
         });
 
         test("does not index documents from excluded paths", async () => {
-            let index = new Index;
+            let index = new Index(null);
 
             let base = vscode.workspace.workspaceFolders[0].uri;
             let doc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`${base.toString()}/template.tf`));
@@ -64,7 +64,7 @@ suite("Index Tests", () => {
             let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
 
             test("getReferences returns results for all files", () => {
-                let index = new Index(a, b, c, d);
+                let index = new Index(null, a, b, c, d);
 
                 let references = index.queryReferences("ALL_FILES", { target: "var.region" });
 
@@ -72,7 +72,7 @@ suite("Index Tests", () => {
             });
 
             test("getReferences returns results for a single file", () => {
-                let index = new Index(a, b, c, d);
+                let index = new Index(null, a, b, c, d);
 
                 let references = index.queryReferences(d.uri, { target: "var.region" });
 
@@ -80,7 +80,7 @@ suite("Index Tests", () => {
             });
 
             test("getReferences supports section as a target instead of string", () => {
-                let index = new Index(a, b, c, d);
+                let index = new Index(null, a, b, c, d);
 
                 let references = index.queryReferences("ALL_FILES", { target: b.sections[0] });
                 assert.equal(references.length, 2);

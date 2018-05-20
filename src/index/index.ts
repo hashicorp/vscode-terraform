@@ -17,8 +17,15 @@ export class Index {
     private eventEmitter = new vscode.EventEmitter<void>();
     onDidChange = this.eventEmitter.event;
 
-    constructor(...indices: FileIndex[]) {
+    constructor(private folder: vscode.WorkspaceFolder, ...indices: FileIndex[]) {
         indices.map((i) => this.add(i));
+    }
+
+    public get name(): string {
+        if (!this.folder)
+            return "untitled";
+
+        return this.folder.name;
     }
 
     add(index: FileIndex) {
