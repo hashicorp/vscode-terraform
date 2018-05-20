@@ -1,3 +1,24 @@
+# 1.1.0
+
+## Features
+
+- Very simple telemetry is now being reported if enabled (currently only an event is recorded when the plugin activates)
+
+## Fixes
+
+- Indexing is now done per workspace folder rather than globally (closes #83)
+- HIL parse errors are now correctly handled and surfaced in the *Problems* view
+
+## Telemetry
+
+Currently only a simple `activated` event is being recorded. All events include the version of VSCode and
+some other automatically provided properties by VSCode (refer: [Common Properties](https://github.com/Microsoft/vscode-extension-telemetry#common-properties)).
+
+The plugin respects the global telemetry opt-out (`telemetry.enableTelemetry`) setting but you can also
+disable telemetry collection for just this plugin by setting `terraform.telemetry.enabled` to `false`.
+
+You can read more about telemetry reporting in VSCode in the [FAQ](https://code.visualstudio.com/Docs/supporting/FAQ#_how-to-disable-telemetry-reporting).
+
 # 1.0.8
 
 ## Fixes
