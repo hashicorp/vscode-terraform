@@ -1,3 +1,9 @@
+# 1.1.1
+
+## Fixes
+
+- Correctly track user session
+
 # 1.1.0
 
 ## Features
