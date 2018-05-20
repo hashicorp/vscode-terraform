@@ -1,31 +1,34 @@
 import * as vscode from 'vscode';
 import { Index } from '.';
+import { IndexLocator } from './index-locator';
 
 export class ReferenceProvider implements vscode.ReferenceProvider {
-  constructor(private index: Index) { }
+  constructor(private indexLocator: IndexLocator) { }
 
   provideReferences(document: vscode.TextDocument, position: vscode.Position, context: vscode.ReferenceContext): vscode.Location[] {
-    let section = this.index.query(document.uri, { position: position })[0];
+    let section = this.indexLocator.getIndexForDoc(document).query(document.uri, { position: position })[0];
     if (!section)
       return [];
 
-    let references = this.index.queryReferences("ALL_FILES", { target: section });
+    let references = this.indexLocator.getIndexForDoc(document).queryReferences("ALL_FILES", { target: section });
     return references.map((r) => r.location);
   }
 }
 
 export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
-  constructor(private index: Index) { }
+  constructor(private indexLocator: IndexLocator) { }
 
   provideDocumentSymbols(document: vscode.TextDocument): vscode.SymbolInformation[] {
-    return this.index.query(document.uri);
+    return this.indexLocator.getIndexForDoc(document).query(document.uri);
   }
 }
 
 export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
-  constructor(private index: Index) { }
+  constructor(private indexLocator: IndexLocator) { }
 
   provideWorkspaceSymbols(query: string): vscode.SymbolInformation[] {
-    return this.index.query("ALL_FILES", { name: query });
+    let indices = [...this.indexLocator.allIndices(true)];
+
+    return [].concat(indices.map((i) => i.query("ALL_FILES", { name: query })));
   }
 }
