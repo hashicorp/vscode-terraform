@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getConfiguration } from '../configuration';
 import { ErrorDiagnosticCollection, outputChannel } from '../extension';
 import { Index } from './index';
+import { IndexLocator } from './index-locator';
 
 function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
   return vscode.workspace.openTextDocument(uri).then((doc) => {
@@ -26,15 +27,15 @@ function updateDocument(index: Index, uri: vscode.Uri): Thenable<void> {
   });
 }
 
-export function createWorkspaceWatcher(index: Index): vscode.FileSystemWatcher {
+export function createWorkspaceWatcher(indexLocator: IndexLocator): vscode.FileSystemWatcher {
   let watcher = vscode.workspace.createFileSystemWatcher("**/*.{tf,tfvars}");
-  watcher.onDidChange((uri) => { updateDocument(index, uri) });
-  watcher.onDidCreate((uri) => { updateDocument(index, uri) });
-  watcher.onDidDelete((uri) => { index.delete(uri) });
+  watcher.onDidChange((uri) => { updateDocument(indexLocator.getIndexForUri(uri), uri) });
+  watcher.onDidCreate((uri) => { updateDocument(indexLocator.getIndexForUri(uri), uri) });
+  watcher.onDidDelete((uri) => { indexLocator.getIndexForUri(uri).delete(uri) });
   return watcher;
 }
 
-export function initialCrawl(index: Index): Thenable<vscode.Uri[]> {
+export function initialCrawl(indexLocator: IndexLocator): Thenable<vscode.Uri[]> {
   outputChannel.appendLine("terraform.crawler: Crawling workspace for terraform files...");
   return vscode.workspace.findFiles("**/*.{tf,tfvars}", "")
     .then((uris) => {
@@ -43,6 +44,7 @@ export function initialCrawl(index: Index): Thenable<vscode.Uri[]> {
         title: "Indexing terraform templates"
       }, async (progress) => {
         for (let uri of uris) {
+          let index = indexLocator.getIndexForUri(uri);
           progress.report({ message: `Indexing ${uri.toString()}` });
           await updateDocument(index, uri);
         }
