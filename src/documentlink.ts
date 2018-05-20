@@ -2,12 +2,13 @@ import * as vscode from 'vscode';
 import { findResourceFormat } from './autocompletion/model';
 import { getConfiguration } from './configuration';
 import { Index } from './index';
+import { IndexLocator } from './index/index-locator';
 
 export class DocumentLinkProvider implements vscode.DocumentLinkProvider {
-    constructor(private index: Index) { }
+    constructor(private indexLocator: IndexLocator) { }
 
     provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]> {
-        let index = this.index.getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
+        let index = this.indexLocator.getIndexForDoc(document).getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
         if (!index)
             return [];
         return index.sections.map((s) => {
