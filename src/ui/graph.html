@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>Graph ({{type}})</h1>
+<h1>Graph ({{type}}) of {{workspaceFolderName}}</h1>
 {{element}}
 <a style="display: none" id="#hidden-link"></a>
 </body>
@@ -35,7 +35,10 @@
 
         if (parts[0] === 'terraform-section' && parts[1] !== '') {
           const sectionId = parts[1];
-          const args = { targetId: sectionId };
+          const args = {
+            workspaceFolderName: '{{workspaceFolderName}}',
+            targetId: sectionId
+          };
           window.parent.postMessage({
             command: 'did-click-link',
             data: 'command:terraform.navigate-to-section?' + encodeURIComponent(JSON.stringify(args))

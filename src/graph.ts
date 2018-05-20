@@ -5,6 +5,8 @@ import { Index } from './index';
 import { Section } from './index/section';
 import { runTerraform } from './runner';
 import { loadTemplate } from './template';
+import { IndexLocator } from './index/index-locator';
+import { workspaceFolderQuickPick } from './workspacefolder-quickpick';
 
 const Viz = require('viz.js');
 const Dot = require('graphlib-dot');
@@ -15,6 +17,7 @@ export class GraphContentProvider implements vscode.TextDocumentContentProvider 
   private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
   private dot: string = "";
   private type: string = "";
+  private workspaceFolderName: string = "";
 
   onDidChange = this._onDidChange.event;
 
@@ -31,13 +34,15 @@ export class GraphContentProvider implements vscode.TextDocumentContentProvider 
 
     return loadTemplate(this.ctx.asAbsolutePath('out/src/ui/graph.html'), {
       type: this.type,
-      element: element
+      element: element,
+      workspaceFolderName: this.workspaceFolderName
     });
   }
 
-  update(dot: string, type: string) {
+  update(dot: string, type: string, workspaceFolderName: string) {
     this.dot = dot;
     this.type = type;
+    this.workspaceFolderName = workspaceFolderName;
     this._onDidChange.fire();
   }
 }
@@ -63,30 +68,33 @@ function replaceNodesWithLinks(index: Index, dot: string): string {
   return Dot.write(graph);
 }
 
-export async function graphCommand(index: Index, provider: GraphContentProvider): Promise<void> {
+export async function graphCommand(indexLocator: IndexLocator, provider: GraphContentProvider): Promise<void> {
   const types = ['plan', 'plan-destroy', 'apply',
     'validate', 'input', 'refresh'];
   let type = await vscode.window.showQuickPick(types, { placeHolder: "Choose graph type" });
 
-  let workspaceFolder = vscode.workspace.workspaceFolders[0];
+  let workspaceFolder = await workspaceFolderQuickPick({ placeHolder: "Choose workspace folder" });
+  if (!workspaceFolder) {
+    vscode.window.showErrorMessage("You need to select a workspace folder");
+    return;
+  }
+
   if (workspaceFolder.uri.scheme !== "file") {
     vscode.window.showErrorMessage("Workspace folder needs to use the file:/// uri scheme.");
     return;
   }
 
-  let templateDirectory = workspaceFolder.uri.with({
-    path: workspaceFolder.uri.path // + '/' + getConfiguration().templateDirectory
-  });
+  let index = indexLocator.getIndexForWorkspaceFolder(workspaceFolder);
 
   try {
-    let dot = await runTerraform(["graph", "-draw-cycles", `-type=${type}`, templateDirectory.fsPath]);
+    let dot = await runTerraform(["graph", "-draw-cycles", `-type=${type}`, workspaceFolder.uri.fsPath]);
 
     let processedDot = replaceNodesWithLinks(index, dot);
 
     // make background transparent
     processedDot = processedDot.replace('digraph {\n', 'digraph {\n  bgcolor="transparent";\n');
 
-    provider.update(processedDot, type);
+    provider.update(processedDot, type, workspaceFolder.name);
 
     await vscode.commands.executeCommand('vscode.previewHtml', graphPreviewUri, vscode.ViewColumn.Active, 'Terraform Graph');
   } catch (e) {
