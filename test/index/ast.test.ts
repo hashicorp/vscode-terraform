@@ -1,9 +1,8 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
+import { AstList, NodeType, VisitedNode, findValue, getMapValue, getStringValue, getText, getValue, walk } from '../../src/index/ast';
 import { parseHcl } from '../../src/index/hcl-hil';
-import { walk, NodeType, VisitedNode, findValue, getText, AstList, getStringValue, getValue } from '../../src/index/ast';
 
-import * as vscode from 'vscode';
 
 suite("Index Tests", () => {
     suite("Parser Tests", () => {
@@ -104,6 +103,28 @@ suite("Index Tests", () => {
             let map = getValue(ast.Node.Items[0].Val) as Map<string, string>;
 
             assert.equal(map.get("default"), '"defaultValue"');
-        })
+        });
+
+        test("getMapValue can return a Map<string, string>", () => {
+            let map = getMapValue(ast.Node.Items[0].Val);
+
+            assert.equal(map.get("default"), '"defaultValue"');
+        });
+
+        test("getMapValue returns empty map on string value", () => {
+            let list = ast.Node.Items[0].Val.List as AstList;
+            let map = getMapValue(list.Items[0].Val);
+
+            assert.equal(map.size, 0);
+        });
+
+        test("getMapValue returns empty map on list value", () => {
+            let [ast2, error2] = parseHcl(`locals { a = [] }`);
+
+            let list = ast2.Node.Items[0].Val.List as AstList;
+            let map = getMapValue(list.Items[0].Val);
+
+            assert.equal(map.size, 0);
+        });
     });
 });

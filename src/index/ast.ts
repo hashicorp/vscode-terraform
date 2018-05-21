@@ -112,6 +112,23 @@ export function getStringValue(value: AstVal, fallback: string, options?: { stri
     return fallback;
 }
 
+export function getMapValue(value: AstVal, options?: { stripQuotes: boolean }): Map<string, string> {
+    let astList = value.List as AstList;
+    let map = new Map<string, string>();
+
+    if (!astList || !astList.Items)
+        return map;
+    astList.Items.forEach((item) => {
+        let k = getText(item.Keys[0].Token);
+        let v = getStringValue(item.Val, undefined, options);
+
+        if (v !== undefined) {
+            map.set(k, v);
+        }
+    });
+    return map;
+}
+
 export function getValue(value: AstVal, options?: { stripQuotes: boolean }): string | string[] | Map<string, string> {
     if (value.Token)
         return getText(value.Token, options);
@@ -119,14 +136,7 @@ export function getValue(value: AstVal, options?: { stripQuotes: boolean }): str
     // map
     let astList = value.List as AstList;
     if (astList.Items) {
-        let map = new Map<string, string>();
-        astList.Items.forEach((item) => {
-            let k = getText(item.Keys[0].Token);
-            let v = getStringValue(item.Val, "...");
-
-            map.set(k, v);
-        });
-        return map;
+        return getMapValue(value, options);
     }
 
     // array
