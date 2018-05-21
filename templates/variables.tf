@@ -15,3 +15,7 @@ variable "map" {
     "key2" = "value2"
   }
 }
+
+variable "region" {
+  default = "ap-south-1"
+}
