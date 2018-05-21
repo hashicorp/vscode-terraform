@@ -1,8 +1,7 @@
-import { execFile } from 'child_process';
 import * as vscode from 'vscode';
-import { stripAnsi } from './ansi';
 import { outputChannel } from './extension';
 import { isTerraformDocument } from './helpers';
+import { runTerraform } from './runner';
 
 export class FormattingEditProvider implements vscode.DocumentFormattingEditProvider {
   private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
@@ -19,8 +18,9 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
       const range = fullRange(document);
 
       outputChannel.appendLine(`terraform.format [on-save]: running 'terraform fmt' on '${document.fileName}'`);
-      this.fmt(this.getPath(), document.getText())
-        .then((formattedText) => {
+      return runTerraform(process.cwd(), ["fmt", "-"], {
+        input: document.getText(),
+      }).then((formattedText) => {
           textEditor.edit((editor) => {
             editor.replace(range, formattedText);
           });
@@ -67,8 +67,9 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
     const range = fullRange(document);
 
     outputChannel.appendLine(`terraform.format [provider]: running 'terraform fmt' on '${document.fileName}'`);
-    return this.fmt(this.getPath(), document.getText())
-      .then((formattedText) => {
+    return runTerraform(process.cwd(), ["fmt", "-"], {
+      input: document.getText(),
+    }).then((formattedText) => {
         outputChannel.appendLine("terraform.format [provider]: Successful.");
         return [new vscode.TextEdit(range, formattedText)];
       }).catch((e) => {
@@ -76,30 +77,5 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
         vscode.window.showWarningMessage(e);
         return [];
       });
-  }
-
-  private getPath(): string {
-    return vscode.workspace.getConfiguration('terraform')['path'];
-  }
-
-  private fmt(execPath: String, text: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      const commandLineArgs = ["fmt", "-"];
-
-      const child = execFile(this.getPath(), commandLineArgs, {
-        encoding: 'utf8',
-        maxBuffer: 1024 * 1024,
-      }, (error, stdout, stderr) => {
-        if (error) {
-          let cleanedOutput = stripAnsi(stderr);
-          reject(cleanedOutput.replace(/In <standard input>:/, ''));
-        } else {
-          resolve(stdout);
-        }
-      });
-
-      child.stdin.write(text);
-      child.stdin.end();
-    });
   }
 }

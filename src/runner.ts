@@ -2,10 +2,13 @@ import { execFile } from "child_process";
 import * as vscode from 'vscode';
 import { stripAnsi } from "./ansi";
 import { getConfiguration } from "./configuration";
+import { outputChannel } from "./extension";
+import { Reporter } from "./telemetry";
 
 export interface TerraformInvocationOptions {
   input?: string;
   keepAnsi?: boolean;
+  reportMetric?: boolean;
 }
 
 function processOutput(output: string, options: TerraformInvocationOptions): string {
@@ -14,21 +17,36 @@ function processOutput(output: string, options: TerraformInvocationOptions): str
   return stripAnsi(output);
 }
 
-export function runTerraform(args: string[], options: TerraformInvocationOptions = {}): Promise<string> {
+export function runTerraform(folder: vscode.WorkspaceFolder | string, args: string[], options: TerraformInvocationOptions = {}): Promise<string> {
   let path = getConfiguration().path;
-  console.log(`Running terraform cwd='${process.cwd()}' path='${path}' args=[${args.join(", ")}]`);
+
+  let cwd: string;
+  if (typeof folder === "string")
+    cwd = folder;
+  else
+    cwd = folder.uri.fsPath;
+
+  outputChannel.appendLine(`Running terraform cwd='${cwd}' path='${path}' args=[${args.join(", ")}]`);
 
   return new Promise<string>((resolve, reject) => {
-
     const child = execFile(path, args, {
       encoding: 'utf8',
       maxBuffer: 1024 * 1024,
-      cwd: vscode.workspace.workspaceFolders[0].uri.fsPath
+      cwd: cwd
     }, (error, stdout, stderr) => {
+      if (options.reportMetric === true) {
+        Reporter.trackEvent("terraform-invocation", {
+          command: args[0],
+          status: error ? error.name : "success"
+        });
+      }
+
       if (error) {
-        console.log(`Running terraform failed: ${error}: ${stderr}`);
-        reject(processOutput(stderr, options));
+        const processedOutput = processOutput(stderr, options);
+        outputChannel.appendLine(`Running terraform failed: ${error}`);
+        reject(processedOutput);
       } else {
+        outputChannel.appendLine(`Running terraform succeeded.`);
         resolve(processOutput(stdout, options));
       }
     });

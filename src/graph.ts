@@ -2,10 +2,10 @@ import * as vscode from 'vscode';
 import { outputChannel } from './extension';
 import { read } from './helpers';
 import { Index } from './index';
+import { IndexLocator } from './index/index-locator';
 import { Section } from './index/section';
 import { runTerraform } from './runner';
 import { loadTemplate } from './template';
-import { IndexLocator } from './index/index-locator';
 import { workspaceFolderQuickPick } from './workspacefolder-quickpick';
 
 const Viz = require('viz.js');
@@ -87,7 +87,7 @@ export async function graphCommand(indexLocator: IndexLocator, provider: GraphCo
   let index = indexLocator.getIndexForWorkspaceFolder(workspaceFolder);
 
   try {
-    let dot = await runTerraform(["graph", "-draw-cycles", `-type=${type}`, workspaceFolder.uri.fsPath]);
+    let dot = await runTerraform(workspaceFolder, ["graph", "-draw-cycles", `-type=${type}`, "."], { reportMetric: true });
 
     let processedDot = replaceNodesWithLinks(index, dot);
 
