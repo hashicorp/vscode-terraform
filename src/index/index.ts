@@ -10,6 +10,12 @@ export interface IndexOptions {
     exclude?: string[];
 };
 
+export interface ProviderInfo {
+    type: string;
+    name?: string;
+    version: string;
+};
+
 export class Index {
     private Files = new Map<string, FileIndex>();
     private Sections = new Map<string, Section>();
@@ -131,5 +137,15 @@ export class Index {
 
         ErrorDiagnosticCollection.set(document.uri, diagnostics);
         return index;
+    }
+
+    getProviderDeclarations(): ProviderInfo[] {
+        return this.query("ALL_FILES", { section_type: "provider" }).map((s) => {
+            return {
+                type: s.name,
+                name: s.attributes.get('name'),
+                version: s.attributes.get('version')
+            };
+        });
     }
 }

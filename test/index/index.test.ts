@@ -86,5 +86,27 @@ suite("Index Tests", () => {
                 assert.equal(references.length, 2);
             });
         });
+
+        suite("Higher-order analysis", () => {
+            let [c, errorC] = FileIndex.fromString(vscode.Uri.parse("c.tf"), `provider "aws" { version = "~> 1.0" }`);
+            let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `provider "azure" { version = "~> 2.0" name = "way-cooler" }`);
+
+            test("Extract provider info", () => {
+                let index = new Index(null, a, b, c, d);
+
+                let providers = index.getProviderDeclarations();
+                assert.equal(providers.length, 2);
+
+                let aws = providers.find((p) => p.type === "aws");
+                assert(!!aws);
+                assert(!aws.name);
+                assert.equal(aws.version, "~> 1.0");
+
+                let azure = providers.find((p) => p.type === "azure");
+                assert(!!azure);
+                assert.equal(azure.version, "~> 2.0");
+                assert.equal(azure.name, "way-cooler");
+            });
+        });
     });
 });
