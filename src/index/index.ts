@@ -11,8 +11,8 @@ export interface IndexOptions {
 };
 
 export interface ProviderInfo {
-    type: string;
-    name?: string;
+    name: string;
+    alias?: string;
     version: string;
 };
 
@@ -142,8 +142,8 @@ export class Index {
     getProviderDeclarations(): ProviderInfo[] {
         return this.query("ALL_FILES", { section_type: "provider" }).map((s) => {
             return {
-                type: s.name,
-                name: s.attributes.get('name'),
+                name: s.name,
+                alias: s.attributes.get('alias'),
                 version: s.attributes.get('version')
             };
         });

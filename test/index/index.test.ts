@@ -89,7 +89,7 @@ suite("Index Tests", () => {
 
         suite("Higher-order analysis", () => {
             let [c, errorC] = FileIndex.fromString(vscode.Uri.parse("c.tf"), `provider "aws" { version = "~> 1.0" }`);
-            let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `provider "azure" { version = "~> 2.0" name = "way-cooler" }`);
+            let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `provider "azure" { version = "~> 2.0" alias = "way-cooler" }`);
 
             test("Extract provider info", () => {
                 let index = new Index(null, a, b, c, d);
@@ -97,15 +97,15 @@ suite("Index Tests", () => {
                 let providers = index.getProviderDeclarations();
                 assert.equal(providers.length, 2);
 
-                let aws = providers.find((p) => p.type === "aws");
+                let aws = providers.find((p) => p.name === "aws");
                 assert(!!aws);
-                assert(!aws.name);
+                assert(!aws.alias);
                 assert.equal(aws.version, "~> 1.0");
 
-                let azure = providers.find((p) => p.type === "azure");
+                let azure = providers.find((p) => p.name === "azure");
                 assert(!!azure);
                 assert.equal(azure.version, "~> 2.0");
-                assert.equal(azure.name, "way-cooler");
+                assert.equal(azure.alias, "way-cooler");
             });
         });
     });
