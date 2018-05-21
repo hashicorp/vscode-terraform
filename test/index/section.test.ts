@@ -1,17 +1,8 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
+import * as vscode from 'vscode';
+import { FileIndex } from '../../src/index/file-index';
 import { Section } from '../../src/index/section';
-
-
-const template =
-    `
-resource "aws_s3_bucket" "bucket" {}
-variable "region" {}
-data "template_file" "template" {}
-locals {
-    local = "local-string"
-}
-`;
 
 suite("Index Tests", () => {
     suite("Section tests", () => {
@@ -49,6 +40,32 @@ suite("Index Tests", () => {
             let variable = new Section("variable", null, null, "region", null, null, null);
 
             assert.equal(variable.id("newName"), "var.newName");
+        });
+
+        test("Extracts all toplevel attributes", () => {
+            let template = `
+resource "aws_s3_bucket" "bucket" {
+    bucket = "name"
+
+    logging {
+        enabled = true // should not be indexed
+    }
+}
+
+provider "aws" {
+    version = "~> 1.0"
+}
+`;
+
+            let [fileIndex, diagnostic] = FileIndex.fromString(vscode.Uri.parse("a.tf"), template);
+
+            let resource = fileIndex.sections[0];
+            assert.equal(resource.attributes.size, 1);
+            assert.equal(resource.attributes.get("bucket"), "name");
+
+            let provider = fileIndex.sections[1];
+            assert.equal(provider.attributes.size, 1);
+            assert.equal(provider.attributes.get("version"), "~> 1.0");
         });
     });
 });

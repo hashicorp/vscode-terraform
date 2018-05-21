@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AstItem } from './ast';
+import { AstItem, getMapValue } from './ast';
 import { Reference } from "./reference";
 
 function getKind(sectionType: string): vscode.SymbolKind {
@@ -36,6 +36,8 @@ export class Section extends vscode.SymbolInformation {
   readonly location: vscode.Location;
   readonly node: AstItem;
 
+  readonly attributes: Map<string, string>;
+
   constructor(
     sectionType: string,
     type: string | null,
@@ -53,6 +55,11 @@ export class Section extends vscode.SymbolInformation {
     this.nameLocation = nameLocation;
     this.location = location;
     this.node = node;
+
+    if (node)
+      this.attributes = getMapValue(node.Val, { stripQuotes: true });
+    else
+      this.attributes = new Map<string, string>();
   }
 
   match(options?: QueryOptions): boolean {
