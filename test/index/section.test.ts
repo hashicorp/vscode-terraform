@@ -67,5 +67,19 @@ provider "aws" {
             assert.equal(provider.attributes.size, 1);
             assert.equal(provider.attributes.get("version"), "~> 1.0");
         });
+
+
+        test("Extract no attributes for local sections (they are virtual)", () => {
+            let template = `
+locals {
+    a = 5
+}
+`;
+
+            let [fileIndex, diagnostic] = FileIndex.fromString(vscode.Uri.parse("a.tf"), template);
+
+            let localA = fileIndex.sections[0];
+            assert.equal(localA.attributes.size, 0);
+        });
     });
 });
