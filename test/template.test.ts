@@ -13,4 +13,15 @@ suite("Template Tests", () => {
 
         assert.equal(result, '<html>Hello</html><body>Value</body>');
     });
+
+    test("Renders template with complex variable names", () => {
+        let template = '<html>{{titleOfDocument}}</html><body>{{keyName9}}</body>';
+
+        let result = renderTemplate(template, {
+            titleOfDocument: 'Hello',
+            keyName9: 'Value'
+        });
+
+        assert.equal(result, '<html>Hello</html><body>Value</body>');
+    });
 });
