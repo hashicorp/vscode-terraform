@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { getConfiguration } from './configuration';
 import { Index } from './index/index';
+import { IndexLocator } from './index/index-locator';
 import { Reference } from './index/reference';
 import { Section } from './index/section';
-import { IndexLocator } from './index/index-locator';
 
 export class SectionReferenceCodeLens extends vscode.CodeLens {
   constructor(
@@ -41,7 +41,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
     let fileIndex = index.getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
     if (!fileIndex)
       return [];
-    return fileIndex.sections.map((s) => {
+    return fileIndex.sections.filter((s) => s.sectionType !== "provider").map((s) => {
       let firstLineOfSection = document.lineAt(s.location.range.start.line).range;
       return new SectionReferenceCodeLens(index, firstLineOfSection, s);
     });
