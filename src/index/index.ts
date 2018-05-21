@@ -21,7 +21,7 @@ export class Index {
         indices.map((i) => this.add(i));
     }
 
-    public get name(): string {
+    get name(): string {
         if (!this.folder)
             return "untitled";
 
