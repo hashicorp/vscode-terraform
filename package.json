@@ -205,7 +205,7 @@
     "gulp-typescript": "^4.0.2",
     "gulp-using": "^0.1.1",
     "mkdirp": "^0.5.1",
-    "mocha": "^2.3.3",
+    "mocha": "^5.2.0",
     "pump": "^3.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3",
