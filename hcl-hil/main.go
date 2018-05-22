@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/hashicorp/hcl"
 	hclParser "github.com/hashicorp/hcl/hcl/parser"
@@ -8,6 +10,7 @@ import (
 	"github.com/hashicorp/hil"
 	"github.com/hashicorp/hil/ast"
 	"github.com/hashicorp/hil/parser"
+	"github.com/hashicorp/terraform/terraform"
 )
 
 type hclError struct {
@@ -64,8 +67,24 @@ func parseHilWithPosition(v string, column, line int, filename string) (interfac
 	return result, nil
 }
 
+type goError struct {
+	Err string
+}
+
+func readPlan(v []uint8) (interface{}, *goError) {
+	reader := bytes.NewReader(v)
+
+	plan, err := terraform.ReadPlan(reader)
+	if err != nil {
+		return nil, &goError{Err: err.Error()}
+	}
+
+	return plan, nil
+}
+
 func main() {
 	exports := js.Module.Get("exports")
 	exports.Set("parseHcl", parseHcl)
 	exports.Set("parseHil", parseHilWithPosition)
+	exports.Set("readPlan", readPlan)
 }
