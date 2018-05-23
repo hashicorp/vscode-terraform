@@ -7,7 +7,7 @@
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
-    "vscode": "^1.17.0"
+    "vscode": "^1.23.0"
   },
   "categories": [
     "Programming Languages",
@@ -44,6 +44,10 @@
       {
         "command": "terraform.preview-graph",
         "title": "Terraform: Preview Graph"
+      },
+      {
+        "command": "terraform.show-plan",
+        "title": "Terraform: Show Plan"
       }
     ],
     "languages": [
@@ -64,6 +68,12 @@
         "id": "json",
         "extensions": [
           ".tfstate"
+        ]
+      },
+      {
+        "id": "terraform-planfile",
+        "extensions": [
+          ".tfplan"
         ]
       }
     ],
@@ -179,6 +189,15 @@
       "[terraform]": {
         "editor.formatOnSave": false
       }
+    },
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceLangId == 'terraform-planfile'",
+          "command": "terraform.show-plan",
+          "group": "navigation"
+        }
+      ]
     }
   },
   "scripts": {

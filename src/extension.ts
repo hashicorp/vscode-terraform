@@ -7,16 +7,16 @@ import { DocumentLinkProvider } from './documentlink';
 import { FormattingEditProvider } from './format';
 import { GraphContentProvider, graphCommand } from './graph';
 import { HoverProvider } from './hover';
-import { Index } from './index';
+import { IndexLocator } from './index/index-locator';
 import { DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
 import { Section } from './index/section';
 import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
 import { lintCommand } from './lint';
 import { liveIndex } from './live';
+import { showPlanFileCommand } from './plan-viewer';
 import { RenameProvider } from './rename';
 import * as telemetry from './telemetry';
 import { validateCommand } from './validate';
-import { IndexLocator } from './index/index-locator';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -87,6 +87,14 @@ export function activate(ctx: vscode.ExtensionContext) {
             }
 
             await vscode.window.showTextDocument(section.location.uri, { selection: section.location.range });
+        }),
+        vscode.commands.registerCommand('terraform.show-plan', async (uri?: vscode.Uri) => {
+            if (!uri) {
+                await vscode.window.showErrorMessage('This command requires a URI, invoke it by selecting a .tfplan file');
+                return;
+            }
+
+            showPlanFileCommand(ctx, uri);
         }),
 
         // providers
