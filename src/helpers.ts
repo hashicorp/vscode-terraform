@@ -17,6 +17,19 @@ export function read(path: string): Promise<string> {
   });
 }
 
+export function readBuffer(path: string): Promise<Buffer> {
+  return new Promise<Buffer>((resolve, reject) => {
+    readFile(path, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+
 export function uriFromRelativePath(path: string, folder?: vscode.WorkspaceFolder): vscode.Uri {
   if (!folder) {
     folder = vscode.workspace.workspaceFolders[0];
