@@ -6,3 +6,4 @@ out/
 npm-debug.log
 hcl-hil/*.js
 .terraform
+*.tfplan
