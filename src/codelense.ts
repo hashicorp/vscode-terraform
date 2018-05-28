@@ -5,7 +5,13 @@ import { IndexLocator } from './index/index-locator';
 import { Reference } from './index/reference';
 import { Section } from './index/section';
 
-export class SectionReferenceCodeLens extends vscode.CodeLens {
+export interface TerraformCodeLens {
+  type: "REFERENCE" | "PLAN";
+}
+
+export class SectionReferenceCodeLens extends vscode.CodeLens implements TerraformCodeLens {
+  type: "REFERENCE";
+
   constructor(
     private index: Index,
     range: vscode.Range,
@@ -19,6 +25,39 @@ export class SectionReferenceCodeLens extends vscode.CodeLens {
 
     return {
       title: `${references.length} references`,
+      command: 'terraform.showReferences',
+      tooltip: `Show all references to ${this.section.id}`,
+      arguments: [this.section]
+    } as vscode.Command;
+  }
+}
+
+export class PlanFileCodeLens extends vscode.CodeLens implements TerraformCodeLens {
+  type: "PLAN";
+
+  constructor(
+    private index: Index,
+    range: vscode.Range,
+    readonly section: Section,
+    command?: vscode.Command) {
+    super(range, command);
+  }
+
+  createCommand(): vscode.Command {
+    const plans = [...this.index.getPlans()].filter(([u, p]) => {
+      if (this.section.sectionType === "variable") {
+        return !!p.Vars[this.section.id()];
+      }
+
+      const root = p.Diff.Modules.find((m) => m.Path[0] === "root" && m.Path.length === 1);
+      if (!root)
+        return false;
+
+      return !!root.Resources[this.section.id()];
+    });
+
+    return {
+      title: `${plans.length} plans`,
       command: 'terraform.showReferences',
       tooltip: `Show all references to ${this.section.id}`,
       arguments: [this.section]
