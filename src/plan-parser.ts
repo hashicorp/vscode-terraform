@@ -38,7 +38,7 @@ export interface Diff {
 }
 
 export interface Plan {
-  Diff: any;
+  Diff: Diff;
   Module: any;
   State: any;
   Vars: { [key: string]: any };
