@@ -43,6 +43,8 @@
             command: 'did-click-link',
             data: 'command:terraform.navigate-to-section?' + encodeURIComponent(JSON.stringify(args))
           }, 'file://');
+
+          event.preventDefault();
         }
       });
     }
