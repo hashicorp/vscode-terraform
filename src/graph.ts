@@ -6,7 +6,6 @@ import { IndexLocator } from './index/index-locator';
 import { Section } from './index/section';
 import { runTerraform } from './runner';
 import { loadTemplate } from './template';
-import { workspaceFolderQuickPick } from './workspacefolder-quickpick';
 
 const Viz = require('viz.js');
 const Dot = require('graphlib-dot');
@@ -73,7 +72,7 @@ export async function graphCommand(indexLocator: IndexLocator, provider: GraphCo
     'validate', 'input', 'refresh'];
   let type = await vscode.window.showQuickPick(types, { placeHolder: "Choose graph type" });
 
-  let workspaceFolder = await workspaceFolderQuickPick({ placeHolder: "Choose workspace folder" });
+  let workspaceFolder = await vscode.window.showWorkspaceFolderPick({ placeHolder: "Choose workspace folder" });
   if (!workspaceFolder) {
     vscode.window.showErrorMessage("You need to select a workspace folder");
     return;
