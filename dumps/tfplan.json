@@ -1,0 +1,264 @@
+{
+    "Diff": {
+        "Modules": [
+            {
+                "Path": [
+                    "root"
+                ],
+                "Resources": {
+                    "aws_s3_bucket.agent_bucket": {
+                        "Attributes": {
+                            "hosted_zone_id": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "bucket": {
+                                "Old": "",
+                                "New": "gamma-ap-south-1-mybucket",
+                                "NewComputed": false,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": true,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "logging.564037172.target_prefix": {
+                                "Old": "",
+                                "New": "aprefix/",
+                                "NewComputed": false,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "region": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "acl": {
+                                "Old": "",
+                                "New": "private",
+                                "NewComputed": false,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "bucket_domain_name": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "acceleration_status": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "versioning.#": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "website_domain": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "id": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": true,
+                                "Sensitive": false,
+                                "Type": 2
+                            },
+                            "logging.564037172.target_bucket": {
+                                "Old": "",
+                                "New": "gamma-ap-south-1-mymonitoringbucket",
+                                "NewComputed": false,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "arn": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "logging.#": {
+                                "Old": "",
+                                "New": "1",
+                                "NewComputed": false,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "website_endpoint": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "force_destroy": {
+                                "Old": "",
+                                "New": "false",
+                                "NewComputed": false,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            },
+                            "request_payer": {
+                                "Old": "",
+                                "New": "",
+                                "NewComputed": true,
+                                "NewRemoved": false,
+                                "NewExtra": null,
+                                "RequiresNew": false,
+                                "Sensitive": false,
+                                "Type": 0
+                            }
+                        },
+                        "Destroy": false,
+                        "DestroyDeposed": false,
+                        "DestroyTainted": false,
+                        "Meta": {}
+                    }
+                },
+                "Destroy": false
+            }
+        ]
+    },
+    "Module": {},
+    "State": {
+        "Version": 3,
+        "TFVersion": "0.11.2",
+        "Serial": 0,
+        "Lineage": "438cd016-d6ea-49a3-9e9f-92206db0fe62",
+        "Remote": null,
+        "Backend": null,
+        "Modules": [
+            {
+                "Path": [
+                    "root"
+                ],
+                "Locals": {},
+                "Outputs": {
+                    "iam_user_agent": {
+                        "Sensitive": false,
+                        "Type": "string",
+                        "Value": "smurf"
+                    }
+                },
+                "Resources": {},
+                "Dependencies": []
+            }
+        ]
+    },
+    "Vars": {
+        "stage": "gamma",
+        "ipsum": {
+            "colot": "dolor"
+        },
+        "string": "default-string",
+        "list": [
+            "item1",
+            "item2"
+        ],
+        "map": {
+            "key1": "value1",
+            "key2": "value2"
+        },
+        "region": "ap-south-1"
+    },
+    "Targets": [],
+    "TerraformVersion": "0.11.2",
+    "ProviderSHA256s": {
+        "aws": {
+            "0": 243,
+            "1": 109,
+            "2": 192,
+            "3": 47,
+            "4": 41,
+            "5": 104,
+            "6": 65,
+            "7": 159,
+            "8": 173,
+            "9": 161,
+            "10": 251,
+            "11": 18,
+            "12": 5,
+            "13": 70,
+            "14": 150,
+            "15": 250,
+            "16": 75,
+            "17": 248,
+            "18": 13,
+            "19": 189,
+            "20": 122,
+            "21": 136,
+            "22": 47,
+            "23": 216,
+            "24": 216,
+            "25": 5,
+            "26": 48,
+            "27": 201,
+            "28": 202,
+            "29": 17,
+            "30": 86,
+            "31": 27
+        }
+    },
+    "Backend": null,
+    "Destroy": false
+}
