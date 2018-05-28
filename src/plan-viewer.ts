@@ -42,11 +42,3 @@ export async function showPlanFileCommand(ctx: vscode.ExtensionContext, uri?: vs
         });
     }, undefined, ctx.subscriptions);
 }
-
-export async function showPlanCommand(ctx: vscode.ExtensionContext): Promise<void> {
-    let uris = await vscode.workspace.findFiles("**/*.tfplan");
-    if (uris.length === 0) {
-        await vscode.window.showWarningMessage("No .tfplan files found");
-        return;
-    }
-}
