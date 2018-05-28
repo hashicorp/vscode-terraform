@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan file</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0.2em;
+        }
+
+        section {
+            margin-bottom: 2em;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        table.attributes,
+        dl.variables {
+            margin-left: 2em;
+        }
+
+        .attribute-diff > td,
+        .variable > td {
+            vertical-align: text-top;
+            border-bottom: 1px solid gray;  /* TODO: what about light vs dark? */
+        }
+
+        .attributes .name {
+            font-family: monospace;
+        }        
+
+        .attributes .old-value {
+            text-align: right;
+        }
+
+        .attributes .new-value {
+            text-align: left;
+        }
+
+        .attribute-diff .label {
+            border: 1px solid lightgray;
+            border-radius: 3px;
+            font-style: italic;
+            padding: .25em;
+            margin: .25em auto;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .resource.create > .resource-header::before {
+            content: "+";
+        }
+
+        .resource.destroy > .resource-header::before {
+            content: "-";
+        }        
+
+        .variables .value {
+            text-align: left;
+        }
+
+        .variables pre,
+        .variables ol {
+            margin: 0;
+        }
+
+        .variables dt:not(:first-of-type) {
+            margin-top: 1em;
+        }
+        .variables .name {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>WARNING: This feature is very experimental</h1>
+
+    <section class="Information">
+        <h1>State file information</h1>
+
+        <dl>
+            <dt>Terraform Version</dt>
+            <dd id="terraform-version"></dd>
+        </dl>
+    </section>
+
+    <section class="modules">
+        <h1>Module diff</h1>
+    </section>
+
+    <section class="variables">
+        <h1>Variables</h1>
+
+        <dl class="variables">
+
+        </dl>
+    </section>
+
+    <template id="variable">
+        <dt class="name"><a></a></dt>
+        <dd class="value"></dd>
+    </template>
+
+    <template id="module-diff">
+        <h2 class="module-title">
+            <span class="module-path"></span>
+            <span class="destroy-marker"></span>
+        </h2>
+
+        <section class="resources">
+
+        </section>
+    </template>
+
+    <template id="resource-diff">
+        <section class="resource">
+            <h3 class="resource-header">
+                <a></a>
+            </h3>
+
+            <table class="attributes">
+                <thead>
+                    <tr>
+                        <th>Attribute</th>
+                        <th class="old-value">Old</th>
+                        <th></th>
+                        <th class="new-value">New</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <template id="attribute">
+        <tr class="attribute-diff">
+            <td class="name"></td>
+            <td class="old-value"></td>
+            <td>&#x21D2;</td>
+            <td class="new-value"></td>
+            <td class="requires-new"></td>
+        </tr>
+    </template>
+    <script>
+        (function () {
+            const vscode = acquireVsCodeApi();
+
+            const plan = JSON.parse(`{{plan}}`);
+
+            const moduleTemplate = document.getElementById('module-diff');
+            const resourceTemplate = document.getElementById('resource-diff');
+            const attributeTemplate = document.getElementById('attribute');
+
+            document.getElementById('terraform-version').innerText = plan.TerraformVersion;
+
+            //
+            // render module diffs
+            //
+            for (const module of plan.Diff.Modules) {
+                const moduleNode = document.importNode(moduleTemplate.content, true);
+                moduleNode.querySelector('.module-path').innerText = module.Path.join('.');
+                if (!module.Destroy) {
+                    moduleNode.querySelector('.destroy-marker').classList.add('hidden');
+                }
+
+                for (const resourceId in module.Resources) {
+                    const resourceNode = document.importNode(resourceTemplate.content, true);
+                    const resource = module.Resources[resourceId];
+
+                    if (resource.Destroy)
+                        resourceNode.firstElementChild.classList.add('destroy');
+                    else
+                        resourceNode.firstElementChild.classList.add('create');
+
+                    if (resource.DestroyDeposed)
+                        resourceNode.firstElementChild.classList.add('destroy-deposed');
+
+                    if (resource.DestroyTainted)
+                        resourceNode.firstElementChild.classList.add('destroy-tainted');
+
+                    const anchor = resourceNode.querySelector('.resource-header > a');
+                    anchor.innerText = resourceId;
+                    anchor.setAttribute('href', `terraform-section:${resourceId}`);
+
+                    let attributeIds = [];
+                    for (const id in resource.Attributes) {
+                        attributeIds.push(id);
+                    }
+
+                    attributeIds = attributeIds.sort();
+
+                    for (const attributeId of attributeIds) {
+                        const attribute = resource.Attributes[attributeId];
+                        const attributeNode = document.importNode(attributeTemplate.content, true);
+
+                        // TODO special handling for attributes with newlines in the value
+                        // TODO special handling for lists
+
+                        if (attribute.NewRemoved)
+                            attributeNode.firstElementChild.classList.add('new-removed');
+
+                        if (attribute.RequiresNew) {
+                            attributeNode.querySelector('.requires-new').innerHTML = '<div class="label">requires new</div>';
+                            attributeNode.firstElementChild.classList.add('requires-new');
+                        }
+
+                        if (attribute.Sensitive)
+                            attributeNode.firstElementChild.classList.add('sensitive');
+
+                        attributeNode.querySelector('.name').innerText = attributeId;
+                        if (attribute.Old === "") {
+                            attributeNode.querySelector('.old-value').classList.add('empty');
+                            attributeNode.querySelector('.old-value').innerHTML = '<div class="label">empty</div>';
+                        } else {
+                            attributeNode.querySelector('.old-value').innerHTML = `<pre>${attribute.Old}</pre>`;
+                        }
+
+                        if (attribute.NewComputed) {
+                            attributeNode.firstElementChild.classList.add('new-computed');
+                            attributeNode.querySelector('.new-value').classList.add('computed');
+                            attributeNode.querySelector('.new-value').innerHTML = '<div class="label">computed</div>';
+                        } else {
+                            if (attribute.New === "") {
+                                attributeNode.querySelector('.new-value').classList.add('empty');
+                                attributeNode.querySelector('.new-value').innerHTML = '<div class="label">empty</div>';
+                            } else {
+                                attributeNode.querySelector('.new-value').innerHTML = `<pre>${attribute.New}</pre>`;
+                            }
+
+                            if (attribute.New === attribute.Old) {
+                                attributeNode.firstElementChild.classList.add('unchanged');
+                            }
+                        }
+
+
+                        resourceNode.querySelector('.attributes tbody').appendChild(attributeNode);
+                    }
+
+                    moduleNode.querySelector('.resources').appendChild(resourceNode);
+                }
+
+                document.querySelector('.modules').appendChild(moduleNode);
+            }
+        
+            //
+            // render variables
+            //
+            const variableTemplate = document.getElementById('variable');
+            for (const variableName in plan.Vars) {
+                const value = plan.Vars[variableName];
+
+                const variableNode = document.importNode(variableTemplate.content, true);
+                const nameAnchor = variableNode.querySelector('.name > a');
+                nameAnchor.innerText = variableName;
+                nameAnchor.setAttribute('href', `terraform-section:var.${variableName}`);
+
+                if (typeof value === 'string') {
+                    variableNode.querySelector('.value').innerHTML = `<pre>${value}</pre>`;
+                } else if (Array.isArray(value)) {
+                    let ol = document.createElement('ol');
+                    for (let i = 0; i < value.length; i++) {
+                        // I am ashamed
+                        ol.innerHTML += `<li><pre>${value[i]}</pre></li>`;
+                    }
+                    variableNode.querySelector('.value').appendChild(ol);
+                } else {
+                    // map
+                    let table = document.createElement('table');
+                    table.innerHTML += '<tr><th>Key</th><th>Value</th></tr>';
+                    for (const k in value) {
+                        const v = value[k];
+
+                        // again with the shame
+                        table.innerHTML += `<tr><td><pre>${k}</pre></td><td><pre>${v}</pre></td></tr>`;
+                    }
+                    variableNode.querySelector('.value').appendChild(table);
+                }
+
+                document.querySelector('.variables > dl').appendChild(variableNode);
+            }
+
+            //
+            // handle navigation
+            //
+            const anchors = document.querySelectorAll('a');
+            for (let i = 0; i < anchors.length; i++) {
+                anchors[i].addEventListener('click', (event) => {
+                    const target = event.currentTarget;
+                    const uri = target.attributes['href'].value;
+
+                    const parts = uri.split(':', 2);
+
+                    if (parts[0] === 'terraform-section' && parts[1] !== '') {
+                        const sectionId = parts[1];
+                        console.log(`Navigating to {{workspaceFolderName}:${sectionId}`);
+                        vscode.postMessage({
+                            workspaceFolderName: '{{workspaceFolderName}}',
+                            targetId: sectionId
+                        });
+
+                        event.preventDefault();
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
+
+
+

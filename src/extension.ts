@@ -89,11 +89,6 @@ export function activate(ctx: vscode.ExtensionContext) {
             await vscode.window.showTextDocument(section.location.uri, { selection: section.location.range });
         }),
         vscode.commands.registerCommand('terraform.show-plan', async (uri?: vscode.Uri) => {
-            if (!uri) {
-                await vscode.window.showErrorMessage('This command requires a URI, invoke it by selecting a .tfplan file');
-                return;
-            }
-
             showPlanFileCommand(ctx, uri);
         }),
 
