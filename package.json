@@ -24,7 +24,11 @@
     "onCommand:terraform.validate",
     "onCommand:terraform.lint",
     "onCommand:terraform.reindex",
-    "onCommand:terraform.preview-graph"
+    "onCommand:terraform.preview-graph",
+    "onCommand:terraform.showReferences",
+    "onCommand:terraform.index-document",
+    "onCommand:terraform.navigate-to-section",
+    "onCommand:terraform.show-plan"
   ],
   "main": "./out/src/extension",
   "contributes": {
