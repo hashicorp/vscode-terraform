@@ -1,8 +1,8 @@
-import * as vscode from "vscode";
 import * as ai from 'applicationinsights';
 import * as os from 'os';
-
+import * as vscode from "vscode";
 import { getConfiguration } from "./configuration";
+
 
 class TelemetryReporter extends vscode.Disposable {
   private client: ai.TelemetryClient;
@@ -19,14 +19,10 @@ class TelemetryReporter extends vscode.Disposable {
   }
 
   trackEvent(eventName: string, properties?: { [key: string]: string }, measurements?: { [key: string]: number }) {
-    if (!this.userOptIn)
+    if (!this.userOptIn || !this.client || !eventName) {
+      console.log(`terraform.telemetry: Not sending metric ${eventName}`);
       return;
-
-    if (!this.client)
-      return;
-
-    if (!eventName)
-      return;
+    }
 
     this.client.trackEvent({
       name: `${this.extensionId}/${eventName}`,
@@ -35,18 +31,36 @@ class TelemetryReporter extends vscode.Disposable {
     });
   }
 
+  trackException(eventName: string, exception: Error, properties?: { [key: string]: string }, measurements?: { [key: string]: number }) {
+    if (!this.userOptIn || !this.client || !exception || !eventName) {
+      console.log(`terraform.telemetry: Not sending exception metric ${eventName}/${exception}`);
+      return;
+    }
+
+    if (!properties)
+      properties = {};
+
+    properties.name = `${this.extensionId}/${eventName}`;
+
+    this.client.trackException({
+      exception: exception,
+      properties: properties,
+      measurements: measurements
+    });
+  }
+
   dispose(): Promise<any> {
     return new Promise<any>(resolve => {
       if (this.client) {
-          this.client.flush({
-              callback: () => {
-                  // all data flushed
-                  this.client = undefined;
-                  resolve();
-              }
-          });
+        this.client.flush({
+          callback: () => {
+            // all data flushed
+            this.client = undefined;
+            resolve();
+          }
+        });
       } else {
-          resolve();
+        resolve();
       }
     });
   }
