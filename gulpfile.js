@@ -121,7 +121,7 @@ gulp.task('compile', () =>
     project.src()
         .pipe(sourcemaps.init())
         .pipe(project())
-        .pipe(sourcemaps.write('.', { sourceRoot: './', includeContent: false }))
+        .pipe(sourcemaps.write('.', { sourceRoot: '../', includeContent: false }))
         .pipe(gulp.dest('out'))
 );
 
