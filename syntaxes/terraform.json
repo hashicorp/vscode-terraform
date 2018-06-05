@@ -6,6 +6,10 @@
   "name": "Terraform",
   "patterns": [
     {
+      "match": "^\\s*(})",
+      "name": "punctuation.definition.tag.terraform"
+    },
+    {
       "begin": "#|//",
       "captures": {
         "0": {
