@@ -1,12 +1,11 @@
 var gulp = require('gulp');
-var run = require('gulp-run');
-var pump = require('pump');
-var rename = require('gulp-rename');
 var tslint = require('gulp-tslint');
 var ts = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var using = require('gulp-using');
 var mkdirp = require('mkdirp');
+var path = require('path');
+var log = require('fancy-log');
 
 var spawn = require('child_process').spawn;
 var fs = require('fs');
@@ -121,7 +120,14 @@ gulp.task('compile', () =>
     project.src()
         .pipe(sourcemaps.init())
         .pipe(project())
-        .pipe(sourcemaps.write('.', { sourceRoot: '../', includeContent: false }))
+        .pipe(sourcemaps.mapSources((sourcePath, file) => {
+            let relativeLocation = path.join(path.relative(path.join('out', path.dirname(file.relative)), '.'), 'src/');
+            let relativeLocationToFile = path.join(relativeLocation, sourcePath);
+            return relativeLocationToFile;
+        }))
+        .pipe(sourcemaps.write('.', {
+            includeContent: false
+        }))
         .pipe(gulp.dest('out'))
 );
 
