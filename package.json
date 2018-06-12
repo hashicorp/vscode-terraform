@@ -73,12 +73,6 @@
         "extensions": [
           ".tfstate"
         ]
-      },
-      {
-        "id": "terraform-planfile",
-        "extensions": [
-          ".tfplan"
-        ]
       }
     ],
     "grammars": [
@@ -193,15 +187,6 @@
       "[terraform]": {
         "editor.formatOnSave": false
       }
-    },
-    "menus": {
-      "explorer/context": [
-        {
-          "when": "resourceLangId == 'terraform-planfile'",
-          "command": "terraform.show-plan",
-          "group": "navigation"
-        }
-      ]
     }
   },
   "scripts": {

@@ -2,7 +2,6 @@
 import * as minimatch from 'minimatch';
 import * as vscode from 'vscode';
 import { ErrorDiagnosticCollection } from '../extension';
-import { terraform } from '../plan-parser';
 import { FileIndex } from './file-index';
 import { Reference, ReferenceQueryOptions } from './reference';
 import { QueryOptions, Section } from './section';
@@ -20,7 +19,6 @@ export interface ProviderInfo {
 export class Index {
     private Files = new Map<string, FileIndex>();
     private Sections = new Map<string, Section>();
-    private Plans = new Map<string, terraform.Plan>();
 
     private eventEmitter = new vscode.EventEmitter<void>();
     onDidChange = this.eventEmitter.event;
@@ -58,24 +56,9 @@ export class Index {
         this.eventEmitter.fire();
     }
 
-    addPlan(uri: vscode.Uri, plan: terraform.Plan) {
-        this.Plans.set(uri.toString(), plan);
-    }
-
-    deletePlan(uri: vscode.Uri) {
-        this.Plans.delete(uri.toString());
-    }
-
-    *getPlans(): IterableIterator<[vscode.Uri, terraform.Plan]> {
-        for (let [u, p] of this.Plans) {
-            yield [vscode.Uri.parse(u), p];
-        }
-    }
-
     clear(silent: boolean = true) {
         this.Files.clear();
         this.Sections.clear();
-        this.Plans.clear();
         if (!silent)
             this.eventEmitter.fire();
     }
@@ -154,22 +137,6 @@ export class Index {
 
         ErrorDiagnosticCollection.set(document.uri, diagnostics);
         return index;
-    }
-
-    indexPlanFile(uri: vscode.Uri, plan: terraform.Plan, options: IndexOptions = {}): terraform.Plan {
-        if (options.exclude) {
-            let path = vscode.workspace.asRelativePath(uri).replace('\\', '/');
-            let matches = options.exclude.map((pattern) => {
-                return minimatch(path, pattern);
-            });
-            if (matches.some((v) => v)) {
-                // ignore
-                return;
-            }
-        }
-
-        this.addPlan(uri, plan);
-        return plan;
     }
 
     getProviderDeclarations(): ProviderInfo[] {

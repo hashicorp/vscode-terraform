@@ -5,7 +5,7 @@ import { getConfiguration } from './configuration';
 import { DefinitionProvider } from './definition';
 import { DocumentLinkProvider } from './documentlink';
 import { FormattingEditProvider } from './format';
-import { GraphContentProvider, graphCommand } from './graph';
+import { graphCommand, GraphContentProvider } from './graph';
 import { HoverProvider } from './hover';
 import { IndexLocator } from './index/index-locator';
 import { DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
@@ -13,7 +13,6 @@ import { Section } from './index/section';
 import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
 import { lintCommand } from './lint';
 import { liveIndex } from './live';
-import { showPlanFileCommand } from './plan-viewer';
 import { RenameProvider } from './rename';
 import * as telemetry from './telemetry';
 import { validateCommand } from './validate';
@@ -87,9 +86,6 @@ export function activate(ctx: vscode.ExtensionContext) {
             }
 
             await vscode.window.showTextDocument(section.location.uri, { selection: section.location.range });
-        }),
-        vscode.commands.registerCommand('terraform.show-plan', async (uri?: vscode.Uri) => {
-            showPlanFileCommand(ctx, uri);
         }),
 
         // providers
