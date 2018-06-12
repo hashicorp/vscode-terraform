@@ -26,10 +26,10 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
-                         '  value = "${}"\n' +
-                         '}\n' +
-                         'variable "variable" {}\n' +
-                         'resource "resource_type" "resource" {}'
+                    '  value = "${}"\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
@@ -47,10 +47,10 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
-                         '  value = ""\n' +
-                         '}\n' +
-                         'variable "variable" {}\n' +
-                         'resource "resource_type" "resource" {}'
+                    '  value = ""\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
@@ -72,10 +72,10 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
-                         '  value = "${uuid()}"\n' +
-                         '}\n' +
-                         'variable "variable" {}\n' +
-                         'resource "resource_type" "resource" {}'
+                    '  value = "${uuid()}"\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
@@ -93,10 +93,10 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
-                         '  value = "${uuid()}"\n' +
-                         '}\n' +
-                         'variable "variable" {}\n' +
-                         'resource "resource_type" "resource" {}'
+                    '  value = "${uuid()}"\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
@@ -114,10 +114,10 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
-                         '  value = "${var.map[]}"\n' +
-                         '}\n' +
-                         'variable "variable" {}\n' +
-                         'resource "resource_type" "resource" {}'
+                    '  value = "${var.map[]}"\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
@@ -135,10 +135,10 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
-                         '  value = "${lookup(var.map, )}"\n' +
-                         '}\n' +
-                         'variable "variable" {}\n' +
-                         'resource "resource_type" "resource" {}'
+                    '  value = "${lookup(var.map, )}"\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
@@ -194,8 +194,8 @@ suite("Autocompletion Tests", () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'variable "var" {\n' +
-                         '  \n' +
-                         '}'
+                    '  \n' +
+                    '}'
             });
 
             let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;

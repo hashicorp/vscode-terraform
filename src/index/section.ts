@@ -46,7 +46,7 @@ export class Section extends vscode.SymbolInformation {
     nameLocation: vscode.Location,
     location: vscode.Location,
     node: AstItem) {
-    super(name, getKind(sectionType), "", location)
+    super(name, getKind(sectionType), [sectionType, type].filter((f) => !!f).join("."), location)
 
     this.sectionType = sectionType;
     this.type = type;
