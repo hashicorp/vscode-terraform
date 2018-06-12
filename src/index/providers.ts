@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { Index } from '.';
 import { IndexLocator } from './index-locator';
 
 export class ReferenceProvider implements vscode.ReferenceProvider {
@@ -29,6 +28,6 @@ export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
   provideWorkspaceSymbols(query: string): vscode.SymbolInformation[] {
     let indices = [...this.indexLocator.allIndices(true)];
 
-    return [].concat(indices.map((i) => i.query("ALL_FILES", { name: query })));
+    return [].concat(...indices.map((i) => i.query("ALL_FILES", { name: query })));
   }
 }
