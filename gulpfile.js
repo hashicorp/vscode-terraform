@@ -136,6 +136,14 @@ gulp.task('generate-constants-keyfile', ['create-output-directory'], (done) => {
     fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
 });
 
+
+//
+// watch
+//
+gulp.task('watch', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile'], () => {
+    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'], ['copy-html-templates', 'lint', 'compile']);
+});
+
 //
 // default
 //

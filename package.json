@@ -192,7 +192,7 @@
   "scripts": {
     "clean": "git clean -xdf",
     "compile": "gulp compile",
-    "watch": "tsc -watch -p ./",
+    "watch": "gulp watch",
     "lint": "gulp lint",
     "gulp": "gulp",
     "vscode:prepublish": "npm install --no-save && npm run gulp",

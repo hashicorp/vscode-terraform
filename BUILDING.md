@@ -1,15 +1,14 @@
 # Building
 
-## First build
+## Prerequisites
 
-Building requires docker to generate the `hcl`/`hil`.
+Building requires docker to generate the `hcl`/`hil` wrapper library.
+
+## Getting started
 
 - `cd vscode-terraform`
 - `npm install`
 - `npm run gulp`
-- `code .`
-
-From this point on you usually do not need to run `gulp` again.
 
 ## Developing
 
