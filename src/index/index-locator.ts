@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Index } from '.';
-import { Section } from './section';
 import { Reference } from './reference';
+import { Section } from './section';
 
 
 export class IndexLocator {
@@ -17,11 +17,13 @@ export class IndexLocator {
     constructor(ctx: vscode.ExtensionContext) {
         ctx.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders((e) => this.onChangeWorkspaceFolders(e)));
 
-        vscode.workspace.workspaceFolders.forEach((folder) => {
-            let index = new Index(folder);
-            index.onDidChange(() => this.changeEvent.fire());
-            this.indices.set(folder, index);
-        });
+        if (vscode.workspace.workspaceFolders) {
+            vscode.workspace.workspaceFolders.forEach((folder) => {
+                let index = new Index(folder);
+                index.onDidChange(() => this.changeEvent.fire());
+                this.indices.set(folder, index);
+            });
+        }
     }
 
     getIndexForUri(uri: vscode.Uri): Index {
