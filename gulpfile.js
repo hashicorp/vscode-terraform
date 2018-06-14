@@ -10,6 +10,9 @@ var log = require('fancy-log');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
 
+// load tasks
+require("./tasks/auto-completion-data.task.js");
+
 //
 // generate hcl wrapper
 //
@@ -141,7 +144,6 @@ gulp.task('generate-constants-keyfile', ['create-output-directory'], (done) => {
 
     fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
 });
-
 
 //
 // watch

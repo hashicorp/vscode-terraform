@@ -2,6 +2,7 @@
 .vscode-test/**
 images/**
 out/test/**
+out/tmp/**
 test/**
 templates/**
 src/**
