@@ -118,7 +118,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       if (token) {
         let interpolationCompletions = this.interpolationCompletions(document, position);
         if (interpolationCompletions.length !== 0)
-          return interpolationCompletions;
+          return _.uniq(interpolationCompletions);
       }
     }
 
