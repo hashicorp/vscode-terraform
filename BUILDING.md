@@ -2,7 +2,10 @@
 
 ## Prerequisites
 
-Building requires docker to generate the `hcl`/`hil` wrapper library.
+Building requires `docker` to generate the `hcl`/`hil` wrapper library. You can
+install *docker* from your distributions repositories or from [docker.com](https://www.docker.com).
+
+I personally develop on both Mac and Windows so both work perfectly fine for development.
 
 ## Getting started
 

@@ -6,6 +6,7 @@ var using = require('gulp-using');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var log = require('fancy-log');
+var chalk = require('chalk');
 
 var spawn = require('child_process').spawn;
 var fs = require('fs');
@@ -23,13 +24,24 @@ gulp.task('generate-hcl-container', (done) => {
         '-f', 'hcl-hil/gopherjs.Dockerfile',
         'hcl-hil'], { stdio: 'inherit' });
 
-    docker.on('close', (code) => {
-        if (code !== 0) {
-            done(new Error(`docker failed with code ${code}`));
-        } else {
-            done();
-        }
-    });
+    docker
+        .on('error', (err) => {
+            // this is such a common question by first-time
+            // committers so that we should handle it and
+            // show a proper error message
+
+            log.error(`${chalk.red('ERROR')}: Cannot launch "docker": ${chalk.bold(err)}.`);
+            log.error(` ${chalk.yellow('INFO')}: Docker is required for building, you can install it from https://www.docker.com`);
+
+            throw err;
+        })
+        .on('close', (code) => {
+            if (code !== 0) {
+                done(new Error(`docker failed with code ${code}`));
+            } else {
+                done();
+            }
+        });
 });
 
 gulp.task('generate-transpiled.js', ['generate-hcl-container'], (done) => {
