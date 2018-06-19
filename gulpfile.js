@@ -44,7 +44,7 @@ gulp.task('generate-hcl-container', (done) => {
         });
 });
 
-gulp.task('generate-transpiled.js', ['generate-hcl-container'], (done) => {
+gulp.task('generate-transpiled.js', gulp.series('generate-hcl-container', (done) => {
     var docker = spawn('docker', [
         'run',
         '--rm', 'gopher-hcl-gopherjs'
@@ -60,13 +60,13 @@ gulp.task('generate-transpiled.js', ['generate-hcl-container'], (done) => {
             done();
         }
     });
-});
+}));
 
 gulp.task('create-output-directory', (done) => {
     mkdirp('out/src', done);
 });
 
-gulp.task('generate-closure-container', ['generate-transpiled.js'], (done) => {
+gulp.task('generate-closure-container', gulp.series('generate-transpiled.js', (done) => {
     var docker = spawn('docker', [
         'build',
         '-t', 'gopher-hcl-closure-compiler',
@@ -80,9 +80,9 @@ gulp.task('generate-closure-container', ['generate-transpiled.js'], (done) => {
             done();
         }
     });
-});
+}));
 
-gulp.task('generate-hcl-hil.js', ['create-output-directory', 'generate-closure-container'], (done) => {
+gulp.task('generate-hcl-hil.js', gulp.series('create-output-directory', 'generate-closure-container', (done) => {
     var docker = spawn('docker', [
         'run',
         '--rm', 'gopher-hcl-closure-compiler'
@@ -98,7 +98,7 @@ gulp.task('generate-hcl-hil.js', ['create-output-directory', 'generate-closure-c
             done();
         }
     });
-});
+}));
 
 //
 // copy autocompletion data
@@ -112,11 +112,11 @@ gulp.task('copy-autocompletion-data', () =>
 //
 // copy templates
 //
-gulp.task('copy-html-templates', () => {
+gulp.task('copy-html-templates', () =>
     gulp.src('src/ui/*.html')
         .pipe(using({ prefix: 'Bundling html templates', filesize: true }))
-        .pipe(gulp.dest('out/src/ui'));
-});
+        .pipe(gulp.dest('out/src/ui'))
+);
 
 //
 // tslint
@@ -149,22 +149,22 @@ gulp.task('compile', () =>
 //
 // generate telemetry file (depend on copy-html-templates so that directory is created)
 //
-gulp.task('generate-constants-keyfile', ['create-output-directory'], (done) => {
+gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (done) => {
     let contents = {
         APPINSIGHTS_KEY: process.env.APPINSIGHTS_KEY
     };
 
     fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
-});
+}));
 
 //
 // watch
 //
-gulp.task('watch', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile'], () => {
-    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'], ['copy-html-templates', 'lint', 'compile']);
-});
+gulp.task('watch', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', () => {
+    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'], gulp.series('copy-html-templates', 'lint', 'compile'));
+}));
 
 //
 // default
 //
-gulp.task('default', ['generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', 'lint', 'compile']);
+gulp.task('default', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', 'lint', 'compile'));

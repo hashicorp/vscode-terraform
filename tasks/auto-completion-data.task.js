@@ -19,15 +19,15 @@ gulp.task('get-vim-terraform-completion-data', () => {
     .pipe(gulp.dest("out/tmp/vim-terraform-completion"));
 });
 
-gulp.task('copy-provider-data', ['get-vim-terraform-completion-data'], () => {
+gulp.task('copy-provider-data', gulp.series('get-vim-terraform-completion-data', () => {
   return gulp.src([
     'out/tmp/vim-terraform-completion/vim-terraform-completion-master/community_provider_json/**/*.json',
     'out/tmp/vim-terraform-completion/vim-terraform-completion-master/provider_json/**/*.json'
   ])
     .pipe(gulp.dest('out/src/data/providers'));
-});
+}));
 
-gulp.task('create-provider-index', ['copy-provider-data'], () => {
+gulp.task('create-provider-index', gulp.series('copy-provider-data', () => {
   return gulp.src('out/src/data/providers/**/*.json')
     .pipe(merge({
       fileName: 'provider-index.json',
@@ -115,4 +115,4 @@ gulp.task('create-provider-index', ['copy-provider-data'], () => {
       return data;
     }))
     .pipe(gulp.dest('out/src/data'));
-});
+}));
