@@ -1,3 +1,26 @@
+# 1.2.0
+
+## Fixes
+
+- Browsing workspace symbols works again
+- Remove duplicates when suggesting completions (Closes #98)
+- Show more information when browsing symbols (Closes #92)
+- Add matching syntax for closing brackets [Thanks to @pecigonzalo](https://github.com/pecigonzalo)
+- Do no show code-lenses for provider sections (references were incorrect anyway)
+- Fix typos in README.md [Thanks to @conradolega](https://github.com/conradolega)
+
+## Unimportant news
+
+- Improved build instructions to make contributions easier
+- Upgraded to gulp 4.0.0
+- Use gulp for all build steps and workflows
+
+# 1.1.2 (post-humously documented)
+
+## Fixes & Changes
+
+- Literally nothing
+
 # 1.1.1
 
 ## Fixes
