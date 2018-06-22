@@ -20,6 +20,7 @@ export interface QueryOptions {
   name_position?: vscode.Position;
   position?: vscode.Position;
   id?: string;
+  unique?: boolean;
 }
 
 export class Section extends vscode.SymbolInformation {

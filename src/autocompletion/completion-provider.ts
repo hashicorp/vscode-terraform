@@ -1,14 +1,13 @@
 import * as _ from "lodash";
 import * as vscode from 'vscode';
 import { backwardsSearch } from '../helpers';
-import { Index } from '../index';
 import { AstPosition, getTokenAtPosition } from '../index/ast';
 import { parseHcl } from '../index/hcl-hil';
+import { IndexLocator } from "../index/index-locator";
 import { Section } from "../index/section";
 import { GetKnownFunctions, InterpolationFunctionDefinition } from './builtin-functions';
-import { IFieldDef, allProviders, terraformConfigAutoComplete } from './model';
+import { allProviders, IFieldDef, terraformConfigAutoComplete } from './model';
 import { SectionCompletions } from './section-completions';
-import { IndexLocator } from "../index/index-locator";
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
@@ -89,7 +88,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
 
     let filter = interpolation.substring(filterStartPos).trim();
     if (filter.length === 0) {
-      return this.indexLocator.getIndexForDoc(document).query("ALL_FILES").map((s) => {
+      return this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { unique: true }).map((s) => {
         return this.sectionToCompletionItem(s, needInterpolation);
       }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation)));
     }
@@ -98,7 +97,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       position.translate(0, -filter.length),
       document.getWordRangeAtPosition(position).end
     );
-    return this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { id: filter }).map((s) => {
+    return this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { id: filter, unique: true }).map((s) => {
       return this.sectionToCompletionItem(s, needInterpolation, replaceRange);
     }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation, replaceRange)));
   }

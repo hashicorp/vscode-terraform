@@ -91,7 +91,13 @@ export class Index {
 
         let indices = uris.map((u) => this.Files.get(u)).filter((i) => i != null);
 
-        return indices.reduce((a, i) => a.concat(...i.query(options)), new Array<Section>());
+        let sections = indices.reduce((a, i) => a.concat(...i.query(options)), new Array<Section>());
+        if (options && options.unique) {
+            return sections.filter((section, index, self) => {
+                return self.findIndex((other) => other.id() === section.id()) === index;
+            });
+        }
+        return sections;
     }
 
     queryReferences(uri: "ALL_FILES" | vscode.Uri, options?: ReferenceQueryOptions): Reference[] {

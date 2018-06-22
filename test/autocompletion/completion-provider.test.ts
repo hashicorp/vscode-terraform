@@ -210,5 +210,26 @@ suite("Autocompletion Tests", () => {
             assert(!!shouldHaveCompletion(completions, "description (variable)", vscode.CompletionItemKind.Property), "should have description property");
             assert(!!shouldHaveCompletion(completions, "type (variable)", vscode.CompletionItemKind.Property), "should type property");
         });
+
+        test.only("Remove duplicate auto-completion suggestions", async () => {
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: 'output "output" {\n' +
+                    '  value = "${}"\n' +
+                    '}\n' +
+                    'variable "variable_do_not_show_duplicate_suggestions" {}\n' +
+                    'variable "variable_do_not_show_duplicate_suggestions" {}\n' +
+                    'resource "resource_type" "resource" {}'
+            });
+
+            let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
+            assert(successful, "forced indexing not successful");
+
+            let completions = await executeProvider(doc.uri, new vscode.Position(1, 13));
+            assert.notEqual(completions.items.length, 0, "completions should not be empty");
+
+            let variables = completions.items.filter((i) => i.label === "var.variable_do_not_show_duplicate_suggestions");
+            assert.equal(variables.length, 1);
+        });
     });
 });
