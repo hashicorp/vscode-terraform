@@ -211,7 +211,7 @@ suite("Autocompletion Tests", () => {
             assert(!!shouldHaveCompletion(completions, "type (variable)", vscode.CompletionItemKind.Property), "should type property");
         });
 
-        test.only("Remove duplicate auto-completion suggestions", async () => {
+        test("Remove duplicate auto-completion suggestions", async () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
                 content: 'output "output" {\n' +
