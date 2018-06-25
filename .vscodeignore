@@ -2,7 +2,10 @@
 .vscode-test/**
 images/**
 out/test/**
+out/unit-test/**
 out/tmp/**
+unit-test/**
+images/**
 test/**
 templates/**
 src/**
@@ -10,3 +13,6 @@ src/**
 .gitignore
 tsconfig.json
 tslint.json
+.jshintrc
+.markdownlint.json
+.travis.yml

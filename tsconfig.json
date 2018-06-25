@@ -12,6 +12,7 @@
     },
     "include": [
         "src/**/*",
+        "unit-test/**/*",
         "test/**/*"
     ],
     "exclude": [

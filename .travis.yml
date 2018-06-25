@@ -20,4 +20,4 @@ install:
 
 script:
   - npm run gulp
-  - npm run test
+  - npm run integration-test

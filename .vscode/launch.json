@@ -13,12 +13,12 @@
 			"stopOnEntry": false,
 			"sourceMaps": true,
 			"outFiles": [
-				"${workspaceRoot}/out/src/*.js"
+				"${workspaceRoot}/out/**/*.js"
 			],
 			"preLaunchTask": "gulp: compile"
 		},
 		{
-			"name": "Launch Tests",
+			"name": "Launch Integration Tests",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
@@ -26,6 +26,23 @@
 				"${workspaceRoot}/templates",
 				"--extensionDevelopmentPath=${workspaceRoot}",
 				"--extensionTestsPath=${workspaceRoot}/out/test"
+			],
+			"stopOnEntry": false,
+			"sourceMaps": true,
+			"outFiles": [
+				"${workspaceRoot}/out/**/*.js"
+			],
+			"preLaunchTask": "gulp: compile"
+		},
+		{
+			"name": "Launch Unit Tests",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"${workspaceRoot}/templates",
+				"--extensionDevelopmentPath=${workspaceRoot}",
+				"--extensionTestsPath=${workspaceRoot}/out/unit-test"
 			],
 			"stopOnEntry": false,
 			"sourceMaps": true,

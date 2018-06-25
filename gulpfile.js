@@ -7,6 +7,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var log = require('fancy-log');
 var chalk = require('chalk');
+var mocha = require('gulp-mocha');
 
 var spawn = require('child_process').spawn;
 var fs = require('fs');
@@ -14,9 +15,7 @@ var fs = require('fs');
 // load tasks
 require("./tasks/auto-completion-data.task.js");
 
-//
 // generate hcl wrapper
-//
 gulp.task('generate-hcl-container', (done) => {
     var docker = spawn('docker', [
         'build',
@@ -100,36 +99,28 @@ gulp.task('generate-hcl-hil.js', gulp.series('create-output-directory', 'generat
     });
 }));
 
-//
 // copy autocompletion data
-//
 gulp.task('copy-autocompletion-data', () =>
     gulp.src('src/data/*.json')
         .pipe(using({ prefix: 'Bundling auto-completion data', filesize: true }))
         .pipe(gulp.dest('out/src/data'))
 );
 
-//
 // copy templates
-//
 gulp.task('copy-html-templates', () =>
     gulp.src('src/ui/*.html')
         .pipe(using({ prefix: 'Bundling html templates', filesize: true }))
         .pipe(gulp.dest('out/src/ui'))
 );
 
-//
 // tslint
-//
 gulp.task('lint', () =>
-    gulp.src('src/**/*.ts')
+    gulp.src(['src/**/*.ts', 'test/**/*.ts', 'unit-test/**/*.ts'])
         .pipe(tslint())
         .pipe(tslint.report())
 );
 
-//
 // compile
-//
 var project = ts.createProject('tsconfig.json');
 gulp.task('compile', () =>
     project.src()
@@ -146,9 +137,7 @@ gulp.task('compile', () =>
         .pipe(gulp.dest('out'))
 );
 
-//
 // generate telemetry file (depend on copy-html-templates so that directory is created)
-//
 gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (done) => {
     let contents = {
         APPINSIGHTS_KEY: process.env.APPINSIGHTS_KEY
@@ -157,14 +146,33 @@ gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (
     fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
 }));
 
-//
+// unit tests
+// WARNING: unit tests do not have good coverage yet, also run integration tests
+function test() {
+    return gulp.src(['unit-test/**/*.ts'], { read: false })
+        .pipe(mocha({
+            reporter: 'spec',
+            ui: 'tdd',
+            require: 'ts-node/register'
+        }));
+}
+
+gulp.task(test);
+
+gulp.task('test-no-fail', () => {
+    return test()
+        .on('error', (err) => {
+            log.error(`${chalk.red('ERROR')}: ${err.message}`);
+        });
+});
+
+// compile
+gulp.task('build', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', 'compile'));
+
 // watch
-//
-gulp.task('watch', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', () => {
-    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'], gulp.series('copy-html-templates', 'lint', 'compile'));
+gulp.task('watch', gulp.series('build', () => {
+    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts', 'unit-test/**/*.ts'], gulp.series('copy-html-templates', 'lint', 'test-no-fail', 'compile'));
 }));
 
-//
 // default
-//
-gulp.task('default', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates', 'generate-constants-keyfile', 'lint', 'compile'));
+gulp.task('default', gulp.series('build', 'lint', 'test'));

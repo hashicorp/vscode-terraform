@@ -6,5 +6,25 @@
 	"search.exclude": {
 		"out": true
 	},
-	"terraform.templateDirectory": "templates"
+	"terraform.templateDirectory": "templates",
+	"mocha.files.glob": "unit-test/**/*.test.ts",
+	"mocha.options": {
+		"ui": "tdd",
+		"reporter": "spec"
+	},
+	"cSpell.words": [
+		"reindex",
+		"terraform",
+		"Hashicorp",
+		"Hashicorp's",
+		"vsce",
+		"tflint",
+		"tfstate",
+		"tfvars",
+		"graphlib",
+		"tfsmurf"
+	],
+	"mocha.requires": [
+		"ts-node/register"
+	]
 }
