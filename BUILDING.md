@@ -7,17 +7,32 @@ install *docker* from your distributions repositories or from [docker.com](https
 
 I personally develop on both Mac and Windows so both work perfectly fine for development.
 
-## Getting started
+## Quick Start
 
 - `cd vscode-terraform`
 - `npm install`
-- `npm run gulp`
+- `npm install -g gulp-cli`
+- `code .`
+- Run default build task:
+  - *Win*: `Ctrl + Shift + B`
+  - *Mac*: `Cmd + Shift + B`
 
 ## Developing
 
 My preferred way of developing the plugin is in Visual Studio Code, but you can also do everything on the command line if you want to:
 
 ### Visual Studio Code
+
+The automatic task detection fails in Visual Studio Code if unless you have run `npm install` *before* launching *code*.
+
+Run the following commands to get started:
+
+- `cd vscode-terraform`
+- `npm install`
+- `npm install -g gulp-cli`
+- `code .`
+
+Now you can proceed as follows:
 
 - Run the command *Tasks: Run Build Task* to start the compiler in watch mode (same as `npm run watch`)
 - There are three launch/debug configurations:
