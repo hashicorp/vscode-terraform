@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { Index } from './index';
 import { IndexLocator } from './index/index-locator';
 
 export class RenameProvider implements vscode.RenameProvider {
@@ -20,11 +19,14 @@ export class RenameProvider implements vscode.RenameProvider {
     let edit = new vscode.WorkspaceEdit;
     edit.replace(document.uri, section.nameLocation.range, newName);
 
+    const oldId = section.id();
     const newId = section.id(newName);
     references.forEach((reference) => {
       if (!reference.nameRange) {
         // references in .tf
-        edit.replace(reference.location.uri, reference.location.range, newId);
+        const range = reference.location.range;
+        const end = range.end.with({ character: range.start.character + oldId.length });
+        edit.replace(reference.location.uri, range.with({ end: end }), newId);
       } else {
         // references in .tfvars
         edit.replace(reference.location.uri, reference.nameRange, newName);
