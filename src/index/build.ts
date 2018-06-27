@@ -110,6 +110,9 @@ function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Itera
         if (expr.Args) {
             yield* walkHil(uri, expr.Args as any[], currentSection);
         }
+        if (expr.Op) {
+            yield* walkHil(uri, expr.Exprs as any[], currentSection);
+        }
     }
 }
 

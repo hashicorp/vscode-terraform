@@ -181,6 +181,41 @@ suite("Index Tests", () => {
             assert.equal(d.range.end.line, 1);
             assert.equal(d.range.end.character, 23);
         });
+
+        test("Collects references in math expressions", () => {
+            let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.var1 * var.var2 * 5 * var.var3}" }');
+
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "resource");
+
+            assert.equal(s.references.length, 3);
+
+            let v1 = s.references.find((r) => r.parts[0] === "var1");
+            assert(v1, "var1 not found");
+            assert.equal(v1.type, "variable");
+            assert.equal(v1.location.range.start.line, 0);
+            assert.equal(v1.location.range.start.character, 53);
+            assert.equal(v1.location.range.end.line, 0);
+            assert.equal(v1.location.range.end.character, 61);
+
+            let v2 = s.references.find((r) => r.parts[0] === "var2");
+            assert(v2, "var2 not found");
+            assert.equal(v2.type, "variable");
+            assert.equal(v2.location.range.start.line, 0);
+            assert.equal(v2.location.range.start.character, 64);
+            assert.equal(v2.location.range.end.line, 0);
+            assert.equal(v2.location.range.end.character, 72);
+
+            let v3 = s.references.find((r) => r.parts[0] === "var3");
+            assert(v3, "var3 not found");
+            assert.equal(v3.type, "variable");
+            assert.equal(v3.location.range.start.line, 0);
+            assert.equal(v3.location.range.start.character, 79);
+            assert.equal(v3.location.range.end.line, 0);
+            assert.equal(v3.location.range.end.character, 87);
+        });
     });
 
     suite("handles .tfvars syntax", () => {
