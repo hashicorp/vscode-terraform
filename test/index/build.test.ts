@@ -1,11 +1,14 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import * as vscode from 'vscode';
 import { FileIndex } from '../../src/index/file-index';
+import { Location } from '../../src/index/location';
+import { Position } from '../../src/index/position';
+import { Range } from '../../src/index/range';
+import { Uri } from '../../src/index/uri';
 
 suite("Index Tests", () => {
     suite("Build Tests", () => {
-        const uri = vscode.Uri.parse("untitled:file");
+        const uri = Uri.parse("untitled:file");
 
         test("Collects typed sections", () => {
             let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" {}`);
@@ -15,15 +18,15 @@ suite("Index Tests", () => {
             let s = index.sections[0];
             assert.equal(s.sectionType, "resource");
 
-            let typeLocation = new vscode.Location(uri, new vscode.Range(0, 10, 0, 23));
+            let typeLocation = new Location(uri, new Range(new Position(0, 10), new Position(0, 23)));
             assert.equal(s.type, "aws_s3_bucket");
             assert.deepEqual(s.typeLocation, typeLocation, "type location");
 
-            let nameLocation = new vscode.Location(uri, new vscode.Range(0, 26, 0, 32));
+            let nameLocation = new Location(uri, new Range(new Position(0, 26), new Position(0, 32)));
             assert.equal(s.name, "bucket");
             assert.deepEqual(s.nameLocation, nameLocation, "name location");
 
-            let location = new vscode.Location(uri, new vscode.Range(0, 0, 0, 35));
+            let location = new Location(uri, new Range(new Position(0, 0), new Position(0, 35)));
             assert.deepEqual(s.location, location, "section location");
         });
 
@@ -33,7 +36,7 @@ suite("Index Tests", () => {
             assert.equal(index.sections.length, 1);
             assert.equal(index.sections[0].sectionType, "variable");
 
-            let nameLocation = new vscode.Location(uri, new vscode.Range(0, 10, 0, 16));
+            let nameLocation = new Location(uri, new Range(new Position(0, 10), new Position(0, 16)));
             assert.equal(index.sections[0].name, "region");
             assert.deepEqual(index.sections[0].nameLocation, nameLocation, "name location");
         });
@@ -219,7 +222,7 @@ suite("Index Tests", () => {
     });
 
     suite("handles .tfvars syntax", () => {
-        const uri = vscode.Uri.parse("untitled:file");
+        const uri = Uri.parse("untitled:file");
 
         test("Handle map", () => {
             let [index, error] = FileIndex.fromString(uri, 'amis = { A = "B" }');

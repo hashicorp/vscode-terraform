@@ -1,33 +1,33 @@
-import * as vscode from 'vscode';
 import { Ast, AstItem, AstVal, NodeType, VisitedNode, walk } from './ast';
+import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { FileIndex } from './file-index';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
+import { Location } from './location';
+import { Position } from './position';
+import { Range } from './range';
 import { Reference } from './reference';
 import { Section } from './section';
+import { Uri } from './uri';
 
 function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);
 }
 
-function createPosition(pos: any, columnDelta: number = 0): vscode.Position {
-    return new vscode.Position(pos.Line - 1, pos.Column - 1 + columnDelta);
+function createPosition(pos: any, columnDelta: number = 0): Position {
+    return new Position(pos.Line - 1, pos.Column - 1 + columnDelta);
 }
 
-function createRange(start: any, end: any): vscode.Range {
-    return new vscode.Range(createPosition(start), createPosition(end));
+function createRange(start: any, end: any): Range {
+    return new Range(createPosition(start), createPosition(end));
 }
 
-function createLocation(uri: vscode.Uri): vscode.Location {
-    return null;
-}
-
-function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
+function sectionFromKeyItemNode(uri: Uri, item: any): Section {
     const isTypedSection = item.Keys.length === 3;
 
     const sectionType = item.Keys[0].Token.Text;
 
     let type: string = null;
-    let typeLoc: vscode.Location = null;
+    let typeLoc: Location = null;
 
     // typed section has name at index 2, untyped at 1
     let nameIndex = 1;
@@ -38,55 +38,52 @@ function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
         type = stripQuotes(item.Keys[1].Token.Text);
         const typeStart = createPosition(item.Keys[1].Token.Pos, 1);
         const typeEnd = typeStart.translate({ characterDelta: type.length });
-        typeLoc = new vscode.Location(uri, new vscode.Range(typeStart, typeEnd));
+        typeLoc = new Location(uri, new Range(typeStart, typeEnd));
     }
 
     const name = stripQuotes(item.Keys[nameIndex].Token.Text);
     const nameStart = createPosition(item.Keys[nameIndex].Token.Pos, 1);
     const nameStop = nameStart.translate({ characterDelta: name.length });
-    const nameLoc = new vscode.Location(uri, new vscode.Range(nameStart, nameStop));
+    const nameLoc = new Location(uri, new Range(nameStart, nameStop));
 
-    const location = new vscode.Location(uri, createRange(item.Keys[0].Token.Pos, item.Val.Rbrace));
+    const location = new Location(uri, createRange(item.Keys[0].Token.Pos, item.Val.Rbrace));
 
     return new Section(sectionType, type, typeLoc, name, nameLoc, location, item);
 }
 
-function endPosFromVal(val: AstVal): vscode.Position {
+function endPosFromVal(val: AstVal): Position {
     if (val.Rbrace || val.Rbrack)
         return createPosition(val.Rbrace || val.Rbrack, 1); // for maps/lists
 
     return createPosition(val.Token.Pos, val.Token.Text.length); // for strings
 }
 
-function sectionFromSingleKeyItemNode(uri: vscode.Uri, item: any): Section {
-    let type: string = null;
-    let typeLoc: vscode.Location = null;
-
+function sectionFromSingleKeyItemNode(uri: Uri, item: any): Section {
     const name = item.Keys[0].Token.Text;
     const nameStart = createPosition(item.Keys[0].Token.Pos);
     const nameStop = nameStart.translate({ characterDelta: name.length });
-    const nameLoc = new vscode.Location(uri, new vscode.Range(nameStart, nameStop));
+    const nameLoc = new Location(uri, new Range(nameStart, nameStop));
 
-    const location = new vscode.Location(uri, new vscode.Range(createPosition(item.Keys[0].Token.Pos), endPosFromVal(item.Val)));
+    const location = new Location(uri, new Range(createPosition(item.Keys[0].Token.Pos), endPosFromVal(item.Val)));
 
     return new Section("local", null, null, name, nameLoc, location, item);
 }
 
-function assignmentFromItemNode(uri: vscode.Uri, item: any): Reference {
+function assignmentFromItemNode(uri: Uri, item: any): Reference {
     const name = item.Keys[0].Token.Text;
 
     const start = createPosition(item.Keys[0].Token.Pos);
     const end = endPosFromVal(item.Val);
 
-    const location = new vscode.Location(uri, new vscode.Range(start, end));
+    const location = new Location(uri, new Range(start, end));
 
     let reference = new Reference(`var.${name}`, location, null);
-    reference.nameRange = new vscode.Range(start, start.translate({ characterDelta: name.length }));
+    reference.nameRange = new Range(start, start.translate({ characterDelta: name.length }));
 
     return reference;
 }
 
-function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Iterable<Reference> {
+function* walkHil(uri: Uri, exprs: any[], currentSection: Section): Iterable<Reference> {
     for (let expr of exprs) {
         if (expr.Name && expr.Posx) {
             let name = expr.Name as string;
@@ -95,9 +92,9 @@ function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Itera
             if (name.startsWith("self.") || name.startsWith("count.")) {
                 return;
             }
-            let range = new vscode.Range(expr.Posx.Line - 1, expr.Posx.Column - 1,
-                expr.Posx.Line - 1, expr.Posx.Column - 1 + name.length);
-            let location = new vscode.Location(uri, range);
+            let range = new Range(new Position(expr.Posx.Line - 1, expr.Posx.Column - 1),
+                new Position(expr.Posx.Line - 1, expr.Posx.Column - 1 + name.length));
+            let location = new Location(uri, range);
             let reference = new Reference(expr.Name, location, currentSection);
             yield reference;
         }
@@ -116,7 +113,7 @@ function* walkHil(uri: vscode.Uri, exprs: any[], currentSection: Section): Itera
     }
 }
 
-function extractReferencesFromHil(uri: vscode.Uri, token: any, currentSection: Section): [Reference[], ParseError] {
+function extractReferencesFromHil(uri: Uri, token: any, currentSection: Section): [Reference[], ParseError] {
     let [hil, error] = parseHilWithPosition(token.Text, token.Pos.Column, token.Pos.Line, token.Filename);
 
     if (error) {
@@ -145,7 +142,7 @@ function childOfLocalsSection(p: VisitedNode[]): boolean {
     return item.Keys[0].Token.Text === "locals";
 }
 
-export function build(uri: vscode.Uri, ast: Ast): FileIndex {
+export function build(uri: Uri, ast: Ast): FileIndex {
     if (!ast) {
         throw "ast cannot be null";
     }
@@ -220,14 +217,14 @@ export function build(uri: vscode.Uri, ast: Ast): FileIndex {
                 let [references, error] = extractReferencesFromHil(uri, node.Token, currentSection);
 
                 if (error) {
-                    const range = new vscode.Range(error.line, error.column, error.line, node.Token.Pos.Column - 1 + node.Token.Text.length);
+                    const range = new Range(new Position(error.line, error.column), new Position(error.line, node.Token.Pos.Column - 1 + node.Token.Text.length));
                     let message = error.message;
                     if (!message) {
                         message = "Could not parse expression";
                     }
 
                     message = message.replace(/^parse error at undefined:[0-9]+:[0-9]+:\s+/, '');
-                    const diagnostic = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
+                    const diagnostic = new Diagnostic(range, message, DiagnosticSeverity.ERROR);
                     result.diagnostics.push(diagnostic);
                     return;
                 }

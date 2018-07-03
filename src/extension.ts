@@ -10,6 +10,7 @@ import { HoverProvider } from './hover';
 import { IndexLocator } from './index/index-locator';
 import { DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
 import { Section } from './index/section';
+import { to_vscode_Range, to_vscode_Uri } from './index/vscode-adapter';
 import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
 import { lintCommand } from './lint';
 import { liveIndex } from './live';
@@ -85,7 +86,7 @@ export function activate(ctx: vscode.ExtensionContext) {
                 return;
             }
 
-            await vscode.window.showTextDocument(section.location.uri, { selection: section.location.range });
+            await vscode.window.showTextDocument(to_vscode_Uri(section.location.uri), { selection: to_vscode_Range(section.location.range) });
         }),
 
         // providers

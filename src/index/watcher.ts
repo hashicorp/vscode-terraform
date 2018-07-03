@@ -3,6 +3,7 @@ import { getConfiguration } from '../configuration';
 import { ErrorDiagnosticCollection, outputChannel } from '../extension';
 import { Index } from './index';
 import { IndexLocator } from './index-locator';
+import { from_vscode_Uri } from './vscode-adapter';
 
 async function updateDocument(index: Index, uri: vscode.Uri): Promise<void> {
   return await vscode.workspace.openTextDocument(uri).then((doc) => {
@@ -44,7 +45,7 @@ export function createWorkspaceWatcher(indexLocator: IndexLocator): vscode.FileS
   watcher.onDidChange((uri) => { update(indexLocator, uri) });
   watcher.onDidCreate((uri) => { update(indexLocator, uri) });
   watcher.onDidDelete((uri) => {
-    indexLocator.getIndexForUri(uri).delete(uri)
+    indexLocator.getIndexForUri(uri).delete(from_vscode_Uri(uri));
   });
   return watcher;
 }

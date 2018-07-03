@@ -1,8 +1,8 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import * as vscode from 'vscode';
 import { FileIndex } from '../../src/index/file-index';
 import { Section } from '../../src/index/section';
+import { Uri } from '../../src/index/uri';
 
 suite("Index Tests", () => {
     suite("Section tests", () => {
@@ -57,7 +57,7 @@ provider "aws" {
 }
 `;
 
-            let [fileIndex, diagnostic] = FileIndex.fromString(vscode.Uri.parse("a.tf"), template);
+            let [fileIndex, diagnostic] = FileIndex.fromString(Uri.parse("a.tf"), template);
 
             let resource = fileIndex.sections[0];
             assert.equal(resource.attributes.size, 1);
@@ -76,7 +76,7 @@ locals {
 }
 `;
 
-            let [fileIndex, diagnostic] = FileIndex.fromString(vscode.Uri.parse("a.tf"), template);
+            let [fileIndex, diagnostic] = FileIndex.fromString(Uri.parse("a.tf"), template);
 
             let localA = fileIndex.sections[0];
             assert.equal(localA.attributes.size, 0);

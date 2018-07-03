@@ -1,29 +1,19 @@
-import * as vscode from 'vscode';
 import { AstItem, getMapValue } from './ast';
+import { Location } from './location';
+import { Position } from './position';
 import { Reference } from "./reference";
-
-function getKind(sectionType: string): vscode.SymbolKind {
-  switch (sectionType) {
-    case "resource": return vscode.SymbolKind.Interface;
-    case "output": return vscode.SymbolKind.Property;
-    case "variable": return vscode.SymbolKind.Variable;
-    case "local": return vscode.SymbolKind.Variable;
-  }
-
-  return null;
-}
 
 export interface QueryOptions {
   name?: string;
   section_type?: string;
   type?: string;
-  name_position?: vscode.Position;
-  position?: vscode.Position;
+  name_position?: Position;
+  position?: Position;
   id?: string;
   unique?: boolean;
 }
 
-export class Section extends vscode.SymbolInformation {
+export class Section {
   references: Reference[] = [];
 
   // variable, resource or data (for example)
@@ -31,10 +21,10 @@ export class Section extends vscode.SymbolInformation {
 
   // optional: but might for example be "aws_s3_bucket"
   readonly type?: string;
-  readonly typeLocation?: vscode.Location;
+  readonly typeLocation?: Location;
   readonly name: string;
-  readonly nameLocation: vscode.Location;
-  readonly location: vscode.Location;
+  readonly nameLocation: Location;
+  readonly location: Location;
   readonly node: AstItem;
 
   readonly attributes: Map<string, string>;
@@ -42,12 +32,11 @@ export class Section extends vscode.SymbolInformation {
   constructor(
     sectionType: string,
     type: string | null,
-    typeLocation: vscode.Location | null,
+    typeLocation: Location | null,
     name: string,
-    nameLocation: vscode.Location,
-    location: vscode.Location,
+    nameLocation: Location,
+    location: Location,
     node: AstItem) {
-    super(name, getKind(sectionType), [sectionType, type].filter((f) => !!f).join("."), location)
 
     this.sectionType = sectionType;
     this.type = type;

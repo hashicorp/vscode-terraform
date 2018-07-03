@@ -5,6 +5,7 @@ import { ErrorDiagnosticCollection } from '../extension';
 import { FileIndex } from './file-index';
 import { Reference, ReferenceQueryOptions } from './reference';
 import { QueryOptions, Section } from './section';
+import { Uri } from './uri';
 
 export interface IndexOptions {
     exclude?: string[];
@@ -44,7 +45,7 @@ export class Index {
         this.eventEmitter.fire();
     }
 
-    delete(uri: vscode.Uri) {
+    delete(uri: Uri) {
         let index = this.get(uri);
         if (index) {
             index.sections.forEach((section) => {
@@ -63,7 +64,7 @@ export class Index {
             this.eventEmitter.fire();
     }
 
-    indices(uri: "ALL_FILES" | vscode.Uri): FileIndex[] {
+    indices(uri: "ALL_FILES" | Uri): FileIndex[] {
         if (uri === "ALL_FILES")
             return [...this.Files.values()];
         else {
@@ -74,7 +75,7 @@ export class Index {
         }
     }
 
-    get(uri: vscode.Uri): FileIndex | null {
+    get(uri: Uri): FileIndex | null {
         return this.Files.get(uri.toString());
     }
 
@@ -82,7 +83,7 @@ export class Index {
         return this.Sections.get(id);
     }
 
-    query(uri: "ALL_FILES" | vscode.Uri, options?: QueryOptions): Section[] {
+    query(uri: "ALL_FILES" | Uri, options?: QueryOptions): Section[] {
         if (options && (options.name_position || options.position) && uri === "ALL_FILES") {
             throw "Cannot use ALL_FILES when querying for position or name_position";
         }
@@ -100,7 +101,7 @@ export class Index {
         return sections;
     }
 
-    queryReferences(uri: "ALL_FILES" | vscode.Uri, options?: ReferenceQueryOptions): Reference[] {
+    queryReferences(uri: "ALL_FILES" | Uri, options?: ReferenceQueryOptions): Reference[] {
         if (options.position && uri === "ALL_FILES") {
             throw "Cannot use ALL_FILES when querying for position";
         }
@@ -109,7 +110,7 @@ export class Index {
     }
 
     getOrIndexDocument(document: vscode.TextDocument, options: IndexOptions = {}): FileIndex {
-        let index = this.get(document.uri);
+        let index = this.Files.get(document.uri.toString());
         if (index) {
             return index;
         }
@@ -129,15 +130,21 @@ export class Index {
             }
         }
 
-        let [index, diagnostic] = FileIndex.fromString(document.uri, document.getText());
+        let [index, diagnostic] = FileIndex.fromString(Uri.parse(document.uri.toString()), document.getText());
         let diagnostics: vscode.Diagnostic[] = [];
 
         if (diagnostic) {
-            diagnostics.push(diagnostic);
+            const range = new vscode.Range(diagnostic.range.start.line, diagnostic.range.start.character,
+                diagnostic.range.end.line, diagnostic.range.end.character);
+            diagnostics.push(new vscode.Diagnostic(range, diagnostic.message, vscode.DiagnosticSeverity.Error));  // TODO: actually map severity
         }
 
         if (index) {
-            diagnostics.push(...index.diagnostics);
+            diagnostics.push(...index.diagnostics.map((d) => {
+                const range = new vscode.Range(d.range.start.line, d.range.start.character,
+                    d.range.end.line, d.range.end.character);
+                return new vscode.Diagnostic(range, d.message, vscode.DiagnosticSeverity.Error);  // TODO: actually map severity
+            }));
             this.add(index);
         }
 

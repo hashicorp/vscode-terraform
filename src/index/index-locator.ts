@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Index } from '.';
 import { Reference } from './reference';
 import { Section } from './section';
+import { to_vscode_Uri } from './vscode-adapter';
 
 
 export class IndexLocator {
@@ -35,11 +36,11 @@ export class IndexLocator {
     }
 
     getIndexForSection(section: Section): Index {
-        return this.getIndexForUri(section.location.uri);
+        return this.getIndexForUri(to_vscode_Uri(section.location.uri));
     }
 
     getIndexForReference(reference: Reference): Index {
-        return this.getIndexForUri(reference.location.uri);
+        return this.getIndexForUri(to_vscode_Uri(reference.location.uri));
     }
 
     getIndexForWorkspaceFolder(folder: vscode.WorkspaceFolder): Index {

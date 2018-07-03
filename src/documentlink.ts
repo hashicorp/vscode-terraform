@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { findResourceFormat } from './autocompletion/model';
 import { getConfiguration } from './configuration';
-import { Index } from './index';
 import { IndexLocator } from './index/index-locator';
+import { to_vscode_Range } from './index/vscode-adapter';
 
 export class DocumentLinkProvider implements vscode.DocumentLinkProvider {
     constructor(private indexLocator: IndexLocator) { }
@@ -19,7 +19,7 @@ export class DocumentLinkProvider implements vscode.DocumentLinkProvider {
             if (!doc)
                 return null;
 
-            return new vscode.DocumentLink(s.typeLocation.range, vscode.Uri.parse(doc.url));
+            return new vscode.DocumentLink(to_vscode_Range(s.typeLocation.range), vscode.Uri.parse(doc.url));
         }).filter((d) => d != null);
     }
 };
