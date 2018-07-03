@@ -194,7 +194,7 @@
     "compile": "gulp compile",
     "watch": "gulp watch",
     "gulp": "gulp",
-    "vscode:prepublish": "npm install --no-save && npm run gulp",
+    "vscode:prepublish": "npm install --no-save && npm run gulp -- --require-appinsights-key",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "gulp test",
     "integration-test": "CODE_TESTS_WORKSPACE=templates node ./node_modules/vscode/bin/test",

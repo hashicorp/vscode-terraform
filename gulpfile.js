@@ -144,7 +144,7 @@ gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (
     };
 
     if (!contents.APPINSIGHTS_KEY) {
-        if (process.env.CI) {
+        if (process.env.CI || process.argv.indexOf("--require-appinsights-key") !== -1) {
             log.error(`${chalk.red('ERROR')}: AppInsights Key missing in CI build`);
             done(new Error("AppInsights Key missing in CI build, set APPINSIGHTS_KEY environment variable"));
         } else {
