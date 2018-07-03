@@ -1,20 +1,22 @@
-import * as vscode from 'vscode';
+import { Location } from './location';
+import { Position } from './position';
+import { Range } from './range';
 import { QueryOptions, Section } from './section';
 
 export interface ReferenceQueryOptions {
   target?: string | Section;
-  position?: vscode.Position;
+  position?: Position;
 }
 
 export class Reference {
   readonly type: string;
   readonly parts: string[];
-  nameRange: vscode.Range; // only for .tfvars assignments
-  readonly location: vscode.Location;
+  nameRange: Range; // only for .tfvars assignments
+  readonly location: Location;
   readonly targetId: string;
   readonly section: Section; // in .tfvars files this is null
 
-  constructor(expr: string, location: vscode.Location, section: Section) {
+  constructor(expr: string, location: Location, section: Section) {
     let parts = expr.split('.');
 
     this.type = (parts[0] === "var") ? "variable" : parts[0];

@@ -15,7 +15,7 @@
 			"type": "gulp",
 			"task": "default",
 			"problemMatcher": [
-				"$gulp-tsc",
+				"$tsc",
 				"$tslint5"
 			]
 		},
@@ -29,7 +29,7 @@
 			"task": "watch",
 			"isBackground": true,
 			"problemMatcher": [
-				"$gulp-tsc",
+				"$tsc",
 				"$tslint5"
 			]
 		}

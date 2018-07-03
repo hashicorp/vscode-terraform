@@ -4,6 +4,7 @@ import { Index } from './index/index';
 import { IndexLocator } from './index/index-locator';
 import { Reference } from './index/reference';
 import { Section } from './index/section';
+import { to_vscode_Range } from './index/vscode-adapter';
 
 export interface TerraformCodeLens {
   type: "REFERENCE" | "PLAN";
@@ -75,15 +76,15 @@ export class ReferenceQuickPick implements vscode.QuickPickItem {
     } else {
       // tfvars
       this.label = "(assignment)";
-      this.description = reference.location.uri.path;
+      this.description = vscode.Uri.parse(reference.location.uri.toString()).path;
     }
   }
 
   goto() {
-    vscode.window.showTextDocument(this.reference.location.uri, {
+    vscode.window.showTextDocument(vscode.Uri.parse(this.reference.location.uri.toString()), {
       preserveFocus: true,
       preview: true,
-      selection: this.reference.location.range
+      selection: to_vscode_Range(this.reference.location.range)
     });
   }
 }

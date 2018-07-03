@@ -1,15 +1,18 @@
-import * as vscode from 'vscode';
 import { build } from './build';
+import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { parseHcl } from './hcl-hil';
+import { Position } from './position';
+import { Range } from './range';
 import { Reference, ReferenceQueryOptions } from './reference';
 import { QueryOptions, Section } from './section';
+import { Uri } from './uri';
 
 export class FileIndex {
   sections: Section[] = [];
   assignments: Reference[] = [];
-  diagnostics: vscode.Diagnostic[] = [];
+  diagnostics: Diagnostic[] = [];
 
-  constructor(public uri: vscode.Uri) { }
+  constructor(public uri: Uri) { }
 
   add(section: Section) {
     this.sections.push(section);
@@ -35,15 +38,15 @@ export class FileIndex {
     }
   }
 
-  static fromString(uri: vscode.Uri, source: string): [FileIndex, vscode.Diagnostic] {
+  static fromString(uri: Uri, source: string): [FileIndex, Diagnostic] {
     let [ast, error] = parseHcl(source);
 
     let index = ast ? build(uri, ast) : null;
 
     if (error) {
-      let range = new vscode.Range(error.line, error.column, error.line, 300);
+      let range = new Range(new Position(error.line, error.column), new Position(error.line, 300));
       let message = error.message === "" ? "Parse error" : error.message;
-      let diagnostic = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
+      let diagnostic = new Diagnostic(range, message, DiagnosticSeverity.ERROR);
 
       return [index, diagnostic];
     }

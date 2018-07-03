@@ -3,6 +3,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { FileIndex } from '../../src/index/file-index';
 import { Index } from '../../src/index/index';
+import { Uri } from '../../src/index/uri';
 
 
 const template =
@@ -17,8 +18,8 @@ locals {
 
 suite("Index Tests", () => {
     suite("Index Tests", () => {
-        let [a, errorA] = FileIndex.fromString(vscode.Uri.parse("a.tf"), `resource "aws_s3_bucket" "bucket" {}`);
-        let [b, errorB] = FileIndex.fromString(vscode.Uri.parse("b.tf"), `variable "region" {}`);
+        let [a, errorA] = FileIndex.fromString(Uri.parse("a.tf"), `resource "aws_s3_bucket" "bucket" {}`);
+        let [b, errorB] = FileIndex.fromString(Uri.parse("b.tf"), `variable "region" {}`);
 
         test("query can return results for ALL files", () => {
             let index = new Index(null, a, b);
@@ -31,7 +32,7 @@ suite("Index Tests", () => {
         test("query returns results for a single file", () => {
             let index = new Index(null, a, b);
 
-            let results = index.query(vscode.Uri.parse("a.tf"));
+            let results = index.query(Uri.parse("a.tf"));
 
             assert.equal(results.length, 1);
             assert.equal(results[0].name, "bucket");
@@ -60,8 +61,8 @@ suite("Index Tests", () => {
         });
 
         suite("References", () => {
-            let [c, errorC] = FileIndex.fromString(vscode.Uri.parse("c.tf"), `resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
-            let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
+            let [c, errorC] = FileIndex.fromString(Uri.parse("c.tf"), `resource "aws_s3_bucket" "bucket2" { name = "\${var.region}" }`);
+            let [d, errorD] = FileIndex.fromString(Uri.parse("d.tf"), `resource "aws_s3_bucket" "bucket3" { name = "\${var.region}" }`);
 
             test("getReferences returns results for all files", () => {
                 let index = new Index(null, a, b, c, d);
@@ -88,8 +89,8 @@ suite("Index Tests", () => {
         });
 
         suite("Higher-order analysis", () => {
-            let [c, errorC] = FileIndex.fromString(vscode.Uri.parse("c.tf"), `provider "aws" { version = "~> 1.0" }`);
-            let [d, errorD] = FileIndex.fromString(vscode.Uri.parse("d.tf"), `provider "azure" { version = "~> 2.0" alias = "way-cooler" }`);
+            let [c, errorC] = FileIndex.fromString(Uri.parse("c.tf"), `provider "aws" { version = "~> 1.0" }`);
+            let [d, errorD] = FileIndex.fromString(Uri.parse("d.tf"), `provider "azure" { version = "~> 2.0" alias = "way-cooler" }`);
 
             test("Extract provider info", () => {
                 let index = new Index(null, a, b, c, d);
