@@ -1,3 +1,9 @@
+# 1.2.2
+
+## Fixes
+
+- Forgot to bundle metrics key
+
 # 1.2.1
 
 ## Fixes
