@@ -1,3 +1,15 @@
+# 1.2.1
+
+## Fixes
+
+- Collect references in math expressions (Closes #95)
+- Do not eat property accesses during rename refactoring (Closes #104)
+
+## Unimportant news
+
+- Split tests into unit tests and integration tests
+- Added even more build instructions
+
 # 1.2.0
 
 ## Fixes
