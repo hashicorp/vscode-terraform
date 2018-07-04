@@ -160,7 +160,7 @@ gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (
 // unit tests
 // WARNING: unit tests do not have good coverage yet, also run integration tests
 function test() {
-    return gulp.src(['test/**/*.unittest.ts'], { read: false })
+    return gulp.src(['test/**/*.unit.test.ts'], { read: false })
         .pipe(mocha({
             reporter: 'spec',
             ui: 'tdd',
