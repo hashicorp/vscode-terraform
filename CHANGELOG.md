@@ -1,3 +1,9 @@
+# 1.2.3
+
+## Fixes
+
+- Unbreak *Show Workspace Symbols*
+
 # 1.2.2
 
 ## Fixes
