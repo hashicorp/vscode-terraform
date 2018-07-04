@@ -222,6 +222,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "pump": "^3.0.0",
+    "source-map-support": "^0.5.6",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.1",

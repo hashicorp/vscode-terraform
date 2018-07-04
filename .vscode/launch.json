@@ -33,23 +33,6 @@
 				"${workspaceRoot}/out/**/*.js"
 			],
 			"preLaunchTask": "gulp: compile"
-		},
-		{
-			"name": "Launch Unit Tests",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"${workspaceRoot}/templates",
-				"--extensionDevelopmentPath=${workspaceRoot}",
-				"--extensionTestsPath=${workspaceRoot}/out/unit-test"
-			],
-			"stopOnEntry": false,
-			"sourceMaps": true,
-			"outFiles": [
-				"${workspaceRoot}/out/**/*.js"
-			],
-			"preLaunchTask": "gulp: compile"
 		}
 	]
 }

@@ -30,6 +30,7 @@
 		"vsce"
 	],
 	"mocha.requires": [
-		"ts-node/register"
+		"ts-node/register",
+		"source-map-support/register"
 	]
 }
