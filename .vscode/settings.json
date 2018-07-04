@@ -7,7 +7,7 @@
 		"out": true
 	},
 	"terraform.templateDirectory": "templates",
-	"mocha.files.glob": "unit-test/**/*.test.ts",
+	"mocha.files.glob": "test/**/*.unittest.ts",
 	"mocha.options": {
 		"ui": "tdd",
 		"reporter": "spec"

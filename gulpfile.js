@@ -115,7 +115,7 @@ gulp.task('copy-html-templates', () =>
 
 // tslint
 gulp.task('lint', () =>
-    gulp.src(['src/**/*.ts', 'test/**/*.ts', 'unit-test/**/*.ts'])
+    gulp.src(['src/**/*.ts', 'test/**/*.ts'])
         .pipe(tslint())
         .pipe(tslint.report())
 );
@@ -160,7 +160,7 @@ gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (
 // unit tests
 // WARNING: unit tests do not have good coverage yet, also run integration tests
 function test() {
-    return gulp.src(['unit-test/**/*.ts'], { read: false })
+    return gulp.src(['test/**/*.unittest.ts'], { read: false })
         .pipe(mocha({
             reporter: 'spec',
             ui: 'tdd',
@@ -182,7 +182,7 @@ gulp.task('build', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data'
 
 // watch
 gulp.task('watch', gulp.series('build', () => {
-    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts', 'unit-test/**/*.ts'], gulp.series('copy-html-templates', 'lint', 'test-no-fail', 'compile'));
+    return gulp.watch(['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'], gulp.series('copy-html-templates', 'lint', 'test-no-fail', 'compile'));
 }));
 
 // default
