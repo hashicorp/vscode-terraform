@@ -1,10 +1,10 @@
 import { Ast } from "./ast";
 
 const hcl = (function () {
-  const isRunningInMocha = ['setup', 'test', 'teardown', 'suite'].every((f) => global[f] instanceof Function);
-  if (isRunningInMocha) {
+  try {
+    // running units
     return require('../../out/src/hcl-hil.js');
-  } else {
+  } catch (_) {
     return require('../hcl-hil.js');
   }
 })();
