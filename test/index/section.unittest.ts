@@ -42,7 +42,7 @@ suite("Index Tests", () => {
             assert.equal(variable.id("newName"), "var.newName");
         });
 
-        test("Extracts all toplevel attributes", () => {
+        test("Extracts all top level attributes", () => {
             let template = `
 resource "aws_s3_bucket" "bucket" {
     bucket = "name"

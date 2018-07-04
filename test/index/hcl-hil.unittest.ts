@@ -2,8 +2,6 @@
 import * as assert from 'assert';
 import { parseHcl } from '../../src/index/hcl-hil';
 
-import * as vscode from 'vscode';
-
 suite("HclHil Tests", () => {
     test("Can parse .tf", () => {
         const [ast, error] = parseHcl(`template "aws_s3_bucket" "bucket" {}`);
