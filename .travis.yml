@@ -23,6 +23,9 @@ deploy:
     secure: mmkCO7tT+EUaKt//ksZFpJhX1ZMAN5P5dtgcIwWa7RTObNxblLndWTXwj5l6GmNm1LWAZ6ShXZ77Dtn/lmfbeldrfhoJ4NPC0pa5t6OijUIzJjp1BvUJpfLw3r5hrbpRVKb7cllKRMAs3PmMs055tr+KkbSGJn7Jp80+V275FfgbcdHYtMwblgXhTByvIFpvJ8oqg8+s9nd1hoXPgrAbAdU1hptvGzflx6tnQrZmbu43DmaYIy9BORBaMoAlVzUYHj0wX/xxCa88r3MxXB7WgVT+v8yNr34n/bkQ1Gv5DONicXIyOX4ANRXr2uHUP5hE3jxJszeBrskNU7mKz5fJuiN/hOOVMeiq9Cof3I+rISb1QHzBtiGrghczz73bep7d/OnZXxapjVDiZKpKSqgu2wOY0AnMbroUIx87R0Ve3vVmVuYs+CtWH6dE+UXrIyN1jqjXd/WyDspbP6vJzEY4ZG9I7A890xl0ph2GHb2K4s7h6iePVsNnkSN0SrcDYhC8WSUL8yZx/PfdhzWg/YE1SqqQL/hX3izsXI75OQVmndrkhrkN5tXex0+/7YdCronEOBTLsBVjhtilHR3g5lEKKrZDLZHTwEMIHjWNn6fbIy6vG6XBr57s0q6J7ue9S7q0dMptp9thFqLXdvPa7ta6uZb7J9khObLQNCVlXlNWisM=
   file_glob: true
   file: "*.vsix"
+  draft: true
+  skip_cleanup: true
+  body: TODO
   on:
     repo: mauve/vscode-terraform
     tags: true
