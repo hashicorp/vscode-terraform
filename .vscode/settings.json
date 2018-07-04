@@ -13,16 +13,21 @@
 		"reporter": "spec"
 	},
 	"cSpell.words": [
-		"reindex",
-		"terraform",
+		"APPINSIGHTS",
 		"Hashicorp",
 		"Hashicorp's",
-		"vsce",
+		"filesize",
+		"gopherjs",
+		"graphlib",
+		"keyfile",
+		"reindex",
+		"terraform",
 		"tflint",
+		"tfsmurf",
 		"tfstate",
 		"tfvars",
-		"graphlib",
-		"tfsmurf"
+		"transpiled",
+		"vsce"
 	],
 	"mocha.requires": [
 		"ts-node/register"
