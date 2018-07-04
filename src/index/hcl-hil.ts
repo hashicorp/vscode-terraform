@@ -1,6 +1,13 @@
 import { Ast } from "./ast";
 
-const hcl = require('../hcl-hil.js');
+const hcl = (function () {
+  const isRunningInMocha = ['setup', 'test', 'teardown', 'suite'].every((f) => global[f] instanceof Function);
+  if (isRunningInMocha) {
+    return require('../../out/src/hcl-hil.js');
+  } else {
+    return require('../hcl-hil.js');
+  }
+})();
 
 export class ParseError extends Error {
   readonly fileName: string;
