@@ -206,12 +206,12 @@ gulp.task('generate-release-notes', function generateReleaseNotes(done) {
                 done();
             }
         });
-    })
+    });
 });
 
 // compile
 gulp.task('build', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates',
-                                    'generate-constants-keyfile', 'generate-release-notes', 'compile'));
+    'generate-constants-keyfile', 'generate-release-notes', 'compile'));
 
 // watch
 gulp.task('watch', gulp.series('build', () => {

@@ -25,7 +25,7 @@ class TelemetryReporter extends vscode.Disposable {
     }
 
     this.client.trackEvent({
-      name: `${this.extensionId}/${eventName}`,
+      name: `${eventName}`,
       properties: properties,
       measurements: measurements
     });
@@ -40,7 +40,7 @@ class TelemetryReporter extends vscode.Disposable {
     if (!properties)
       properties = {};
 
-    properties.name = `${this.extensionId}/${eventName}`;
+    properties.name = `${eventName}`;
 
     this.client.trackException({
       exception: exception,
