@@ -1,4 +1,4 @@
-import { AstItem, getMapValue } from './ast';
+import { AstItem } from './ast';
 import { Location } from './location';
 import { Position } from './position';
 import { Reference } from "./reference";
@@ -11,6 +11,16 @@ export interface QueryOptions {
   position?: Position;
   id?: string;
   unique?: boolean;
+}
+
+export class Property {
+  constructor(
+    readonly name: string,
+    readonly nameLocation: Location,
+    readonly value: string | Property[],
+    readonly valueLocation: Location,
+    readonly node: AstItem
+  ) { }
 }
 
 export class Section {
@@ -27,7 +37,7 @@ export class Section {
   readonly location: Location;
   readonly node: AstItem;
 
-  readonly attributes: Map<string, string>;
+  readonly properties: Property[];
 
   constructor(
     sectionType: string,
@@ -36,7 +46,9 @@ export class Section {
     name: string,
     nameLocation: Location,
     location: Location,
-    node: AstItem) {
+    node: AstItem,
+    properties: Property[]
+  ) {
 
     this.sectionType = sectionType;
     this.type = type;
@@ -46,10 +58,20 @@ export class Section {
     this.location = location;
     this.node = node;
 
-    if (node)
-      this.attributes = getMapValue(node.Val, { stripQuotes: true });
-    else
-      this.attributes = new Map<string, string>();
+    this.properties = properties;
+  }
+
+  getProperty(name: string): Property | null {
+    return this.properties.find((p) => p.name === name);
+  }
+
+  getStringProperty(name: string, defaultValue: string = ""): string {
+    const p = this.getProperty(name);
+    if (!p)
+      return defaultValue;
+    if (typeof p.value !== "string")
+      return defaultValue;
+    return p.value;
   }
 
   match(options?: QueryOptions): boolean {
