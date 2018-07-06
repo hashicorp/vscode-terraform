@@ -21,6 +21,13 @@ class TelemetryReporter extends vscode.Disposable {
   trackEvent(eventName: string, properties?: { [key: string]: string }, measurements?: { [key: string]: number }) {
     if (!this.userOptIn || !this.client || !eventName) {
       console.log(`terraform.telemetry: Not sending metric ${eventName}`);
+      if (properties) {
+        Object.keys(properties).forEach((p) => console.log(`terraform.telemetry:    ${p}: ${properties[p]}`));
+      }
+      if (measurements) {
+        Object.keys(measurements).forEach((p) => console.log(`terraform.telemetry:    ${p}: ${measurements[p]}`));
+      }
+
       return;
     }
 
