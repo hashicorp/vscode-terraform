@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { AstList, findValue, getStringValue, getValue } from './index/ast';
+import { findValue } from './index/ast';
+import { valueToMarkdown } from './index/ast-helpers';
 import { IndexLocator } from './index/index-locator';
 import { from_vscode_Position, from_vscode_Uri, to_vscode_Range } from './index/vscode-adapter';
 
@@ -36,29 +37,7 @@ export class HoverProvider implements vscode.HoverProvider {
     if (!valueNode)
       return new vscode.Hover(`\`${label}\` not specified`, to_vscode_Range(reference.location.range));
 
-    let formattedString = "";
-
-    // guess type (ignore type= key because it might be missing anyway)
-    if (valueNode.List && (valueNode.List as AstList).Items) {
-      // map
-      let map = getValue(valueNode, { stripQuotes: true }) as Map<string, string>;
-      let pairs = [...map.entries()].map((v) => v.map((i) => `\`${i}\``).join(' = ')).map((i) => ` - ${i}`);
-      if (pairs.length === 0)
-        formattedString = `${label}: *empty map*`;
-      else
-        formattedString = `${label}:\n` + pairs.join("\n");
-    } else if (valueNode.List) {
-      // list
-      let list = getValue(valueNode, { stripQuotes: true }) as string[];
-      if (list.length === 0)
-        formattedString = `${label}: *empty list*`;
-      else
-        formattedString = `${label}:\n` + list.map((i, idx) => `${idx}. \`${i}\``).join("\n");
-    } else {
-      // string
-      formattedString = getStringValue(valueNode, "<failed to extract value>", { stripQuotes: true });
-      formattedString = `${label}: \`${formattedString}\``;
-    }
+    let formattedString = `${label}: ${valueToMarkdown(valueNode, 0)}`;
 
     return new vscode.Hover(new vscode.MarkdownString(formattedString), to_vscode_Range(reference.location.range));
   }
