@@ -21,6 +21,32 @@ export class Property {
     readonly valueLocation: Location,
     readonly node: AstItem
   ) { }
+
+  toString(defaultValue = ""): string {
+    if (typeof this.value !== "string")
+      return defaultValue;
+    return this.value;
+  }
+
+  getProperty(...name: string[]): Property {
+    if (name.length === 0)
+      return null;
+    return this.getPropertyRecursive(name[0], name.slice(1));
+  }
+
+  private getPropertyRecursive(first: string, remaining: string[]): Property {
+    if (typeof this.value === "string")
+      return null;
+
+    const property = this.value.find(p => p.name === first);
+    if (!property)
+      return null;
+
+    if (remaining.length === 0)
+      return property;
+
+    return property.getPropertyRecursive(remaining[0], remaining.slice(1));
+  }
 }
 
 export class Section {
@@ -37,7 +63,11 @@ export class Section {
   readonly location: Location;
   readonly node: AstItem;
 
-  readonly properties: Property[];
+  private rootProperty: Property;
+
+  get properties(): Property[] {
+    return this.rootProperty.value as Property[];
+  }
 
   constructor(
     sectionType: string,
@@ -58,20 +88,18 @@ export class Section {
     this.location = location;
     this.node = node;
 
-    this.properties = properties;
+    this.rootProperty = new Property(null, null, properties, null, null);
   }
 
-  getProperty(name: string): Property | null {
-    return this.properties.find((p) => p.name === name);
+  getProperty(...name: string[]): Property | null {
+    return this.rootProperty.getProperty(...name);
   }
 
   getStringProperty(name: string, defaultValue: string = ""): string {
     const p = this.getProperty(name);
     if (!p)
       return defaultValue;
-    if (typeof p.value !== "string")
-      return defaultValue;
-    return p.value;
+    return p.toString();
   }
 
   match(options?: QueryOptions): boolean {

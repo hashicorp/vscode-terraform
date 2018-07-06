@@ -68,7 +68,6 @@ provider "aws" {
             assert.equal(provider.getStringProperty("version"), "~> 1.0");
         });
 
-
         test("Extract no attributes for local sections (they are virtual)", () => {
             let template = `
 locals {
