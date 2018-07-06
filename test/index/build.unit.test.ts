@@ -4,6 +4,7 @@ import { FileIndex } from '../../src/index/file-index';
 import { Location } from '../../src/index/location';
 import { Position } from '../../src/index/position';
 import { Range } from '../../src/index/range';
+import { Property } from '../../src/index/section';
 import { Uri } from '../../src/index/uri';
 
 suite("Index Tests", () => {
@@ -218,6 +219,88 @@ suite("Index Tests", () => {
             assert.equal(v3.location.range.start.character, 79);
             assert.equal(v3.location.range.end.line, 0);
             assert.equal(v3.location.range.end.character, 87);
+        });
+
+        suite("Collects properties", () => {
+            test("No properties for empty sections", () => {
+                let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" {}`);
+
+                let s = index.sections[0];
+                assert.equal(s.properties.length, 0);
+            });
+
+            test("String properties", () => {
+                let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" { property = "string" }`);
+
+                let s = index.sections[0];
+                assert.equal(s.properties.length, 1);
+
+                const p = s.properties[0];
+                assert.equal(p.name, "property");
+                assert.equal(p.nameLocation.range.start.line, 0);
+                assert.equal(p.nameLocation.range.start.character, 36);
+                assert.equal(p.nameLocation.range.end.line, 0);
+                assert.equal(p.nameLocation.range.end.character, 44);
+
+                assert.equal(p.value, "string");
+                assert.equal(p.valueLocation.range.start.line, 0);
+                assert.equal(p.valueLocation.range.start.character, 47);
+                assert.equal(p.valueLocation.range.end.line, 0);
+                assert.equal(p.valueLocation.range.end.character, 55);
+            });
+
+            test("List properties", () => {
+                let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" { property = ["list"] }`);
+
+                let s = index.sections[0];
+                assert.equal(s.properties.length, 1);
+
+                const p = s.properties[0];
+                assert.equal(p.name, "property");
+                assert.equal(p.nameLocation.range.start.line, 0);
+                assert.equal(p.nameLocation.range.start.character, 36);
+                assert.equal(p.nameLocation.range.end.line, 0);
+                assert.equal(p.nameLocation.range.end.character, 44);
+
+                assert.equal(p.value, "");
+                assert.equal(p.valueLocation.range.start.line, 0);
+                assert.equal(p.valueLocation.range.start.character, 47);
+                assert.equal(p.valueLocation.range.end.line, 0);
+                assert.equal(p.valueLocation.range.end.character, 55);
+            });
+
+            test("Groups properties", () => {
+                let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" { group { property = "string" } }`);
+
+                let s = index.sections[0];
+                assert.equal(s.properties.length, 1);
+
+                const p = s.properties[0];
+                assert.equal(p.name, "group");
+                assert.equal(p.nameLocation.range.start.line, 0);
+                assert.equal(p.nameLocation.range.start.character, 36);
+                assert.equal(p.nameLocation.range.end.line, 0);
+                assert.equal(p.nameLocation.range.end.character, 41);
+
+                assert.notEqual(typeof p.value, "string");
+                assert.equal(p.valueLocation.range.start.line, 0);
+                assert.equal(p.valueLocation.range.start.character, 42);
+                assert.equal(p.valueLocation.range.end.line, 0);
+                assert.equal(p.valueLocation.range.end.character, 65);
+
+                const sp = (p.value as Property[])[0];
+                assert.equal(sp.name, "property");
+                assert.equal(sp.nameLocation.range.start.line, 0);
+                assert.equal(sp.nameLocation.range.start.character, 44);
+                assert.equal(sp.nameLocation.range.end.line, 0);
+                assert.equal(sp.nameLocation.range.end.character, 52);
+
+                assert.equal(sp.value, "string");
+                assert.equal(sp.valueLocation.range.start.line, 0);
+                assert.equal(sp.valueLocation.range.start.character, 55);
+                assert.equal(sp.valueLocation.range.end.line, 0);
+                assert.equal(sp.valueLocation.range.end.character, 63);
+            });
         });
     });
 

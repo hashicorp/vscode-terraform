@@ -1,4 +1,4 @@
-import { Ast, AstItem, AstVal, NodeType, VisitedNode, walk } from './ast';
+import { Ast, AstItem, AstList, AstToken, AstVal, getStringValue, getText, isMap, NodeType, VisitedNode, walk } from './ast';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { FileIndex } from './file-index';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
@@ -6,7 +6,7 @@ import { Location } from './location';
 import { Position } from './position';
 import { Range } from './range';
 import { Reference } from './reference';
-import { Section } from './section';
+import { Property, Section } from './section';
 import { Uri } from './uri';
 
 function stripQuotes(text: string): string {
@@ -19,6 +19,38 @@ function createPosition(pos: any, columnDelta: number = 0): Position {
 
 function createRange(start: any, end: any): Range {
     return new Range(createPosition(start), createPosition(end));
+}
+
+function locationFromToken(uri: Uri, token: AstToken, strip: boolean): Location {
+    const text = getText(token, { stripQuotes: strip });
+
+    const start = createPosition(token.Pos, strip ? 1 : 0);
+    const end = start.translate({ characterDelta: text.length });
+
+    return new Location(uri, new Range(start, end));
+}
+
+function extractProperties(uri: Uri, list: AstList): Property[] {
+    if (!list || !list.Items)
+        return [];
+
+    return list.Items.map((item) => {
+        const nameToken = item.Keys[0].Token;
+
+        const name = getText(nameToken);
+        const nameLocation = locationFromToken(uri, nameToken, false);
+        const valueLocation = new Location(uri, rangeFromVal(item.Val));
+
+        let value: string | Property[];
+        if (isMap(item.Val)) {
+            value = extractProperties(uri, item.Val.List as AstList);
+        } else {
+            value = getStringValue(item.Val, "", { stripQuotes: true });
+        }
+        let property = new Property(name, nameLocation, value, valueLocation, item);
+
+        return property;
+    });
 }
 
 function sectionFromKeyItemNode(uri: Uri, item: any): Section {
@@ -48,7 +80,14 @@ function sectionFromKeyItemNode(uri: Uri, item: any): Section {
 
     const location = new Location(uri, createRange(item.Keys[0].Token.Pos, item.Val.Rbrace));
 
-    return new Section(sectionType, type, typeLoc, name, nameLoc, location, item);
+    return new Section(sectionType, type, typeLoc, name, nameLoc, location, item, extractProperties(uri, item.Val.List as AstList));
+}
+
+function startPosFromVal(val: AstVal): Position {
+    if (val.Lbrace || val.Lbrack)
+        return createPosition(val.Lbrace || val.Lbrack);
+
+    return createPosition(val.Token.Pos);
 }
 
 function endPosFromVal(val: AstVal): Position {
@@ -56,6 +95,13 @@ function endPosFromVal(val: AstVal): Position {
         return createPosition(val.Rbrace || val.Rbrack, 1); // for maps/lists
 
     return createPosition(val.Token.Pos, val.Token.Text.length); // for strings
+}
+
+function rangeFromVal(val: AstVal): Range {
+    const start = startPosFromVal(val);
+    const end = endPosFromVal(val);
+
+    return new Range(start, end);
 }
 
 function sectionFromSingleKeyItemNode(uri: Uri, item: any): Section {
@@ -66,7 +112,7 @@ function sectionFromSingleKeyItemNode(uri: Uri, item: any): Section {
 
     const location = new Location(uri, new Range(createPosition(item.Keys[0].Token.Pos), endPosFromVal(item.Val)));
 
-    return new Section("local", null, null, name, nameLoc, location, item);
+    return new Section("local", null, null, name, nameLoc, location, item, []);
 }
 
 function assignmentFromItemNode(uri: Uri, item: any): Reference {
