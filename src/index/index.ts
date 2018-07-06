@@ -156,8 +156,8 @@ export class Index {
         return this.query("ALL_FILES", { section_type: "provider" }).map((s) => {
             return {
                 name: s.name,
-                alias: s.attributes.get('alias'),
-                version: s.attributes.get('version')
+                alias: s.getStringProperty('alias'),
+                version: s.getStringProperty('version')
             };
         });
     }
