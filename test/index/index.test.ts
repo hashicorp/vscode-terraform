@@ -43,7 +43,7 @@ suite("Index Tests", () => {
 
             assert.notEqual(index.query("ALL_FILES").length, 0);
 
-            // TODO: check callback aswell
+            // TODO: check callback as well
             index.clear();
 
             assert.equal(index.query("ALL_FILES").length, 0);
