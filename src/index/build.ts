@@ -1,4 +1,4 @@
-import { Ast, AstItem, AstList, AstToken, AstVal, getStringValue, getText, isMap, NodeType, VisitedNode, walk } from './ast';
+import { Ast, AstItem, AstList, AstToken, AstVal, AstValueType, getStringValue, getText, getValueType, NodeType, VisitedNode, walk } from './ast';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { FileIndex } from './file-index';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
@@ -42,7 +42,7 @@ function extractProperties(uri: Uri, list: AstList): Property[] {
         const valueLocation = new Location(uri, rangeFromVal(item.Val));
 
         let value: string | Property[];
-        if (isMap(item.Val)) {
+        if (getValueType(item.Val) === AstValueType.Map) {
             value = extractProperties(uri, item.Val.List as AstList);
         } else {
             value = getStringValue(item.Val, "", { stripQuotes: true });

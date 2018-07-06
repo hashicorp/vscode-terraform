@@ -80,6 +80,12 @@ export interface AstVal {
     LineComment: any;
 }
 
+export enum AstValueType {
+    Map,
+    List,
+    String
+}
+
 export interface AstKey {
     Token: AstToken;
 }
@@ -129,8 +135,15 @@ export function getMapValue(value: AstVal, options?: { stripQuotes: boolean }): 
     return map;
 }
 
-export function isMap(value: AstVal): Boolean {
-    return value.List && !!(value.List as AstList).Items;
+export function getValueType(value: AstVal): AstValueType {
+    if (value.Token)
+        return AstValueType.String;
+
+    let list = value.List as AstList;
+    if (list.Items)
+        return AstValueType.Map;
+
+    return AstValueType.List;
 }
 
 export function getValue(value: AstVal, options?: { stripQuotes: boolean }): string | string[] | Map<string, string> {
