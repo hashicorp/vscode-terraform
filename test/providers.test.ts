@@ -11,11 +11,36 @@ suite("Provider Tests", () => {
     let successful = await vscode.commands.executeCommand('terraform.index-document', doc1.uri) as boolean;
     assert(successful, "forced indexing not successful doc1");
 
-    let symbols = await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', doc1.uri) as vscode.SymbolInformation[];
+    let symbols = await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', doc1.uri) as vscode.DocumentSymbol[];
 
     assert.equal(symbols.length, 1);
     assert.equal(symbols[0].name, 'doc-symbol-test');
     assert.equal(symbols[0].kind, vscode.SymbolKind.Variable);
+  });
+
+  test("Correctly show document symbols properties", async () => {
+    let doc1 = await vscode.workspace.openTextDocument({
+      language: "terraform",
+      content: 'resource "resource_type" "doc-symbol-test-2" { property = "a"\n  group { sub = 5 } }'
+    });
+
+    let successful = await vscode.commands.executeCommand('terraform.index-document', doc1.uri) as boolean;
+    assert(successful, "forced indexing not successful doc1");
+
+    // we return DocumentSymbol but the command rewrites to symbolinformation and flattens the tree
+    let symbols = await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', doc1.uri) as vscode.SymbolInformation[];
+
+    assert.equal(symbols.length, 4);
+    assert.equal(symbols[0].name, 'doc-symbol-test-2');
+
+    assert.equal(symbols[1].name, 'property');
+    assert.equal(symbols[1].containerName, 'doc-symbol-test-2');
+
+    assert.equal(symbols[2].name, "group");
+    assert.equal(symbols[2].containerName, 'doc-symbol-test-2');
+
+    assert.equal(symbols[3].name, "sub");
+    assert.equal(symbols[3].containerName, 'group');
   });
 
   test("Correctly show workspace symbols", async () => {

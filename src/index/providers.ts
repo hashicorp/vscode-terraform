@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { Reporter } from '../telemetry';
 import { IndexLocator } from './index-locator';
-import { Section } from './section';
+import { Property, Section } from './section';
 import { Uri } from './uri';
-import { from_vscode_Position } from './vscode-adapter';
+import { from_vscode_Position, to_vscode_Location, to_vscode_Range } from './vscode-adapter';
 
 export class ReferenceProvider implements vscode.ReferenceProvider {
   constructor(private indexLocator: IndexLocator) { }
@@ -22,20 +22,63 @@ export class ReferenceProvider implements vscode.ReferenceProvider {
   }
 }
 
-function getSymbolInfo(s: Section): vscode.SymbolInformation {
-  const location = new vscode.Location(vscode.Uri.parse(s.location.uri.toString()),
-  new vscode.Range(s.location.range.start.line, s.location.range.start.character,
-    s.location.range.end.line, s.location.range.end.character));
-  const containerName = [s.sectionType, s.type].filter((f) => !!f).join(".");
-  return new vscode.SymbolInformation(s.name, getKind(s.sectionType), containerName, location);
+function createDocumentSymbolFromProperty(p: Property): vscode.DocumentSymbol {
+  const nameRange = to_vscode_Range(p.nameLocation.range);
+  const valueRange = to_vscode_Range(p.valueLocation.range);
+  const fullRange = nameRange.union(valueRange);
+
+
+  if (typeof p.value === "string") {
+    return new vscode.DocumentSymbol(
+      p.name,
+      p.value,
+      vscode.SymbolKind.Property,
+      fullRange,
+      nameRange
+    );
+  } else {
+    let symbol = new vscode.DocumentSymbol(
+      p.name,
+      "",
+      vscode.SymbolKind.Namespace,
+      fullRange,
+      nameRange
+    );
+    symbol.children = p.value.map((c) => createDocumentSymbolFromProperty(c));
+    return symbol;
+  }
+}
+
+function createDocumentSymbol(s: Section): vscode.DocumentSymbol {
+  const range = to_vscode_Range(s.location.range);
+  const selectionRange = to_vscode_Range(s.nameLocation.range);
+  const detail = [s.sectionType, s.type].filter((f) => !!f).join(".");
+
+  let symbol = new vscode.DocumentSymbol(s.name, detail, getKind(s.sectionType), range, selectionRange);
+  symbol.children = s.properties.map((p) => createDocumentSymbolFromProperty(p));
+
+  // to look at those stupid icons
+  // for (let kind = vscode.SymbolKind.File; kind <= vscode.SymbolKind.TypeParameter; kind ++) {
+  //   symbol.children.push(new vscode.DocumentSymbol(`${kind}`, `${kind}`, kind, range, selectionRange));
+  // }
+
+  return symbol;
+}
+
+function createSymbolInfo(s: Section): vscode.SymbolInformation {
+  const location = to_vscode_Location(s.location);
+  const detail = [s.sectionType, s.type].filter((f) => !!f).join(".");
+
+  return new vscode.SymbolInformation(s.name, getKind(s.sectionType), detail, location);
 }
 
 function getKind(sectionType: string): vscode.SymbolKind {
   switch (sectionType) {
-    case "resource": return vscode.SymbolKind.Interface;
+    case "resource": return vscode.SymbolKind.Class;
     case "output": return vscode.SymbolKind.Property;
     case "variable": return vscode.SymbolKind.Variable;
     case "local": return vscode.SymbolKind.Variable;
+    case "data": return vscode.SymbolKind.String;
   }
 
   return null;
@@ -44,10 +87,10 @@ function getKind(sectionType: string): vscode.SymbolKind {
 export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
   constructor(private indexLocator: IndexLocator) { }
 
-  provideDocumentSymbols(document: vscode.TextDocument): vscode.SymbolInformation[] {
+  provideDocumentSymbols(document: vscode.TextDocument): vscode.DocumentSymbol[] {
     try {
       const sections = this.indexLocator.getIndexForDoc(document).query(Uri.parse(document.uri.toString()));
-      const symbols = sections.map((s) => getSymbolInfo(s));
+      const symbols = sections.map((s) => createDocumentSymbol(s));
 
       Reporter.trackEvent("provideDocumentSymbols", {}, { symbolCount: symbols.length });
       return symbols;
@@ -66,7 +109,7 @@ export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
       let indices = [...this.indexLocator.allIndices(true)];
 
       const sections = Array<Section>().concat(...indices.map((i) => i.query("ALL_FILES", { id: query })));
-      const symbols = sections.map((s) => getSymbolInfo(s));
+      const symbols = sections.map((s) => createSymbolInfo(s));
 
       Reporter.trackEvent("provideWorkspaceSymbols", {}, { symbolCount: symbols.length });
       return symbols;
