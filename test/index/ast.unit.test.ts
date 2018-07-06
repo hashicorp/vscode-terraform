@@ -1,6 +1,6 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
-import { AstList, NodeType, VisitedNode, findValue, getMapValue, getStringValue, getText, getValue, walk } from '../../src/index/ast';
+import { AstList, findValue, getMapValue, getStringValue, getText, getValue, isMap, NodeType, VisitedNode, walk } from '../../src/index/ast';
 import { parseHcl } from '../../src/index/hcl-hil';
 
 
@@ -125,6 +125,31 @@ suite("Index Tests", () => {
             let map = getMapValue(list.Items[0].Val);
 
             assert.equal(map.size, 0);
+        });
+    });
+
+    suite("Ast helpers", () => {
+        suite("isMap", () => {
+            test("isMap returns false on string value", () => {
+                let [ast3, error3] = parseHcl(`locals { a = "string" }`);
+
+                let list = ast3.Node.Items[0].Val.List as AstList;
+                assert(!isMap(list.Items[0].Val));
+            });
+
+            test("isMap returns false on list value", () => {
+                let [ast3, error3] = parseHcl(`locals { a = ["list"] }`);
+
+                let list = ast3.Node.Items[0].Val.List as AstList;
+                assert(!isMap(list.Items[0].Val));
+            });
+
+            test("isMap returns false on map value", () => {
+                let [ast3, error3] = parseHcl(`locals { a = { p = "string" } }`);
+
+                let list = ast3.Node.Items[0].Val.List as AstList;
+                assert(isMap(list.Items[0].Val));
+            });
         });
     });
 });

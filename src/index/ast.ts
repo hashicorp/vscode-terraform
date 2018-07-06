@@ -129,6 +129,10 @@ export function getMapValue(value: AstVal, options?: { stripQuotes: boolean }): 
     return map;
 }
 
+export function isMap(value: AstVal): Boolean {
+    return value.List && !!(value.List as AstList).Items;
+}
+
 export function getValue(value: AstVal, options?: { stripQuotes: boolean }): string | string[] | Map<string, string> {
     if (value.Token)
         return getText(value.Token, options);
