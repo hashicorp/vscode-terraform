@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getConfiguration } from '../configuration';
 import { ErrorDiagnosticCollection, outputChannel } from '../extension';
+import { Reporter } from '../telemetry';
 import { Index } from './index';
 import { IndexLocator } from './index-locator';
 import { from_vscode_Uri } from './vscode-adapter';
@@ -52,6 +53,7 @@ export function createWorkspaceWatcher(indexLocator: IndexLocator): vscode.FileS
 
 export function initialCrawl(indexLocator: IndexLocator): Thenable<vscode.Uri[]> {
   outputChannel.appendLine("terraform.crawler: Crawling workspace for terraform files...");
+  const start = process.hrtime();
   return vscode.workspace.findFiles("**/*.{tf,tfvars}")
     .then((uris) => {
       return vscode.window.withProgress({
@@ -65,5 +67,11 @@ export function initialCrawl(indexLocator: IndexLocator): Thenable<vscode.Uri[]>
 
         return uris;
       });
+    }).then((uris) => {
+      const elapsed = process.hrtime(start);
+      const elapsedMs = elapsed[0] * 1e3 + elapsed[1] / 1e6;
+
+      Reporter.trackEvent("initialCrawl", {}, { totalTimeMs: elapsedMs, numberOfDocs: uris.length, averagePerDocTimeMs: elapsedMs / uris.length });
+      return uris;
     });
 }
