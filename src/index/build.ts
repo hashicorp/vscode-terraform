@@ -4,9 +4,10 @@ import { FileIndex } from './file-index';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
 import { Location } from './location';
 import { Position } from './position';
+import { Property } from './property';
 import { Range } from './range';
 import { Reference } from './reference';
-import { Property, Section } from './section';
+import { Section } from './section';
 import { Uri } from './uri';
 
 function stripQuotes(text: string): string {

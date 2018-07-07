@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { Reporter } from '../telemetry';
 import { IndexLocator } from './index-locator';
-import { Property, Section } from './section';
+import { Property } from './property';
+import { Section } from './section';
 import { Uri } from './uri';
 import { from_vscode_Position, to_vscode_Location, to_vscode_Range } from './vscode-adapter';
 

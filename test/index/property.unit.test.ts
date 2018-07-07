@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { Property } from '../../src/index/section';
+import { Property } from '../../src/index/property';
 
 suite("Index Tests", () => {
   suite("Property Tests", () => {

@@ -3,8 +3,8 @@ import * as assert from 'assert';
 import { FileIndex } from '../../src/index/file-index';
 import { Location } from '../../src/index/location';
 import { Position } from '../../src/index/position';
+import { Property } from '../../src/index/property';
 import { Range } from '../../src/index/range';
-import { Property } from '../../src/index/section';
 import { Uri } from '../../src/index/uri';
 
 suite("Index Tests", () => {
