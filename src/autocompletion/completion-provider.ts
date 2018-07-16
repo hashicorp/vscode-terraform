@@ -6,7 +6,7 @@ import { AstPosition, getTokenAtPosition } from '../index/ast';
 import { parseHcl } from '../index/hcl-hil';
 import { Section } from "../index/section";
 import { GetKnownFunctions, InterpolationFunctionDefinition } from './builtin-functions';
-import { IFieldDef, allProviders, terraformConfigAutoComplete } from './model';
+import { IFieldDef, IModuleArgsDef, allProviders, moduleSources, terraformConfigAutoComplete } from './model';
 import { SectionCompletions } from './section-completions';
 import { IndexLocator } from "../index/index-locator";
 
@@ -14,7 +14,7 @@ const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const nestedRegexes: RegExp[] = [/\w[A-Za-z0-9\-_]*(\s*){/, /\w[A-Za-z0-9\-_]*(\s*)=(\s*){/];
 const propertyExp = new RegExp("^([\\w_-]+)$");
-
+let count: number = 1
 export class CompletionProvider implements vscode.CompletionItemProvider {
   constructor(private indexLocator: IndexLocator) { }
 
@@ -106,8 +106,12 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
     // figure out if we are inside a string
     const [ast, error] = parseHcl(document.getText());
+    let lineText = document.lineAt(position.line).text;
+    let lineTillCurrentPosition = lineText.substr(0, position.character);
+
     if (ast) {
-      let offset1 = document.offsetAt(position);
+      let offset1 = document.
+      offsetAt(position);
       let pos: AstPosition = {
         Line: position.line + 1,
         Column: position.character + 1,
@@ -116,6 +120,13 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       };
       let token = getTokenAtPosition(ast, pos);
       if (token) {
+        // Module source completion
+        let possibleSources: any[] = this.lookupForModuleSource(lineTillCurrentPosition);
+        if (possibleSources.length > 0) {
+          return this.getModuleAutoCompletion(possibleSources, vscode.CompletionItemKind.Class);
+        }
+
+        // Local completion and function completion
         let interpolationCompletions = this.interpolationCompletions(document, position);
         if (interpolationCompletions.length !== 0)
           return interpolationCompletions;
@@ -123,8 +134,8 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     }
 
     // TODO: refactor to use ast here aswell
-    let lineText = document.lineAt(position.line).text;
-    let lineTillCurrentPosition = lineText.substr(0, position.character);
+    // let lineText = document.lineAt(position.line).text;
+    // let lineTillCurrentPosition = lineText.substr(0, position.character);
 
     // high-level types ex: variable, resource, module, output etc..
     if (position.character === 0 || this.isTerraformTypes(lineText)) {
@@ -137,6 +148,31 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       return this.getAutoCompletion(possibleResources, vscode.CompletionItemKind.Class);
     }
 
+    // resource | data " parameters auto completion"
+    let parts: string[] = lineTillCurrentPosition.split(" ");
+    if (parts.length === 4 && (parts[0] === "resource" || parts[0] === "data") && parts[3] === "{") {
+      let item = new vscode.CompletionItem("Default Parameter", vscode.CompletionItemKind.Module);
+      let type = this.getTypeFromLine(lineTillCurrentPosition, 0);
+      let resourceType = this.getTypeFromLine(lineTillCurrentPosition, 1);
+
+      let typeparameters = allProviders[type][resourceType];
+      let parameters: IFieldDef[] = typeparameters.args;
+      let snippet: string = '\n';
+      let regex = new RegExp("Required");
+      let order: number = 1;
+      for (let parameter of parameters) {
+        if (regex.test(parameter.description)) {
+          snippet += '  ' + parameter.name + ' = "${' + order.toString() + ':' + parameter.name + '}"\n';
+          order += 1;
+        }
+      }
+      snippet += '\n';
+      item.insertText = new vscode.SnippetString(snippet);
+      let completionList: vscode.CompletionItem[] = [];
+      completionList[0] = item;
+      return completionList;
+    }
+
     // auto-completion for property types including 1 level deeep nested types
     if (lineTillCurrentPosition.trim().length === 0 || propertyExp.test(lineTillCurrentPosition.trim())) {
       let prev: number = position.line - 1;
@@ -146,6 +182,27 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       let nestedCounts: number = 0;
       while (prev >= 0) {
         let line: string = document.lineAt(prev).text;
+        let sourceparts: string[] = line.split(" ");
+        if (sourceparts.length === 5 && sourceparts[2] === "source") {
+          let moduleitem = new vscode.CompletionItem("Default Parameter", vscode.CompletionItemKind.Module);
+          let sourceType = this.getTypeFromLine(line, 2);
+
+          let typeparameters = moduleSources[sourceType];
+          let parameters: IModuleArgsDef[] = typeparameters.args;
+          let snippet: string = '\n';
+          let order: number = 1;
+          for (let parameter of parameters) {
+            if (parameter.default === "") {
+              snippet += '  ' + parameter.name + ' = "${' + order.toString() + ':' + parameter.name + '}"\n';
+              order += 1;
+            }
+          }
+          snippet += '\n';
+          moduleitem.insertText = new vscode.SnippetString(snippet);
+          let modulecompletionList: vscode.CompletionItem[] = [];
+          modulecompletionList[0] = moduleitem;
+          return modulecompletionList;
+        }
         // nested closing block
         if (line.trim() === "}") {
           nestedCounts++;
@@ -199,7 +256,8 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
 
   private lookupForTerraformResource(lineTillCurrentPosition: string): any[] {
     let parts: string[] = lineTillCurrentPosition.split(" ");
-    if (parts.length === 2 && (parts[0] === "resource" || parts[0] === "data")) {
+
+    if (parts.length === 2 && (parts[0] === "resource" || parts[0] === "data" || parts[0] === "module")) {
       let r: string = parts[1].replace(/"/g, "");
       let regex: RegExp = new RegExp("^" + r);
       let possibleResources: any = _.filter(_.keys(allProviders[parts[0]]), k => {
@@ -212,9 +270,51 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     return [];
   }
 
+  private lookupForModuleSource(lineTillCurrentPosition: string): any[] {
+    let parts: string[] = lineTillCurrentPosition.split(" ");
+
+    if (parts.length === 5 && (parts[2] === "source" && parts[3] === "=" )) {
+      let r: string = parts[4].replace(/"/g, "");
+      let regex: RegExp = new RegExp("^" + r);
+      let possibleSources: any = _.filter(_.keys(moduleSources), k => {
+        if (regex.test(k)) {
+          return true;
+        }
+      });
+      return possibleSources;
+    }
+    return [];
+  }
+
   private getAutoCompletion(strings: string[], type: vscode.CompletionItemKind): vscode.CompletionItem[] {
     return _.map(strings, s => {
-      return new vscode.CompletionItem(s, type);
+      let completionList = new vscode.CompletionItem(s, type);
+      let order: string = count.toString()
+      completionList.sortText = "0".repeat(5 - order.length) + order;
+      count = count + 1
+      return completionList;
+    });
+  }
+
+  private getModuleAutoCompletion(strings: string[], type: vscode.CompletionItemKind): vscode.CompletionItem[] {
+    return _.map(strings, s => {
+      let completionList = new vscode.CompletionItem(s, type);
+      let typeparameters = moduleSources[s];
+      let parameters: IModuleArgsDef[] = typeparameters.args;
+      let snippet: string = s;
+      let parameterOrder: number = 1;
+      for (let parameter of parameters) {
+        if (parameter.default === "") {
+          snippet += '"\n';
+          snippet += parameter.name + ' = "${' + parameterOrder.toString() + ':' + parameter.name + '}';
+          parameterOrder += 1;
+        }
+      }
+      completionList.insertText = new vscode.SnippetString(snippet);
+      let order: string = count.toString()
+      completionList.sortText = "0".repeat(5 - order.length) + order;
+      count = count + 1
+      return completionList;
     });
   }
 

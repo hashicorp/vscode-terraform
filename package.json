@@ -3,8 +3,8 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "1.1.2",
-  "publisher": "mauve",
+  "version": "1.2.0",
+  "publisher": "zunli",
   "license": "BSD-3-Clause",
   "engines": {
     "vscode": "^1.23.0"
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mauve/vscode-terraform.git"
+    "url": "https://github.com/zunlihu/vscode-terraform.git"
   },
   "activationEvents": [
     "onLanguage:terraform",

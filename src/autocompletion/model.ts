@@ -5,12 +5,20 @@ export const terraformConfigAutoComplete: ITerraformConfigAutoComplete = require
 
 import * as _ from "lodash";
 
-export const allProviders: ITerraformData = _.merge({}, awsResources, azureResources, googleResources);
+// export const allProviders: ITerraformData = _.merge({}, awsResources, azureResources, googleResources);
+export const allProviders: ITerraformData = require("../data/terraform-provider-ranked.json")
+export const moduleSources: IModuleSourceData = require("../data/module-source-inputs.json")
 
 export interface IFieldDef {
     name: string;
     description: string;
     args: IFieldDef[];
+}
+
+export interface IModuleArgsDef {
+    name: string;
+    description: string;
+    default: any;
 }
 
 export interface IResourceFormat {
@@ -25,6 +33,21 @@ export interface IResourceFormat {
 export interface ITerraformData {
     data: { [key: string]: IResourceFormat };
     resource: { [key: string]: IResourceFormat };
+    module: { [key: string]: IModuleFormat}
+}
+
+export interface IModuleSourceData {
+    [key: string]: IModuleFormat
+}
+
+export interface IModuleFormat {
+    name: string;
+    source: string;
+    url: string;
+    provider: string;
+    downloads: string;
+    descriptions: string;
+    args: IModuleArgsDef[];
 }
 
 export interface ITerraformConfigAutoComplete {
@@ -35,8 +58,13 @@ export interface ITerraformConfigAutoComplete {
     module: IFieldDef[];
 }
 
-export function findResourceFormat(sectionType: string, resourceType: string): IResourceFormat {
-    let types = allProviders[sectionType];
+export function findResourceFormat(sectionType: string, resourceType: string): any {
+    let types: any;
+    if (sectionType === "module") {
+        types = moduleSources;
+    } else {
+        types = allProviders[sectionType];
+    }
     if (!types)
         return null;
 
