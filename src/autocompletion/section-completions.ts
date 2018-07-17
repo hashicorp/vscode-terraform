@@ -45,22 +45,12 @@ function outputCompletion(): vscode.CompletionItem {
 }
 
 function resourceCompletion(): vscode.CompletionItem {
-    let item = new vscode.CompletionItem("resource", vscode.CompletionItemKind.Interface);
-    let snippet =
-        'resource "${1:type}" "${2:name}" {\n' +
-        '  $0\n' +
-        '}\n';
-    item.insertText = new vscode.SnippetString(snippet);
+    let item = new vscode.CompletionItem("resource", vscode.CompletionItemKind.Keyword);
     return item;
 }
 
 function dataCompletion(): vscode.CompletionItem {
-    let item = new vscode.CompletionItem("data", vscode.CompletionItemKind.Interface);
-    let snippet =
-        'data "${1:type}" "${2:name}" {\n' +
-        '  $0\n' +
-        '}\n';
-    item.insertText = new vscode.SnippetString(snippet);
+    let item = new vscode.CompletionItem("data", vscode.CompletionItemKind.Keyword);
     return item;
 }
 

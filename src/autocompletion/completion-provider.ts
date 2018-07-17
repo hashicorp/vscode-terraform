@@ -290,6 +290,8 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       let order: string = count.toString()
       completionList.sortText = "0".repeat(5 - order.length) + order;
       count = count + 1
+      let snippet = s + '" "${1:name}'
+      completionList.insertText = new vscode.SnippetString(snippet)
       return completionList;
     });
   }
