@@ -1,10 +1,8 @@
 import * as vscode from 'vscode';
 import { getConfiguration } from './configuration';
-import { Index } from './index/index';
+import { Index } from './index';
 import { IndexLocator } from './index/index-locator';
-import { Reference } from './index/reference';
 import { Section } from './index/section';
-import { to_vscode_Range } from './index/vscode-adapter';
 
 export interface TerraformCodeLens {
   type: "REFERENCE" | "PLAN";
@@ -59,40 +57,4 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
     sectionReferenceCodeLens.command = sectionReferenceCodeLens.createCommand();
     return sectionReferenceCodeLens;
   }
-}
-
-export class ReferenceQuickPick implements vscode.QuickPickItem {
-  readonly reference: Reference;
-  readonly label: string;
-  readonly description: string;
-  readonly detail?: string;
-
-  constructor(reference: Reference) {
-    this.reference = reference;
-
-    if (reference.section) {
-      this.label = reference.section.id();
-      this.description = reference.section.sectionType;
-    } else {
-      // tfvars
-      this.label = "(assignment)";
-      this.description = vscode.Uri.parse(reference.location.uri.toString()).path;
-    }
-  }
-
-  goto() {
-    vscode.window.showTextDocument(vscode.Uri.parse(this.reference.location.uri.toString()), {
-      preserveFocus: true,
-      preview: true,
-      selection: to_vscode_Range(this.reference.location.range)
-    });
-  }
-}
-
-export function showReferencesCommand(index: Index, section: Section) {
-  let picks = index.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
-
-  vscode.window.showQuickPick(picks, {
-    onDidSelectItem: (r: ReferenceQuickPick) => r.goto()
-  });
 }
