@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { TerraformIndexConfiguration, getConfiguration } from './configuration';
+import { getConfiguration, TerraformIndexConfiguration } from './configuration';
 import { isTerraformDocument } from './helpers';
-import { Index } from './index';
 import { IndexLocator } from './index/index-locator';
+import { Logger } from './logger';
 
 let runner;
 
@@ -15,6 +15,7 @@ function liveIndexEnabledForDocument(cfg: TerraformIndexConfiguration, doc: vsco
 }
 
 export function liveIndex(indexLocator: IndexLocator, e: vscode.TextDocumentChangeEvent) {
+  const logger = new Logger("live-index");
   const cfg = getConfiguration().indexing;
 
   if (!liveIndexEnabledForDocument(cfg, e.document)) {
@@ -25,6 +26,10 @@ export function liveIndex(indexLocator: IndexLocator, e: vscode.TextDocumentChan
     clearTimeout(runner);
   }
   runner = setTimeout(function () {
-    indexLocator.getIndexForDoc(e.document).indexDocument(e.document, { exclude: cfg.exclude });
+    try {
+      indexLocator.getIndexForDoc(e.document).indexDocument(e.document, { exclude: cfg.exclude });
+    } catch (error) {
+      logger.warn("Live index failed", error);
+    }
   }, cfg.liveIndexingDelay);
 }
