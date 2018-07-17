@@ -1,40 +1,44 @@
 import * as vscode from 'vscode';
-import { outputChannel } from './extension';
 import { isTerraformDocument } from './helpers';
+import { Logger } from './logger';
 import { runTerraform } from './runner';
 
 export class FormattingEditProvider implements vscode.DocumentFormattingEditProvider {
   private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
+  private logger = new Logger("formatting-provider");
 
-  onSave(document: vscode.TextDocument) {
-    if (!isTerraformDocument(document) || this._ignoreNextSave.has(document)) {
-      return;
-    }
+  async onSave(document: vscode.TextDocument) {
+    try {
+      if (!isTerraformDocument(document) || this._ignoreNextSave.has(document)) {
+        return;
+      }
 
-    let textEditor = vscode.window.activeTextEditor;
+      if (!this.isFormatEnabled(document, true) || vscode.window.activeTextEditor.document !== document) {
+        return;
+      }
 
-    if (this.isFormatEnabled(document, true) && textEditor.document === document) {
       const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
       const range = fullRange(document);
 
-      outputChannel.appendLine(`terraform.format [on-save]: running 'terraform fmt' on '${document.fileName}'`);
-      return runTerraform(process.cwd(), ["fmt", "-"], {
+      this.logger.info(`[on-save]: running 'terraform fmt' on '${document.fileName}'`);
+      let formattedText = await runTerraform(process.cwd(), ["fmt", "-"], {
         input: document.getText(),
-      }).then((formattedText) => {
-          textEditor.edit((editor) => {
-            editor.replace(range, formattedText);
-          });
-        }).then((applied) => {
-          this._ignoreNextSave.add(document);
+      });
 
-          return document.save();
-        }).then(() => {
-          outputChannel.appendLine("terraform.format [on-save]: Successful.");
-          this._ignoreNextSave.delete(document);
-        }).catch((e) => {
-          outputChannel.appendLine(`terraform.format [on-save]: Failed: '${e}'`);
-          vscode.window.showWarningMessage(e);
-        });
+      const applied = await vscode.window.activeTextEditor.edit((editor) => {
+        editor.replace(range, formattedText);
+      });
+
+      if (!applied)
+        this.logger.warn("[on-save]: changes not applied");
+
+      this._ignoreNextSave.add(document);
+      await document.save();
+
+      this.logger.info("[on-save]: successful.");
+      this._ignoreNextSave.delete(document);
+    } catch (error) {
+      this.logger.exception("[on-save]: formatted failed.", error);
     }
   }
 
@@ -58,24 +62,27 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
   }
 
 
-  provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
-    if (!this.isFormatEnabled(document, false)) {
-      return [];
-    }
-
-    const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
-    const range = fullRange(document);
-
-    outputChannel.appendLine(`terraform.format [provider]: running 'terraform fmt' on '${document.fileName}'`);
-    return runTerraform(process.cwd(), ["fmt", "-"], {
-      input: document.getText(),
-    }).then((formattedText) => {
-        outputChannel.appendLine("terraform.format [provider]: Successful.");
-        return [new vscode.TextEdit(range, formattedText)];
-      }).catch((e) => {
-        outputChannel.appendLine(`terraform.format [provider]: Failed: '${e}'`);
-        vscode.window.showWarningMessage(e);
+  async provideDocumentFormattingEdits(
+    document: vscode.TextDocument,
+    options: vscode.FormattingOptions,
+    token: vscode.CancellationToken): Promise<vscode.TextEdit[]> {
+    try {
+      if (!this.isFormatEnabled(document, false)) {
         return [];
+      }
+
+      const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
+      const range = fullRange(document);
+
+      this.logger.info(`[provider]: running 'terraform fmt' on '${document.fileName}'`);
+      let formattedText = await runTerraform(process.cwd(), ["fmt", "-"], {
+        input: document.getText(),
       });
+
+      this.logger.info("[provider]: successful.");
+      return [new vscode.TextEdit(range, formattedText)];
+    } catch (error) {
+      this.logger.exception("[provider]: formatting failed.", error);
+    }
   }
 }
