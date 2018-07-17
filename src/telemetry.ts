@@ -2,12 +2,14 @@ import * as ai from 'applicationinsights';
 import * as os from 'os';
 import * as vscode from "vscode";
 import { getConfiguration } from "./configuration";
+import { Logger } from './logger';
 
 
 class TelemetryReporter extends vscode.Disposable {
   private client: ai.TelemetryClient;
   private userOptIn: boolean = false;
   private disposables: vscode.Disposable[] = [];
+  private logger = new Logger("telemetry");
 
   constructor(public extensionId: string, public extensionVersion: string, private aiKey: string) {
     super(() => this.disposables.map((d) => d.dispose()));
@@ -24,12 +26,12 @@ class TelemetryReporter extends vscode.Disposable {
 
   trackEvent(eventName: string, properties?: { [key: string]: string }, measurements?: { [key: string]: number }) {
     if (!this.userOptIn || !this.client || !eventName) {
-      console.log(`terraform.telemetry: Not sending metric ${eventName}`);
+      this.logger.debug(`Not sending metric ${eventName}`);
       if (properties) {
-        Object.keys(properties).forEach((p) => console.log(`terraform.telemetry:    ${p}: ${properties[p]}`));
+        Object.keys(properties).forEach((p) => this.logger.debug(`    ${p}: ${properties[p]}`));
       }
       if (measurements) {
-        Object.keys(measurements).forEach((p) => console.log(`terraform.telemetry:    ${p}: ${measurements[p]}`));
+        Object.keys(measurements).forEach((p) => this.logger.debug(`    ${p}: ${measurements[p]}`));
       }
 
       return;
@@ -44,7 +46,7 @@ class TelemetryReporter extends vscode.Disposable {
 
   trackException(eventName: string, exception: Error, properties?: { [key: string]: string }, measurements?: { [key: string]: number }) {
     if (!this.userOptIn || !this.client || !exception || !eventName) {
-      console.log(`terraform.telemetry: Not sending exception metric ${eventName}/${exception}`);
+      this.logger.debug(`terraform.telemetry: Not sending exception metric ${eventName}/${exception}`);
       return;
     }
 
