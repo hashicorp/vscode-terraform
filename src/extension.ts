@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { CompletionProvider } from './autocompletion/completion-provider';
-import { CodeLensProvider, showReferencesCommand } from './codelense';
+import { CodeLensProvider } from './codelense';
 import { getConfiguration } from './configuration';
 import { DefinitionProvider } from './definition';
 import { DocumentLinkProvider } from './documentlink';
@@ -9,14 +9,17 @@ import { graphCommand, GraphContentProvider } from './graph';
 import { HoverProvider } from './hover';
 import { IndexLocator } from './index/index-locator';
 import { DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
-import { Section } from './index/section';
 import { to_vscode_Range, to_vscode_Uri } from './index/vscode-adapter';
 import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
-import { lintCommand } from './lint';
+import { LintCommand } from './commands/lint';
 import { liveIndex } from './live';
+import * as logging from './logger';
 import { RenameProvider } from './rename';
 import * as telemetry from './telemetry';
-import { validateCommand } from './validate';
+import { ValidateCommand } from './commands/validate';
+import { ReindexCommand } from './commands/reindex';
+import { ShowReferencesCommand } from './commands/showreferences';
+import { IndexCommand } from './commands';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -32,6 +35,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     indexLocator = new IndexLocator(ctx);
 
     telemetry.activate(ctx);
+    logging.configure(outputChannel);
 
     ctx.subscriptions.push(ErrorDiagnosticCollection);
 
@@ -47,29 +51,11 @@ export function activate(ctx: vscode.ExtensionContext) {
 
     ctx.subscriptions.push(
         // push
-        vscode.commands.registerCommand('terraform.validate', () => { validateCommand(); }),
-        vscode.commands.registerCommand('terraform.lint', () => { lintCommand(); }),
-        vscode.commands.registerCommand('terraform.showReferences', (section: Section) => {
-            showReferencesCommand(indexLocator.getIndexForSection(section), section);
-        }),
-        vscode.commands.registerCommand('terraform.reindex', () => {
-            for (let index of indexLocator.allIndices(false)) {
-                index.clear();
-            }
-            if (getConfiguration().indexing.enabled) {
-                initialCrawl(indexLocator);
-            }
-        }),
-        vscode.commands.registerCommand('terraform.index-document', (uri: vscode.Uri): boolean => {
-            let doc = vscode.workspace.textDocuments.find((d) => d.uri.toString() === uri.toString());
-            if (!doc) {
-                vscode.window.showErrorMessage(`No open document with uri ${uri.toString()} found`);
-                return false;
-            }
-
-            let index = indexLocator.getIndexForUri(uri);
-            return !!index.indexDocument(doc);
-        }),
+        new ValidateCommand(),
+        new LintCommand(),
+        new ReindexCommand(),
+        new ShowReferencesCommand(),
+        new IndexCommand(),
         vscode.commands.registerCommand('terraform.preview-graph', () => {
             graphCommand(indexLocator, graphProvider);
         }),
@@ -121,5 +107,6 @@ export function activate(ctx: vscode.ExtensionContext) {
 }
 
 export async function deactivate(): Promise<any> {
+    logging.configure(null);
     return await telemetry.deactivate();
 }
