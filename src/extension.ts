@@ -21,6 +21,7 @@ import { ReindexCommand } from './commands/reindex';
 import { ShowReferencesCommand } from './commands/showreferences';
 import { IndexCommand } from './commands';
 import { PreviewGraphCommand } from './commands/preview';
+import { NavigateToSectionCommand } from './commands/navigatetosection';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -58,21 +59,7 @@ export function activate(ctx: vscode.ExtensionContext) {
         new ShowReferencesCommand(),
         new IndexCommand(),
         new PreviewGraphCommand(graphProvider),
-        vscode.commands.registerCommand('terraform.navigate-to-section', async (args: { workspaceFolderName: string, targetId: string }) => {
-            let folder = vscode.workspace.workspaceFolders.find((f) => f.name === args.workspaceFolderName);
-            if (!folder) {
-                await vscode.window.showErrorMessage(`Cannot find workspace folder with name ${args.workspaceFolderName}`);
-                return;
-            }
-            let index = indexLocator.getIndexForWorkspaceFolder(folder);
-            let section = index.section(args.targetId);
-            if (!section) {
-                await vscode.window.showErrorMessage(`No section with id ${args.targetId}`);
-                return;
-            }
-
-            await vscode.window.showTextDocument(to_vscode_Uri(section.location.uri), { selection: to_vscode_Range(section.location.range) });
-        }),
+        new NavigateToSectionCommand(),
 
         // providers
         vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexLocator), '.', '"', '{', '(', '['),
