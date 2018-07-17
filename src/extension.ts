@@ -33,7 +33,7 @@ const documentSelector: vscode.DocumentSelector = [
 
 export let indexLocator: IndexLocator;
 
-export function activate(ctx: vscode.ExtensionContext) {
+export async function activate(ctx: vscode.ExtensionContext) {
     indexLocator = new IndexLocator(ctx);
 
     telemetry.activate(ctx);
@@ -85,7 +85,7 @@ export function activate(ctx: vscode.ExtensionContext) {
         // start to build the index
         if (getConfiguration().indexing.enabled) {
             ctx.subscriptions.push(createWorkspaceWatcher(indexLocator));
-            initialCrawl(indexLocator);
+            await initialCrawl(indexLocator);
         }
     }
 
