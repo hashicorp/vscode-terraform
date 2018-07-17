@@ -134,8 +134,6 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     }
 
     // TODO: refactor to use ast here aswell
-    // let lineText = document.lineAt(position.line).text;
-    // let lineTillCurrentPosition = lineText.substr(0, position.character);
 
     // high-level types ex: variable, resource, module, output etc..
     if (position.character === 0 || this.isTerraformTypes(lineText)) {
