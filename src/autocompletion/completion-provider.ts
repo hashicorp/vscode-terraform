@@ -108,6 +108,11 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     const [ast, error] = parseHcl(document.getText());
     let lineText = document.lineAt(position.line).text;
     let lineTillCurrentPosition = lineText.substr(0, position.character);
+    // Module source completion
+    let possibleSources: any[] = this.lookupForModuleSource(lineTillCurrentPosition);
+    if (possibleSources.length > 0) {
+      return this.getModuleAutoCompletion(possibleSources, vscode.CompletionItemKind.Class);
+    }
 
     if (ast) {
       let offset1 = document.
@@ -120,11 +125,6 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       };
       let token = getTokenAtPosition(ast, pos);
       if (token) {
-        // Module source completion
-        let possibleSources: any[] = this.lookupForModuleSource(lineTillCurrentPosition);
-        if (possibleSources.length > 0) {
-          return this.getModuleAutoCompletion(possibleSources, vscode.CompletionItemKind.Class);
-        }
 
         // Local completion and function completion
         let interpolationCompletions = this.interpolationCompletions(document, position);
