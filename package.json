@@ -206,6 +206,7 @@
     "@types/minimatch": "^3.0.3",
     "@types/mocha": "^2.2.48",
     "@types/node": "^6.0.112",
+    "@types/uuid": "^3.4.3",
     "chalk": "^2.4.1",
     "gulp": "^4.0.0",
     "gulp-decompress": "^2.0.2",
@@ -233,6 +234,7 @@
     "graphlib-dot": "^0.6.2",
     "lodash": "^4.17.10",
     "minimatch": "^3.0.4",
+    "uuid": "^3.3.2",
     "viz.js": "^1.8.2"
   }
 }
