@@ -1,9 +1,12 @@
 import * as vscode from 'vscode';
 import { IndexLocator } from './index/index-locator';
 import { from_vscode_Position, from_vscode_Uri, to_vscode_Range, to_vscode_Uri } from './index/vscode-adapter';
+import { Logger } from './logger';
 import { Reporter } from './telemetry';
 
 export class RenameProvider implements vscode.RenameProvider {
+  private logger = new Logger("rename-provider");
+
   constructor(private indexLocator: IndexLocator) { }
 
   provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string): vscode.WorkspaceEdit {
@@ -40,8 +43,8 @@ export class RenameProvider implements vscode.RenameProvider {
       Reporter.trackEvent("provideRenameEdits", { sectionType: section.sectionType }, { references: references.length });
       return edit;
     } catch (err) {
+      this.logger.exception("Could not provide rename edits", err);
       Reporter.trackException("provideRenameEdits", err);
-      throw err;
     }
   }
 }
