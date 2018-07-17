@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { Logger } from '../logger';
 import { Reporter } from '../telemetry';
 import { IndexLocator } from './index-locator';
 import { Property } from './property';
@@ -86,6 +87,8 @@ function getKind(sectionType: string): vscode.SymbolKind {
 }
 
 export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+  private logger = new Logger("document-symbol-provider");
+
   constructor(private indexLocator: IndexLocator) { }
 
   provideDocumentSymbols(document: vscode.TextDocument): vscode.DocumentSymbol[] {
@@ -96,13 +99,16 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
       Reporter.trackEvent("provideDocumentSymbols", {}, { symbolCount: symbols.length });
       return symbols;
     } catch (err) {
+      this.logger.exception("Could not provide document symbols", err);
       Reporter.trackException("provideDocumentSymbols", err);
-      throw err;
+      return [];
     }
   }
 }
 
 export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
+  private logger = new Logger("workspace-symbol-provider");
+
   constructor(private indexLocator: IndexLocator) { }
 
   provideWorkspaceSymbols(query: string): vscode.SymbolInformation[] {
@@ -115,8 +121,9 @@ export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
       Reporter.trackEvent("provideWorkspaceSymbols", {}, { symbolCount: symbols.length });
       return symbols;
     } catch (err) {
+      this.logger.exception(`Could not provide workspace symbols (query: ${query})`, err);
       Reporter.trackException("provideWorkspaceSymbols", err);
-      throw err;
+      return [];
     }
   }
 }
