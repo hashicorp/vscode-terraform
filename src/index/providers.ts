@@ -8,19 +8,27 @@ import { Uri } from './uri';
 import { from_vscode_Position, to_vscode_Location, to_vscode_Range } from './vscode-adapter';
 
 export class ReferenceProvider implements vscode.ReferenceProvider {
+  private logger = new Logger("reference-provider");
+
   constructor(private indexLocator: IndexLocator) { }
 
   provideReferences(document: vscode.TextDocument, position: vscode.Position, context: vscode.ReferenceContext): vscode.Location[] {
-    let section = this.indexLocator.getIndexForDoc(document).query(Uri.parse(document.uri.toString()), { position: from_vscode_Position(position) })[0];
-    if (!section)
-      return [];
+    try {
+      let section = this.indexLocator.getIndexForDoc(document).query(Uri.parse(document.uri.toString()), { position: from_vscode_Position(position) })[0];
+      if (!section)
+        return [];
 
-    let references = this.indexLocator.getIndexForDoc(document).queryReferences("ALL_FILES", { target: section });
-    return references.map((r) => {
-      const range = new vscode.Range(r.location.range.start.line, r.location.range.start.character,
-        r.location.range.end.line, r.location.range.end.character);
-      return new vscode.Location(vscode.Uri.parse(r.location.uri.toString()), range);
-    });
+      let references = this.indexLocator.getIndexForDoc(document).queryReferences("ALL_FILES", { target: section });
+      return references.map((r) => {
+        const range = new vscode.Range(r.location.range.start.line, r.location.range.start.character,
+          r.location.range.end.line, r.location.range.end.character);
+        return new vscode.Location(vscode.Uri.parse(r.location.uri.toString()), range);
+      });
+    } catch (error) {
+      this.logger.exception("Could not provide references", error);
+      Reporter.trackException("provideReferences", error);
+      return [];
+    }
   }
 }
 
