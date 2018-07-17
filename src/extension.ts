@@ -5,7 +5,7 @@ import { getConfiguration } from './configuration';
 import { DefinitionProvider } from './definition';
 import { DocumentLinkProvider } from './documentlink';
 import { FormattingEditProvider } from './format';
-import { graphCommand, GraphContentProvider } from './graph';
+import { GraphContentProvider } from './graph';
 import { HoverProvider } from './hover';
 import { IndexLocator } from './index/index-locator';
 import { DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
@@ -20,6 +20,7 @@ import { ValidateCommand } from './commands/validate';
 import { ReindexCommand } from './commands/reindex';
 import { ShowReferencesCommand } from './commands/showreferences';
 import { IndexCommand } from './commands';
+import { PreviewGraphCommand } from './commands/preview';
 
 export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -56,9 +57,7 @@ export function activate(ctx: vscode.ExtensionContext) {
         new ReindexCommand(),
         new ShowReferencesCommand(),
         new IndexCommand(),
-        vscode.commands.registerCommand('terraform.preview-graph', () => {
-            graphCommand(indexLocator, graphProvider);
-        }),
+        new PreviewGraphCommand(graphProvider),
         vscode.commands.registerCommand('terraform.navigate-to-section', async (args: { workspaceFolderName: string, targetId: string }) => {
             let folder = vscode.workspace.workspaceFolders.find((f) => f.name === args.workspaceFolderName);
             if (!folder) {
