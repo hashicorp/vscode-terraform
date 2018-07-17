@@ -15,7 +15,7 @@ export class DefinitionProvider implements vscode.DefinitionProvider {
       if (!reference)
         return null;
 
-      let section = this.indexLocator.getIndexForDoc(document).query("ALL_FILES", reference.getQuery())[0];
+      let section = this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { id: reference.targetId })[0];
       if (!section)
         return null;
       return to_vscode_Location(section.location);
