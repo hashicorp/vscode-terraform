@@ -32,13 +32,25 @@ function sectionFromKeyItemNode(uri: vscode.Uri, item: any): Section {
     // typed section has name at index 2, untyped at 1
     let nameIndex = 1;
 
-    if (isTypedSection) {
-        nameIndex = 2;
-
-        type = stripQuotes(item.Keys[1].Token.Text);
-        const typeStart = createPosition(item.Keys[1].Token.Pos, 1);
-        const typeEnd = typeStart.translate({ characterDelta: type.length });
-        typeLoc = new vscode.Location(uri, new vscode.Range(typeStart, typeEnd));
+    if (isTypedSection || sectionType === "module") {
+        if (isTypedSection) {
+            nameIndex = 2;
+            type = stripQuotes(item.Keys[1].Token.Text);
+            const typeStart = createPosition(item.Keys[1].Token.Pos, 1);
+            const typeEnd = typeStart.translate({ characterDelta: type.length });
+            typeLoc = new vscode.Location(uri, new vscode.Range(typeStart, typeEnd));
+        } else {
+            let listItem = item.Val.List.Items;
+            for (let list of listItem) {
+                if (list.Keys[0].Token.Text === "source") {
+                    type = stripQuotes(list.Val.Token.Text);
+                    const typeStart = createPosition(list.Val.Token.Pos, 1);
+                    const typeEnd = typeStart.translate({ characterDelta: type.length });
+                    typeLoc = new vscode.Location(uri, new vscode.Range(typeStart, typeEnd));
+                    break;
+                }
+            }
+        }
     }
 
     const name = stripQuotes(item.Keys[nameIndex].Token.Text);
