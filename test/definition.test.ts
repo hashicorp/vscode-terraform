@@ -22,7 +22,7 @@ suite("Definition provider Tests", () => {
 
     assert.equal(locations.length, 1);
     assert.equal(locations[0].uri.toString(), doc1.uri.toString());
-    assert.deepEqual(locations[0].range, new vscode.Range(0, 0, 0, 24));
+    assert.deepEqual(locations[0].range, new vscode.Range(0, 0, 0, 25));
   });
 
   test("Can find definition for assignments in templates", async () => {
@@ -45,6 +45,6 @@ suite("Definition provider Tests", () => {
 
     assert.equal(locations.length, 1);
     assert.equal(locations[0].uri.toString(), doc1.uri.toString());
-    assert.deepEqual(locations[0].range, new vscode.Range(0, 0, 0, 26));
+    assert.deepEqual(locations[0].range, new vscode.Range(0, 0, 0, 27));
   });
 });
