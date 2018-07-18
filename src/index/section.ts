@@ -78,14 +78,14 @@ export class Section {
       return false;
 
     if (this.type) {
-      if (options.type && !this.type.match(options.type))
+      if (options.type && this.type.indexOf(options.type) === -1)
         return false;
     } else {
       if (options.type)
         return false;
     }
 
-    if (options.name && !this.name.match(options.name))
+    if (options.name && this.name.indexOf(options.name) === -1)
       return false;
 
     if (options.name_position && !this.nameLocation.range.contains(options.name_position))

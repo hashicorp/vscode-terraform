@@ -337,5 +337,5 @@ export function GetKnownFunctions(name?: string): InterpolationFunctionDefinitio
     if (!name || name === "")
         return KnownFunctions;
 
-    return KnownFunctions.filter((f) => !!f.name.match(name));
+    return KnownFunctions.filter((f) => f.name.indexOf(name) !== -1);
 }
