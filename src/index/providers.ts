@@ -123,7 +123,7 @@ export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
     try {
       let indices = [...this.indexLocator.allIndices(true)];
 
-      const sections = Array<Section>().concat(...indices.map((i) => i.query("ALL_FILES", { id: query })));
+      const sections = Array<Section>().concat(...indices.map((i) => i.query("ALL_FILES", { id: { fuzzy: true, match: query } })));
       const symbols = sections.map((s) => createSymbolInfo(s));
 
       Reporter.trackEvent("provideWorkspaceSymbols", {}, { symbolCount: symbols.length });
