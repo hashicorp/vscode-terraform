@@ -27,7 +27,7 @@ suite("Index Tests", () => {
             assert.equal(s.name, "bucket");
             assert.deepEqual(s.nameLocation, nameLocation, "name location");
 
-            let location = new Location(uri, new Range(new Position(0, 0), new Position(0, 35)));
+            let location = new Location(uri, new Range(new Position(0, 0), new Position(0, 36)));
             assert.deepEqual(s.location, location, "section location");
         });
 

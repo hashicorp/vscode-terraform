@@ -19,7 +19,7 @@ function createPosition(pos: any, columnDelta: number = 0): Position {
 }
 
 function createRange(start: any, end: any): Range {
-    return new Range(createPosition(start), createPosition(end));
+    return new Range(createPosition(start), createPosition(end, 1));
 }
 
 function locationFromToken(uri: Uri, token: AstToken, strip: boolean): Location {
