@@ -10,7 +10,7 @@ export interface QueryOptions {
   type?: string;
   name_position?: Position;
   position?: Position;
-  id?: string;
+  id?: string | { fuzzy: true, match: string };
   unique?: boolean;
 }
 
@@ -71,8 +71,17 @@ export class Section {
     if (!options)
       return true;
 
-    if (options.id && this.id() !== options.id)
-      return false;
+    if (options.id) {
+      if (typeof options.id === "string") {
+        // exact match
+        if (this.id() !== options.id)
+          return false;
+      } else {
+        // fuzzy
+        if (this.id().indexOf(options.id.match) === -1)
+          return false;
+      }
+    }
 
     if (options.section_type && this.sectionType !== options.section_type)
       return false;

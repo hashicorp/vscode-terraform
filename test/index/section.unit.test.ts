@@ -94,6 +94,11 @@ locals {
                 assert(!section.match({ id: "resource_type.resource" }));
             });
 
+            test("by id (fuzzy)", () => {
+                assert(section.match({ id: { fuzzy: true, match: "type.resource" } }));
+                assert(!section.match({ id: { fuzzy: true, match: "smurf" } }));
+            });
+
             test("by section type", () => {
                 assert(section.match({ section_type: "resource" }));
                 assert(!section.match({ section_type: "data" }));
