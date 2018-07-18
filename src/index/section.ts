@@ -71,7 +71,7 @@ export class Section {
     if (!options)
       return true;
 
-    if (options.id && !this.id().match(options.id))
+    if (options.id && this.id() !== options.id)
       return false;
 
     if (options.section_type && this.sectionType !== options.section_type)
