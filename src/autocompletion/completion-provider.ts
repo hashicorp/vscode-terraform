@@ -125,7 +125,6 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       };
       let token = getTokenAtPosition(ast, pos);
       if (token) {
-
         // Local completion and function completion
         let interpolationCompletions = this.interpolationCompletions(document, position);
         if (interpolationCompletions.length !== 0)
@@ -178,28 +177,13 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       let parentResource: string = "";
       let parentType: string = "";
       let nestedCounts: number = 0;
+      let sourceResource: string = "";
       while (prev >= 0) {
         let line: string = document.lineAt(prev).text;
-        let sourceparts: string[] = line.split(" ");
-        if (sourceparts.length === 5 && sourceparts[2] === "source") {
-          let moduleitem = new vscode.CompletionItem("Default Parameter", vscode.CompletionItemKind.Module);
-          let sourceType = this.getTypeFromLine(line, 2);
-
-          let typeparameters = moduleSources[sourceType];
-          let parameters: IModuleArgsDef[] = typeparameters.args;
-          let snippet: string = '\n';
-          let order: number = 1;
-          for (let parameter of parameters) {
-            if (parameter.default === "") {
-              snippet += '  ' + parameter.name + ' = "${' + order.toString() + ':' + parameter.name + '}"\n';
-              order += 1;
-            }
-          }
-          snippet += '\n';
-          moduleitem.insertText = new vscode.SnippetString(snippet);
-          let modulecompletionList: vscode.CompletionItem[] = [];
-          modulecompletionList[0] = moduleitem;
-          return modulecompletionList;
+        // if it is module, we have to store source parameters as parentResource
+        let parameterParts: string[] = line.split(" ");
+        if (parameterParts[2] === "source") {
+          sourceResource = parameterParts[parameterParts.length - 1].replace(/"|=/g, "");
         }
         // nested closing block
         if (line.trim() === "}") {
@@ -245,8 +229,12 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
         }
         return this.getItemsForArgs(fieldArgs, parentResource);
       } else if (parentType.length > 0 && nestedTypes.length === 0) {
-        let fieldArgs: IFieldDef[] = terraformConfigAutoComplete[parentType];
-        return this.getItemsForArgs(fieldArgs, parentType);
+        let temp: any = { items: moduleSources[sourceResource].args };
+        let fieldArgs: IModuleArgsDef[] = _.cloneDeep(temp).items;
+        if (parentType === "module") {
+          fieldArgs.push(...terraformConfigAutoComplete.module);
+        }
+        return this.getModuleItemsForArgs(fieldArgs, sourceResource);
       }
     }
     return [];
@@ -342,6 +330,42 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     });
   }
 
+  private getModuleItemsForArgs(args: IModuleArgsDef[], type: string): any {
+    return _.map(args, o => {
+      let c = new vscode.CompletionItem(`${o.name} (${type})`, vscode.CompletionItemKind.Property);
+      c.detail = o.description;
+      let defaultValue: string = o.default;
+      let snippet = o.name + ' = ' + defaultValue;
+      if (defaultValue.length >= 2 && defaultValue[0] === '"' &&  defaultValue[defaultValue.length - 1] === '"') {
+        defaultValue = defaultValue.replace(/\"/g, "");
+        snippet = o.name + ' = "${1:' + defaultValue + '}"';
+      } else if (defaultValue.length >= 2 && defaultValue[0] === '[' &&  defaultValue[defaultValue.length - 1] === ']') {
+        defaultValue = defaultValue.replace(/\[\s*\n\s*/g, "").replace(/\s*\n\s*\]/g, "");
+        snippet = o.name + ' = [${1:' + defaultValue + '}]';
+      } else if (defaultValue.length >= 2 && defaultValue[0] === '{' &&  defaultValue[defaultValue.length - 1] === '}') {
+        defaultValue = defaultValue.replace(/\{\s*\n\s*/g, "").replace(/\s*\n\s*\}/g, "");
+        let parameters: string[] = defaultValue.split(",");
+        snippet = o.name + ' = {\n';
+        let order: number = 1;
+        for ( let parameter of parameters) {
+          let space: string = "";
+          if (order === 1) {
+            space = "  ";
+          }
+          let parts: string[] = parameter.split(":");
+          if ( parts.length === 2) {
+            snippet += space + '${' + order.toString() + ':' + parts[0].replace(/\"|\n/g, "") + '}' + ' = ';
+            order += 1;
+            snippet += '"${' + order.toString() + ':' + parts[1].replace(/\"|\n/g, "") + '}"' + '\n';
+            order += 1;
+          }
+        }
+        snippet += '}\n'
+      }
+      c.insertText = new vscode.SnippetString(snippet);
+      return c;
+    });
+  }
   private typedMatched(line: string, exp: RegExp): boolean {
     return exp.test(line);
   }

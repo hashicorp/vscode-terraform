@@ -55,7 +55,7 @@ export interface ITerraformConfigAutoComplete {
     resource: IFieldDef[];
     variable: IFieldDef[];
     output: IFieldDef[];
-    module: IFieldDef[];
+    module: IModuleArgsDef[];
 }
 
 export function findResourceFormat(sectionType: string, resourceType: string): any {
