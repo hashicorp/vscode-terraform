@@ -8,4 +8,16 @@ export class Uri {
   public toString(): string {
     return this.uri;
   }
+
+  public dirname(): string {
+    let i = this.uri.lastIndexOf('/');
+    if (i === -1) {
+      i = this.uri.lastIndexOf('\\');
+    }
+    if (i === -1) {
+      return "";
+    }
+
+    return this.uri.substr(0, i);
+  }
 }
