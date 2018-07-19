@@ -334,33 +334,44 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     return _.map(args, o => {
       let c = new vscode.CompletionItem(`${o.name} (${type})`, vscode.CompletionItemKind.Property);
       c.detail = o.description;
-      let defaultValue: string = o.default;
+      let defaultValue: string = o.default.replace(/\n|\s/g, "");
       let snippet = o.name + ' = ' + defaultValue;
       if (defaultValue.length >= 2 && defaultValue[0] === '"' &&  defaultValue[defaultValue.length - 1] === '"') {
         defaultValue = defaultValue.replace(/\"/g, "");
         snippet = o.name + ' = "${1:' + defaultValue + '}"';
       } else if (defaultValue.length >= 2 && defaultValue[0] === '[' &&  defaultValue[defaultValue.length - 1] === ']') {
-        defaultValue = defaultValue.replace(/\[\s*\n\s*/g, "").replace(/\s*\n\s*\]/g, "");
+        defaultValue = defaultValue.replace(/\[\s*/g, "").replace(/\s*\]/g, "");
         snippet = o.name + ' = [${1:' + defaultValue + '}]';
       } else if (defaultValue.length >= 2 && defaultValue[0] === '{' &&  defaultValue[defaultValue.length - 1] === '}') {
-        defaultValue = defaultValue.replace(/\{\s*\n\s*/g, "").replace(/\s*\n\s*\}/g, "");
-        let parameters: string[] = defaultValue.split(",");
-        snippet = o.name + ' = {\n';
+        defaultValue = defaultValue.replace(/\{\s*/g, "").replace(/\s*\}/g, "");
+        let positions: number[];
+        let space: string = "";
+        let pos = defaultValue.indexOf(":");
+        let startPos = 0;
+        let endPos = defaultValue.length - 1;
         let order: number = 1;
-        for ( let parameter of parameters) {
-          let space: string = "";
+        snippet = o.name + ' = {\n';
+        while (pos > -1) {
+          let item: string = defaultValue.substr(startPos, pos - startPos);
+          let value: string = defaultValue.substr(pos + 1, endPos - pos - 1);
           if (order === 1) {
             space = "  ";
           }
-          let parts: string[] = parameter.split(":");
-          if ( parts.length === 2) {
-            snippet += space + '${' + order.toString() + ':' + parts[0].replace(/\"|\n/g, "") + '}' + ' = ';
+          snippet += space + '${' + order.toString() + ':' + item.replace(/\"|\n/g, "") + '}' + ' = ';
+          order += 1;
+          if (defaultValue[pos + 1] === "[") {
+            value = defaultValue.substr(pos + 1).match( /\[(.*?)\]/g).map(str => str.substr(1, str.length - 2))[0];
+            snippet += '[${' + order.toString() + ':' + value + '}]' + '\n';
             order += 1;
-            snippet += '"${' + order.toString() + ':' + parts[1].replace(/\"|\n/g, "") + '}"' + '\n';
+          } else if (defaultValue[pos + 1] === '\"') {
+            value = defaultValue.match( /\"(.*?)\"/g).map(str => str.substr(1, str.length - 2))[0];
+            snippet += '"${' + order.toString() + ':' + value + '}"' + '\n';
             order += 1;
           }
+          startPos = pos + value.length + 2 + 2;
+          pos = defaultValue.indexOf(":", startPos);
         }
-        snippet += '}\n'
+        snippet += '}\n';
       }
       c.insertText = new vscode.SnippetString(snippet);
       return c;
