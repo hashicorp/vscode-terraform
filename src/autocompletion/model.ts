@@ -1,6 +1,6 @@
-const awsResources: ITerraformData = require("../data/terraform-provider-aws.json");
-const azureResources: ITerraformData = require("../data/terraform-provider-azurerm.json");
-const googleResources: ITerraformData = require("../data/terraform-provider-google.json");
+// const awsResources: ITerraformData = require("../data/terraform-provider-aws.json");
+// const azureResources: ITerraformData = require("../data/terraform-provider-azurerm.json");
+// const googleResources: ITerraformData = require("../data/terraform-provider-google.json");
 export const terraformConfigAutoComplete: ITerraformConfigAutoComplete = require("../data/terraform-config.json");
 
 import * as _ from "lodash";
