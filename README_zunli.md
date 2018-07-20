@@ -33,19 +33,16 @@
 ## Install from *.vsix in Jenkins
 - Find and download *.vsix in Jenkins. 
  `vscode_terraform`->`artifacts`->`${buildNum}`->`terraform-${version}.vsix`
-
-![](https://github.com/zunlihu/Terraform-Language-Server/blob/master/images/JenkinsPath.PNG)
-
 - Install in Visual Studio Code:
   - **The First Method (Recommend)**：
 	 Press `Ctrl`+`Shift`+`P` and select  `Extensions: Install from VSIX...` command in the Command Palette, then point to the target .vsix file you just downloaded.
-![](https://github.com/zunlihu/Terraform-Language-Server/blob/master/images/install.png)
 
   - The Second Method ：
 You can also install using the VS Code ```--install-extension``` command line switch providing the path to the .vsix file.
 		
-		`code --install-extension terraform-1.1.2.vsix`
-	
+		```
+		code --install-extension terraform-1.1.2.vsix
+		```
 ## Try Resource Auto-Completion
 
 - `resource` key word completion.
