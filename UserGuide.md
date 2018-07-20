@@ -5,16 +5,10 @@
   <br>
   vscode-terraform
   <br>
-  <br>
 </h1>
-
 <h4 align="center">Adds intelligent auto-completion features for <a href="https://www.terraform.io/">Terraform</a> files</h4>
 
-<p align="center">
-  <a href="https://tfci.westus2.cloudapp.azure.com/job/vscode_terraform/">
-    <img src="http://img.shields.io/travis/zunlihu/vscode-terraform.svg?branch=master">
-  </a>
-</p>
+
 <!-- markdownlint-enable -->
 <!-- markdownlint-disable MD002 MD013 MD041 -->
 
@@ -36,8 +30,20 @@
 ### Others
   1. Hyperlink for resource, data types and module sources, which is linked to Example Usage Web.
 
+## Install from *.vsix in Jenkins
+- Find and download *.vsix in Jenkins. 
+ `vscode_terraform`->`artifacts`->`${buildNum}`->`terraform-${version}.vsix`
+- Install in Visual Studio Code:
+  - **The First Method (Recommend)**：
+	 Press `Ctrl`+`Shift`+`P` and select  `Extensions: Install from VSIX...` command in the Command Palette, then point to the target .vsix file you just downloaded.
 
-## Resource Auto-Completion
+  - The Second Method ：
+You can also install using the VS Code ```--install-extension``` command line switch providing the path to the .vsix file.
+		
+		```
+		code --install-extension terraform-1.1.2.vsix
+		```
+## Try Resource Auto-Completion
 
 - `resource` key word completion.
 
@@ -46,11 +52,11 @@
 
 -  After the definition of name, when you type `{}`, the `Default Parameter` auto-loading will works.
 
--  For the `Optional` parameters or properties, if you need, when you type the first letter, auto-completion support with property description works.
+-  For the `Optional` parameters or properties, if you need, when you type the first letter, auto-completion support with property description works. If you are not familiar with the usage of resource, you can just click the hyperlink in resource types and find Example Usage.
 
-IMAGE!!!!!
+![](https://github.com/zunlihu/vscode-terraform/blob/master/images/resource-auto-completion.gif)
 
-## Data Auto-Completion 
+## Try Data Auto-Completion 
 - `data` key word completion.
 
 -  Data Types auto-completion with bucket when you type `""` after resource key word.
@@ -58,21 +64,23 @@ IMAGE!!!!!
 
 -  After the definition of name, when you type `{}`, the `Default Parameter` auto-loading will works.
 
--  For the `Optional` parameters or properties, if you need, when you type the first letter, auto-completion support with property description works.
+-  For the `Optional` parameters or properties, if you need, when you type the first letter, auto-completion support with property description works. In addition, if you are not familiar with the usage of data source, you can just click the hyperlink in data types and find Example Usage.
 
-IMAGE!!!!!
+![](https://github.com/zunlihu/vscode-terraform/blob/master/images/data-auto-completion.gif)
 
-## Module Auto-Completion
+## Try Module Auto-Completion
 - `module` bucket completion with source auto-loading.
 
 -  In `module`, parameter `source` types auto-completion with other required parameters when you type `""` after `source = `.
-   Note: Here source types are recommended **with priority**.
+   Note: Here source types are recommended **with priority** based on the downloads in module registry.
 
--  For the `Optional` parameters or properties, if you need, when you type the first letter, auto-completion support with property description works.
+-  For the `Optional` parameters or properties, if you need, when you type the first letter, auto-completion support with property description works. And when you select one of the module parameters, the **default value** of the parameter will be auto-loaded, too.
 
-IMAGE!!!!! 
+- In addition, if you are not familiar with the usage of module source, you can just click the hyperlink in module source parameter and find Example Usage.
+
+![](https://github.com/zunlihu/vscode-terraform/blob/master/images/module-auto-completion.gif)
 
 ## Hyperlink
-The hyperlink of resource types, data types, module source type swill automatically works, which can be used to browse `Example Usage` website conveniently.
+The hyperlink of resource types, data types, module source types will automatically works, which can be used to browse `Example Usage` website conveniently.
 
 **Note**: If there are lint errors in the file, the hyperlink will not work. But when you correct the errors, it works automatically.
