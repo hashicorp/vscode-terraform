@@ -69,3 +69,10 @@ If you get an error **Error: Cannot find module '../hcl-hil.js'** then you need 
 |npm run compile         |gulp compile     |Just compiles without building the hcl/hil wrapper, used by VScode targets for a faster build|
 |npm run test            |gulp test        |Runs the *unit-test*, already part of `compile`|
 |npm run integration-test|*n/a*            |Runs the *integration-test*, **does not** work if Visual Studio Code is already running, this target primarily used by the CI system|
+
+## Special building command line args
+
+The `gulpfile.js` accepts the following extra command line arguments:
+
+1. `--offline-build`: when supplied ignores tasks which require online access (e.g. `generate-hcl-hil.js`), this requires the output of the ignored tasks to exist for dependent tasks to succeed.
+1. `--force-wrapper-generation`: `out/src/hcl-hil.js` is only generated when it does not exist (in order to speed up local building). Supplying this arg forces `hcl-hil.js` to be generated even when it already exists.

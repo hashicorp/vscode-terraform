@@ -12,6 +12,8 @@ var mocha = require('gulp-mocha');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
 
+var helpers = require('./tasks/helpers');
+
 // load tasks
 require("./tasks/auto-completion-data.task.js");
 
@@ -209,9 +211,22 @@ gulp.task('generate-release-notes', function generateReleaseNotes(done) {
     });
 });
 
+// figure if we want to skip hcl-hil.js generation
+const hclJsAlreadyBuilt = fs.existsSync("out/src/hcl-hil.js");
+const skipHclHilJs = helpers.offlineBuild || (hclJsAlreadyBuilt && !helpers.forceWrapperGeneration);
+if (skipHclHilJs) {
+    log(`${chalk.yellow('INFO')}: skipping generation of hcl-hil.js, you can force generation using --force-wrapper-generation`);
+}
+
 // compile
-gulp.task('build', gulp.series('generate-hcl-hil.js', 'copy-autocompletion-data', 'copy-html-templates',
-    'generate-constants-keyfile', 'generate-release-notes', 'compile'));
+gulp.task('build',
+    gulp.series(
+        skipHclHilJs ? [] : ['generate-hcl-hil.js'],
+        'copy-autocompletion-data',
+        'copy-html-templates',
+        'generate-constants-keyfile',
+        'generate-release-notes',
+        'compile'));
 
 // watch
 gulp.task('watch', gulp.series('build', () => {
