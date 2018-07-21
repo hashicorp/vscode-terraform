@@ -38,7 +38,7 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
       this.logger.info("[on-save]: successful.");
       this._ignoreNextSave.delete(document);
     } catch (error) {
-      this.logger.exception("[on-save]: formatted failed.", error);
+      this.logger.exception("[on-save]: formatting failed.", error);
     }
   }
 
