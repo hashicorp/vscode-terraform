@@ -1,6 +1,7 @@
 import * as assert from "assert";
 import { FileIndex } from "../../src/index/file-index";
 import { IndexGroup } from "../../src/index/group";
+import { Position } from "../../src/index/position";
 import { Uri } from "../../src/index/uri";
 
 suite("Index Tests", () => {
@@ -61,6 +62,26 @@ suite("Index Tests", () => {
       assert.equal(group.indices("ALL_FILES").length, 1);
       assert(!group.section("var.var1"));
       assert(group.section("var.var2"));
+    });
+    suite("queryReferences", () => {
+      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let group = IndexGroup.createFromFileIndex(index1);
+
+      let [index2, d2] = FileIndex.fromString(Uri.parse("dir/file2.tf"), 'resource "type" "name1" { property = "${var.var1}" }');
+      group.add(index2);
+
+      let [index3, d3] = FileIndex.fromString(Uri.parse("dir/file3.tf"), 'resource "type" "name2" { property = "${var.var1}" }');
+      group.add(index3);
+
+      test("supports ALL_FILES", () => {
+        let result = group.queryReferences("ALL_FILES", { target: "var.var1" });
+        assert.equal(result.length, 2);
+      });
+
+      test("supports restricting results by Uri", () => {
+        let result = group.queryReferences(index3.uri, { target: "var.var1" });
+        assert.equal(result.length, 1);
+      });
     });
   });
 });

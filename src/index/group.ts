@@ -63,6 +63,14 @@ export class IndexGroup {
     return sections;
   }
 
+  queryReferences(uri: "ALL_FILES" | Uri, options?: ReferenceQueryOptions): Reference[] {
+    if (options.position && uri === "ALL_FILES") {
+      throw "Cannot use ALL_FILES when querying for position";
+    }
+
+    return [].concat(...this.indices(uri).map((f) => [...f.queryReferences(options)]));
+  }
+
   indices(uri: "ALL_FILES" | Uri): FileIndex[] {
     if (uri === "ALL_FILES")
       return [...this.files.values()];
