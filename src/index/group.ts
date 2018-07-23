@@ -1,5 +1,6 @@
 import { FileIndex } from "../../src/index/file-index";
 import { QueryOptions, Section } from "../../src/index/section";
+import { Reference, ReferenceQueryOptions } from "./reference";
 import { Uri } from "./uri";
 
 export class IndexGroup {
@@ -15,8 +16,21 @@ export class IndexGroup {
     return group;
   }
 
-  belongs(index: FileIndex): boolean {
-    return this.uri.toString() === index.uri.dirname();
+  get fileCount(): number {
+    return this.files.size;
+  }
+
+  get sectionCount(): number {
+    return this.sections.size;
+  }
+
+  belongs(index: FileIndex | Uri | string): boolean {
+    if (typeof index === "string")
+      return index === this.uri.toString();
+    else if (index instanceof Uri)
+      return index.toString() === this.uri.toString();
+    else
+      return this.uri.toString() === index.uri.dirname();
   }
 
   add(index: FileIndex) {
@@ -31,7 +45,8 @@ export class IndexGroup {
     return this.files.get(uri.toString());
   }
 
-  delete(uri: Uri) {
+  delete(uriOrFileIndex: Uri | FileIndex) {
+    const uri = uriOrFileIndex instanceof FileIndex ? uriOrFileIndex.uri : uriOrFileIndex;
     let index = this.get(uri);
     if (!index)
       return;

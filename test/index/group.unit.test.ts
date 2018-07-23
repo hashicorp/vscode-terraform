@@ -63,6 +63,59 @@ suite("Index Tests", () => {
       assert(!group.section("var.var1"));
       assert(group.section("var.var2"));
     });
+
+    test("fileCount, sectionCount", () => {
+      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let group = IndexGroup.createFromFileIndex(index1);
+
+      let [index2, d2] = FileIndex.fromString(Uri.parse("dir/file2.tf"), 'variable "var2" {}');
+      group.add(index2);
+
+      assert.equal(group.fileCount, 2);
+      assert.equal(group.sectionCount, 2);
+
+      group.delete(index1.uri);
+
+      assert.equal(group.fileCount, 1);
+      assert.equal(group.sectionCount, 1);
+    });
+
+    test("query supports ALL_FILES", () => {
+      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let group = IndexGroup.createFromFileIndex(index1);
+
+      let result = group.query("ALL_FILES", { id: "var.var1" });
+      assert.equal(result.length, 1);
+    });
+
+    test("query only returns result for the specified Uri", () => {
+      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let group = IndexGroup.createFromFileIndex(index1);
+
+      let [index2, d2] = FileIndex.fromString(Uri.parse("dir/file2.tf"), 'variable "var2" {}');
+      group.add(index2);
+
+      let result = group.query(index1.uri, { id: "var.var2" });
+      assert.equal(result.length, 0);
+
+      result = group.query(index2.uri, { id: "var.var2" });
+      assert.equal(result.length, 1);
+    });
+
+    test("query throws when querying for position using ALL_FILES", () => {
+      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let group = IndexGroup.createFromFileIndex(index1);
+
+      assert.throws(() => group.query("ALL_FILES", { position: new Position(1, 1) }));
+    });
+
+    test("query throws when querying for name_position using ALL_FILES", () => {
+      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let group = IndexGroup.createFromFileIndex(index1);
+
+      assert.throws(() => group.query("ALL_FILES", { name_position: new Position(1, 1) }));
+    });
+
     suite("queryReferences", () => {
       let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
       let group = IndexGroup.createFromFileIndex(index1);
