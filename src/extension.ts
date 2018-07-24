@@ -7,10 +7,7 @@ import { DocumentLinkProvider } from './documentlink';
 import { FormattingEditProvider } from './format';
 import { GraphContentProvider } from './graph';
 import { HoverProvider } from './hover';
-import { IndexLocator } from './index/index-locator';
 import { DocumentSymbolProvider, ReferenceProvider, WorkspaceSymbolProvider } from './index/providers';
-import { to_vscode_Range, to_vscode_Uri } from './index/vscode-adapter';
-import { createWorkspaceWatcher, initialCrawl } from './index/watcher';
 import { LintCommand } from './commands/lint';
 import { liveIndex } from './live';
 import * as logging from './logger';
@@ -22,6 +19,8 @@ import { ShowReferencesCommand } from './commands/showreferences';
 import { IndexCommand } from './commands';
 import { PreviewGraphCommand } from './commands/preview';
 import { NavigateToSectionCommand } from './commands/navigatetosection';
+import { IndexAdapter } from './index/index-adapter';
+import { Index } from './index';
 import { FileSystemWatcher } from './index/crawler';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
@@ -38,8 +37,6 @@ export async function activate(ctx: vscode.ExtensionContext) {
     telemetry.activate(ctx);
     logging.configure(outputChannel);
 
-    ctx.subscriptions.push(ErrorDiagnosticCollection);
-
     let formattingProvider = new FormattingEditProvider;
     ctx.subscriptions.push(
         vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider)
@@ -54,32 +51,32 @@ export async function activate(ctx: vscode.ExtensionContext) {
         // push
         new ValidateCommand(),
         new LintCommand(),
-        new ReindexCommand(),
-        new ShowReferencesCommand(),
-        new IndexCommand(),
-        new PreviewGraphCommand(graphProvider),
-        new NavigateToSectionCommand(),
+        new ReindexCommand(indexAdapter, null),
+        new ShowReferencesCommand(indexAdapter),
+        new IndexCommand(indexAdapter),
+        new PreviewGraphCommand(graphProvider, indexAdapter),
+        new NavigateToSectionCommand(indexAdapter),
 
         // providers
-        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexLocator), '.', '"', '{', '(', '['),
-        vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(indexLocator)),
-        vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(indexLocator)),
-        vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(indexLocator)),
-        vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(indexLocator)),
-        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexLocator)),
-        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexLocator)),
-        vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexLocator))
+        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
+        vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(indexAdapter)),
+        vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(indexAdapter)),
+        vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(indexAdapter)),
+        vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(indexAdapter)),
+        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexAdapter)),
+        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
+        vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter))
     );
 
     if (getConfiguration().codelens.enabled) {
-        ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(indexLocator)));
+        ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(indexAdapter)));
     }
 
     // operations which should only work in a local context (as opposed to live-share)
     if (vscode.workspace.rootPath) {
         // we need to manually handle save events otherwise format on autosave does not work
         ctx.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => formattingProvider.onSave(doc)));
-        ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexLocator, e)));
+        ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
 
         // start to build the index
         if (getConfiguration().indexing.enabled) {
