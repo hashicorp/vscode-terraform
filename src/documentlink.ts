@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { findResourceFormat } from './autocompletion/model';
-import { getConfiguration } from './configuration';
-import { IndexLocator } from './index/index-locator';
+import { IndexAdapter } from './index/index-adapter';
 import { to_vscode_Range } from './index/vscode-adapter';
 import { Logger } from './logger';
 import { Reporter } from './telemetry';
@@ -9,15 +8,15 @@ import { Reporter } from './telemetry';
 export class DocumentLinkProvider implements vscode.DocumentLinkProvider {
   private logger = new Logger("document-link-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]> {
     try {
-      let index = this.indexLocator.getIndexForDoc(document).getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
-      if (!index)
+      let [file, group] = this.index.indexDocument(document);
+      if (!file || !group)
         return [];
 
-      return index.sections.map((s) => {
+      return file.sections.map((s) => {
         if (!s.type)
           return null;
         let doc = findResourceFormat(s.sectionType, s.type);
