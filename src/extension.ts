@@ -49,7 +49,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
 
     ctx.subscriptions.push(
         // push
-        new ValidateCommand(),
+        new ValidateCommand(indexAdapter),
         new LintCommand(),
         new ReindexCommand(indexAdapter, null),
         new ShowReferencesCommand(indexAdapter),

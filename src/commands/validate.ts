@@ -1,25 +1,24 @@
 import { execFile } from 'child_process';
 import * as vscode from 'vscode';
+import { getConfiguration } from '../configuration';
+import { IndexAdapter } from '../index/index-adapter';
 import { Command } from './command';
 
 export class ValidateCommand extends Command {
-  constructor() {
+  constructor(private index: IndexAdapter) {
     super("validate");
   }
 
   protected async perform(): Promise<any> {
-    const configuration = vscode.workspace.getConfiguration("terraform");
-    const workspaceDir = vscode.workspace.rootPath;
-
-    if (workspaceDir === undefined) {
-      this.logger.warn("Can only be used when opening a folder");
-      return await vscode.window.showWarningMessage("terraform.Validate can only be used when opening a folder");
-    }
+    const path = getConfiguration().path;
 
     try {
-      const output = await validate(configuration["path"], configuration["templateDirectory"], workspaceDir);
-      for (const line of output.split('\n')) {
-        this.logger.info("output: ", line);
+      for (const group of this.index.index.groups) {
+        this.logger.info(`Validating group ${group.uri.toString()}`);
+        const output = await validate(path, group.uri.toString());
+        for (const line of output.split('\n')) {
+          this.logger.info("output: ", line);
+        }
       }
     } catch (err) {
       this.logger.warn("Validation failed: ", err);
@@ -28,7 +27,7 @@ export class ValidateCommand extends Command {
   }
 }
 
-function validate(execPath: string, directory: string, workspaceDir: string): Promise<string> {
+function validate(execPath: string, directory: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     let commandLineArgs = ["validate", "-no-color"];
     if (directory !== undefined) {
@@ -36,7 +35,6 @@ function validate(execPath: string, directory: string, workspaceDir: string): Pr
     }
 
     const child = execFile(execPath, commandLineArgs, {
-      cwd: workspaceDir,
       encoding: 'utf8',
       maxBuffer: 1024 * 1024
     }, (error, stdout, stderr) => {
