@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { getConfiguration } from './configuration';
-import { Index } from './index';
-import { IndexLocator } from './index/index-locator';
+import { IndexGroup } from './index/group';
+import { IndexAdapter } from './index/index-adapter';
 import { Section } from './index/section';
 import { Logger } from './logger';
 import { Reporter } from './telemetry';
@@ -14,7 +13,7 @@ export class SectionReferenceCodeLens extends vscode.CodeLens implements Terrafo
   type: "REFERENCE";
 
   constructor(
-    private index: Index,
+    private group: IndexGroup,
     range: vscode.Range,
     readonly section: Section,
     command?: vscode.Command) {
@@ -22,7 +21,7 @@ export class SectionReferenceCodeLens extends vscode.CodeLens implements Terrafo
   }
 
   createCommand(): vscode.Command {
-    let references = this.index.queryReferences("ALL_FILES", { target: this.section });
+    let references = this.group.queryReferences("ALL_FILES", { target: this.section });
 
     return {
       title: `${references.length} references`,
@@ -36,24 +35,16 @@ export class SectionReferenceCodeLens extends vscode.CodeLens implements Terrafo
 export class CodeLensProvider implements vscode.CodeLensProvider {
   private logger = new Logger("code-lens-provider");
 
-  private eventEmitter = new vscode.EventEmitter<void>();
-  onDidChangeCodeLenses = this.eventEmitter.event;
-
-  constructor(private indexLocator: IndexLocator) {
-    this.indexLocator.onChanged(() => {
-      this.eventEmitter.fire();
-    });
-  }
+  constructor(private index: IndexAdapter) { }
 
   provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
     try {
-      let index = this.indexLocator.getIndexForDoc(document);
-      let fileIndex = index.getOrIndexDocument(document, { exclude: getConfiguration().indexing.exclude });
-      if (!fileIndex)
+      let [file, group] = this.index.indexDocument(document);
+      if (!file)
         return [];
-      return fileIndex.sections.filter((s) => s.sectionType !== "provider").map((s) => {
+      return file.sections.filter((s) => s.sectionType !== "provider").map((s) => {
         let firstLineOfSection = document.lineAt(s.location.range.start.line).range;
-        return new SectionReferenceCodeLens(index, firstLineOfSection, s);
+        return new SectionReferenceCodeLens(group, firstLineOfSection, s);
       });
     } catch (error) {
       this.logger.exception("Could not provide code lenses", error);
