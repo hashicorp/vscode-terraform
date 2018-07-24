@@ -22,8 +22,8 @@ import { ShowReferencesCommand } from './commands/showreferences';
 import { IndexCommand } from './commands';
 import { PreviewGraphCommand } from './commands/preview';
 import { NavigateToSectionCommand } from './commands/navigatetosection';
+import { FileSystemWatcher } from './index/crawler';
 
-export let ErrorDiagnosticCollection = vscode.languages.createDiagnosticCollection("terraform-error");
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 
 const documentSelector: vscode.DocumentSelector = [
@@ -84,8 +84,9 @@ export async function activate(ctx: vscode.ExtensionContext) {
 
         // start to build the index
         if (getConfiguration().indexing.enabled) {
-            ctx.subscriptions.push(createWorkspaceWatcher(indexLocator));
-            await initialCrawl(indexLocator);
+            let watcher = new FileSystemWatcher(indexAdapter);
+            ctx.subscriptions.push(watcher);
+            await watcher.crawl();
         }
     }
 
