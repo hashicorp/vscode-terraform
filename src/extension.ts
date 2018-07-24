@@ -31,10 +31,9 @@ const documentSelector: vscode.DocumentSelector = [
     { language: "terraform", scheme: "untitled" }
 ];
 
-export let indexLocator: IndexLocator;
-
 export async function activate(ctx: vscode.ExtensionContext) {
-    indexLocator = new IndexLocator(ctx);
+    let indexAdapter = new IndexAdapter(new Index, []);
+    ctx.subscriptions.push(indexAdapter);
 
     telemetry.activate(ctx);
     logging.configure(outputChannel);
