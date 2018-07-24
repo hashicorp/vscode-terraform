@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import { indexLocator } from "../extension";
+import { IndexAdapter } from "../index/index-adapter";
 import { Command } from "./command";
 
 export class IndexCommand extends Command {
-  constructor() {
+  constructor(private index: IndexAdapter) {
     super("index-document");
   }
 
@@ -14,7 +14,7 @@ export class IndexCommand extends Command {
       return false;
     }
 
-    let index = indexLocator.getIndexForUri(uri);
-    return !!index.indexDocument(doc);
+    let [file, group] = this.index.indexDocument(doc);
+    return !!file && !!group;
   }
 }
