@@ -3,13 +3,13 @@ import * as vscode from 'vscode';
 import { backwardsSearch } from '../helpers';
 import { AstPosition, getTokenAtPosition } from '../index/ast';
 import { parseHcl } from '../index/hcl-hil';
-import { IndexLocator } from "../index/index-locator";
+import { IndexAdapter } from "../index/index-adapter";
 import { Section } from "../index/section";
+import { Logger } from "../logger";
+import { Reporter } from "../telemetry";
 import { GetKnownFunctions, InterpolationFunctionDefinition } from './builtin-functions';
 import { allProviders, IFieldDef, terraformConfigAutoComplete } from './model';
 import { SectionCompletions } from './section-completions';
-import { Logger } from "../logger";
-import { Reporter } from "../telemetry";
 
 const resourceExp = new RegExp("(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
 const terraformExp = new RegExp("(variable|output|module)\\s+(\")?([\\w\\-]+)(\")?\\s+({)");
@@ -19,7 +19,7 @@ const propertyExp = new RegExp("^([\\w_-]+)$");
 export class CompletionProvider implements vscode.CompletionItemProvider {
   private logger = new Logger("completion-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   private sectionToCompletionItem(section: Section, needInterpolation: boolean, range?: vscode.Range): vscode.CompletionItem {
     let item = new vscode.CompletionItem(section.id());
@@ -90,9 +90,13 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     else
       filterStartPos += 1; // do not include matching character
 
+    let [file, group] = this.index.indexDocument(document);
+    if (!file || !group)
+      return [];
+
     let filter = interpolation.substring(filterStartPos).trim();
     if (filter.length === 0) {
-      return this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { unique: true }).map((s) => {
+      return group.query("ALL_FILES", { unique: true }).map((s) => {
         return this.sectionToCompletionItem(s, needInterpolation);
       }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation)));
     }
@@ -101,7 +105,8 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       position.translate(0, -filter.length),
       document.getWordRangeAtPosition(position).end
     );
-    return this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { id: filter, unique: true }).map((s) => {
+
+    return group.query("ALL_FILES", { id: filter, unique: true }).map((s) => {
       return this.sectionToCompletionItem(s, needInterpolation, replaceRange);
     }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation, replaceRange)));
   }
