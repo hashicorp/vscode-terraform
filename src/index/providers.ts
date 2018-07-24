@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Logger } from '../logger';
 import { Reporter } from '../telemetry';
-import { IndexLocator } from './index-locator';
+import { IndexAdapter } from './index-adapter';
 import { Property } from './property';
 import { Section } from './section';
 import { Uri } from './uri';
@@ -10,15 +10,19 @@ import { from_vscode_Position, to_vscode_Location, to_vscode_Range } from './vsc
 export class ReferenceProvider implements vscode.ReferenceProvider {
   private logger = new Logger("reference-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   provideReferences(document: vscode.TextDocument, position: vscode.Position, context: vscode.ReferenceContext): vscode.Location[] {
     try {
-      let section = this.indexLocator.getIndexForDoc(document).query(Uri.parse(document.uri.toString()), { position: from_vscode_Position(position) })[0];
+      let [file, group] = this.index.indexDocument(document);
+      if (!file || !group)
+        return [];
+
+      let section = group.query(Uri.parse(document.uri.toString()), { position: from_vscode_Position(position) })[0];
       if (!section)
         return [];
 
-      let references = this.indexLocator.getIndexForDoc(document).queryReferences("ALL_FILES", { target: section });
+      let references = group.queryReferences("ALL_FILES", { target: section });
       return references.map((r) => {
         const range = new vscode.Range(r.location.range.start.line, r.location.range.start.character,
           r.location.range.end.line, r.location.range.end.character);
@@ -97,11 +101,15 @@ function getKind(sectionType: string): vscode.SymbolKind {
 export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
   private logger = new Logger("document-symbol-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   provideDocumentSymbols(document: vscode.TextDocument): vscode.DocumentSymbol[] {
     try {
-      const sections = this.indexLocator.getIndexForDoc(document).query(Uri.parse(document.uri.toString()));
+      let [file, group] = this.index.indexDocument(document);
+      if (!file || !group)
+        return [];
+
+      const sections = group.query(Uri.parse(document.uri.toString()));
       const symbols = sections.map((s) => createDocumentSymbol(s));
 
       Reporter.trackEvent("provideDocumentSymbols", {}, { symbolCount: symbols.length });
@@ -117,13 +125,13 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 export class WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
   private logger = new Logger("workspace-symbol-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   provideWorkspaceSymbols(query: string): vscode.SymbolInformation[] {
     try {
-      let indices = [...this.indexLocator.allIndices(true)];
+      let groups = this.index.index.groups;
 
-      const sections = Array<Section>().concat(...indices.map((i) => i.query("ALL_FILES", { id: { fuzzy: true, match: query } })));
+      const sections = Array<Section>().concat(...groups.map(g => g.query("ALL_FILES", { id: { fuzzy: true, match: query } })));
       const symbols = sections.map((s) => createSymbolInfo(s));
 
       Reporter.trackEvent("provideWorkspaceSymbols", {}, { symbolCount: symbols.length });
