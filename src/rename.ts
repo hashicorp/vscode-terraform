@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IndexLocator } from './index/index-locator';
+import { IndexAdapter } from './index/index-adapter';
 import { from_vscode_Position, from_vscode_Uri, to_vscode_Range, to_vscode_Uri } from './index/vscode-adapter';
 import { Logger } from './logger';
 import { Reporter } from './telemetry';
@@ -7,18 +7,21 @@ import { Reporter } from './telemetry';
 export class RenameProvider implements vscode.RenameProvider {
   private logger = new Logger("rename-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   provideRenameEdits(document: vscode.TextDocument, position: vscode.Position, newName: string): vscode.WorkspaceEdit {
     try {
-      let index = this.indexLocator.getIndexForDoc(document);
-      let section = index.query(from_vscode_Uri(document.uri), { name_position: from_vscode_Position(position) })[0];
+      let [file, group] = this.index.indexDocument(document);
+      if (!file || !group)
+        return null;
+
+      let section = group.query(from_vscode_Uri(document.uri), { name_position: from_vscode_Position(position) })[0];
       if (!section) {
         Reporter.trackEvent("provideRenameEdits", { sectionType: "$null" });
         return null;
       }
 
-      let references = index.queryReferences("ALL_FILES", { target: section });
+      let references = group.queryReferences("ALL_FILES", { target: section });
       if (references.length === 0) {
         Reporter.trackEvent("provideRenameEdits", { sectionType: section.sectionType }, { references: 0 });
         return null;
