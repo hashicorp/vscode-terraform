@@ -7,10 +7,6 @@ import { IndexGroup } from "./group";
 import { Index } from "./index";
 import { from_vscode_Uri } from './vscode-adapter';
 
-export interface IndexDocumentOptions {
-  exclude?: string[];
-}
-
 export class IndexAdapter extends vscode.Disposable {
   private logger = new Logger("index-adapter");
   private disposables: vscode.Disposable[] = [];
