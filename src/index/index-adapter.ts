@@ -35,6 +35,10 @@ export class IndexAdapter extends vscode.Disposable {
     this.excludePaths = getConfiguration().indexing.exclude;
   }
 
+  clear() {
+    this.index.clear();
+    this.errors.clear();
+  }
 
   delete(uri: vscode.Uri) {
     this.index.delete(from_vscode_Uri(uri));
