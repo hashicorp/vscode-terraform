@@ -1,22 +1,14 @@
-import { getConfiguration } from "../configuration";
-import { indexLocator } from "../extension";
-import { initialCrawl } from "../index/watcher";
+import { FileSystemWatcher } from "../index/crawler";
+import { IndexAdapter } from "../index/index-adapter";
 import { Command } from "./command";
 
 export class ReindexCommand extends Command {
-  constructor() {
+  constructor(private index: IndexAdapter, private watcher: FileSystemWatcher) {
     super("reindex");
   }
 
   protected async perform(): Promise<any> {
-    for (let index of indexLocator.allIndices(false)) {
-      this.logger.info(`Clearing index: ${index.name}`);
-      index.clear();
-    }
-
-    if (getConfiguration().indexing.enabled) {
-      this.logger.info("Performing initial crawl.");
-      return await initialCrawl(indexLocator);
-    }
+    this.index.clear();
+    return await this.watcher.crawl();
   }
 }
