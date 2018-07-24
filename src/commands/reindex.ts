@@ -9,6 +9,7 @@ export class ReindexCommand extends Command {
 
   protected async perform(): Promise<any> {
     this.index.clear();
-    return await this.watcher.crawl();
+    if (this.watcher)
+      return await this.watcher.crawl();
   }
 }

@@ -47,11 +47,17 @@ export async function activate(ctx: vscode.ExtensionContext) {
         vscode.workspace.registerTextDocumentContentProvider('terraform-graph', graphProvider)
     );
 
+    let watcher: FileSystemWatcher;
+    if (vscode.workspace.rootPath && getConfiguration().indexing.enabled) {
+        watcher = new FileSystemWatcher(indexAdapter);
+        ctx.subscriptions.push(watcher);
+    }
+
     ctx.subscriptions.push(
         // push
         new ValidateCommand(indexAdapter),
         new LintCommand(),
-        new ReindexCommand(indexAdapter, null),
+        new ReindexCommand(indexAdapter, watcher),
         new ShowReferencesCommand(indexAdapter),
         new IndexCommand(indexAdapter),
         new PreviewGraphCommand(graphProvider, indexAdapter),
@@ -79,9 +85,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
         ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
 
         // start to build the index
-        if (getConfiguration().indexing.enabled) {
-            let watcher = new FileSystemWatcher(indexAdapter);
-            ctx.subscriptions.push(watcher);
+        if (watcher) {
             await watcher.crawl();
         }
     }
