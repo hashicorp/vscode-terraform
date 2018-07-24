@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { read } from './helpers';
+import { IndexGroup } from './index/group';
 import { loadTemplate } from './template';
 
 const Viz = require('viz.js');
@@ -8,9 +9,9 @@ export let graphPreviewUri = vscode.Uri.parse('terraform-graph://authority/terra
 
 export class GraphContentProvider implements vscode.TextDocumentContentProvider {
   private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
-  private dot: string = "";
-  private type: string = "";
-  private workspaceFolderName: string = "";
+  private dot = "";
+  private type = "";
+  private groupUri = "";
 
   onDidChange = this._onDidChange.event;
 
@@ -28,14 +29,14 @@ export class GraphContentProvider implements vscode.TextDocumentContentProvider 
     return loadTemplate(this.ctx.asAbsolutePath('out/src/ui/graph.html'), {
       type: this.type,
       element: element,
-      workspaceFolderName: this.workspaceFolderName
+      groupUri: this.groupUri
     });
   }
 
-  update(dot: string, type: string, workspaceFolderName: string) {
+  update(dot: string, type: string, group: IndexGroup) {
     this.dot = dot;
     this.type = type;
-    this.workspaceFolderName = workspaceFolderName;
+    this.groupUri = group.uri.toString();
     this._onDidChange.fire();
   }
 }
