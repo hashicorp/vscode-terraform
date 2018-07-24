@@ -1,5 +1,6 @@
 import * as minimatch from 'minimatch';
 import * as vscode from "vscode";
+import { getConfiguration } from '../configuration';
 import { Logger } from '../logger';
 import { FileIndex } from "./file-index";
 import { IndexGroup } from "./group";
@@ -15,10 +16,11 @@ export class IndexAdapter extends vscode.Disposable {
   private disposables: vscode.Disposable[] = [];
   public errors: vscode.DiagnosticCollection;
 
-  constructor(public index: Index) {
+  constructor(public index: Index, public excludePaths: string[]) {
     super(() => this.dispose());
 
     this.disposables.push(vscode.workspace.onDidChangeWorkspaceFolders(this.onDidChangeWorkspaceFolders));
+    this.disposables.push(vscode.workspace.onDidChangeConfiguration(this.onDidChangeConfiguration));
     this.errors = vscode.languages.createDiagnosticCollection("terraform-errors");
   }
 
@@ -31,16 +33,22 @@ export class IndexAdapter extends vscode.Disposable {
     // TODO: remove all groups which are part e.removed[]
   }
 
-  indexDocument(document: vscode.TextDocument, options?: IndexDocumentOptions): [FileIndex, IndexGroup] {
-    if (options.exclude) {
+  private onDidChangeConfiguration(e: vscode.ConfigurationChangeEvent) {
+    if (!e.affectsConfiguration("terraform.indexing"))
+      return;
+    this.excludePaths = getConfiguration().indexing.exclude;
+  }
+
+  indexDocument(document: vscode.TextDocument): [FileIndex, IndexGroup] {
+    if (this.excludePaths.length > 0) {
       let path = vscode.workspace.asRelativePath(document.uri).replace('\\', '/');
-      let matches = options.exclude.map((pattern) => {
+      let matches = this.excludePaths.map((pattern) => {
         return minimatch(path, pattern);
       });
       if (matches.some((v) => v)) {
         // ignore
         this.logger.debug(`Ignoring document: ${document.uri.toString()}`);
-        return;
+        return [null, null];
       }
     }
 

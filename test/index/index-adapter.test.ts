@@ -23,12 +23,14 @@ suite("Index Tests", () => {
         let [b, errorB] = FileIndex.fromString(Uri.parse("b.tf"), `variable "region" {}`);
 
         test("does not index documents from excluded paths", async () => {
-            let adapter = new IndexAdapter(new Index);
+            let adapter = new IndexAdapter(new Index, ["*"]);
 
             let base = vscode.workspace.workspaceFolders[0].uri;
             let doc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`${base.toString()}/template.tf`));
 
-            assert.equal(adapter.indexDocument(doc, { exclude: ["*"] }), null, "should not index document when all paths are excluded");
+            assert.equal(adapter.indexDocument(doc), null, "should not index document when all paths are excluded");
+
+            adapter.excludePaths = [];
 
             assert.notEqual(adapter.indexDocument(doc), null, "should index doc");
         });
