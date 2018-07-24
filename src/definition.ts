@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IndexLocator } from './index/index-locator';
+import { IndexAdapter } from './index/index-adapter';
 import { from_vscode_Position, from_vscode_Uri, to_vscode_Location } from './index/vscode-adapter';
 import { Logger } from './logger';
 import { Reporter } from './telemetry';
@@ -7,15 +7,19 @@ import { Reporter } from './telemetry';
 export class DefinitionProvider implements vscode.DefinitionProvider {
   private logger = new Logger("definition-provider");
 
-  constructor(private indexLocator: IndexLocator) { }
+  constructor(private index: IndexAdapter) { }
 
   provideDefinition(document: vscode.TextDocument, position: vscode.Position): vscode.Location {
     try {
-      let reference = this.indexLocator.getIndexForDoc(document).queryReferences(from_vscode_Uri(document.uri), { position: from_vscode_Position(position) })[0];
+      let [file, group] = this.index.indexDocument(document);
+      if (!file || !group)
+        return null;
+
+      let reference = group.queryReferences(from_vscode_Uri(document.uri), { position: from_vscode_Position(position) })[0];
       if (!reference)
         return null;
 
-      let section = this.indexLocator.getIndexForDoc(document).query("ALL_FILES", { id: reference.targetId })[0];
+      let section = group.query("ALL_FILES", { id: reference.targetId })[0];
       if (!section)
         return null;
       return to_vscode_Location(section.location);
