@@ -34,5 +34,33 @@ suite("Index Tests", () => {
 
             assert.notEqual(adapter.indexDocument(doc), null, "should index doc");
         });
+
+        test("errors are added to diagnostics collection", async () => {
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: '}}'
+            });
+
+            let adapter = new IndexAdapter(new Index, []);
+            let [file, group] = adapter.indexDocument(doc);
+
+            assert(adapter.errors.has(doc.uri));
+        });
+
+        test("delete deletes index and errors", async () => {
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: '}}'
+            });
+
+            let adapter = new IndexAdapter(new Index, []);
+            let [file, group] = adapter.indexDocument(doc);
+
+            assert(adapter.errors.has(doc.uri));
+
+            adapter.delete(doc.uri);
+
+            assert(!adapter.errors.has(doc.uri));
+        });
     });
 });

@@ -35,6 +35,12 @@ export class IndexAdapter extends vscode.Disposable {
     this.excludePaths = getConfiguration().indexing.exclude;
   }
 
+
+  delete(uri: vscode.Uri) {
+    this.index.delete(from_vscode_Uri(uri));
+    this.errors.delete(uri);
+  }
+
   indexDocument(document: vscode.TextDocument): [FileIndex, IndexGroup] {
     if (this.excludePaths.length > 0) {
       let path = vscode.workspace.asRelativePath(document.uri).replace('\\', '/');
