@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { indexLocator } from "../extension";
+import { IndexAdapter } from "../index/index-adapter";
 import { Reference } from "../index/reference";
 import { Section } from "../index/section";
 import { to_vscode_Range } from "../index/vscode-adapter";
@@ -34,13 +34,13 @@ class ReferenceQuickPick implements vscode.QuickPickItem {
 }
 
 export class ShowReferencesCommand extends Command {
-  constructor() {
+  constructor(private index: IndexAdapter) {
     super("showReferences");
   }
 
   protected async perform(section: Section): Promise<any> {
-    let index = indexLocator.getIndexForSection(section);
-    let picks = index.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
+    let group = this.index.index.groupFor(section);
+    let picks = group.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
 
     return await vscode.window.showQuickPick(picks, {
       onDidSelectItem: (r: ReferenceQuickPick) => r.goto()
