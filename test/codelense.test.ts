@@ -21,7 +21,7 @@ suite("CodeLense Tests", () => {
     assert.deepEqual(lense.range, doc.lineAt(0).range);
     assert.notEqual(lense.command, null);
     assert.equal(lense.command.command, "terraform.showReferences");
-  });
+  }).timeout(10000); // the test runner does not wait for extension to load, the first test needs more time therefore
 
   test("Does not annotates providers", async () => {
     let doc = await vscode.workspace.openTextDocument({
