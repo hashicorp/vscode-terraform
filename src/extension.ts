@@ -32,7 +32,8 @@ const documentSelector: vscode.DocumentSelector = [
 ];
 
 export async function activate(ctx: vscode.ExtensionContext) {
-    let indexAdapter = new IndexAdapter(new Index, []);
+    const start = process.hrtime();
+
     ctx.subscriptions.push(indexAdapter);
 
     telemetry.activate(ctx);
@@ -93,7 +94,9 @@ export async function activate(ctx: vscode.ExtensionContext) {
         }
     }
 
-    telemetry.Reporter.trackEvent('activated');
+    const elapsed = process.hrtime(start);
+    const elapsedMs = elapsed[0] * 1e3 + elapsed[1] / 1e6;
+    telemetry.Reporter.trackEvent('activated', {}, { activateTimeMs: elapsedMs });
 }
 
 export async function deactivate(): Promise<any> {
