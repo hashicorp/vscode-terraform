@@ -28,11 +28,13 @@ suite("Index Tests", () => {
             let base = vscode.workspace.workspaceFolders[0].uri;
             let doc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`${base.toString()}/template.tf`));
 
-            assert.equal(adapter.indexDocument(doc), null, "should not index document when all paths are excluded");
+            let [file, group] = adapter.indexDocument(doc);
+            assert(!file && !group, "should not index document when all paths are excluded");
 
             adapter.excludePaths = [];
 
-            assert.notEqual(adapter.indexDocument(doc), null, "should index doc");
+            [file, group] = adapter.indexDocument(doc);
+            assert(file && group, "should index doc");
         });
 
         test("errors are added to diagnostics collection", async () => {

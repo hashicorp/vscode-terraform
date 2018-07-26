@@ -32,7 +32,7 @@ export class IndexAdapter extends vscode.Disposable {
   private onDidChangeConfiguration(e: vscode.ConfigurationChangeEvent) {
     if (!e.affectsConfiguration("terraform.indexing"))
       return;
-    this.excludePaths = getConfiguration().indexing.exclude;
+    this.excludePaths = getConfiguration().indexing.exclude || [];
   }
 
   clear() {
