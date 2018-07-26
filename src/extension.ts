@@ -34,6 +34,7 @@ const documentSelector: vscode.DocumentSelector = [
 export async function activate(ctx: vscode.ExtensionContext) {
     const start = process.hrtime();
 
+    let indexAdapter = new IndexAdapter(new Index, getConfiguration().indexing.exclude || []);
     ctx.subscriptions.push(indexAdapter);
 
     telemetry.activate(ctx);
