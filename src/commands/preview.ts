@@ -4,13 +4,13 @@ import { groupQuickPick } from "../group-quickpick";
 import { IndexGroup } from "../index/group";
 import { IndexAdapter } from "../index/index-adapter";
 import { Section } from "../index/section";
-import { runTerraform } from "../runner";
+import { Runner } from "../runner";
 import { Command } from "./command";
 
 const Dot = require('graphlib-dot');
 
 export class PreviewGraphCommand extends Command {
-  constructor(private provider: GraphContentProvider, private index: IndexAdapter) {
+  constructor(private provider: GraphContentProvider, private index: IndexAdapter, private runner: Runner) {
     super("preview-graph");
   }
 
@@ -24,7 +24,10 @@ export class PreviewGraphCommand extends Command {
       return;
 
     try {
-      let dot = await runTerraform(group.uri.toString(), ["graph", "-draw-cycles", `-type=${type}`, "."], { reportMetric: true });
+      let dot = await this.runner.run({
+        cwd: group.uri.toString(),
+        reportMetric: true
+      }, "graph", "-draw-cycles", `-type=${type}`, ".");
 
       let processedDot = this.replaceNodesWithLinks(group, dot);
 
