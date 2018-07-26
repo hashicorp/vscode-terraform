@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
 import { isTerraformDocument } from './helpers';
 import { Logger } from './logger';
-import { runTerraform } from './runner';
+import { Runner } from './runner';
 
 export class FormattingEditProvider implements vscode.DocumentFormattingEditProvider {
   private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
   private logger = new Logger("formatting-provider");
+
+  constructor(private runner: Runner) { }
 
   async onSave(document: vscode.TextDocument) {
     try {
@@ -21,9 +23,9 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
       const range = fullRange(document);
 
       this.logger.info(`[on-save]: running 'terraform fmt' on '${document.fileName}'`);
-      let formattedText = await runTerraform(process.cwd(), ["fmt", "-"], {
+      let formattedText = await this.runner.run({
         input: document.getText(),
-      });
+      }, "fmt", "-");
 
       const applied = await vscode.window.activeTextEditor.edit((editor) => {
         editor.replace(range, formattedText);
@@ -75,9 +77,9 @@ export class FormattingEditProvider implements vscode.DocumentFormattingEditProv
       const range = fullRange(document);
 
       this.logger.info(`[provider]: running 'terraform fmt' on '${document.fileName}'`);
-      let formattedText = await runTerraform(process.cwd(), ["fmt", "-"], {
+      let formattedText = await this.runner.run({
         input: document.getText(),
-      });
+      }, "fmt", "-");
 
       this.logger.info("[provider]: successful.");
       return [new vscode.TextEdit(range, formattedText)];
