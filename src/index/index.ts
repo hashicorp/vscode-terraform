@@ -35,7 +35,7 @@ export class Index {
     /// Returns the group to which the specified uri would belong
     groupFor(uriOrFileIndexOrSection: Uri | FileIndex | Section): IndexGroup {
         if (uriOrFileIndexOrSection instanceof Section)
-            return this.groups.find(g => g.belongs(uriOrFileIndexOrSection.location.uri));
+            return this.groups.find(g => g.belongs(uriOrFileIndexOrSection.location.uri.dirname()));
         else
             return this.groups.find(g => g.belongs(uriOrFileIndexOrSection));
     }
