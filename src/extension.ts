@@ -22,6 +22,7 @@ import { NavigateToSectionCommand } from './commands/navigatetosection';
 import { IndexAdapter } from './index/index-adapter';
 import { Index } from './index';
 import { FileSystemWatcher } from './index/crawler';
+import { Runner } from './runner';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 
@@ -37,7 +38,9 @@ export async function activate(ctx: vscode.ExtensionContext) {
     telemetry.activate(ctx);
     logging.configure(outputChannel);
 
-    let formattingProvider = new FormattingEditProvider;
+    let runner = await Runner.create();
+
+    let formattingProvider = new FormattingEditProvider(runner);
     ctx.subscriptions.push(
         vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider)
     );
@@ -55,12 +58,12 @@ export async function activate(ctx: vscode.ExtensionContext) {
 
     ctx.subscriptions.push(
         // push
-        new ValidateCommand(indexAdapter),
+        new ValidateCommand(indexAdapter, runner),
         new LintCommand(),
         new ReindexCommand(indexAdapter, watcher),
         new ShowReferencesCommand(indexAdapter),
         new IndexCommand(indexAdapter),
-        new PreviewGraphCommand(graphProvider, indexAdapter),
+        new PreviewGraphCommand(graphProvider, indexAdapter, runner),
         new NavigateToSectionCommand(indexAdapter),
 
         // providers
