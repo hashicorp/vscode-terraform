@@ -1,3 +1,4 @@
+import Uri from 'vscode-uri';
 import { build } from './build';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { parseHcl } from './hcl-hil';
@@ -5,8 +6,6 @@ import { Position } from './position';
 import { Range } from './range';
 import { Reference, ReferenceQueryOptions } from './reference';
 import { QueryOptions, Section } from './section';
-import { Uri } from './uri';
-
 export class FileIndex {
   sections: Section[] = [];
   assignments: Reference[] = [];

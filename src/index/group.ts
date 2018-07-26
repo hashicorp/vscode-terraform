@@ -1,7 +1,12 @@
+import * as path from 'path';
+import Uri from 'vscode-uri';
 import { FileIndex } from "../../src/index/file-index";
 import { QueryOptions, Section } from "../../src/index/section";
 import { Reference, ReferenceQueryOptions } from "./reference";
-import { Uri } from "./uri";
+
+export function dirname(uri: Uri): string {
+  return path.dirname(uri.fsPath);
+}
 
 export class IndexGroup {
   private files = new Map<string, FileIndex>();
@@ -10,7 +15,7 @@ export class IndexGroup {
   constructor(readonly uri: Uri) { }
 
   public static createFromFileIndex(index: FileIndex): IndexGroup {
-    let dir = index.uri.dirname();
+    let dir = dirname(index.uri);
     let group = new IndexGroup(Uri.parse(dir));
     group.add(index);
     return group;
@@ -30,7 +35,7 @@ export class IndexGroup {
     else if (index instanceof Uri)
       return index.toString() === this.uri.toString();
     else
-      return this.uri.toString() === index.uri.dirname();
+      return this.uri.toString() === dirname(index.uri);
   }
 
   add(index: FileIndex) {

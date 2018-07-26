@@ -4,7 +4,6 @@ import { Reporter } from '../telemetry';
 import { IndexAdapter } from './index-adapter';
 import { Property } from './property';
 import { Section } from './section';
-import { Uri } from './uri';
 import { from_vscode_Position, to_vscode_Location, to_vscode_Range } from './vscode-adapter';
 
 export class ReferenceProvider implements vscode.ReferenceProvider {
@@ -18,7 +17,7 @@ export class ReferenceProvider implements vscode.ReferenceProvider {
       if (!file || !group)
         return [];
 
-      let section = group.query(Uri.parse(document.uri.toString()), { position: from_vscode_Position(position) })[0];
+      let section = group.query(document.uri, { position: from_vscode_Position(position) })[0];
       if (!section)
         return [];
 
@@ -109,7 +108,7 @@ export class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
       if (!file || !group)
         return [];
 
-      const sections = group.query(Uri.parse(document.uri.toString()));
+      const sections = group.query(document.uri);
       const symbols = sections.map((s) => createDocumentSymbol(s));
 
       Reporter.trackEvent("provideDocumentSymbols", {}, { symbolCount: symbols.length });

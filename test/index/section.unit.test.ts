@@ -1,9 +1,9 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
+import Uri from 'vscode-uri';
 import { FileIndex } from '../../src/index/file-index';
 import { Position } from '../../src/index/position';
 import { Section } from '../../src/index/section';
-import { Uri } from '../../src/index/uri';
 
 suite("Index Tests", () => {
     suite("Section tests", () => {

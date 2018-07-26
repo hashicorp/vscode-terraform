@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { IndexAdapter } from "../index/index-adapter";
-import { to_vscode_Range, to_vscode_Uri } from "../index/vscode-adapter";
+import { to_vscode_Range } from "../index/vscode-adapter";
 import { Command } from "./command";
 
 export class NavigateToSectionCommand extends Command {
@@ -20,7 +20,7 @@ export class NavigateToSectionCommand extends Command {
     }
 
     await vscode.window.showTextDocument(
-      to_vscode_Uri(section.location.uri),
+      section.location.uri,
       {
         selection: to_vscode_Range(section.location.range)
       }

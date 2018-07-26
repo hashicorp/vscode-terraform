@@ -1,8 +1,8 @@
 import * as assert from "assert";
+import Uri from 'vscode-uri';
 import { FileIndex } from "../../src/index/file-index";
-import { IndexGroup } from "../../src/index/group";
+import { dirname, IndexGroup } from "../../src/index/group";
 import { Position } from "../../src/index/position";
-import { Uri } from "../../src/index/uri";
 
 suite("Index Tests", () => {
   suite("IndexGroup Tests", () => {
@@ -22,7 +22,7 @@ suite("Index Tests", () => {
 
     test("add index", () => {
       let [index, diagnostic] = FileIndex.fromString(Uri.parse("dir/file.tf"), 'variable "var" {}');
-      let group = new IndexGroup(Uri.parse(index.uri.dirname()));
+      let group = new IndexGroup(Uri.parse(dirname(index.uri)));
 
       assert.equal(group.indices("ALL_FILES").length, 0);
 

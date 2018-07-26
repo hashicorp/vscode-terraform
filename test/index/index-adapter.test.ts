@@ -1,11 +1,10 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 import * as vscode from 'vscode';
+import Uri from 'vscode-uri';
 import { FileIndex } from '../../src/index/file-index';
 import { Index } from '../../src/index/index';
 import { IndexAdapter } from '../../src/index/index-adapter';
-import { Uri } from '../../src/index/uri';
-
 
 const template =
     `

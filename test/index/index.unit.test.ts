@@ -1,7 +1,7 @@
 import * as assert from "assert";
+import Uri from 'vscode-uri';
 import { Index } from "../../src/index";
 import { FileIndex } from "../../src/index/file-index";
-import { Uri } from "../../src/index/uri";
 
 suite("Index Tests", () => {
   test("create", () => {

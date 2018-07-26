@@ -25,7 +25,7 @@ export class PreviewGraphCommand extends Command {
 
     try {
       let dot = await this.runner.run({
-        cwd: group.uri.toString(),
+        cwd: group.uri.fsPath,
         reportMetric: true
       }, "graph", "-draw-cycles", `-type=${type}`, ".");
 

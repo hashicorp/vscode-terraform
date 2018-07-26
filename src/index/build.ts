@@ -1,3 +1,4 @@
+import Uri from 'vscode-uri';
 import { Ast, AstItem, AstList, AstToken, AstVal, AstValueType, getStringValue, getText, getValueType, NodeType, VisitedNode, walk } from './ast';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { FileIndex } from './file-index';
@@ -8,7 +9,6 @@ import { Property } from './property';
 import { Range } from './range';
 import { Reference } from './reference';
 import { Section } from './section';
-import { Uri } from './uri';
 
 function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);

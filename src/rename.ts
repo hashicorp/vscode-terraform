@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { IndexAdapter } from './index/index-adapter';
-import { from_vscode_Position, from_vscode_Uri, to_vscode_Range, to_vscode_Uri } from './index/vscode-adapter';
+import { from_vscode_Position, to_vscode_Range } from './index/vscode-adapter';
 import { Logger } from './logger';
 import { Reporter } from './telemetry';
 
@@ -15,7 +15,7 @@ export class RenameProvider implements vscode.RenameProvider {
       if (!file || !group)
         return null;
 
-      let section = group.query(from_vscode_Uri(document.uri), { name_position: from_vscode_Position(position) })[0];
+      let section = group.query(document.uri, { name_position: from_vscode_Position(position) })[0];
       if (!section) {
         Reporter.trackEvent("provideRenameEdits", { sectionType: "$null" });
         return null;
@@ -37,10 +37,10 @@ export class RenameProvider implements vscode.RenameProvider {
           // references in .tf
           const range = to_vscode_Range(reference.location.range);
           const end = range.end.with({ character: range.start.character + oldId.length });
-          edit.replace(to_vscode_Uri(reference.location.uri), range.with({ end: end }), newId);
+          edit.replace(reference.location.uri, range.with({ end: end }), newId);
         } else {
           // references in .tfvars
-          edit.replace(to_vscode_Uri(reference.location.uri), to_vscode_Range(reference.nameRange), newName);
+          edit.replace(reference.location.uri, to_vscode_Range(reference.nameRange), newName);
         }
       });
       Reporter.trackEvent("provideRenameEdits", { sectionType: section.sectionType }, { references: references.length });

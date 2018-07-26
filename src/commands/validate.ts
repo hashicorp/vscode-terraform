@@ -15,7 +15,7 @@ export class ValidateCommand extends Command {
     try {
       for (const group of this.index.index.groups) {
         this.logger.info(`Validating group ${group.uri.toString()}`);
-        const output = await this.runner.run({}, "validate", "-no-color", group.uri.toString());
+        const output = await this.runner.run({}, "validate", "-no-color", group.uri.fsPath);
         for (const line of output.split('\n')) {
           this.logger.info("output: ", line);
         }

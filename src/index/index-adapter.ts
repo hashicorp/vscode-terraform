@@ -5,7 +5,6 @@ import { Logger } from '../logger';
 import { FileIndex } from "./file-index";
 import { IndexGroup } from "./group";
 import { Index } from "./index";
-import { from_vscode_Uri } from './vscode-adapter';
 
 export class IndexAdapter extends vscode.Disposable {
   private logger = new Logger("index-adapter");
@@ -41,7 +40,7 @@ export class IndexAdapter extends vscode.Disposable {
   }
 
   delete(uri: vscode.Uri) {
-    this.index.delete(from_vscode_Uri(uri));
+    this.index.delete(uri);
     this.errors.delete(uri);
   }
 
@@ -58,7 +57,7 @@ export class IndexAdapter extends vscode.Disposable {
       }
     }
 
-    let [index, diagnostic] = FileIndex.fromString(from_vscode_Uri(document.uri), document.getText());
+    let [index, diagnostic] = FileIndex.fromString(document.uri, document.getText());
     let diagnostics: vscode.Diagnostic[] = [];
     let group: IndexGroup;
 

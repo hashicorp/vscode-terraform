@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { findValue } from './index/ast';
 import { valueToMarkdown } from './index/ast-helpers';
 import { IndexAdapter } from './index/index-adapter';
-import { from_vscode_Position, from_vscode_Uri, to_vscode_Range } from './index/vscode-adapter';
+import { from_vscode_Position, to_vscode_Range } from './index/vscode-adapter';
 import { Logger } from './logger';
 import { Reporter } from './telemetry';
 
@@ -17,7 +17,7 @@ export class HoverProvider implements vscode.HoverProvider {
       if (!file || !group)
         return null;
 
-      let reference = group.queryReferences(from_vscode_Uri(document.uri), { position: from_vscode_Position(position) })[0];
+      let reference = group.queryReferences(document.uri, { position: from_vscode_Position(position) })[0];
       if (!reference)
         return null;
 
