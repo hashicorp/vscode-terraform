@@ -15,10 +15,16 @@ export interface TerraformTelemetryConfiguration {
   enabled: boolean;
 }
 
+export interface TerraformExecutableConfiguration {
+  path: string;
+  version?: string;
+}
+
 export interface TerraformConfiguration {
   formatOnSave: boolean;
   formatVarsOnSave?: boolean;
   path: string;
+  paths: (string | TerraformExecutableConfiguration)[];
   templateDirectory: string;
   lintPath: string;
   lintConfig?: string;
@@ -35,6 +41,7 @@ export function getConfiguration(): TerraformConfiguration {
     formatOnSave: raw.formatOnSave,
     formatVarsOnSave: raw.formatVarsOnSave,
     path: raw.path,
+    paths: raw.paths,
     templateDirectory: raw.templateDirectory,
     lintPath: raw.lintPath,
     lintConfig: raw.lintConfig,

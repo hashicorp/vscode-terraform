@@ -123,6 +123,11 @@
           "default": "terraform",
           "description": "Path to the `terraform` executable"
         },
+        "terraform.paths": {
+          "type": "array",
+          "default": [],
+          "description": "List of terraform paths or paths with versions"
+        },
         "terraform.templateDirectory": {
           "type": "string",
           "default": "templates",
