@@ -25,6 +25,7 @@ import { FileSystemWatcher } from './index/crawler';
 import { Runner } from './runner';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
+const logger = new logging.Logger("extension");
 
 const documentSelector: vscode.DocumentSelector = [
     { language: "terraform", scheme: "file" },
@@ -98,6 +99,16 @@ export async function activate(ctx: vscode.ExtensionContext) {
     const elapsed = process.hrtime(start);
     const elapsedMs = elapsed[0] * 1e3 + elapsed[1] / 1e6;
     telemetry.Reporter.trackEvent('activated', {}, { activateTimeMs: elapsedMs });
+
+    // show a warning if erd0s.terraform-autocomplete is installed as it is
+    // known to cause issues with this plugin
+    if (vscode.extensions.getExtension('erd0s.terraform-autocomplete')) {
+        const message =
+            "The extension erd0s.terraform-autocomplete is known to cause issues with the Terraform plugin\n" +
+            "please refer to https://github.com/mauve/vscode-terraform/issues/102 for more information."
+        vscode.window.showInformationMessage(message);
+        logger.error(message);
+    }
 }
 
 export async function deactivate(): Promise<any> {
