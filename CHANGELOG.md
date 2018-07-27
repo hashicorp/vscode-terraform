@@ -1,3 +1,50 @@
+# 1.3.0 (unreleased)
+
+## New Features
+
+- ...
+
+## Breaking Changes
+
+- Format On Auto-Save is now gone (closes #112 and others, see below for an in-depth explanation)
+
+## Fixes
+
+- ...
+
+## Format On Auto-Save Removal
+
+In one of the very first versions of the Terraform plugin, that is before VSCode had format-on-save
+or the auto-save features, the Terraform plugin had its own implementation of format-on-save which
+just listened to save events from the editor and then overwrite the files.
+
+Later auto-save was introduced and because the Terraform plugin was listening to save events and
+manually performing format on save, that meant that without doing anything we suddenly had
+format-on-auto-save.
+
+A while back VSCode introduced a proper API for performing formatting and formatting on save; these
+APIs have been in use by the extension since 0.0.20; when these API were introduced they deliberatively
+omitted format on auto save, because it breaks development workflows in more complicated languages.
+
+Now the Terraform plugin has started to become relatively complicated in itself with auto completion
+support and refactoring support as well as more and more coding features added all the time. As the
+usage of the extension has been growing and we have started to see more and more bugs because we
+perform format-on-auto-save.
+
+So now I had to remove the feature.
+
+Sorry to all of you who liked the feature. I hope you will keep using my extension regardless of the lack of this feature.
+
+With the removal of this feature the following configuration changes have been made.
+
+1. the Terraform extension no longer supply a default config for `[terraform]editor.formatOnSave: false`, instead
+   the default setting of `editor.formatOnSave` applies unless you have overridden it yourself.
+1. the setting `terraform.format.enable` is now gone as it doesn't make sense anymore
+1. the setting `terraform.formatOnSave` is now gone as it has no effect
+   - use `editor.formatOnSave` or `[terraform]editor.formatOnSave` instead
+
+Thanks for using my extension.
+
 # 1.2.3
 
 ## Fixes

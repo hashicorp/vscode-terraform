@@ -90,11 +90,6 @@
           "type": "object",
           "description": "Formatting settings",
           "properties": {
-            "enable": {
-              "type": "boolean",
-              "default": true,
-              "description": "Enable/disable default Terraform formatter"
-            },
             "ignoreExtensionsOnSave": {
               "type": "array",
               "default": [],
@@ -103,19 +98,12 @@
                 "type": "string",
                 "description": "File extension"
               }
-            },
-            "formatOnSave": {
-              "type": "boolean",
-              "default": true,
-              "description": "Enable/disable format on save"
             }
           },
           "default": {
-            "enable": true,
             "ignoreExtensionsOnSave": [
               ".tfsmurf"
-            ],
-            "formatOnSave": true
+            ]
           }
         },
         "terraform.path": {
@@ -187,11 +175,6 @@
           "default": true,
           "description": "Enable/disable telemetry reporting for this plugin. The global `telemetry.enableTelemetry` is also respected. If the global is disabled, this setting has no effect."
         }
-      }
-    },
-    "configurationDefaults": {
-      "[terraform]": {
-        "editor.formatOnSave": false
       }
     }
   },

@@ -1,90 +1,40 @@
 import * as vscode from 'vscode';
-import { isTerraformDocument } from './helpers';
+import { getConfiguration } from './configuration';
 import { Logger } from './logger';
 import { Runner } from './runner';
 
 export class FormattingEditProvider implements vscode.DocumentFormattingEditProvider {
-  private _ignoreNextSave = new WeakSet<vscode.TextDocument>();
   private logger = new Logger("formatting-provider");
 
   constructor(private runner: Runner) { }
 
-  async onSave(document: vscode.TextDocument) {
-    try {
-      if (!isTerraformDocument(document) || this._ignoreNextSave.has(document)) {
-        return;
-      }
-
-      if (!this.isFormatEnabled(document, true) || vscode.window.activeTextEditor.document !== document) {
-        return;
-      }
-
-      const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
-      const range = fullRange(document);
-
-      this.logger.info(`[on-save]: running 'terraform fmt' on '${document.fileName}'`);
-      let formattedText = await this.runner.run({
-        input: document.getText(),
-      }, "fmt", "-");
-
-      const applied = await vscode.window.activeTextEditor.edit((editor) => {
-        editor.replace(range, formattedText);
-      });
-
-      if (!applied)
-        this.logger.warn("[on-save]: changes not applied");
-
-      this._ignoreNextSave.add(document);
-      await document.save();
-
-      this.logger.info("[on-save]: successful.");
-      this._ignoreNextSave.delete(document);
-    } catch (error) {
-      this.logger.exception("[on-save]: formatting failed.", error);
-    }
-  }
-
-  private isFormatEnabled(document: vscode.TextDocument, onSave: boolean): boolean {
-    let config = vscode.workspace.getConfiguration('terraform.format');
-    if (config.get<boolean>('enable') !== true) {
-      return false;
-    }
-
-    if (!onSave) {
-      return true;
-    }
-
-    if (config.get<boolean>('formatOnSave') !== true) {
-      return false;
-    }
-
-    return config.get<Array<string>>('ignoreExtensionsOnSave').map((ext) => {
+  private isFormatEnabled(document: vscode.TextDocument): boolean {
+    const ignoreExtensionsOnSave = getConfiguration().format.ignoreExtensionsOnSave || [];
+    return ignoreExtensionsOnSave.map((ext) => {
       return document.fileName.endsWith(ext);
     }).indexOf(true) === -1;
   }
-
 
   async provideDocumentFormattingEdits(
     document: vscode.TextDocument,
     options: vscode.FormattingOptions,
     token: vscode.CancellationToken): Promise<vscode.TextEdit[]> {
     try {
-      if (!this.isFormatEnabled(document, false)) {
+      if (!this.isFormatEnabled(document)) {
         return [];
       }
 
       const fullRange = doc => doc.validateRange(new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE));
       const range = fullRange(document);
 
-      this.logger.info(`[provider]: running 'terraform fmt' on '${document.fileName}'`);
+      this.logger.info(`running 'terraform fmt' on '${document.fileName}'`);
       let formattedText = await this.runner.run({
         input: document.getText(),
       }, "fmt", "-");
 
-      this.logger.info("[provider]: successful.");
       return [new vscode.TextEdit(range, formattedText)];
     } catch (error) {
-      this.logger.exception("[provider]: formatting failed.", error);
+      this.logger.exception("formatting failed.", error);
     }
   }
 }

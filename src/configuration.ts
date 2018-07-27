@@ -21,8 +21,6 @@ export interface TerraformExecutableConfiguration {
 }
 
 export interface TerraformConfiguration {
-  formatOnSave: boolean;
-  formatVarsOnSave?: boolean;
   path: string;
   paths: (string | TerraformExecutableConfiguration)[];
   templateDirectory: string;
@@ -31,6 +29,11 @@ export interface TerraformConfiguration {
   indexing: TerraformIndexConfiguration;
   codelens: TerraformCodeLensConfiguration;
   telemetry: TerraformTelemetryConfiguration;
+  format: TerraformFormatConfiguration
+}
+
+export interface TerraformFormatConfiguration {
+  ignoreExtensionsOnSave: string[];
 }
 
 export function getConfiguration(): TerraformConfiguration {
@@ -38,8 +41,6 @@ export function getConfiguration(): TerraformConfiguration {
 
   // needed for conversion
   let convertible = {
-    formatOnSave: raw.formatOnSave,
-    formatVarsOnSave: raw.formatVarsOnSave,
     path: raw.path,
     paths: raw.paths,
     templateDirectory: raw.templateDirectory,
@@ -47,7 +48,8 @@ export function getConfiguration(): TerraformConfiguration {
     lintConfig: raw.lintConfig,
     indexing: raw.indexing,
     codelens: raw.codelens,
-    telemetry: raw.telemetry
+    telemetry: raw.telemetry,
+    format: raw.format,
   };
 
   return <TerraformConfiguration>convertible;

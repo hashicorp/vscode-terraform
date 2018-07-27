@@ -86,8 +86,6 @@ export async function activate(ctx: vscode.ExtensionContext) {
 
     // operations which should only work in a local context (as opposed to live-share)
     if (vscode.workspace.rootPath) {
-        // we need to manually handle save events otherwise format on autosave does not work
-        ctx.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => formattingProvider.onSave(doc)));
         ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
 
         // start to build the index
