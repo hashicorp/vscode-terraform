@@ -60,7 +60,10 @@ class LoggingOutput {
       return;
     }
 
-    this.output.appendLine([formattedPrefix, message, ...params].join(" "));
+    const lines = message.split('\n');
+    for (let i = 0; i < lines.length - 1; i++)
+      this.output.appendLine([formattedPrefix, lines[i]].join(" "));
+    this.output.appendLine([formattedPrefix, lines[lines.length - 1], ...params].join(" "));
     if (level === Level.Error || level === Level.Warn) {
       this.output.show(true);
     }
