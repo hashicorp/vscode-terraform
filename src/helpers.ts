@@ -54,3 +54,12 @@ export function backwardsSearch(haystack: string, matcher: MatcherFunction): num
 
   return -1;
 }
+
+export function count(haystack: string, character: string): number {
+  let result = 0;
+  for (let i = 0; i < haystack.length; i++) {
+    if (haystack[i] === character)
+      result++;
+  }
+  return result;
+}

@@ -1,3 +1,4 @@
+import { count } from "../helpers";
 
 export enum NodeType {
     Unknown = "UNKNOWN",
@@ -175,15 +176,6 @@ export function findValue(item: AstItem, name?: string): AstVal {
     if (!value)
         return null;
     return value.Val;
-}
-
-function count(haystack: string, character: string): number {
-    let result = 0;
-    for (let i = 0; i < haystack.length; i++) {
-        if (haystack[i] === character)
-            result++;
-    }
-    return result;
 }
 
 export function getTokenAtPosition(ast: Ast, pos: AstPosition): AstToken {
