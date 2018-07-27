@@ -301,6 +301,20 @@ suite("Index Tests", () => {
                 assert.equal(sp.valueLocation.range.end.line, 0);
                 assert.equal(sp.valueLocation.range.end.character, 63);
             });
+
+            test("Computes correct end pos of heredoc properties", () => {
+                let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" {\n  property = <<EOF\nstring\nEOF\n}`);
+
+                let s = index.sections[0];
+                assert.equal(s.properties.length, 1);
+
+                const p = s.properties[0];
+                assert.equal(p.value, "<<EOF\nstring\nEOF\n");
+                assert.equal(p.valueLocation.range.start.line, 1, "start line");
+                assert.equal(p.valueLocation.range.start.character, 13, "start character");
+                assert.equal(p.valueLocation.range.end.line, 3, "end line");
+                assert.equal(p.valueLocation.range.end.character, 3, "end character");
+            });
         });
     });
 

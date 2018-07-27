@@ -14,8 +14,8 @@ function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);
 }
 
-function createPosition(pos: any, columnDelta: number = 0): Position {
-    return new Position(pos.Line - 1, pos.Column - 1 + columnDelta);
+function createPosition(pos: any, columnDelta: number = 0, lineDelta: number = 0): Position {
+    return new Position(pos.Line - 1 + lineDelta, pos.Column - 1 + columnDelta);
 }
 
 function createRange(start: any, end: any): Range {
@@ -94,6 +94,15 @@ function startPosFromVal(val: AstVal): Position {
 function endPosFromVal(val: AstVal): Position {
     if (val.Rbrace || val.Rbrack)
         return createPosition(val.Rbrace || val.Rbrack, 1); // for maps/lists
+
+    if (val.Token.Type === 10) {
+        // HEREDOC
+        // count lines
+        const lines = val.Token.Text.split('\n');
+        return new Position(val.Token.Pos.Line - 1 + lines.length - 2, lines[lines.length - 2].length);
+        // we subtract 2 from lines.length before adding to start pos to compute
+        // end pos because the HEREDOC Token looks like this: <<EOF\nstring\nEOF\n
+    }
 
     return createPosition(val.Token.Pos, val.Token.Text.length); // for strings
 }
