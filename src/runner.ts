@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { stripAnsi } from './ansi';
 import { getConfiguration, TerraformExecutableConfiguration } from './configuration';
-import { outputChannel } from './extension';
 import { Logger } from "./logger";
 import { Reporter } from './telemetry';
 
@@ -116,7 +115,7 @@ export class Runner extends vscode.Disposable {
     this.logger.info(`Running terraform cwd='${cwd}' path='${options.executable.path}' (version: ${options.executable.version}) args=[${args.join(", ")}]`);
 
     return new Promise<string>((resolve, reject) => {
-      const child = execFile(options.executable.version, args, {
+      const child = execFile(options.executable.path, args, {
         encoding: 'utf8',
         maxBuffer: 1024 * 1024,
         cwd: cwd
