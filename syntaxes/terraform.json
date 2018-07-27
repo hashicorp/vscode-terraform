@@ -73,8 +73,6 @@
           "name": "punctuation.definition.tag.terraform"
         }
       },
-      "foldingStartMarker": "\\{\\s*$",
-      "foldingStopMarker": "^\\s*\\}",
       "match": "(resource|data)\\s+(\")?(\\w+)(\")?\\s+(\")?([\\w\\-]+)(\")?\\s+({)",
       "name": "meta.resource.terraform"
     },
@@ -96,8 +94,6 @@
           "name": "punctuation.definition.tag.terraform"
         }
       },
-      "foldingStartMarker": "\\{\\s*$",
-      "foldingStopMarker": "^\\s*\\}",
       "match": "(provider|provisioner|variable|output|module|atlas)\\s+(\")?([\\w\\-]+)(\")?\\s+({)"
     },
     {
@@ -109,8 +105,6 @@
           "name": "punctuation.definition.tag.terraform"
         }
       },
-      "foldingStartMarker": "\\{\\s*$",
-      "foldingStopMarker": "^\\s*\\}",
       "match": "(locals|terraform)\\s+({)"
     },
     {

@@ -23,6 +23,7 @@ import { IndexAdapter } from './index/index-adapter';
 import { Index } from './index';
 import { FileSystemWatcher } from './index/crawler';
 import { Runner } from './runner';
+import { CodeFoldingProvider } from './folding';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 const logger = new logging.Logger("extension");
@@ -77,7 +78,8 @@ export async function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(indexAdapter)),
         vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexAdapter)),
         vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
-        vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter))
+        vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter)),
+        vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter))
     );
 
     if (getConfiguration().codelens.enabled) {

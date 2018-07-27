@@ -1,6 +1,9 @@
+#region
 variable "stage" {
   default = "gamma"
 }
+
+#endregion
 
 variable "ipsum" {
   type = "map"
@@ -18,6 +21,14 @@ resource "aws_s3_bucket" "agent_bucket" {
     target_bucket = "${var.stage}-${var.region}-mymonitoringbucket"
     target_prefix = "aprefix/"
   }
+
+  policy = <<EOF
+  {
+    sdfds
+    sdfds,
+    "Fsdfsd"
+  }
+EOF
 }
 
 output "iam_user_agent" {

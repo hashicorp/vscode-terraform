@@ -2,7 +2,7 @@
 
 ## New Features
 
-- ...
+- Correctly fold HEREDOCs (closes #48)
 
 ## Breaking Changes
 
