@@ -1,9 +1,4 @@
 import { readFile } from 'fs';
-import * as vscode from 'vscode';
-
-export function isTerraformDocument(document: vscode.TextDocument): boolean {
-  return document.languageId === "terraform";
-}
 
 export function read(path: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -26,17 +21,6 @@ export function readBuffer(path: string): Promise<Buffer> {
         resolve(data);
       }
     });
-  });
-}
-
-
-export function uriFromRelativePath(path: string, folder?: vscode.WorkspaceFolder): vscode.Uri {
-  if (!folder) {
-    folder = vscode.workspace.workspaceFolders[0];
-  }
-
-  return folder.uri.with({
-    path: [folder.uri.path, path].join('/')
   });
 }
 

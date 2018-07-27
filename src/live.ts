@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
 import { getConfiguration, TerraformIndexConfiguration } from './configuration';
-import { isTerraformDocument } from './helpers';
 import { IndexAdapter } from './index/index-adapter';
 import { Logger } from './logger';
 
 let runner;
 
 function liveIndexEnabledForDocument(cfg: TerraformIndexConfiguration, doc: vscode.TextDocument): boolean {
-  if (!isTerraformDocument(doc)) {
+  if (doc.languageId !== "terraform") {
     return false;
   }
 
