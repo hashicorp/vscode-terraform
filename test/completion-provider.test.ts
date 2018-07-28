@@ -89,6 +89,27 @@ suite("Autocompletion Tests", () => {
             assert(!shouldHaveCompletion(completions, "output", vscode.CompletionItemKind.Value), "should not have output completion");
         });
 
+        test("Do not fail if completing after a .", async () => {
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: 'output "output" {\n' +
+                    '  value = "${var.}"\n' +
+                    '}\n' +
+                    'variable "variable" {}\n' +
+                    'resource "resource_type" "resource" {}'
+            });
+
+            let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
+            assert(successful, "forced indexing not successful");
+
+            let completions = await executeProvider(doc.uri, new vscode.Position(1, 17));
+            assert.notEqual(completions.items.length, 0, "completions should not be empty");
+
+            assert(!shouldHaveFunctionCompletion(completions, "uuid()"), "should not have uuid() completion");
+            assert(!!shouldHaveCompletion(completions, "var.variable", vscode.CompletionItemKind.Variable), "should not have var.variable completion");
+            assert(!shouldHaveCompletion(completions, "output", vscode.CompletionItemKind.Value), "should not have output completion");
+        });
+
         test("Filter should be empty if completing after (", async () => {
             let doc = await vscode.workspace.openTextDocument({
                 language: 'terraform',
