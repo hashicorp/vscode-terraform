@@ -85,6 +85,7 @@ suite("Autocompletion Tests", () => {
             assert.notEqual(completions.items.length, 0, "completions should not be empty");
 
             assert(!!shouldHaveFunctionCompletion(completions, "uuid()"), "should have uuid() completion");
+            assert(!shouldHaveFunctionCompletion(completions, "abs(float)"), "should not have abs(float) completion");
             assert(!shouldHaveCompletion(completions, "var.variable", vscode.CompletionItemKind.Variable), "should not have var.variable completion");
             assert(!shouldHaveCompletion(completions, "output", vscode.CompletionItemKind.Value), "should not have output completion");
         });

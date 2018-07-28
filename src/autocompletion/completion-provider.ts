@@ -112,9 +112,9 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
       wordRangeAtPos ? document.getWordRangeAtPosition(position).end : position
     );
 
-    return group.query("ALL_FILES", { id: filter, unique: true }).map((s) => {
+    return group.query("ALL_FILES", { id: { type: "PREFIX", match: filter }, unique: true }).map((s) => {
       return this.sectionToCompletionItem(s, needInterpolation, replaceRange);
-    }).concat(...GetKnownFunctions().map((f) => this.knownFunctionToCompletionItem(f, needInterpolation, replaceRange)));
+    }).concat(...GetKnownFunctions().filter(f => f.name.indexOf(filter) === 0).map((f) => this.knownFunctionToCompletionItem(f, needInterpolation, replaceRange)));
   }
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
