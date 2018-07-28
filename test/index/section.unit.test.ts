@@ -95,8 +95,13 @@ locals {
             });
 
             test("by id (fuzzy)", () => {
-                assert(section.match({ id: { fuzzy: true, match: "type.resource" } }));
-                assert(!section.match({ id: { fuzzy: true, match: "smurf" } }));
+                assert(section.match({ id: { type: "FUZZY", match: "type.resource" } }));
+                assert(!section.match({ id: { type: "FUZZY", match: "smurf" } }));
+            });
+
+            test("by id (prefix)", () => {
+                assert(section.match({ id: { type: "PREFIX", match: "resource_type.resource" } }));
+                assert(!section.match({ id: { type: "PREFIX", match: "resource_name" } }));
             });
 
             test("by section type", () => {

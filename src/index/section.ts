@@ -10,7 +10,7 @@ export interface QueryOptions {
   type?: string;
   name_position?: Position;
   position?: Position;
-  id?: string | { fuzzy: true, match: string };
+  id?: string | { type: "FUZZY" | "PREFIX", match: string };
   unique?: boolean;
 }
 
@@ -77,9 +77,16 @@ export class Section {
         if (this.id() !== options.id)
           return false;
       } else {
-        // fuzzy
-        if (this.id().indexOf(options.id.match) === -1)
-          return false;
+        switch (options.id.type) {
+          case "FUZZY":
+            if (this.id().indexOf(options.id.match) === -1)
+              return false;
+            break;
+          case "PREFIX":
+            if (this.id().indexOf(options.id.match) !== 0)
+              return false;
+            break;
+        }
       }
     }
 
