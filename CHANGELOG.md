@@ -1,4 +1,4 @@
-# 1.3.0 (unreleased)
+# 1.3.0
 
 ## New Features
 
@@ -7,6 +7,7 @@
 - Looks for all `terraform` binaries in `PATH` and picks the newest
 - Show a warning if `erd0s.terraform-autocomplete` is installed as it breaks document links (refer [#102](https://github.com/mauve/vscode-terraform/issues/102))
 - Resources are now grouped by folder internally which fixes several reported issues [#103](https://github.com/mauve/vscode-terraform/issues/103)
+- Support outline view
 
 ## Breaking Changes
 

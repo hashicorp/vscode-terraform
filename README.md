@@ -145,3 +145,7 @@ Press `F2` to automatically rename a variable and its usages.
 ### Document Link support
 
 ![Click on resource type to go to documentation](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-document-link-2.png)
+
+### Outline View support
+
+![An outline of the currently open document is automatically showed](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-outline-view.png)
