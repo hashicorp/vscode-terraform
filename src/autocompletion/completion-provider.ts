@@ -35,6 +35,8 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     if (range) {
       item.range = range;
     }
+    // sort sections before functions
+    item.sortText = `000-${section.id()}`;
     return item;
   }
 
@@ -61,6 +63,9 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     if (range) {
       item.range = range;
     }
+    // sort functions after functions
+    item.sortText = `001-${fd.name}`;
+    item.filterText = fd.name;
     return item;
   }
 
