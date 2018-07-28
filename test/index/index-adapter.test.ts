@@ -1,5 +1,6 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import Uri from 'vscode-uri';
 import { FileIndex } from '../../src/index/file-index';
@@ -24,8 +25,8 @@ suite("Index Tests", () => {
         test("does not index documents from excluded paths", async () => {
             let adapter = new IndexAdapter(new Index, ["*"]);
 
-            let base = vscode.workspace.workspaceFolders[0].uri;
-            let doc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`${base.toString()}/template.tf`));
+            let p = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'template.tf');
+            let doc = await vscode.workspace.openTextDocument(vscode.Uri.file(p));
 
             let [file, group] = adapter.indexDocument(doc);
             assert(!file && !group, "should not index document when all paths are excluded");

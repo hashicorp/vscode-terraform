@@ -31,11 +31,14 @@ export class IndexGroup {
 
   belongs(index: FileIndex | Uri | string): boolean {
     if (typeof index === "string")
-      return index === this.uri.toString();
+      return Uri.parse(index).toString() === this.uri.toString();
     else if (index instanceof Uri)
       return index.toString() === this.uri.toString();
-    else
-      return this.uri.toString() === dirname(index.uri);
+    else {
+      const left = this.uri.toString();
+      const right = Uri.parse(dirname(index.uri)).toString();
+      return left === right;
+    }
   }
 
   add(index: FileIndex) {
