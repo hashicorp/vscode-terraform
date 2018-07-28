@@ -2,15 +2,19 @@
 
 ## New Features
 
-- Correctly fold HEREDOCs (closes #48)
+- Correctly fold HEREDOCs (closes [#48](https://github.com/mauve/vscode-terraform/issues/48))
+- Resources are not correctly groups so that goto definition works as expected (closes [#107](https://github.com/mauve/vscode-terraform/issues/107))
+- Looks for all `terraform` binaries in `PATH` and picks the newest
+- Show a warning if `erd0s.terraform-autocomplete` is installed as it breaks document links (refer [#102](https://github.com/mauve/vscode-terraform/issues/102))
+- Resources are now grouped by folder internally which fixes several reported issues [#103](https://github.com/mauve/vscode-terraform/issues/103)
 
 ## Breaking Changes
 
-- Format On Auto-Save is now gone (closes #112 and others, see below for an in-depth explanation)
+- Format On Auto-Save is now gone (closes [#112](https://github.com/mauve/vscode-terraform/issues/112) and others, see below for an in-depth explanation)
 
 ## Fixes
 
-- ...
+- Catches exceptions in all commands and providers and reports them automatically (if enabled, closes [#106](https://github.com/mauve/vscode-terraform/issues/106))
 
 ## Format On Auto-Save Removal
 
