@@ -47,3 +47,14 @@ export function count(haystack: string, character: string): number {
   }
   return result;
 }
+
+export function compareTermLists(left: string[], right: string[]): number {
+  const minLength = Math.min(left.length, right.length);
+  for (let i = 0; i < minLength; i++) {
+    if (left[i] < right[i])
+      return -1;
+    if (left[i] > right[i])
+      return 1;
+  }
+  return 0;
+}
