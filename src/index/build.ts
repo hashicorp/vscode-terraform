@@ -1,7 +1,7 @@
 import Uri from 'vscode-uri';
-import { Ast, AstItem, AstList, AstToken, AstVal, AstValueType, getStringValue, getText, getValueType, NodeType, VisitedNode, walk } from './ast';
+import { Ast, AstItem, AstList, AstToken, AstVal, AstValueType, findValue, getStringValue, getText, getValueType, NodeType, VisitedNode, walk } from './ast';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
-import { FileIndex } from './file-index';
+import { FileIndex, TerraformSection } from './file-index';
 import { ParseError, parseHilWithPosition } from './hcl-hil';
 import { Location } from './location';
 import { Position } from './position';
@@ -198,6 +198,16 @@ function childOfLocalsSection(p: VisitedNode[]): boolean {
     return item.Keys[0].Token.Text === "locals";
 }
 
+function terraformSectionFromItemNode(uri: Uri, node: AstItem): TerraformSection {
+    const requiredVersionVal = findValue(node, "required_version");
+    const requiredVersion = getStringValue(requiredVersionVal, "", { stripQuotes: true });
+
+    const start = createPosition(node.Keys[0].Token.Pos);
+    const end = endPosFromVal(node.Val);
+
+    return new TerraformSection(requiredVersion, new Location(uri, new Range(start, end)), node);
+}
+
 export function build(uri: Uri, ast: Ast): FileIndex {
     if (!ast) {
         throw "ast cannot be null";
@@ -221,6 +231,12 @@ export function build(uri: Uri, ast: Ast): FileIndex {
             if (node.Keys.length === 1) {
                 // handle top-level things
                 if (path.length === 2) {
+                    if (node.Keys[0].Token.Text === "terraform") {
+                        let terraformSection = terraformSectionFromItemNode(uri, node as AstItem);
+                        result.terraform = terraformSection;
+                        return;
+                    }
+
                     // assignment nodes (like we want) have an actual valid assignment
                     // position, whereas single key sections (like terraform, locals)
                     // do not

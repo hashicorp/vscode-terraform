@@ -1,15 +1,23 @@
 import Uri from 'vscode-uri';
+import { AstItem } from './ast';
 import { build } from './build';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { parseHcl } from './hcl-hil';
+import { Location } from './location';
 import { Position } from './position';
 import { Range } from './range';
 import { Reference, ReferenceQueryOptions } from './reference';
 import { QueryOptions, Section } from './section';
+
+export class TerraformSection {
+  constructor(public requiredVersion: string, location: Location, node: AstItem) {}
+}
+
 export class FileIndex {
   sections: Section[] = [];
   assignments: Reference[] = [];
   diagnostics: Diagnostic[] = [];
+  terraform: TerraformSection;
 
   constructor(public uri: Uri) { }
 
