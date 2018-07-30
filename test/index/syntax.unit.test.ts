@@ -18,7 +18,7 @@ suite("Index Tests", () => {
       assert.equal(file.terraform.requiredVersion, "");
     });
 
-    test.only("terraform section with backend config", () => {
+    test("terraform section with backend config", () => {
       let [file, diagnostic] = FileIndex.fromString(Uri.parse("untitled.tf"), `terraform { backend "test" {} }`);
 
       assert(file, "expected parse to succeed");
