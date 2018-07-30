@@ -27,7 +27,12 @@ interface SectionGroupNode {
   query: QueryOptions;
 }
 
-type Node = ModuleNode | SectionNode | PropertyNode | SectionGroupNode;
+interface LabelNode {
+  type: "LABEL";
+  label: string;
+}
+
+type Node = ModuleNode | SectionNode | PropertyNode | SectionGroupNode | LabelNode;
 
 export class ModuleOverview extends vscode.Disposable implements vscode.TreeDataProvider<Node> {
   private disposables: vscode.Disposable[] = [];
@@ -36,7 +41,7 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
   constructor(private index: IndexAdapter) {
     super(() => this.dispose());
 
-    this.disposables.push(this.index.onDidChange(this.onIndexDidChange));
+    this.disposables.push(this.index.onDidChange((e) => this.onIndexDidChange(e)));
   }
 
   dispose() {
@@ -62,6 +67,8 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
         return this.propertyToTreeItem(element.property);
       case "SECTION_GROUP":
         return this.sectionGroupToTreeItem(element);
+      case "LABEL":
+        return this.labelToTreeItem(element);
     }
   }
 
@@ -77,7 +84,22 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
 
     switch (element.type) {
       case "MODULE": {
+        let terraformSection = element.group.indices("ALL_FILES").map(f => f.terraform).find(f => !!f);
+        let requiredVersion = "no requirement";
+        if (terraformSection && terraformSection.requiredVersion !== "")
+          requiredVersion = terraformSection.requiredVersion;
+
         return [
+          {
+            type: "LABEL",
+            label: `Terraform version requirement: ${requiredVersion}`
+          },
+          {
+            type: "SECTION_GROUP",
+            group: element.group,
+            label: "Providers",
+            query: { section_type: "provider" }
+          } as SectionGroupNode,
           {
             type: "SECTION_GROUP",
             group: element.group,
@@ -159,7 +181,8 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
     return {
       label: label,
       collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
-      id: group.uri.toString()
+      id: group.uri.toString(),
+      iconPath: vscode.ThemeIcon.Folder
     }
   }
 
@@ -180,6 +203,12 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
     return {
       label: node.label,
       collapsibleState: vscode.TreeItemCollapsibleState.Collapsed
+    };
+  }
+
+  private labelToTreeItem(node: LabelNode): vscode.TreeItem {
+    return {
+      label: node.label
     };
   }
 }
