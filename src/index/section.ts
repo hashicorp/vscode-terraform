@@ -34,6 +34,10 @@ export class Section {
     return this.rootProperty.value as Property[];
   }
 
+  get label(): string {
+    return [this.type, this.name].filter(n => !!n).join('.');
+  }
+
   constructor(
     sectionType: string,
     type: string | null,
@@ -129,6 +133,6 @@ export class Section {
     if (this.sectionType === "output")
       return this.name;
 
-    return [this.type, name].join(".");
+    return [this.type, name].filter(f => !!f).join(".");
   }
 }
