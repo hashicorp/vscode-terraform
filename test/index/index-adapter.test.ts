@@ -64,5 +64,24 @@ suite("Index Tests", () => {
 
             assert(!adapter.errors.has(doc.uri));
         });
+
+        test("emits event", async () => {
+            let adapter = new IndexAdapter(new Index, []);
+
+            let called = false;
+            let disposable = adapter.onDidChange(() => { called = true; });
+
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: 'variable "var" {}'
+            });
+
+            let [file, group] = adapter.indexDocument(doc);
+            assert(file, "expected indexDocument to succeed");
+
+            assert(called, "expected event to have been fired");
+
+            disposable.dispose();
+        });
     });
 });

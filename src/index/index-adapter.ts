@@ -6,10 +6,18 @@ import { FileIndex } from "./file-index";
 import { IndexGroup } from "./group";
 import { Index } from "./index";
 
+export interface IndexChangedEvent {
+}
+
 export class IndexAdapter extends vscode.Disposable {
   private logger = new Logger("index-adapter");
   private disposables: vscode.Disposable[] = [];
   public errors: vscode.DiagnosticCollection;
+
+  private _onDidChange = new vscode.EventEmitter<IndexChangedEvent>();
+  get onDidChange() {
+    return this._onDidChange.event;
+  }
 
   constructor(public index: Index, public excludePaths: string[]) {
     super(() => this.dispose());
@@ -21,6 +29,7 @@ export class IndexAdapter extends vscode.Disposable {
 
   dispose() {
     this.errors.dispose();
+    this._onDidChange.dispose();
     this.disposables.map(d => d.dispose());
   }
 
@@ -37,11 +46,15 @@ export class IndexAdapter extends vscode.Disposable {
   clear() {
     this.index.clear();
     this.errors.clear();
+
+    this._onDidChange.fire({});
   }
 
   delete(uri: vscode.Uri) {
     this.index.delete(uri);
     this.errors.delete(uri);
+
+    this._onDidChange.fire({});
   }
 
   indexDocument(document: vscode.TextDocument): [FileIndex, IndexGroup] {
@@ -77,6 +90,7 @@ export class IndexAdapter extends vscode.Disposable {
     }
 
     this.errors.set(document.uri, diagnostics);
+    this._onDidChange.fire({});
     return [index, group];
   }
 }
