@@ -25,7 +25,7 @@ export class ReferenceProvider implements vscode.ReferenceProvider {
       return references.map((r) => {
         const range = new vscode.Range(r.location.range.start.line, r.location.range.start.character,
           r.location.range.end.line, r.location.range.end.character);
-        return new vscode.Location(vscode.Uri.parse(r.location.uri.toString()), range);
+        return new vscode.Location(r.location.uri, range);
       });
     } catch (error) {
       this.logger.exception("Could not provide references", error);

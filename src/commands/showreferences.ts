@@ -20,12 +20,12 @@ class ReferenceQuickPick implements vscode.QuickPickItem {
     } else {
       // tfvars
       this.label = "(assignment)";
-      this.description = vscode.Uri.parse(reference.location.uri.toString()).path;
+      this.description = vscode.workspace.asRelativePath(reference.location.uri);
     }
   }
 
   goto() {
-    vscode.window.showTextDocument(vscode.Uri.parse(this.reference.location.uri.toString()), {
+    vscode.window.showTextDocument(this.reference.location.uri, {
       preserveFocus: true,
       preview: true,
       selection: to_vscode_Range(this.reference.location.range)

@@ -22,7 +22,7 @@ suite("Index Tests", () => {
 
     test("add index", () => {
       let [index, diagnostic] = FileIndex.fromString(Uri.parse("dir/file.tf"), 'variable "var" {}');
-      let group = new IndexGroup(Uri.parse(dirname(index.uri)));
+      let group = new IndexGroup(dirname(index.uri));
 
       assert.equal(group.indices("ALL_FILES").length, 0);
 
@@ -117,13 +117,13 @@ suite("Index Tests", () => {
     });
 
     suite("queryReferences", () => {
-      let [index1, d1] = FileIndex.fromString(Uri.parse("dir/file1.tf"), 'variable "var1" {}');
+      let [index1, d1] = FileIndex.fromString(Uri.file("dir/file1.tf"), 'variable "var1" {}');
       let group = IndexGroup.createFromFileIndex(index1);
 
-      let [index2, d2] = FileIndex.fromString(Uri.parse("dir/file2.tf"), 'resource "type" "name1" { property = "${var.var1}" }');
+      let [index2, d2] = FileIndex.fromString(Uri.file("dir/file2.tf"), 'resource "type" "name1" { property = "${var.var1}" }');
       group.add(index2);
 
-      let [index3, d3] = FileIndex.fromString(Uri.parse("dir/file3.tf"), 'resource "type" "name2" { property = "${var.var1}" }');
+      let [index3, d3] = FileIndex.fromString(Uri.file("dir/file3.tf"), 'resource "type" "name2" { property = "${var.var1}" }');
       group.add(index3);
 
       test("supports ALL_FILES", () => {
