@@ -32,6 +32,23 @@
   ],
   "main": "./out/src/extension",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "terraform-explorer",
+          "title": "Terraform Explorer",
+          "icon": "terraform.svg"
+        }
+      ]
+    },
+    "views": {
+      "terraform-explorer": [
+        {
+          "id": "terraform-modules",
+          "name": "Modules"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "terraform.validate",

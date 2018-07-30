@@ -24,6 +24,7 @@ import * as logging from './logger';
 import { RenameProvider } from './rename';
 import { Runner } from './runner';
 import * as telemetry from './telemetry';
+import { ModuleOverview } from './views/module-overview';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 const logger = new logging.Logger("extension");
@@ -79,7 +80,10 @@ export async function activate(ctx: vscode.ExtensionContext) {
         vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexAdapter)),
         vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
         vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter)),
-        vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter))
+        vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter)),
+
+        // views
+        vscode.window.registerTreeDataProvider('terraform-modules', new ModuleOverview(indexAdapter))
     );
 
     if (getConfiguration().codelens.enabled) {
