@@ -1,3 +1,4 @@
+import { match, MatchExpression } from "../matcher";
 import { AstItem } from './ast';
 import { Location } from './location';
 import { Position } from './position';
@@ -5,12 +6,12 @@ import { Property } from './property';
 import { Reference } from "./reference";
 
 export interface QueryOptions {
-  name?: string;
-  section_type?: string;
-  type?: string;
+  name?: MatchExpression;
+  section_type?: MatchExpression;
+  type?: MatchExpression;
   name_position?: Position;
   position?: Position;
-  id?: string | { type: "FUZZY" | "PREFIX", match: string };
+  id?: MatchExpression;
   unique?: boolean;
 }
 
@@ -76,37 +77,26 @@ export class Section {
       return true;
 
     if (options.id) {
-      if (typeof options.id === "string") {
-        // exact match
-        if (this.id() !== options.id)
-          return false;
-      } else {
-        switch (options.id.type) {
-          case "FUZZY":
-            if (this.id().indexOf(options.id.match) === -1)
-              return false;
-            break;
-          case "PREFIX":
-            if (this.id().indexOf(options.id.match) !== 0)
-              return false;
-            break;
-        }
-      }
+      if (!match(this.id(), options.id, "EXACT"))
+        return false;
     }
 
-    if (options.section_type && this.sectionType !== options.section_type)
-      return false;
+    if (options.section_type)
+      if (!match(this.sectionType, options.section_type, "EXACT"))
+        return false;
 
     if (this.type) {
-      if (options.type && this.type.indexOf(options.type) === -1)
+      if (options.type && !match(this.type, options.type))
         return false;
     } else {
       if (options.type)
         return false;
     }
 
-    if (options.name && this.name.indexOf(options.name) === -1)
-      return false;
+    if (options.name) {
+      if (!match(this.name, options.name))
+        return false;
+    }
 
     if (options.name_position && !this.nameLocation.range.contains(options.name_position))
       return false;
