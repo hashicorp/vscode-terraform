@@ -8,6 +8,8 @@
 - Show a warning if `erd0s.terraform-autocomplete` is installed as it breaks document links (refer [#102](https://github.com/mauve/vscode-terraform/issues/102))
 - Resources are now grouped by folder internally which fixes several reported issues [#103](https://github.com/mauve/vscode-terraform/issues/103)
 - Support outline view
+- Simple custom view which shows an overview of all modules
+  - This is the very first and very simplest version so you cannot really interact with the view.
 
 ## Breaking Changes
 

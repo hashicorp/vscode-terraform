@@ -149,3 +149,7 @@ Press `F2` to automatically rename a variable and its usages.
 ### Outline View support
 
 ![An outline of the currently open document is automatically showed](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-outline-view.png)
+
+### Module Overview
+
+![A custom view is contributed which shows an overview of all modules](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-module-overview.png)
