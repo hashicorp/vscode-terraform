@@ -28,7 +28,9 @@
     "onCommand:terraform.showReferences",
     "onCommand:terraform.index-document",
     "onCommand:terraform.navigate-to-section",
-    "onCommand:terraform.show-plan"
+    "onCommand:terraform.show-plan",
+    "onView:terraform-modules",
+    "workspaceContains:**/*.tf"
   ],
   "main": "./out/src/extension",
   "contributes": {
