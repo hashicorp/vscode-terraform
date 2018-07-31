@@ -43,7 +43,7 @@ function listToMarkdown(value: AstVal, depth: number): string {
   }
 
   const lines = list.map((item, index) => {
-    const v = getText(item.Token, { stripQuotes: true });
+    const v = getText(item.Token, { stripQuotes: true, fallback: '<failed to extract value>' });
     return "  ".repeat(depth) + `${index + 1}. \`${v}\``;
   });
 
