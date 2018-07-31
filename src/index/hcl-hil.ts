@@ -16,12 +16,14 @@ export class ParseError extends Error {
   readonly line: number;
 
   constructor(node: any, message?: string) {
-    super(message);
+    super(message || "Unknown parse error");
 
-    this.fileName = node.Pos.Filename;
-    this.offset = node.Pos.Offset;
-    this.line = node.Pos.Line - 1;
-    this.column = node.Pos.Column - 1;
+    if (node.Pos) {
+      this.fileName = node.Pos.Filename;
+      this.offset = node.Pos.Offset;
+      this.line = node.Pos.Line - 1;
+      this.column = node.Pos.Column - 1;
+    }
   }
 }
 
