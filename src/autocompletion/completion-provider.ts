@@ -182,12 +182,17 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
         }
 
         if (nestedTypes.length > 0 && parentResource.length > 0) {
-          let temp: any = { items: allProviders[parentType][parentResource].args };
+          let resourceInfo = allProviders[parentType][parentResource];
+          if (!resourceInfo) {
+            return [];
+          }
+
+          let temp: any = { items: resourceInfo.args };
           let fieldArgs: IFieldDef[] = _.cloneDeep(temp).items;
           if (parentType === "resource") {
             fieldArgs.push(...terraformConfigAutoComplete.resource);
           }
-          fieldArgs.push(...allProviders[parentType][parentResource].args);
+          fieldArgs.push(...resourceInfo.args);
           let argumentsLength: number = nestedTypes.length - 1;
           let lastArgName: string = "";
           while (argumentsLength >= 0) {
@@ -198,7 +203,12 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
           }
           return this.getItemsForArgs(fieldArgs, lastArgName);
         } else if (parentResource.length > 0) {
-          let temp: any = { items: allProviders[parentType][parentResource].args };
+          let resourceInfo = allProviders[parentType][parentResource];
+          if (!resourceInfo) {
+            return [];
+          }
+
+          let temp: any = { items: resourceInfo.args };
           let fieldArgs: IFieldDef[] = _.cloneDeep(temp).items;
           if (parentType === "resource") {
             fieldArgs.push(...terraformConfigAutoComplete.resource);

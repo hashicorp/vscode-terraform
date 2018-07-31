@@ -253,5 +253,37 @@ suite("Autocompletion Tests", () => {
             let variables = completions.items.filter((i) => i.label === "var.variable_do_not_show_duplicate_suggestions");
             assert.equal(variables.length, 1);
         });
+
+        test("Complete resource properties", async () => {
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: 'resource "aws_s3_bucket" "name" {\n' +
+                    '  \n' +
+                    '}'
+            });
+
+            let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
+            assert(successful, "forced indexing not successful");
+
+            let completions = await executeProvider(doc.uri, new vscode.Position(1, 2));
+            assert.notEqual(completions.items.length, 0, "completions should not be empty");
+
+            assert(!!shouldHaveCompletion(completions, "acl (aws_s3_bucket)", vscode.CompletionItemKind.Property), "should have acl property");
+        });
+
+        test("Do not fail for unknown resource properties", async () => {
+            let doc = await vscode.workspace.openTextDocument({
+                language: 'terraform',
+                content: 'resource "unknown_resource_type" "name" {\n' +
+                    '  \n' +
+                    '}'
+            });
+
+            let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
+            assert(successful, "forced indexing not successful");
+
+            let completions = await executeProvider(doc.uri, new vscode.Position(1, 2));
+            assert.equal(completions.items.filter(i => i.kind !== vscode.CompletionItemKind.Text).length, 0, "completions should be empty");
+        });
     });
 });

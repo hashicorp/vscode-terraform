@@ -19,3 +19,7 @@ variable "map" {
 variable "region" {
   default = "ap-south-1"
 }
+
+resource "unknown" "name" {
+  yolo = "string"
+}
