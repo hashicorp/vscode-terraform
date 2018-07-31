@@ -27,12 +27,28 @@ suite("Index Tests", () => {
       assert.equal(valueToMarkdown(val, 1), "*empty list*");
     });
 
-    test("format list correctly", () => {
+    test("format list of strings correctly", () => {
       const [ast, error] = parseHcl('variable "region" { default = ["a", "b"] }');
       let val = findValue(ast.Node.Items[0], "default");
 
       assert.equal(valueToMarkdown(val), "1. `a`\n2. `b`");
       assert.equal(valueToMarkdown(val, 1), "  1. `a`\n  2. `b`");
+    });
+
+    test("format list of numbers correctly", () => {
+      const [ast, error] = parseHcl('variable "region" { default = [5, 5] }');
+      let val = findValue(ast.Node.Items[0], "default");
+
+      assert.equal(valueToMarkdown(val), "1. `5`\n2. `5`");
+      assert.equal(valueToMarkdown(val, 1), "  1. `5`\n  2. `5`");
+    });
+
+    test("format list correctly in assignments", () => {
+      const [ast, error] = parseHcl('region = ["5"]');
+      let val = ast.Node.Items[0].Val;
+
+      assert.equal(valueToMarkdown(val), "1. `5`");
+      assert.equal(valueToMarkdown(val, 1), "  1. `5`");
     });
 
     test("uses special value for empty map", () => {
