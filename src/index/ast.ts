@@ -99,7 +99,12 @@ export interface AstItem {
     LineComment: any;
 }
 
-export function getText(token: AstToken, options?: { stripQuotes: boolean }): string {
+export function getText(token: AstToken, options?: { stripQuotes?: boolean, fallback?: string }): string {
+    if (!token) {
+        if (options && options.fallback)
+            return options.fallback;
+        return "";
+    }
     if (options && options.stripQuotes) {
         if (token.Type === 9) {
             return token.Text.substr(1, token.Text.length - 2);

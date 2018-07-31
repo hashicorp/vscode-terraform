@@ -79,6 +79,12 @@ suite("Index Tests", () => {
             assert.equal(text, 'defaultValue');
         });
 
+        test("getText can return fallback", () => {
+            let text = getText(null, { stripQuotes: true, fallback: 'fallback' });
+
+            assert.equal(text, 'fallback');
+        });
+
         test("getStringValue returns the string", () => {
             let val = findValue(ast.Node.Items[0], "default");
             let text = getStringValue(val, "...");
