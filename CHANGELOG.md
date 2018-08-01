@@ -1,3 +1,9 @@
+# 1.3.3
+
+## Fixes
+
+- Fix one error in the completion provider which would cause it to fail if a single argument was unknown
+
 # 1.3.2
 
 ## Fixes
