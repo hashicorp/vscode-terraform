@@ -1,3 +1,11 @@
+# 1.3.2
+
+## Fixes
+
+- Fixed two errors which were automatically reported through telemetry:
+  - `f2afae1` parseHcl might return error without Position
+  - `24884c2` groupFor fails when called with Uri from vscode as opposed to Uri from vscode-uri
+
 # 1.3.1
 
 ## Fixes
