@@ -1,7 +1,6 @@
 import Uri from 'vscode-uri';
 import { FileIndex } from "./file-index";
 import { dirname, IndexGroup } from "./group";
-import { Section } from "./section";
 
 export interface IndexOptions {
     exclude?: string[];
@@ -32,11 +31,8 @@ export class Index {
     }
 
     /// Returns the group to which the specified uri would belong
-    groupFor(uriOrFileIndexOrSection: Uri | FileIndex | Section): IndexGroup {
-        if (uriOrFileIndexOrSection instanceof Section)
-            return this.groups.find(g => g.belongs(dirname(uriOrFileIndexOrSection.location.uri)));
-        else
-            return this.groups.find(g => g.belongs(uriOrFileIndexOrSection));
+    groupFor(uri: Uri): IndexGroup {
+        return this.groups.find(g => g.belongs(uri));
     }
 
     add(file: FileIndex): IndexGroup {
@@ -50,7 +46,7 @@ export class Index {
         return group;
     }
 
-    delete(uri: Uri | FileIndex): IndexGroup {
+    delete(uri: Uri): IndexGroup {
         let group = this.groupFor(uri);
         if (!group)
             return group;

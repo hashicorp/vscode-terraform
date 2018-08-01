@@ -30,20 +30,13 @@ export class IndexGroup {
     return this.sections.size;
   }
 
-  belongs(index: FileIndex | Uri | string): boolean {
-    if (typeof index === "string")
-      return Uri.parse(index).toString() === this.uri.toString();
-    else if (index instanceof Uri)
-      return index.toString() === this.uri.toString();
-    else {
-      const left = this.uri.toString();
-      const right = dirname(index.uri).toString();
-      return left === right;
-    }
+  belongs(uri: Uri): boolean {
+    return this.uri.toString() === dirname(uri).toString() ||
+      this.uri.toString() === uri.toString();
   }
 
   add(index: FileIndex) {
-    if (!this.belongs(index))
+    if (!this.belongs(index.uri))
       throw new Error(`Invalid index for group (${this.uri}): ${index.uri.toString()}`);
 
     this.files.set(index.uri.toString(), index);

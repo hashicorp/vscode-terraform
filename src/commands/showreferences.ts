@@ -39,7 +39,7 @@ export class ShowReferencesCommand extends Command {
   }
 
   protected async perform(section: Section): Promise<any> {
-    let group = this.index.index.groupFor(section);
+    let group = this.index.index.groupFor(section.location.uri);
     let picks = group.queryReferences("ALL_FILES", { target: section }).map((r) => new ReferenceQuickPick(r));
 
     return await vscode.window.showQuickPick(picks, {

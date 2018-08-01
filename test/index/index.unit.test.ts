@@ -45,7 +45,7 @@ suite("Index Tests", () => {
 
     assert.equal(index.groups.length, 2);
 
-    index.delete(f2);
+    index.delete(f2.uri);
 
     assert.equal(index.groups.length, 1);
     assert.equal(index.groups[0].uri.toString(), "dir1");
