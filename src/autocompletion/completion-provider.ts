@@ -232,12 +232,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     let parts: string[] = lineTillCurrentPosition.split(" ");
     if (parts.length === 2 && (parts[0] === "resource" || parts[0] === "data")) {
       let r: string = parts[1].replace(/"/g, "");
-      let regex: RegExp = new RegExp("^" + r);
-      let possibleResources: any = _.filter(_.keys(allProviders[parts[0]]), k => {
-        if (regex.test(k)) {
-          return true;
-        }
-      });
+      let possibleResources: any = _.filter(_.keys(allProviders[parts[0]]), (k: string) => k.indexOf(r) === 0);
       return possibleResources;
     }
     return [];
