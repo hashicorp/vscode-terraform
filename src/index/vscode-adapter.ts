@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { DiagnosticSeverity } from './diagnostic';
 import { Location } from './location';
 import { Position } from './position';
 import { Range } from './range';
@@ -23,4 +24,15 @@ export function to_vscode_Location(location: Location): vscode.Location {
 
 export function from_vscode_Position(pos: vscode.Position): Position {
   return new Position(pos.line, pos.character);
+}
+
+export function to_vscode_DiagnosticsSeverity(severity: DiagnosticSeverity) {
+  switch (severity) {
+    case DiagnosticSeverity.ERROR:
+      return vscode.DiagnosticSeverity.Error;
+    case DiagnosticSeverity.WARNING:
+      return vscode.DiagnosticSeverity.Warning;
+  }
+
+  return vscode.DiagnosticSeverity.Error;
 }

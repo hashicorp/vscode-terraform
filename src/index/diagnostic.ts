@@ -1,7 +1,8 @@
 import { Range } from "./range";
 
 export enum DiagnosticSeverity {
-  ERROR
+  ERROR,
+  WARNING
 }
 
 export class Diagnostic {

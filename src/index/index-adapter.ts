@@ -5,6 +5,7 @@ import { Logger } from '../logger';
 import { FileIndex } from "./file-index";
 import { IndexGroup } from "./group";
 import { Index } from "./index";
+import { to_vscode_DiagnosticsSeverity } from './vscode-adapter';
 
 export interface IndexChangedEvent {
 }
@@ -84,7 +85,7 @@ export class IndexAdapter extends vscode.Disposable {
       diagnostics.push(...index.diagnostics.map((d) => {
         const range = new vscode.Range(d.range.start.line, d.range.start.character,
           d.range.end.line, d.range.end.character);
-        return new vscode.Diagnostic(range, d.message, vscode.DiagnosticSeverity.Error);  // TODO: actually map severity
+        return new vscode.Diagnostic(range, d.message, to_vscode_DiagnosticsSeverity(d.severity));  // TODO: actually map severity
       }));
       group = this.index.add(index);
     }
