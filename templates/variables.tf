@@ -23,3 +23,7 @@ variable "region" {
 resource "unknown" "name" {
   yolo = "string"
 }
+
+terraform {
+  required_version = "<1.0"
+}

@@ -1,6 +1,7 @@
 // The module 'assert' provides assertion methods from node
 import * as assert from 'assert';
 import Uri from 'vscode-uri';
+import { DiagnosticSeverity } from '../../src/index/diagnostic';
 import { FileIndex } from '../../src/index/file-index';
 import { Location } from '../../src/index/location';
 import { Position } from '../../src/index/position';
@@ -343,6 +344,46 @@ suite("Index Tests", () => {
                 assert.equal(index.assignments.length, 1);
 
                 assert.equal(index.assignments[0].targetId, "var.amis");
+            });
+        });
+
+        suite("Collects terraform sections", () => {
+            test("correctly collects and parses requirement", () => {
+                let [index, error] = FileIndex.fromString(uri, `terraform { required_version = ">1.0" }`);
+
+                assert(index.terraform);
+                assert(index.terraform.requirement);
+                assert.equal(index.terraform.requiredVersion, ">1.0");
+                assert.equal(index.terraform.requirement.constraints.length, 1);
+            });
+
+            test("emits warning if terraform section is missing required_version attribute", () => {
+                let [index, error] = FileIndex.fromString(uri, `terraform {}`);
+
+                assert(index.terraform);
+                assert(!index.terraform.requirement);
+                assert.equal(index.terraform.requiredVersion, "");
+
+                assert.equal(index.diagnostics.length, 1);
+                assert.equal(index.diagnostics[0].severity, DiagnosticSeverity.WARNING);
+                assert.equal(index.diagnostics[0].range.start.line, 0);
+                assert.equal(index.diagnostics[0].range.start.character, 0);
+                assert.equal(index.diagnostics[0].range.end.line, 0);
+                assert.equal(index.diagnostics[0].range.end.character, 12);
+            });
+
+            test("does not fail if required_version is cannot be parsed", () => {
+                let [index, error] = FileIndex.fromString(uri, `terraform { required_version = "yolo" }`);
+
+                assert(index.terraform);
+                assert(!index.terraform.requirement);
+                assert.equal(index.terraform.requiredVersion, "yolo");
+                assert.equal(index.diagnostics.length, 1);
+                assert.equal(index.diagnostics[0].severity, DiagnosticSeverity.ERROR);
+                assert.equal(index.diagnostics[0].range.start.line, 0);
+                assert.equal(index.diagnostics[0].range.start.character, 31);
+                assert.equal(index.diagnostics[0].range.end.line, 0);
+                assert.equal(index.diagnostics[0].range.end.character, 37);
             });
         });
     });

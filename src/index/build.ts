@@ -9,6 +9,7 @@ import { Property } from './property';
 import { Range } from './range';
 import { Reference } from './reference';
 import { Section } from './section';
+import { VersionRequirement } from '../runner/version';
 
 function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);
@@ -198,14 +199,36 @@ function childOfLocalsSection(p: VisitedNode[]): boolean {
     return item.Keys[0].Token.Text === "locals";
 }
 
-function terraformSectionFromItemNode(uri: Uri, node: AstItem): TerraformSection {
+function parseRequiredVersion(requiredVersionStr: string, range: Range): [VersionRequirement, Diagnostic] {
+    let requirement: VersionRequirement;
+    let diagnostic: Diagnostic;
+    try {
+        requirement = VersionRequirement.parse(requiredVersionStr);
+    } catch (err) {
+        diagnostic = new Diagnostic(range, err.message, DiagnosticSeverity.ERROR);
+    }
+
+    return [requirement, diagnostic];
+}
+
+function terraformSectionFromItemNode(uri: Uri, node: AstItem): [TerraformSection, Diagnostic] {
     const requiredVersionVal = findValue(node, "required_version");
-    const requiredVersion = getStringValue(requiredVersionVal, "", { stripQuotes: true });
+    const requiredVersionStr = getStringValue(requiredVersionVal, "", { stripQuotes: true });
 
     const start = createPosition(node.Keys[0].Token.Pos);
     const end = endPosFromVal(node.Val);
 
-    return new TerraformSection(requiredVersion, new Location(uri, new Range(start, end)), node);
+    const location = new Location(uri, new Range(start, end));
+
+    if (requiredVersionStr !== "" && requiredVersionVal) {
+        const [requirement, diagnostic] = parseRequiredVersion(requiredVersionStr, rangeFromVal(requiredVersionVal));
+
+        const section = new TerraformSection(requiredVersionStr, requirement, location, node);
+        return [section, diagnostic];
+    } else {
+        const section = new TerraformSection(requiredVersionStr, null, location, node);
+        return [section, new Diagnostic(location.range, "terraform statement without a required_version attribute", DiagnosticSeverity.WARNING)];
+    }
 }
 
 export function build(uri: Uri, ast: Ast): FileIndex {
@@ -232,8 +255,10 @@ export function build(uri: Uri, ast: Ast): FileIndex {
                 // handle top-level things
                 if (path.length === 2) {
                     if (node.Keys[0].Token.Text === "terraform") {
-                        let terraformSection = terraformSectionFromItemNode(uri, node as AstItem);
+                        let [terraformSection, diagnostic] = terraformSectionFromItemNode(uri, node as AstItem);
                         result.terraform = terraformSection;
+                        if (diagnostic)
+                            result.diagnostics.push(diagnostic);
                         return;
                     }
 

@@ -1,4 +1,5 @@
 import Uri from 'vscode-uri';
+import { VersionRequirement } from '../runner/version';
 import { AstItem } from './ast';
 import { build } from './build';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
@@ -10,7 +11,7 @@ import { Reference, ReferenceQueryOptions } from './reference';
 import { QueryOptions, Section } from './section';
 
 export class TerraformSection {
-  constructor(public requiredVersion: string, location: Location, node: AstItem) {}
+  constructor(public requiredVersion: string, public requirement: VersionRequirement | null, location: Location, node: AstItem) { }
 }
 
 export class FileIndex {
