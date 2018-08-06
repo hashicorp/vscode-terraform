@@ -316,36 +316,34 @@ suite("Index Tests", () => {
                 assert.equal(p.valueLocation.range.end.character, 3, "end character");
             });
         });
-    });
 
-    suite("handles .tfvars syntax", () => {
-        const uri = Uri.parse("untitled:file");
+        suite("handles .tfvars syntax", () => {
+            test("Handle map", () => {
+                let [index, error] = FileIndex.fromString(uri, 'amis = { A = "B" }');
 
-        test("Handle map", () => {
-            let [index, error] = FileIndex.fromString(uri, 'amis = { A = "B" }');
+                assert.equal(index.sections.length, 0);
+                assert.equal(index.assignments.length, 1);
 
-            assert.equal(index.sections.length, 0);
-            assert.equal(index.assignments.length, 1);
+                assert.equal(index.assignments[0].targetId, "var.amis");
+            });
 
-            assert.equal(index.assignments[0].targetId, "var.amis");
-        });
+            test("Handle list", () => {
+                let [index, error] = FileIndex.fromString(uri, 'amis = [ "list" ]');
 
-        test("Handle list", () => {
-            let [index, error] = FileIndex.fromString(uri, 'amis = [ "list" ]');
+                assert.equal(index.sections.length, 0);
+                assert.equal(index.assignments.length, 1);
 
-            assert.equal(index.sections.length, 0);
-            assert.equal(index.assignments.length, 1);
+                assert.equal(index.assignments[0].targetId, "var.amis");
+            });
 
-            assert.equal(index.assignments[0].targetId, "var.amis");
-        });
+            test("Handle string", () => {
+                let [index, error] = FileIndex.fromString(uri, 'amis = "list"');
 
-        test("Handle string", () => {
-            let [index, error] = FileIndex.fromString(uri, 'amis = "list"');
+                assert.equal(index.sections.length, 0);
+                assert.equal(index.assignments.length, 1);
 
-            assert.equal(index.sections.length, 0);
-            assert.equal(index.assignments.length, 1);
-
-            assert.equal(index.assignments[0].targetId, "var.amis");
+                assert.equal(index.assignments[0].targetId, "var.amis");
+            });
         });
     });
 });
