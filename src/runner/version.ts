@@ -45,6 +45,11 @@ export class TerraformVersion {
     if (!options)
       options = { ignoreDevelopment: false };
 
+    if (!left)
+      return -1;
+    if (!right)
+      return 0;
+
     if (left.sort < right.sort)
       return -1;
     if (left.sort > right.sort)

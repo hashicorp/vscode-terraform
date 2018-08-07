@@ -5,6 +5,7 @@ import { stripAnsi } from './ansi';
 import { getConfiguration, TerraformExecutableConfiguration } from './configuration';
 import { Logger } from "./logger";
 import { Reporter } from './telemetry';
+import { TerraformVersion, VersionRequirement } from "./runner/version";
 
 export interface RunOptions {
   executable?: TerraformExecutable;
@@ -37,7 +38,7 @@ function execFileAsync(binaryPath): Promise<string> {
 
 export interface TerraformExecutable {
   path: string;
-  version: string;
+  version: TerraformVersion;
 }
 
 async function getTerraformVersion(binaryPath: string): Promise<TerraformExecutable> {
@@ -46,13 +47,9 @@ async function getTerraformVersion(binaryPath: string): Promise<TerraformExecuta
   if (lines.length === 0)
     return { path: binaryPath, version: null };
 
-  const match = lines[0].match(/^Terraform v([0-9\.]+)$/);
-  if (!match)
-    return { path: binaryPath, version: null };
-
   return {
     path: binaryPath,
-    version: match[1]
+    version: TerraformVersion.parse(lines[0])
   }
 }
 
@@ -82,25 +79,17 @@ export class Runner extends vscode.Disposable {
       return null;
 
     // sort by version
-    const sorted = this.executables.map(e => {
-      const match = e.version.match(/^([0-9]+)\.([0-9]+)\.([0-9]+)$/);
-      if (!match)
-        return { path: e.path, version: e.version, sort: 0 };
-
-      const major = parseInt(match[1], 10);
-      const minor = parseInt(match[2], 10);
-      const micro = parseInt(match[3], 10);
-      return { path: e.path, version: e.version, sort: major * 1000000 + minor * 1000 + micro }
-    }).sort((left, right) => {
-      if (left.sort < right.sort)
-        return -1;
-      if (left.sort === right.sort)
-        return 0
-      return 1;
+    const sorted = this.executables.sort((left, right) => {
+      return TerraformVersion.compare(left.version, right.version);
     });
 
     // take highest
     return sorted[sorted.length - 1];
+  }
+
+  getRequiredExecutable(requirement: VersionRequirement): TerraformExecutable {
+    const supported = this.executables.filter(e => e.version && requirement.isFulfilledBy(e.version));
+    return supported.sort((left, right) => TerraformVersion.compare(left.version, right.version))[0];
   }
 
   async run(options?: RunOptions, ...args: string[]): Promise<string> {
@@ -189,13 +178,15 @@ export class Runner extends vscode.Disposable {
       if (!detected.version) {
         if (c.version) {
           this.logger.warn(`Could not detect version of ${detected.path}, using configured version ${c.version}`);
-          detected.version = c.version;
+          detected.version = TerraformVersion.parse(`Terraform v${c.version}`);
+          if (!detected.version) {
+            this.logger.error(`Could not parse version of ${c.version}, marking as unknown`);
+          }
         } else {
           this.logger.warn(`Could not detect version of ${detected.path}`);
-          detected.version = "UNKNOWN";
         }
       } else {
-        if (c.version && c.version !== detected.version) {
+        if (c.version && c.version !== detected.version.toString()) {
           this.logger.warn(`Executable with path: '${c.path}', configured version ${c.version} differs from detected version ${detected.version}, using configured version`);
         }
       }
@@ -216,8 +207,7 @@ export class Runner extends vscode.Disposable {
       try {
         const detected = await getTerraformVersion(binaryPath);
         if (!detected.version) {
-          this.logger.warn(`Could not detect verison of ${detected.path}`);
-          detected.version = "UNKNOWN";
+          this.logger.warn(`Could not detect version of ${detected.path}`);
         }
         this.logger.info(`Found Terraform binary ${detected.path} with version ${detected.version}`);
         found.push(detected);
