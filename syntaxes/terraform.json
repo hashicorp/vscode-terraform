@@ -166,7 +166,7 @@
               "name": "entity.tag.embedded.start.terraform"
             }
           },
-          "end": "\\}",
+          "end": "\\s*\\}",
           "endCaptures": {
             "0": {
               "name": "entity.tag.embedded.end.terraform"
