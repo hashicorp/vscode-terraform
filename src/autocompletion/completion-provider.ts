@@ -365,7 +365,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
             snippet += '[${' + order.toString() + ':' + value + '}]' + '\n';
             order += 1;
           } else if (defaultValue[pos + 1] === '\"') {
-            value = defaultValue.match( /\"(.*?)\"/g).map(str => str.substr(1, str.length - 2))[0];
+            value = defaultValue.substr(pos + 1).match( /\"(.*?)\"/g).map(str => str.substr(1, str.length - 2))[0];
             snippet += '"${' + order.toString() + ':' + value + '}"' + '\n';
             order += 1;
           }
