@@ -52,6 +52,7 @@
 			]
 		}
 	],
+	"autoCloseBefore": ";:.,=}])> \n\t\"",
 	"surroundingPairs": [
 		[
 			"{",
