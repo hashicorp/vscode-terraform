@@ -197,9 +197,10 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
           let lastArgName: string = "";
           while (argumentsLength >= 0) {
             const field: IFieldDef = fieldArgs.find((arg) => arg.name === nestedTypes[argumentsLength]);
-            if (!field)
+            if (!field) {
               argumentsLength--;
               continue;
+            }
             fieldArgs = field.args;
             lastArgName = field.name;
             argumentsLength--;
