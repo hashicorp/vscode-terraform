@@ -63,8 +63,8 @@
 ## Formatting support
 
 The plugin also ships a formatter integration which uses `terraform fmt` for
-formatting files. Formatting can be disabled by setting `terraform.format.enable`
-to `false`.
+formatting files. Formatting can be enabled or disabled by setting `editor.formatOnSave` or `[terraform]editor.formatOnSave`
+to `true` or `false`.
 
 ## Linting
 
