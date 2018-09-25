@@ -1,3 +1,16 @@
+# 1.3.5
+
+## Fixes
+
+- Allow brackets in auto-closing in double quote string [Thanks to @aliusmiles](https://github.com/aliusmiles)
+- Fix broken multi-line strings (Closes #109) [Thanks to @squidfunk](https://github.com/squidfunk)
+- (Partially fix #118) High-CPU usage on auto-complete [Thanks to @michaelmoussa](https://github.com/michaelmoussa)
+
+## Unimportant news
+
+- Pull-requests no longer require the AppInsights key which means they can actually succeed
+- We now correctly parse and compare Terraform versions so that we can evaluate `required_versions` statements (not surfaced in the UI yet)
+
 # 1.3.4
 
 ## Fixes
