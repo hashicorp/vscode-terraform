@@ -1,3 +1,9 @@
+# 1.3.6
+
+## Fixes
+
+- Do not show a warning if a `terraform {}` statement is missing a `required_version` attribute (Closes #132)
+
 # 1.3.5
 
 ## Fixes

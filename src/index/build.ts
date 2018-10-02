@@ -1,4 +1,5 @@
 import Uri from 'vscode-uri';
+import { VersionRequirement } from '../runner/version';
 import { Ast, AstItem, AstList, AstToken, AstVal, AstValueType, findValue, getStringValue, getText, getValueType, NodeType, VisitedNode, walk } from './ast';
 import { Diagnostic, DiagnosticSeverity } from './diagnostic';
 import { FileIndex, TerraformSection } from './file-index';
@@ -9,7 +10,6 @@ import { Property } from './property';
 import { Range } from './range';
 import { Reference } from './reference';
 import { Section } from './section';
-import { VersionRequirement } from '../runner/version';
 
 function stripQuotes(text: string): string {
     return text.substr(1, text.length - 2);
@@ -227,7 +227,9 @@ function terraformSectionFromItemNode(uri: Uri, node: AstItem): [TerraformSectio
         return [section, diagnostic];
     } else {
         const section = new TerraformSection(requiredVersionStr, null, location, node);
-        return [section, new Diagnostic(location.range, "terraform statement without a required_version attribute", DiagnosticSeverity.WARNING)];
+        // Really cool idea but needs some refinement before we can annoy people into adding required_version
+        // return [section, new Diagnostic(location.range, "terraform statement without a required_version attribute", DiagnosticSeverity.WARNING)];
+        return [section, null];
     }
 }
 

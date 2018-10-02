@@ -357,6 +357,9 @@ suite("Index Tests", () => {
                 assert.equal(index.terraform.requirement.constraints.length, 1);
             });
 
+            /*
+            temporarily disabled in 1.3.6
+
             test("emits warning if terraform section is missing required_version attribute", () => {
                 let [index, error] = FileIndex.fromString(uri, `terraform {}`);
 
@@ -371,6 +374,7 @@ suite("Index Tests", () => {
                 assert.equal(index.diagnostics[0].range.end.line, 0);
                 assert.equal(index.diagnostics[0].range.end.character, 12);
             });
+            */
 
             test("does not fail if required_version is cannot be parsed", () => {
                 let [index, error] = FileIndex.fromString(uri, `terraform { required_version = "yolo" }`);
