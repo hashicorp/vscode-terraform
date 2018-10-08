@@ -1,3 +1,9 @@
+# 1.3.7
+
+## Fixes
+
+- Upgrade ApplicationInsights SDK (Fixes #133)
+
 # 1.3.6
 
 ## Fixes
