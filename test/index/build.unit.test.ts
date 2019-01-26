@@ -347,6 +347,23 @@ suite("Index Tests", () => {
             });
         });
 
+        suite("Handles unquoted names", () => {
+            test("Variable names can be unquoted", () => {
+                let [index, error] = FileIndex.fromString(uri, 'variable without-quotes {}');
+
+                assert.equal(index.sections.length, 1);
+                assert.equal(index.sections[0].name, "without-quotes");
+            });
+
+            test("Types can be unquoted", () => {
+                let [index, error] = FileIndex.fromString(uri, 'resource type name {}');
+
+                assert.equal(index.sections.length, 1);
+                assert.equal(index.sections[0].name, "name");
+                assert.equal(index.sections[0].type, "type");
+            });
+        });
+
         suite("Collects terraform sections", () => {
             test("correctly collects and parses requirement", () => {
                 let [index, error] = FileIndex.fromString(uri, `terraform { required_version = ">1.0" }`);

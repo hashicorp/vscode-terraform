@@ -11,10 +11,6 @@ import { Range } from './range';
 import { Reference } from './reference';
 import { Section } from './section';
 
-function stripQuotes(text: string): string {
-    return text.substr(1, text.length - 2);
-}
-
 function createPosition(pos: any, columnDelta: number = 0, lineDelta: number = 0): Position {
     return new Position(pos.Line - 1 + lineDelta, pos.Column - 1 + columnDelta);
 }
@@ -69,13 +65,13 @@ function sectionFromKeyItemNode(uri: Uri, item: any): Section {
     if (isTypedSection) {
         nameIndex = 2;
 
-        type = stripQuotes(item.Keys[1].Token.Text);
+        type = getText(item.Keys[1].Token, { stripQuotes: true });
         const typeStart = createPosition(item.Keys[1].Token.Pos, 1);
         const typeEnd = typeStart.translate({ characterDelta: type.length });
         typeLoc = new Location(uri, new Range(typeStart, typeEnd));
     }
 
-    const name = stripQuotes(item.Keys[nameIndex].Token.Text);
+    const name = getText(item.Keys[nameIndex].Token, { stripQuotes: true });
     const nameStart = createPosition(item.Keys[nameIndex].Token.Pos, 1);
     const nameStop = nameStart.translate({ characterDelta: name.length });
     const nameLoc = new Location(uri, new Range(nameStart, nameStop));
