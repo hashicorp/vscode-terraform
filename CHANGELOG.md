@@ -1,3 +1,9 @@
+# 1.3.8
+
+## What's New
+
+- Added support for the Oracle Cloud Infrastructure (OCI) Provider
+
 # 1.3.7
 
 ## Fixes
