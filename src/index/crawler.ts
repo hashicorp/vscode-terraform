@@ -1,3 +1,4 @@
+import * as minimatch from 'minimatch';
 import * as vscode from 'vscode';
 import { Logger } from '../logger';
 import { Reporter } from '../telemetry';
@@ -36,11 +37,26 @@ export class FileSystemWatcher extends vscode.Disposable {
     }, async (progress) => {
       for (let i = 0; i < files.length; ++i) {
         const uri = files[i];
+
+        // Exclude the configured paths from the FindFiles results
+        // before indexing those files unnecessarily on init.
+        if (this.index.excludePaths.length > 0) {
+          let path = vscode.workspace.asRelativePath(uri).replace('\\', '/');
+          let matches = this.index.excludePaths.map((pattern) => {
+            return minimatch(path, pattern);
+          });
+          if (matches.some((v) => v)) {
+            // ignore
+            this.logger.debug(`Ignoring document: ${uri.toString()}`);
+          } else {
+            await this.updateDocument(uri);
+          }
+        }
+
         progress.report({
           message: `Indexing ${uri.toString()}`,
           increment: files.length / 100
         });
-        await this.updateDocument(uri);
       }
     });
 
