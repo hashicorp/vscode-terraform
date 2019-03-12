@@ -28,19 +28,11 @@ suite("Provider Tests", () => {
     assert(successful, "forced indexing not successful doc1");
 
     // we return DocumentSymbol but the command rewrites to symbolinformation and flattens the tree
-    let symbols = await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', doc1.uri) as vscode.SymbolInformation[];
+    let symbols = await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', doc1.uri) as vscode.DocumentSymbol[];
 
-    assert.equal(symbols.length, 4);
+    assert.equal(symbols.length, 1);
     assert.equal(symbols[0].name, 'doc-symbol-test-2');
-
-    assert.equal(symbols[1].name, 'property');
-    assert.equal(symbols[1].containerName, 'doc-symbol-test-2');
-
-    assert.equal(symbols[2].name, "group");
-    assert.equal(symbols[2].containerName, 'doc-symbol-test-2');
-
-    assert.equal(symbols[3].name, "sub");
-    assert.equal(symbols[3].containerName, 'group');
+    assert.equal(symbols[0].children.length, 2);
   });
 
   test("Correctly show workspace symbols", async () => {
