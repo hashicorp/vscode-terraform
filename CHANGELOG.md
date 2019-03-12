@@ -1,3 +1,9 @@
+# 1.3.8
+
+## Fixes
+
+- Exclude configured directories from indexing during initial crawl (Fixes #153, #156) [Thanks to @christek91](https://github.com/christek91)
+
 # 1.3.7
 
 ## Fixes
