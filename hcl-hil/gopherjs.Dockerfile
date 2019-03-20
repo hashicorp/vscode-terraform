@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.11
 
 RUN go get github.com/gopherjs/gopherjs
 RUN go get github.com/hashicorp/hcl
