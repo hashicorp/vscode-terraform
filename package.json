@@ -235,12 +235,12 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.1",
-    "vscode": "^1.1.18"
+    "vscode": "^1.1.32"
   },
   "dependencies": {
     "applicationinsights": "^1.0.5",
     "graphlib-dot": "^0.6.2",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "minimatch": "^3.0.4",
     "uuid": "^3.3.2",
     "viz.js": "^1.8.2",
