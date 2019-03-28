@@ -27,7 +27,7 @@ function variableWithDocumentationAndValueCompletion(): vscode.CompletionItem {
     let snippet =
         'variable "${1:name}" {\n' +
         '  description = "${2:description}"\n' +
-        '  default = "${2:value}"\n' +
+        '  default = "${3:value}"\n' +
         '}\n' +
         '$0';
     item.insertText = new vscode.SnippetString(snippet);
