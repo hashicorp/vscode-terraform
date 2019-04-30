@@ -34,12 +34,10 @@ export class PreviewGraphCommand extends Command {
       // make background transparent
       processedDot = processedDot.replace('digraph {\n', 'digraph {\n  bgcolor="transparent";\n');
 
-      this.provider.update(processedDot, type, group);
-
-      await vscode.commands.executeCommand('vscode.previewHtml', graphPreviewUri, vscode.ViewColumn.Active, 'Terraform Graph');
+      await createGraphWebView(processedDot, type, group, this.ctx);
     } catch (error) {
       this.logger.error('Generating graph preview failed:');
-      let lines = error.split(/[\r?\n]+/);
+      let lines = error.message.split(/[\r?\n]+/);
       for (let line of lines)
         this.logger.error('\t' + line);
       await vscode.window.showErrorMessage(`Error generating graph, see output view.`);

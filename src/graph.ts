@@ -5,38 +5,25 @@ import { loadTemplate } from './template';
 
 const Viz = require('viz.js');
 
-export let graphPreviewUri = vscode.Uri.parse('terraform-graph://authority/terraform-graph');
+export async function createGraphWebView(dot: string, type: string, group: IndexGroup, ctx: vscode.ExtensionContext): Promise<vscode.WebviewPanel> {
+  let template = await read(ctx.asAbsolutePath('out/src/ui/graph.html'));
 
-export class GraphContentProvider implements vscode.TextDocumentContentProvider {
-  private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
-  private dot = "";
-  private type = "";
-  private groupUri = "";
+  let svgDoc: string = Viz(dot);
+  let start = svgDoc.indexOf('<svg');
+  let end = svgDoc.indexOf('</svg>', start);
 
-  onDidChange = this._onDidChange.event;
+  let element = svgDoc.substr(start, end - start + 6);
 
-  constructor(private ctx: vscode.ExtensionContext) { }
+  let rendered = await loadTemplate(ctx.asAbsolutePath('out/src/ui/graph.html'), {
+    type: type,
+    element: element,
+    groupUri: group.uri.toString()
+  });
 
-  async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
-    let template = await read(this.ctx.asAbsolutePath('out/src/ui/graph.html'));
-
-    let svgDoc: string = Viz(this.dot);
-    let start = svgDoc.indexOf('<svg');
-    let end = svgDoc.indexOf('</svg>', start);
-
-    let element = svgDoc.substr(start, end - start + 6);
-
-    return loadTemplate(this.ctx.asAbsolutePath('out/src/ui/graph.html'), {
-      type: this.type,
-      element: element,
-      groupUri: this.groupUri
-    });
-  }
-
-  update(dot: string, type: string, group: IndexGroup) {
-    this.dot = dot;
-    this.type = type;
-    this.groupUri = group.uri.toString();
-    this._onDidChange.fire();
-  }
+  let panel = vscode.window.createWebviewPanel(
+    'terraform.preview-graph',
+    `Terraform: Graph (${type})`,
+    vscode.ViewColumn.Active);
+  panel.webview.html = rendered;
+  return panel;
 }

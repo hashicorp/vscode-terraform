@@ -15,7 +15,6 @@ import { DefinitionProvider } from './definition';
 import { DocumentLinkProvider } from './documentlink';
 import { CodeFoldingProvider } from './folding';
 import { FormattingEditProvider } from './format';
-import { GraphContentProvider } from './graph';
 import { HoverProvider } from './hover';
 import { Index } from './index';
 import { FileSystemWatcher } from './index/crawler';
@@ -50,11 +49,6 @@ export async function activate(ctx: vscode.ExtensionContext) {
     let formattingProvider = new FormattingEditProvider(runner);
     ctx.subscriptions.push(
         vscode.languages.registerDocumentFormattingEditProvider(documentSelector, formattingProvider)
-    );
-
-    let graphProvider = new GraphContentProvider(ctx);
-    ctx.subscriptions.push(
-        vscode.workspace.registerTextDocumentContentProvider('terraform-graph', graphProvider)
     );
 
     let watcher: FileSystemWatcher;
