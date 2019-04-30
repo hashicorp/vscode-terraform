@@ -1,3 +1,9 @@
+# 1.3.11
+
+## Fixes
+
+- Track references in ternary expressions (Fixes #123)
+
 # 1.3.10
 
 ## What's New
