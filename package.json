@@ -34,6 +34,22 @@
   ],
   "main": "./out/src/extension",
   "contributes": {
+    "taskDefinitions": [
+      {
+        "type": "terraform",
+        "required": [
+          "command"
+        ],
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {

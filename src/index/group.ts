@@ -1,5 +1,5 @@
 import Uri from 'vscode-uri';
-import { FileIndex } from "../../src/index/file-index";
+import { FileIndex, TerraformSection } from "../../src/index/file-index";
 import { QueryOptions, Section } from "../../src/index/section";
 import { Reference, ReferenceQueryOptions } from "./reference";
 
@@ -101,5 +101,13 @@ export class IndexGroup {
 
   section(id: string): Section | null {
     return this.sections.get(id);
+  }
+
+  get terraformSections(): TerraformSection[] {
+    return this.indices("ALL_FILES").map(f => f.terraform).filter(f => !!f);
+  }
+
+  get requiredVersion(): string | null {
+    return this.terraformSections.map(f => f.requiredVersion).find(v => !!v);
   }
 }

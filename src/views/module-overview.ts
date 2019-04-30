@@ -84,15 +84,10 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
 
     switch (element.type) {
       case "MODULE": {
-        let terraformSection = element.group.indices("ALL_FILES").map(f => f.terraform).find(f => !!f);
-        let requiredVersion = "no requirement";
-        if (terraformSection && terraformSection.requiredVersion !== "")
-          requiredVersion = terraformSection.requiredVersion;
-
         return [
           {
             type: "LABEL",
-            label: `Terraform version requirement: ${requiredVersion}`
+            label: `Terraform version requirement: ${element.group.requiredVersion || "no requirement"}`
           },
           {
             type: "SECTION_GROUP",
