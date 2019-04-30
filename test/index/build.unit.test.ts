@@ -256,6 +256,31 @@ suite("Index Tests", () => {
             assert.equal(falseExpr.location.range.end.character, 64);
         });
 
+        test("Collects references in heredocs", () => {
+            let [index, error] = FileIndex.fromString(uri,
+`locals {
+a =<<END
+    line 1
+    line 2
+    \${var.g}
+    line 3
+END
+}`);
+
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "local");
+
+            assert.equal(s.references.length, 1);
+            let r = s.references[0];
+            assert.equal(r.type, "variable");
+            assert.equal(r.location.range.start.line, 4);
+            assert.equal(r.location.range.start.character, 6);
+            assert.equal(r.location.range.end.line, 4);
+            assert.equal(r.location.range.end.character, 11);
+        });
+
         suite("Collects properties", () => {
             test("No properties for empty sections", () => {
                 let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" {}`);

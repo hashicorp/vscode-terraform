@@ -9,7 +9,7 @@ if (process.argv.length < 2) {
   let path = process.argv[2];
 
   let text = fs.readFileSync(path).toString();
-  let [ast, error] = hcl.parseHilWithPosition(text, 1, 1, "file")
+  let [ast, error] = hcl.parseHil(text, 1, 1, "file")
   if (error) {
     console.log("ERROR:", error);
   } else {

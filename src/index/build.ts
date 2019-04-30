@@ -307,7 +307,8 @@ export function build(uri: Uri, ast: Ast): FileIndex {
             // the AST contains chains like this Val > Keys > Items > [Val > Token.Type==9]
             // we only care about the second Val in the above example, we use
             // Token.Type==9 to detect it
-            if (node.Token && node.Token.Type === 9) {
+            // Token.Type==10 is for heredoc
+            if (node.Token && (node.Token.Type === 9 || node.Token.Type === 10)) {
                 if (!currentSection) {
                     // TODO: this happens in tfvars files, should probably handle those
                     return;

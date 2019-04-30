@@ -3,6 +3,7 @@
 ## Fixes
 
 - Track references in ternary expressions (Fixes #123)
+- Track references in heredocs (Fixes #159)
 
 # 1.3.10
 
