@@ -116,6 +116,9 @@ export class Section {
     if (this.sectionType === "local") {
       return `local.${name}`;
     }
+    if (this.sectionType === "module") {
+      return `module.${name}`;
+    }
 
     if (this.sectionType === "data")
       return [this.sectionType, this.type, name].join(".");

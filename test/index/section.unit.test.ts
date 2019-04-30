@@ -37,6 +37,12 @@ suite("Index Tests", () => {
             assert.equal(output.id(), "local.my-cool-variable");
         });
 
+        test("module ID", () => {
+            let module = new Section("module", null, null, "bucket11", null, null, null, null);
+
+            assert.equal(module.id(), "module.bucket11");
+        });
+
         test("accepts new name when returning id", () => {
             let variable = new Section("variable", null, null, "region", null, null, null, null);
 
