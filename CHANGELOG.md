@@ -1,3 +1,10 @@
+# 1.3.10
+
+## What's New
+
+- `Terraform: Show Plan` command
+- `Terraform: Preview Graph` works again
+
 # 1.3.9
 
 ## What's New
