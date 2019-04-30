@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as process from 'process';
 
-let hcl = require('../hcl-hil.js');
+let hcl = require('../../hcl-hil.js');
 
 if (process.argv.length < 2) {
   console.log("ERROR: Missing argument.");
@@ -9,7 +9,7 @@ if (process.argv.length < 2) {
   let path = process.argv[2];
 
   let text = fs.readFileSync(path).toString();
-  let [ast, error] = hcl.parseHcl(text);
+  let [ast, error] = hcl.parseHilWithPosition(text, 1, 1, "file")
   if (error) {
     console.log("ERROR:", error);
   } else {
