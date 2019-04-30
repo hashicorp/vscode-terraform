@@ -2,8 +2,10 @@ import * as vscode from 'vscode';
 import { CompletionProvider } from './autocompletion/completion-provider';
 import { CodeLensProvider } from './codelense';
 import { IndexCommand } from './commands';
+import { Command } from './commands/command';
 import { LintCommand } from './commands/lint';
 import { NavigateToSectionCommand } from './commands/navigatetosection';
+import { PlanCommand } from './commands/plan';
 import { PreviewGraphCommand } from './commands/preview';
 import { ReindexCommand } from './commands/reindex';
 import { ShowReferencesCommand } from './commands/showreferences';
@@ -63,13 +65,14 @@ export async function activate(ctx: vscode.ExtensionContext) {
 
     ctx.subscriptions.push(
         // push
-        new ValidateCommand(indexAdapter, runner),
-        new LintCommand(),
-        new ReindexCommand(indexAdapter, watcher),
-        new ShowReferencesCommand(indexAdapter),
-        new IndexCommand(indexAdapter),
-        new PreviewGraphCommand(graphProvider, indexAdapter, runner),
-        new NavigateToSectionCommand(indexAdapter),
+        new ValidateCommand(indexAdapter, runner, ctx),
+        new LintCommand(ctx),
+        new ReindexCommand(indexAdapter, watcher, ctx),
+        new ShowReferencesCommand(indexAdapter, ctx),
+        new IndexCommand(indexAdapter, ctx),
+        new PreviewGraphCommand(indexAdapter, runner, ctx),
+        new NavigateToSectionCommand(indexAdapter, ctx),
+        new PlanCommand(runner, indexAdapter, ctx),
 
         // providers
         vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
@@ -112,6 +115,15 @@ export async function activate(ctx: vscode.ExtensionContext) {
             "please refer to https://github.com/mauve/vscode-terraform/issues/102 for more information."
         vscode.window.showInformationMessage(message);
         logger.error(message);
+    }
+
+    // validate if package.json contains commands which have not been registered
+    const packageJson = require(ctx.asAbsolutePath('./package.json'));
+    const commands: { command: string, title: string }[] = packageJson.contributes.commands;
+    for (const cmd of commands) {
+        if (Command.RegisteredCommands.indexOf(cmd.command) === -1) {
+            throw new Error(`Command ${cmd.command} (${cmd.title}) not registered`);
+        }
     }
 }
 

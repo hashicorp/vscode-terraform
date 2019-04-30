@@ -3,7 +3,7 @@ import { IndexAdapter } from "../index/index-adapter";
 import { Reference } from "../index/reference";
 import { Section } from "../index/section";
 import { to_vscode_Range } from "../index/vscode-adapter";
-import { Command } from "./command";
+import { Command, CommandType } from "./command";
 
 class ReferenceQuickPick implements vscode.QuickPickItem {
   readonly reference: Reference;
@@ -34,8 +34,8 @@ class ReferenceQuickPick implements vscode.QuickPickItem {
 }
 
 export class ShowReferencesCommand extends Command {
-  constructor(private index: IndexAdapter) {
-    super("showReferences");
+  constructor(private index: IndexAdapter, ctx: vscode.ExtensionContext) {
+    super("showReferences", ctx, CommandType.INTERNAL);
   }
 
   protected async perform(section: Section): Promise<any> {

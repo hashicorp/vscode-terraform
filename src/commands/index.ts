@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { IndexAdapter } from "../index/index-adapter";
-import { Command } from "./command";
+import { Command, CommandType } from "./command";
 
 export class IndexCommand extends Command {
-  constructor(private index: IndexAdapter) {
-    super("index-document");
+  constructor(private index: IndexAdapter, ctx: vscode.ExtensionContext) {
+    super("index-document", ctx, CommandType.INTERNAL);
   }
 
   protected async perform(uri: vscode.Uri): Promise<boolean> {

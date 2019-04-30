@@ -3,16 +3,33 @@ import * as vscode from "vscode";
 import { Logger } from "../logger";
 import { Reporter } from "../telemetry";
 
+export enum CommandType {
+  INTERNAL,
+  PALETTE
+}
+
 export abstract class Command extends vscode.Disposable {
   protected trackSuccess: boolean = false;
   protected logger: Logger;
   protected eventName: string;
   protected disposables: vscode.Disposable[] = [];
 
-  constructor(readonly name: string) {
+  static RegisteredCommands: string[] = [];
+
+  constructor(readonly name: string, protected ctx: vscode.ExtensionContext, type: CommandType) {
     super(() => this.disposables.map(d => d.dispose()));
 
     this.logger = new Logger("<cmd>" + name);
+
+    // validate command name
+    if (type === CommandType.PALETTE) {
+      const packageJson = require(ctx.asAbsolutePath('./package.json'));
+      const commands: { command: string }[] = packageJson.contributes.commands;
+      if (!commands.find((c) => c.command === this.command)) {
+        throw new Error(`Cannot find ${this.command} in package.json`);
+      }
+    }
+
     this.eventName = "cmd:" + name;
     this.disposables.push(
       vscode.commands.registerCommand(
@@ -23,6 +40,8 @@ export abstract class Command extends vscode.Disposable {
         this
       )
     );
+
+    Command.RegisteredCommands.push(this.command);
   }
 
   public get command(): string {

@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import { getConfiguration } from '../configuration';
 import { IndexAdapter } from '../index/index-adapter';
 import { Runner } from '../runner';
-import { Command } from './command';
+import { Command, CommandType } from './command';
 
 export class ValidateCommand extends Command {
-  constructor(private index: IndexAdapter, private runner: Runner) {
-    super("validate");
+  constructor(private index: IndexAdapter, private runner: Runner, ctx: vscode.ExtensionContext) {
+    super("validate", ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {

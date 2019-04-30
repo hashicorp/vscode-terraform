@@ -1,17 +1,17 @@
 import * as vscode from "vscode";
-import { GraphContentProvider, graphPreviewUri } from "../graph";
+import { createGraphWebView } from "../graph";
 import { groupQuickPick } from "../group-quickpick";
 import { IndexGroup } from "../index/group";
 import { IndexAdapter } from "../index/index-adapter";
 import { Section } from "../index/section";
 import { Runner } from "../runner";
-import { Command } from "./command";
+import { Command, CommandType } from "./command";
 
 const Dot = require('graphlib-dot');
 
 export class PreviewGraphCommand extends Command {
-  constructor(private provider: GraphContentProvider, private index: IndexAdapter, private runner: Runner) {
-    super("preview-graph");
+  constructor(private index: IndexAdapter, private runner: Runner, ctx: vscode.ExtensionContext) {
+    super("preview-graph", ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {

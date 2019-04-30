@@ -1,10 +1,10 @@
 import { execFile } from "child_process";
 import * as vscode from "vscode";
-import { Command } from "./command";
+import { Command, CommandType } from "./command";
 
 export class LintCommand extends Command {
-  constructor() {
-    super("lint");
+  constructor(ctx: vscode.ExtensionContext) {
+    super("lint", ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {
