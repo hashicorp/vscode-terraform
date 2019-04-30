@@ -100,9 +100,20 @@ suite("Index Tests", () => {
             assert.equal(r.location.range.end.character, 63);
         });
 
+        test("Collects module references", () => {
+            let [index, error] = FileIndex.fromString(uri, 'module "bucket11" { source = "environment" enabled = 0 } resource "null_resource" "reference_test" { value = "${module.bucket11.enabled}" }');
+            assert.equal(index.sections.length, 2);
+
+            let res = index.sections.find((s) => s.sectionType === "resource");
+            assert(res, "reference_test not found");
+            assert.equal(res.references.length, 1);
+
+            let ref = res.references[0];
+            assert.equal(ref.targetId, "module.bucket11");
+        });
+
         test("Collects nested references", () => {
             let [index, error] = FileIndex.fromString(uri, 'resource "aws_s3_bucket" "bucket" { bucket_name = "${var.region[lookup(var.map, "key")]}" }');
-
             assert.equal(index.sections.length, 1);
 
             let s = index.sections[0];

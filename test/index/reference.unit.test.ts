@@ -67,5 +67,13 @@ suite("Index Tests", () => {
             let r = new Reference("data.template_file.template.rendered", null, null);
             assert.deepEqual(r.valuePath(), ["rendered"]);
         });
+
+        test("Handles module references", () => {
+            let r = new Reference("module.bucket11.enabled", null, null);
+            assert.equal(r.targetId, "module.bucket11");
+            assert.deepEqual(r.parts, ["bucket11", "enabled"]);
+            assert.deepEqual(r.valuePath(), ["enabled"]);
+            assert.deepEqual(r.getQuery(), { section_type: "module", name: "bucket11" });
+        });
     });
 });

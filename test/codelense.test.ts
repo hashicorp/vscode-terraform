@@ -36,4 +36,30 @@ suite("CodeLense Tests", () => {
     let lenses = await vscode.commands.executeCommand('vscode.executeCodeLensProvider', doc.uri, 10) as vscode.CodeLens[];
     assert.equal(lenses.length, 0);
   });
+
+  test("Annotates module references", async () => {
+    let doc = await vscode.workspace.openTextDocument({
+      language: "terraform",
+      content:
+`
+module "bucket11" {
+  enabled = 0
+}
+resource "null_resource" "reference_test" {
+  triggers {
+    one = "\${module.bucket11.enabled}"
+  }
+}
+`
+    });
+
+    let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
+    assert(successful, "forced indexing not successful");
+
+    let lenses = await vscode.commands.executeCommand('vscode.executeCodeLensProvider', doc.uri, 10) as vscode.CodeLens[];
+    assert.equal(lenses.length, 2);
+
+    assert.equal(lenses[0].range.start.line, 1);
+    assert.equal(lenses[0].command.title, "1 references");
+  });
 });

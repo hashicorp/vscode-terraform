@@ -4,6 +4,7 @@
 
 - Track references in ternary expressions (Fixes #123)
 - Track references in heredocs (Fixes #159)
+- Track references to modules (Fixes #165)
 
 # 1.3.10
 
