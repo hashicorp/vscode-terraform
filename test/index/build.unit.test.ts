@@ -222,6 +222,40 @@ suite("Index Tests", () => {
             assert.equal(v3.location.range.end.character, 87);
         });
 
+        test("Collects references in ternary expressions", () => {
+            let [index, error] = FileIndex.fromString(uri, 'locals { value = "${var.condition ? var.trueExpr : var.falseExpr}" }');
+            assert.equal(index.sections.length, 1);
+
+            let s = index.sections[0];
+            assert.equal(s.sectionType, "local");
+
+            assert.equal(s.references.length, 3);
+
+            let cond = s.references.find((r) => r.parts[0] === "condition");
+            assert(cond, "condition not found");
+            assert.equal(cond.type, "variable");
+            assert.equal(cond.location.range.start.line, 0);
+            assert.equal(cond.location.range.start.character, 20);
+            assert.equal(cond.location.range.end.line, 0);
+            assert.equal(cond.location.range.end.character, 33);
+
+            let trueExpr = s.references.find((r) => r.parts[0] === "trueExpr");
+            assert(trueExpr, "trueExpr not found");
+            assert.equal(trueExpr.type, "variable");
+            assert.equal(trueExpr.location.range.start.line, 0);
+            assert.equal(trueExpr.location.range.start.character, 36);
+            assert.equal(trueExpr.location.range.end.line, 0);
+            assert.equal(trueExpr.location.range.end.character, 48);
+
+            let falseExpr = s.references.find((r) => r.parts[0] === "falseExpr");
+            assert(falseExpr, "falseExpr not found");
+            assert.equal(falseExpr.type, "variable");
+            assert.equal(falseExpr.location.range.start.line, 0);
+            assert.equal(falseExpr.location.range.start.character, 51);
+            assert.equal(falseExpr.location.range.end.line, 0);
+            assert.equal(falseExpr.location.range.end.character, 64);
+        });
+
         suite("Collects properties", () => {
             test("No properties for empty sections", () => {
                 let [index, error] = FileIndex.fromString(uri, `resource "aws_s3_bucket" "bucket" {}`);

@@ -151,6 +151,10 @@ function* walkHil(uri: Uri, exprs: any[], currentSection: Section): Iterable<Ref
             let reference = new Reference(expr.Name, location, currentSection);
             yield reference;
         }
+        // handle ternary
+        if (expr.CondExpr) {
+            yield* walkHil(uri, [expr.CondExpr, expr.TrueExpr, expr.FalseExpr], currentSection);
+        }
         if (expr.Key) {
             yield* walkHil(uri, [expr.Key], currentSection);
         }
