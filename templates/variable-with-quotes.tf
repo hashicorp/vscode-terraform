@@ -1,1 +1,1 @@
-variable "without-quotes" {}
+variable "with-quotes" {}

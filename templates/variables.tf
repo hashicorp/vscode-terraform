@@ -20,10 +20,6 @@ variable "region" {
   default = "ap-south-1"
 }
 
-resource "unknown" "name" {
-  yolo = "string"
-}
-
 terraform {
   # required_version = "<1.0"
 }
