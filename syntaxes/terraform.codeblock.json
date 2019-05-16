@@ -1,0 +1,30 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "sltest",
+	"fileTypes": [],
+	"injectionSelector": "L:markup.fenced_code.block.markdown",
+	"patterns": [
+		{
+			"include": "#terraform-code-block"
+		}
+	],
+	"repository": {
+		"terraform-code-block": {
+			"begin": "(?<=[`~])terraform(\\s+[^`~]*)?$",
+			"end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+			"patterns": [
+				{
+					"begin": "(^|\\G)(\\s*)(.*)",  
+					"while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+					"contentName": "meta.embedded.block.terraform",
+					"patterns": [
+						{
+							"include": "source.terraform"
+						}
+					]
+				}
+			]
+		}
+	},
+	"scopeName": "text.markdown.terraform.codeblock"
+}

@@ -32,6 +32,11 @@
 				"$tsc",
 				"$tslint5"
 			]
+		},
+		{
+			"type": "npm",
+			"script": "install",
+			"problemMatcher": []
 		}
 	]
 }
