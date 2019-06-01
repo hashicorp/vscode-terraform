@@ -37,6 +37,11 @@
       "name": "constant.language.terraform"
     },
     {
+      "comment": "Primitive types",
+      "match": "\\b(string|number|bool)\\b",
+      "name": "support.type.primitive.terraform"
+    },
+    {
       "comment": "Numbers",
       "match": "\\b([0-9]+)([kKmMgG]b?)?\\b",
       "name": "constant.numeric.terraform"
@@ -136,6 +141,24 @@
       },
       "comment": "Value assignments (left hand side in double quotes)",
       "match": "(\")([\\w_-]+)(\")\\s*(=)\\s*"
+    },
+    {
+      "captures": {
+        "0": {
+          "name": "entity.name.function.terraform"
+        }
+      },
+      "comment": "Function Calls",
+      "match": "([\\w-]+)\\s*\\("
+    },
+    {
+      "captures": {
+        "0": {
+          "name": "variable.other.terraform"
+        }
+      },
+      "comment": "Variables",
+      "match": "([\\w-]+)"
     },
     {
       "captures": {
