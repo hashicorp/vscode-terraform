@@ -3,11 +3,12 @@ const azureResources: ITerraformData = require("../data/terraform-provider-azure
 const googleResources: ITerraformData = require("../data/terraform-provider-google.json");
 const ociResources: ITerraformData = require("../data/terraform-provider-oci.json");
 const openstackResources: ITerraformData = require("../data/terraform-provider-openstack.json");
+const datadogResources: ITerraformData = require("../data/terraform-provider-datadog.json");
 export const terraformConfigAutoComplete: ITerraformConfigAutoComplete = require("../data/terraform-config.json");
 
 import * as _ from "lodash";
 
-export const allProviders: ITerraformData = _.merge({}, awsResources, azureResources, googleResources, ociResources, openstackResources);
+export const allProviders: ITerraformData = _.merge({}, awsResources, azureResources, googleResources, ociResources, openstackResources, datadogResources);
 
 export interface IFieldDef {
     name: string;
