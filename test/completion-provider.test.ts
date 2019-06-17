@@ -211,6 +211,7 @@ suite("Autocompletion Tests", () => {
             assert(!!shouldHaveCompletion(completions, "azurerm_lb", vscode.CompletionItemKind.Class), "should some azurerm data completion");
             assert(!!shouldHaveCompletion(completions, "google_project_iam_member", vscode.CompletionItemKind.Class), "should some google completion");
             assert(!!shouldHaveCompletion(completions, "oci_audit_configuration", vscode.CompletionItemKind.Class), "should have some oci completion");
+            assert(!!shouldHaveCompletion(completions, "openstack_compute_keypair_v2", vscode.CompletionItemKind.Class), "should have some openstack completion");
         });
 
         test("Complete properties", async () => {
