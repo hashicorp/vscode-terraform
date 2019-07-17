@@ -26,6 +26,7 @@ import { RenameProvider } from './rename';
 import { Runner } from './runner';
 import * as telemetry from './telemetry';
 import { ModuleOverview } from './views/module-overview';
+import { ExperimentalLanguageClient } from './languageclient';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 const logger = new logging.Logger("extension");
@@ -37,6 +38,11 @@ const documentSelector: vscode.DocumentSelector = [
 
 export async function activate(ctx: vscode.ExtensionContext) {
     const start = process.hrtime();
+
+    let langServerEnabled: boolean = true;
+    // if (langServerEnabled) {
+    //     vscode.workspace.getConfiguration("terraform").update("terraform.indexing.enabled", false);
+    // }
 
     let indexAdapter = new IndexAdapter(new Index, getConfiguration().indexing.exclude || []);
     ctx.subscriptions.push(indexAdapter);
@@ -55,6 +61,10 @@ export async function activate(ctx: vscode.ExtensionContext) {
     if (vscode.workspace.rootPath && getConfiguration().indexing.enabled) {
         watcher = new FileSystemWatcher(indexAdapter);
         ctx.subscriptions.push(watcher);
+    }
+
+    if (langServerEnabled) {
+        await new ExperimentalLanguageClient().start(ctx);
     }
 
     ctx.subscriptions.push(
