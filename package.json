@@ -7,7 +7,7 @@
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
-    "vscode": "^1.25.0"
+    "vscode": "^1.30.0"
   },
   "categories": [
     "Programming Languages",
@@ -192,7 +192,7 @@
             }
           },
           "default": {
-            "enabled": false,
+            "enabled": true,
             "liveIndexing": false,
             "delay": 500,
             "exclude": [
@@ -201,6 +201,24 @@
             ]
           },
           "description": "Indexes all terraform sources to get live syntax errors, rename support, go to symbol, and much more..."
+        },
+        "terraform.languageServer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enables or disables the indexing"
+            },
+            "args": {
+              "type": "array",
+              "description": "Arguments to pass to the language server"
+            }
+          },
+          "default": {
+            "enabled": false,
+            "args": []
+          },
+          "description": "Configures how the language server runs and works"
         },
         "terraform.codelens.enabled": {
           "type": "boolean",
@@ -252,7 +270,7 @@
     "source-map-support": "^0.5.6",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
-    "typescript": "^2.9.1",
+    "typescript": "^3.0.0",
     "vscode": "^1.1.32"
   },
   "dependencies": {
