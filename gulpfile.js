@@ -146,12 +146,14 @@ gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (
     };
 
     if (!contents.APPINSIGHTS_KEY) {
-        if ((process.env.CI || helpers.requireAppInsightsKey) && process.env.TRAVIS_PULL_REQUEST !== "true") {
-            log.error(`${chalk.red('ERROR')}: AppInsights Key missing in CI build`);
-            done(new Error("AppInsights Key missing in CI build, set APPINSIGHTS_KEY environment variable"));
-        } else {
+        // Do not require the key for now as it actually doesnt exist anymore, but leaving this code in
+        // so that we can resurrect it soonishly.
+        // if ((process.env.CI || helpers.requireAppInsightsKey) && process.env.TRAVIS_PULL_REQUEST !== "true") {
+        //    log.error(`${chalk.red('ERROR')}: AppInsights Key missing in CI build`);
+        //    done(new Error("AppInsights Key missing in CI build, set APPINSIGHTS_KEY environment variable"));
+        // } else {
             log.warn(` ${chalk.yellow('WARN')}: AppInsights Key not bundled, this build will NOT emit metrics.`);
-        }
+        // }
     } else {
         log.info(` ${chalk.green('INFO')}: AppInsights Key bundled, this build will emit metrics`);
     }
