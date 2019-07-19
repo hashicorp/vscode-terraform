@@ -139,25 +139,25 @@ gulp.task('compile', () =>
         .pipe(gulp.dest('out'))
 );
 
-// generate telemetry file (depend on copy-html-templates so that directory is created)
-gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (done) => {
-    let contents = {
-        APPINSIGHTS_KEY: process.env.APPINSIGHTS_KEY
-    };
+// // generate telemetry file (depend on copy-html-templates so that directory is created)
+// gulp.task('generate-constants-keyfile', gulp.series('create-output-directory', (done) => {
+//     let contents = {
+//         APPINSIGHTS_KEY: process.env.APPINSIGHTS_KEY
+//     };
 
-    if (!contents.APPINSIGHTS_KEY) {
-        if ((process.env.CI || helpers.requireAppInsightsKey) && process.env.TRAVIS_PULL_REQUEST !== "true") {
-            log.error(`${chalk.red('ERROR')}: AppInsights Key missing in CI build`);
-            done(new Error("AppInsights Key missing in CI build, set APPINSIGHTS_KEY environment variable"));
-        } else {
-            log.warn(` ${chalk.yellow('WARN')}: AppInsights Key not bundled, this build will NOT emit metrics.`);
-        }
-    } else {
-        log.info(` ${chalk.green('INFO')}: AppInsights Key bundled, this build will emit metrics`);
-    }
+//     if (!contents.APPINSIGHTS_KEY) {
+//         if ((process.env.CI || helpers.requireAppInsightsKey) && process.env.TRAVIS_PULL_REQUEST !== "true") {
+//             log.error(`${chalk.red('ERROR')}: AppInsights Key missing in CI build`);
+//             done(new Error("AppInsights Key missing in CI build, set APPINSIGHTS_KEY environment variable"));
+//         } else {
+//             log.warn(` ${chalk.yellow('WARN')}: AppInsights Key not bundled, this build will NOT emit metrics.`);
+//         }
+//     } else {
+//         log.info(` ${chalk.green('INFO')}: AppInsights Key bundled, this build will emit metrics`);
+//     }
 
-    fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
-}));
+//     fs.writeFile('out/src/constants.json', JSON.stringify(contents), done);
+// }));
 
 // unit tests
 // WARNING: unit tests do not have good coverage yet, also run integration tests
@@ -224,7 +224,7 @@ gulp.task('build',
         skipHclHilJs ? [] : ['generate-hcl-hil.js'],
         'copy-autocompletion-data',
         'copy-html-templates',
-        'generate-constants-keyfile',
+        // 'generate-constants-keyfile',
         'generate-release-notes',
         'compile'));
 
