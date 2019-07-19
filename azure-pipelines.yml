@@ -5,8 +5,9 @@ strategy:
   matrix:
     linux:
       imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macOS-10.14'
+    # The build needs docker so skipping macOS for now
+    # mac:
+    #  imageName: 'macOS-10.14'
     windows:
       imageName: 'vs2017-win2016'
 
@@ -34,7 +35,11 @@ steps:
 
 - bash: |
     npm run gulp
-  displayName: Compiling and running unit tests
+  displayName: Compiling
+
+- bash: |
+    npm run test
+  displayName: Running unit tests
 
 - bash: |
     npm run integration-test
