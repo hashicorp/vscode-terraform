@@ -15,7 +15,7 @@ import * as tar from 'tar';
 export class ExperimentalLanguageClient {
     public async start(ctx: vscode.ExtensionContext) {
         const serverLocation = vscode.workspace
-            .getConfiguration('terraform').get('languageServerLocation') as string || ctx.extensionPath;
+            .getConfiguration('terraform').get('languageServer.location') as string || ctx.extensionPath;
 
         const thisPlatform = process.platform;
 
@@ -72,7 +72,7 @@ export class ExperimentalLanguageClient {
         let continueInstall = await vscode.window.showInformationMessage(
             "Would you like to install Terraform Language Server from juliosueiras/terraform-lsp? \n This provides experimental Terraform 0.12 support",
             "Install", "Abort");
-        if (!continueInstall) {
+        if (continueInstall === "Abort") {
             vscode.window.showErrorMessage("Terraform language server install aborted");
             return;
         }
