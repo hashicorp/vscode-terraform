@@ -1,0 +1,45 @@
+trigger:
+- master
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macOS-10.14'
+    windows:
+      imageName: 'vs2017-win2016'
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- bash: |
+    /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+    echo ">>> Started xvfb"
+  displayName: Start xvfb
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+
+- bash: |
+    npm install --no-save
+    npm install -g vsce
+  displayName: Running npm install
+  env:
+    DISPLAY: ':99.0'
+
+- bash: |
+    npm run gulp
+  displayName: Compiling and running unit tests
+
+- bash: |
+    npm run integration-test
+  displayName: Running integration tests
+
+- bash: |
+    vsce package
+  displayName: Creating extension package
