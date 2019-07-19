@@ -11,8 +11,8 @@
 <h4 align="center">Adds syntax highlighting and other editing features for <a href="https://www.terraform.io/">Terraform</a> files</h4>
 
 <p align="center">
-  <a href="https://travis-ci.org/mauve/vscode-terraform">
-    <img src="https://travis-ci.org/mauve/vscode-terraform.svg?branch=master">
+  <a href="https://mauvezero.visualstudio.com/vscode-terraform/_build?definitionId=5">
+    <img src="https://mauvezero.visualstudio.com/vscode-terraform/_apis/build/status/mauve.vscode-terraform?branchName=master">
   </a>
   <a href="https://github.com/mauve/vscode-terraform/releases">
     <img src="https://img.shields.io/github/release/mauve/vscode-terraform.svg" alt="Release">
