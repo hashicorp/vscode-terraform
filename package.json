@@ -7,7 +7,7 @@
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
-    "vscode": "^1.30.0"
+    "vscode": "1.36.0"
   },
   "categories": [
     "Programming Languages",
@@ -85,24 +85,8 @@
     ],
     "commands": [
       {
-        "command": "terraform.validate",
-        "title": "Terraform: Validate"
-      },
-      {
         "command": "terraform.lint",
         "title": "Terraform: Lint"
-      },
-      {
-        "command": "terraform.reindex",
-        "title": "Terraform: Reindex terraform files"
-      },
-      {
-        "command": "terraform.preview-graph",
-        "title": "Terraform: Preview Graph"
-      },
-      {
-        "command": "terraform.show-plan",
-        "title": "Terraform: Show Plan"
       }
     ],
     "grammars": [
@@ -239,9 +223,8 @@
     "watch": "gulp watch",
     "gulp": "gulp",
     "vscode:prepublish": "npm install --no-save && npm run gulp -- --require-appinsights-key",
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "gulp test",
-    "integration-test": "CODE_TESTS_WORKSPACE=templates node ./node_modules/vscode/bin/test",
+    "integration-test": "node ./out/test/run-test.js",
     "publish": "npm run clean && vsce publish",
     "package": "npm run clean && vsce package"
   },
@@ -251,6 +234,7 @@
     "@types/mocha": "^2.2.48",
     "@types/node": "^6.14.6",
     "@types/uuid": "^3.4.3",
+    "@types/vscode": "1.36.0",
     "chalk": "^2.4.1",
     "gulp": "^4.0.0",
     "gulp-decompress": "^2.0.2",
@@ -271,7 +255,8 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "typescript": "^3.0.0",
-    "vscode": "^1.1.32"
+    "vscode": "^1.1.32",
+    "vscode-test": "^1.0.2"
   },
   "dependencies": {
     "@octokit/rest": "^16.28.4",
