@@ -9,12 +9,18 @@ async function main() {
 
     const testWorkspacePath = path.resolve(__dirname, "../../templates");
 
-    // Download VS Code, unzip it and run the integration test
-    await runTests({
+    const options = {
       extensionDevelopmentPath,
       extensionTestsPath,
-      launchArgs: [testWorkspacePath]
-    });
+      launchArgs: [
+        testWorkspacePath
+      ]
+    };
+
+    console.log("Running tests with the following options", options);
+
+    // Download VS Code, unzip it and run the integration test
+    await runTests(options);
   } catch (err) {
     console.error('Failed to run tests');
     process.exit(1);
