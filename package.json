@@ -192,7 +192,7 @@
             }
           },
           "default": {
-            "enabled": false,
+            "enabled": true,
             "liveIndexing": false,
             "delay": 500,
             "exclude": [
@@ -201,6 +201,24 @@
             ]
           },
           "description": "Indexes all terraform sources to get live syntax errors, rename support, go to symbol, and much more..."
+        },
+        "terraform.languageServer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enables or disables the indexing"
+            },
+            "args": {
+              "type": "array",
+              "description": "Arguments to pass to the language server"
+            }
+          },
+          "default": {
+            "enabled": false,
+            "args": []
+          },
+          "description": "Configures how the language server runs and works"
         },
         "terraform.codelens.enabled": {
           "type": "boolean",
@@ -252,8 +270,8 @@
     "source-map-support": "^0.5.12",
     "ts-node": "^7.0.1",
     "tslint": "^5.18.0",
-    "typescript": "^2.9.2",
-    "vscode-test": "^1.0.2"
+    "vscode-test": "^1.0.2",
+    "typescript": "^3.0.0"
   },
   "dependencies": {
     "@octokit/rest": "^16.28.4",

@@ -39,10 +39,9 @@ const documentSelector: vscode.DocumentSelector = [
 export async function activate(ctx: vscode.ExtensionContext) {
     const start = process.hrtime();
 
-    let langServerEnabled: boolean = true;
-    // if (langServerEnabled) {
-    //     vscode.workspace.getConfiguration("terraform").update("terraform.indexing.enabled", false);
-    // }
+    if (getConfiguration().languageServer.enabled && getConfiguration().indexing.enabled) {
+        vscode.window.showErrorMessage("You have `terraform.indexing.enabled` and `terraform.languageServer.enabled`. We strongly suggest only enabling one of these as they may cause issues when running together.")
+    }
 
     let indexAdapter = new IndexAdapter(new Index, getConfiguration().indexing.exclude || []);
     ctx.subscriptions.push(indexAdapter);
@@ -63,48 +62,45 @@ export async function activate(ctx: vscode.ExtensionContext) {
         ctx.subscriptions.push(watcher);
     }
 
-    if (langServerEnabled) {
+    if (getConfiguration().languageServer.enabled) {
+        vscode.window.showInformationMessage("Starting experimental Terraform Language server")
         await new ExperimentalLanguageClient().start(ctx);
     }
 
-    ctx.subscriptions.push(
-        // push
-        new ValidateCommand(indexAdapter, runner, ctx),
-        new LintCommand(ctx),
-        new ReindexCommand(indexAdapter, watcher, ctx),
-        new ShowReferencesCommand(indexAdapter, ctx),
-        new IndexCommand(indexAdapter, ctx),
-        new PreviewGraphCommand(indexAdapter, runner, ctx),
-        new NavigateToSectionCommand(indexAdapter, ctx),
-        new PlanCommand(runner, indexAdapter, ctx),
+    ctx.subscriptions.push(new LintCommand(ctx))
+    if (getConfiguration().indexing.enabled) {
 
-        // providers
-        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
-        vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(indexAdapter)),
-        vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(indexAdapter)),
-        vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(indexAdapter)),
-        vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(indexAdapter)),
-        vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexAdapter)),
-        vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
-        vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter)),
-        vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter)),
-
-        // views
-        vscode.window.registerTreeDataProvider('terraform-modules', new ModuleOverview(indexAdapter))
-    );
-
-    if (getConfiguration().codelens.enabled) {
-        ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(indexAdapter)));
-    }
-
-    // operations which should only work in a local context (as opposed to live-share)
-    if (vscode.workspace.rootPath) {
-        ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
-
-        // start to build the index
-        if (watcher) {
-            await watcher.crawl();
-        }
+            ctx.subscriptions.push(
+            new PlanCommand(runner, indexAdapter, ctx),
+            new ValidateCommand(indexAdapter, runner, ctx),
+            new ShowReferencesCommand(indexAdapter, ctx),
+            new NavigateToSectionCommand(indexAdapter, ctx),
+            new PreviewGraphCommand(indexAdapter, runner, ctx),
+            new IndexCommand(indexAdapter, ctx),
+            new ReindexCommand(indexAdapter, watcher, ctx));
+            // providers
+            vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
+            vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(indexAdapter)),
+            vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(indexAdapter)),
+            vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(indexAdapter)),
+            vscode.languages.registerReferenceProvider(documentSelector, new ReferenceProvider(indexAdapter)),
+            vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexAdapter)),
+            vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
+            vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter)),
+            vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter))
+            // views
+            vscode.window.registerTreeDataProvider('terraform-modules', new ModuleOverview(indexAdapter));
+            if (getConfiguration().codelens.enabled) {
+                ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(indexAdapter)));
+            }
+            // operations which should only work in a local context (as opposed to live-share)
+            if (vscode.workspace.rootPath) {
+                ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
+                // start to build the index
+                if (watcher) {
+                    await watcher.crawl();
+                }
+            }
     }
 
     const elapsed = process.hrtime(start);

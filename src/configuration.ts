@@ -7,6 +7,12 @@ export interface TerraformIndexConfiguration {
   exclude: string[];
 }
 
+export interface TerraformLanguageServerConfiguration {
+  enabled: boolean;
+  args: boolean;
+}
+
+
 export interface TerraformCodeLensConfiguration {
   enabled: boolean;
 }
@@ -27,6 +33,7 @@ export interface TerraformConfiguration {
   lintPath: string;
   lintConfig?: string;
   indexing: TerraformIndexConfiguration;
+  languageServer: TerraformLanguageServerConfiguration;
   codelens: TerraformCodeLensConfiguration;
   telemetry: TerraformTelemetryConfiguration;
   format: TerraformFormatConfiguration
@@ -47,6 +54,7 @@ export function getConfiguration(): TerraformConfiguration {
     lintPath: raw.lintPath,
     lintConfig: raw.lintConfig,
     indexing: raw.indexing,
+    languageServer: raw.languageServer,
     codelens: raw.codelens,
     telemetry: raw.telemetry,
     format: raw.format,
