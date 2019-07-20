@@ -42,11 +42,6 @@ steps:
   displayName: Running unit tests
 
 - bash: |
-    echo ">>>"
-    pwd
-    echo ">>>"
-    find .
-    echo ">>>"
     npm run integration-test
   displayName: Running integration tests
 
