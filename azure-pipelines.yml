@@ -22,7 +22,7 @@ steps:
 
 - bash: |
     # /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-    /usr/bin/Xvfb :99 -screen 0 1024x768x24 -nolisten tcp -nolisten unix &
+    /usr/bin/Xvfb :99 -screen 0 1024x768x24 -nolisten unix &
     echo ">>> Started xvfb"
   displayName: Start xvfb
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
@@ -31,8 +31,6 @@ steps:
     npm install --no-save
     npm install -g vsce
   displayName: Running npm install
-  env:
-    DISPLAY: ':99.0'
 
 - bash: |
     npm run gulp
@@ -45,6 +43,8 @@ steps:
 - bash: |
     npm run integration-test
   displayName: Running integration tests
+  env:
+    DISPLAY: ':99.0'
 
 - bash: |
     vsce package
