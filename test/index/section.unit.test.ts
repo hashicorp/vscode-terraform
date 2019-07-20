@@ -64,7 +64,7 @@ provider "aws" {
 }
 `;
 
-            let [fileIndex, diagnostic] = FileIndex.fromString(Uri.parse("a.tf"), template);
+            let [fileIndex, diagnostic] = FileIndex.fromString(Uri.file("a.tf"), template);
 
             let resource = fileIndex.sections[0];
             assert.equal(resource.properties.length, 2);
@@ -82,14 +82,14 @@ locals {
 }
 `;
 
-            let [fileIndex, diagnostic] = FileIndex.fromString(Uri.parse("a.tf"), template);
+            let [fileIndex, diagnostic] = FileIndex.fromString(Uri.file("a.tf"), template);
 
             let localA = fileIndex.sections[0];
             assert.equal(localA.properties.length, 0);
         });
 
         suite("match", () => {
-            const [index, diagnostic] = FileIndex.fromString(Uri.parse('section.match.test.tf'), `resource "resource_type" "resource_name" {}`);
+            const [index, diagnostic] = FileIndex.fromString(Uri.file('section.match.test.tf'), `resource "resource_type" "resource_name" {}`);
             assert(index);
 
             const section = index.sections[0];

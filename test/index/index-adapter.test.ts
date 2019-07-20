@@ -18,8 +18,8 @@ locals {
 
 suite("Index Tests", () => {
     suite("IndexAdapter Tests", () => {
-        let [a, errorA] = FileIndex.fromString(Uri.parse("a.tf"), `resource "aws_s3_bucket" "bucket" {}`);
-        let [b, errorB] = FileIndex.fromString(Uri.parse("b.tf"), `variable "region" {}`);
+        let [a, errorA] = FileIndex.fromString(Uri.file("a.tf"), `resource "aws_s3_bucket" "bucket" {}`);
+        let [b, errorB] = FileIndex.fromString(Uri.file("b.tf"), `variable "region" {}`);
 
         /* something fails after switching to vscode-test
         test("does not index documents from excluded paths", async () => {

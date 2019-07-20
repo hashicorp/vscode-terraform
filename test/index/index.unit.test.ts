@@ -13,8 +13,8 @@ suite("Index Tests", () => {
   test("add creates group", () => {
     let index = new Index();
 
-    let [f1, d1] = FileIndex.fromString(Uri.parse("dir1/1.tf"), 'variable "var1" {}');
-    let [f2, d2] = FileIndex.fromString(Uri.parse("dir2/2.tf"), 'variable "var1" {}');
+    let [f1, d1] = FileIndex.fromString(Uri.file("dir1/1.tf"), 'variable "var1" {}');
+    let [f2, d2] = FileIndex.fromString(Uri.file("dir2/2.tf"), 'variable "var1" {}');
 
     index.add(f1);
     index.add(f2);
@@ -25,8 +25,8 @@ suite("Index Tests", () => {
   test("add only creates group if it does not exist", () => {
     let index = new Index();
 
-    let [f1, d1] = FileIndex.fromString(Uri.parse("dir1/1.tf"), 'variable "var1" {}');
-    let [f2, d2] = FileIndex.fromString(Uri.parse("dir1/2.tf"), 'variable "var1" {}');
+    let [f1, d1] = FileIndex.fromString(Uri.file("dir1/1.tf"), 'variable "var1" {}');
+    let [f2, d2] = FileIndex.fromString(Uri.file("dir1/2.tf"), 'variable "var1" {}');
 
     index.add(f1);
     index.add(f2);
@@ -37,8 +37,8 @@ suite("Index Tests", () => {
   test("delete removes group when last index removed", () => {
     let index = new Index();
 
-    let [f1, d1] = FileIndex.fromString(Uri.parse("dir1/1.tf"), 'variable "var1" {}');
-    let [f2, d2] = FileIndex.fromString(Uri.parse("dir2/2.tf"), 'variable "var1" {}');
+    let [f1, d1] = FileIndex.fromString(Uri.file("dir1/1.tf"), 'variable "var1" {}');
+    let [f2, d2] = FileIndex.fromString(Uri.file("dir2/2.tf"), 'variable "var1" {}');
 
     index.add(f1);
     index.add(f2);
@@ -48,6 +48,6 @@ suite("Index Tests", () => {
     index.delete(f2.uri);
 
     assert.equal(index.groups.length, 1);
-    assert.equal(index.groups[0].uri.toString(), "dir1");
+    assert.equal(index.groups[0].uri.toString(), "file:///dir1");
   });
 });
