@@ -1,5 +1,7 @@
+import * as glob from 'glob';
+import * as Mocha from 'mocha';
+import * as path from 'path';
 
-/*
 export function run(): Promise<void> {
     // Create the mocha test
     const mocha = new Mocha({
@@ -12,7 +14,7 @@ export function run(): Promise<void> {
     console.log("Test root is: ", testsRoot);
 
     return new Promise((c, e) => {
-        glob('** / **.test.js', { cwd: testsRoot }, (err, files) => {
+        glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
             if (err) {
                 console.error("Glob failed: ", err);
                 return e(err);
@@ -42,11 +44,5 @@ export function run(): Promise<void> {
                 e(err);
             }
         });
-    });
-};*/
-
-export function run(): Promise<void> {
-    return new Promise((resolve, reject) => {
-        resolve();
     });
 };
