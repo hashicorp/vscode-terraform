@@ -191,11 +191,21 @@
           "properties": {
             "enabled": {
               "type": "boolean",
-              "description": "Enables or disables the indexing"
+              "description": "Enables or disables the indexing",
+              "default": false
             },
             "args": {
               "type": "array",
-              "description": "Arguments to pass to the language server"
+              "description": "Arguments to pass to the language server",
+              "default": []
+            },
+            "pathToBinary": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The path to an existing binary for the Language Server. This allows users to run custom builds rather than download pre-build releases",
+              "default": null
             }
           },
           "default": {

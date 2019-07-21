@@ -10,6 +10,7 @@ export interface TerraformIndexConfiguration {
 export interface TerraformLanguageServerConfiguration {
   enabled: boolean;
   args: boolean;
+  pathToBinary: string;
 }
 
 
