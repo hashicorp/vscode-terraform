@@ -5,8 +5,10 @@ import { Runner } from '../runner';
 import { Command, CommandType } from './command';
 
 export class ValidateCommand extends Command {
+  public static readonly CommandName = "validate";
+
   constructor(private index: IndexAdapter, private runner: Runner, ctx: vscode.ExtensionContext) {
-    super("validate", ctx, CommandType.PALETTE);
+    super(ValidateCommand.CommandName, ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {

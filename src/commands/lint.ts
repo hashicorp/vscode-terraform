@@ -3,8 +3,9 @@ import * as vscode from "vscode";
 import { Command, CommandType } from "./command";
 
 export class LintCommand extends Command {
+  public static readonly CommandName = "lint";
   constructor(ctx: vscode.ExtensionContext) {
-    super("lint", ctx, CommandType.PALETTE);
+    super(LintCommand.CommandName, ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {

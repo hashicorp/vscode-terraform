@@ -5,8 +5,9 @@ import { Command, CommandType } from "./command";
 
 
 export class ReindexCommand extends Command {
+  public static readonly CommandName = "reindex"
   constructor(private index: IndexAdapter, private watcher: FileSystemWatcher, ctx: vscode.ExtensionContext) {
-    super("reindex", ctx, CommandType.PALETTE);
+    super(ReindexCommand.CommandName, ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {

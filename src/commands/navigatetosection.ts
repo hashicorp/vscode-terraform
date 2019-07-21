@@ -4,8 +4,9 @@ import { to_vscode_Range } from "../index/vscode-adapter";
 import { Command, CommandType } from "./command";
 
 export class NavigateToSectionCommand extends Command {
+  public static readonly CommandName = "navigate-to-section";
   constructor(private index: IndexAdapter, ctx: vscode.ExtensionContext) {
-    super("navigate-to-section", ctx, CommandType.INTERNAL);
+    super(NavigateToSectionCommand.CommandName, ctx, CommandType.INTERNAL);
   }
 
   protected async perform(args: { groupUri: string, targetId: string }): Promise<any> {
