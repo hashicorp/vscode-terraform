@@ -31,6 +31,10 @@ steps:
 - bash: |
     npm install --no-save
     npm install -g vsce
+    # Configure git otherwise `npm version` will fail
+    git config --global user.email "adobuildagent@notanemail.com"
+    git config --global user.name "adobuildagent"
+    npm version 1.4.$(Build.BuildId)
   displayName: Running npm install
 
 - bash: |
@@ -50,3 +54,14 @@ steps:
 - bash: |
     vsce package
   displayName: Creating extension package
+
+# Publish `visx` file as a build artifact
+- task: CopyFiles@2
+  inputs:
+    contents: '**/*.vsix'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: visxPackage
