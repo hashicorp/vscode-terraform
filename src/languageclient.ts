@@ -106,7 +106,11 @@ export class ExperimentalLanguageClient {
             release_id: choice.detail
         })
 
-        let downloadUrl = "";
+        // The github releases refer to `windows` not `win32` so
+        // change the platform string if we're on `win32`
+        platform = platform === "win32" ? "windows" : platform;
+
+        let downloadUrl = "NotFound";
         release.data.assets.forEach(asset => {
             if (!asset.name.endsWith('.tar.gz')) {
                 return;
@@ -116,6 +120,11 @@ export class ExperimentalLanguageClient {
                 downloadUrl = asset.browser_download_url;
             }
         });
+
+        if (downloadUrl === "NotFound") {
+            vscode.window.showErrorMessage(`Failed to install, releases for the Lanugage server didn't contain a release for your platform: ${platform}`);
+            return;
+        }
 
         const client = new HttpClient("clientTest");
         const response = await client.get(downloadUrl);
@@ -128,7 +137,6 @@ export class ExperimentalLanguageClient {
             return;
         }
 
-        // let extract = tar.extract();
         return new Promise<void>((resolve, reject) => {
             file.on("error", (err) => reject(err));
             const stream = response.message.pipe(file);
