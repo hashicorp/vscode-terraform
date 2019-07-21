@@ -14,7 +14,9 @@ import * as tar from 'tar';
 import { getConfiguration } from './configuration';
 
 export class ExperimentalLanguageClient {
+    public installLSPCommandName = 'terraform.installLanguageServer';
     public async start(ctx: vscode.ExtensionContext) {
+        vscode.window.showInformationMessage("Starting experimental Terraform Language server")
         const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(ctx.extensionPath, "lspbin");
 
         const thisPlatform = process.platform;
@@ -23,6 +25,13 @@ export class ExperimentalLanguageClient {
         const executablePath = Path.join(serverLocation, executableName);
 
         if (!fs.existsSync(executablePath)) {
+            let continueInstall = await vscode.window.showInformationMessage(
+                "Would you like to install Terraform Language Server from juliosueiras/terraform-lsp? \n This provides experimental Terraform 0.12 support",
+                "Install", "Abort");
+            if (continueInstall === "Abort") {
+                vscode.window.showErrorMessage("Terraform language server install aborted");
+                return;
+            }
             await this.installLanguageServer(thisPlatform, serverLocation);
         }
 
@@ -47,7 +56,7 @@ export class ExperimentalLanguageClient {
         };
 
         // Create the language client and start the client.
-        let l = new LanguageClient(
+        let langClient = new LanguageClient(
             'terraformLanguageServer',
             'Language Server',
             serverOptions,
@@ -55,30 +64,57 @@ export class ExperimentalLanguageClient {
             true
         );
 
-        l.trace = 2;
+        langClient.trace = 2;
 
-        l.onReady().then(() => {
-            const capabilities = l.initializeResult && l.initializeResult.capabilities;
+        langClient.onReady().then(() => {
+            const capabilities = langClient.initializeResult && langClient.initializeResult.capabilities;
             if (!capabilities) {
                 return vscode.window.showErrorMessage('The language server is not able to serve any features at the moment.');
+            } else {
+                vscode.window.showInformationMessage('Terraform Language server started.')
             }
         });
 
         // Start the client. This will also launch the server
-        ctx.subscriptions.push(l.start());
+        ctx.subscriptions.push(langClient.start());
+
+        // Register command to re-run installer
+        const commandHandler = async () => {
+            try {
+                await langClient.stop();
+            } catch {
+                // Expected
+            }
+            // Todo:
+            // Shutdown method on LSP not implemented :(
+            //    `await langClient.stop();` fails
+            //
+            // We need the process to be stopped so we can overwrite the binary with the new version.
+            // This is a hack for the time beind based on internal property of the languageClient object.
+            const PID = langClient["_serverProcess"].pid;
+            process.kill(PID, 9)
+
+            await this.installLanguageServer(thisPlatform, serverLocation);
+            const action = 'Reload';
+
+            vscode.window
+                .showInformationMessage(
+                    `Reload window in order for the new language server configuration to take effect.`,
+                    action
+                )
+                .then(selectedAction => {
+                    if (selectedAction === action) {
+                        vscode.commands.executeCommand('workbench.action.reloadWindow');
+                    }
+                });
+        };
+        ctx.subscriptions.push(vscode.commands.registerCommand(this.installLSPCommandName, commandHandler));
+
     }
 
     public async installLanguageServer(platform: string, path: string): Promise<void> {
-        let continueInstall = await vscode.window.showInformationMessage(
-            "Would you like to install Terraform Language Server from juliosueiras/terraform-lsp? \n This provides experimental Terraform 0.12 support",
-            "Install", "Abort");
-        if (continueInstall === "Abort") {
-            vscode.window.showErrorMessage("Terraform language server install aborted");
-            return;
-        }
-
         // Create dir for lsp binary if it doesn't exist
-        if (! fs.existsSync(path)) {
+        if (!fs.existsSync(path)) {
             fs.mkdirSync(path);
         }
         const downloadedZipFile = Path.join(path, 'terraform-lsp.tar.gz');
