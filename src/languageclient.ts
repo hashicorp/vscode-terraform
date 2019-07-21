@@ -15,16 +15,16 @@ import * as tar from 'tar';
 export class ExperimentalLanguageClient {
     public async start(ctx: vscode.ExtensionContext) {
         const serverLocation = vscode.workspace
-            .getConfiguration('terraform').get('languageServer.location') as string || ctx.extensionPath;
+            .getConfiguration('terraform').get('languageServer.location') as string || Path.join(ctx.extensionPath, "lspbin");
 
         const thisPlatform = process.platform;
 
         const executableName = thisPlatform === "win32" ? "terraform-lsp.exe" : "terraform-lsp";
         const executablePath = Path.join(serverLocation, executableName);
-        if (!fs.existsSync(executablePath)) {
-        }
-        await this.installLanguageServer(thisPlatform, serverLocation);
 
+        if (!fs.existsSync(executablePath)) {
+            await this.installLanguageServer(thisPlatform, serverLocation);
+        }
 
         let serverOptions: ServerOptions = {
             command: executablePath,
@@ -75,6 +75,11 @@ export class ExperimentalLanguageClient {
         if (continueInstall === "Abort") {
             vscode.window.showErrorMessage("Terraform language server install aborted");
             return;
+        }
+        
+        // Create dir for lsp binary if it doesn't exist
+        if (! fs.existsSync(path)) {
+            fs.mkdirSync(path);
         }
         const downloadedZipFile = Path.join(path, 'terraform-lsp.tar.gz');
         // Download language server
