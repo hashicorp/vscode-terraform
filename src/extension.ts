@@ -62,10 +62,16 @@ export async function activate(ctx: vscode.ExtensionContext) {
         ctx.subscriptions.push(watcher);
     }
 
+    const languageServerClient = new ExperimentalLanguageClient();
+    const LSPNotEnabledCommandHandler = () => {
+        vscode.window.showErrorMessage('Cannot perform action Terraform Language Server not currently enabled.');
+    };
     if (getConfiguration().languageServer.enabled) {
-        vscode.window.showInformationMessage("Starting experimental Terraform Language server")
-        await new ExperimentalLanguageClient().start(ctx);
+        await languageServerClient.start(ctx);
+    } else {
+        ctx.subscriptions.push(vscode.commands.registerCommand(languageServerClient.installLSPCommandName, LSPNotEnabledCommandHandler));
     }
+    Command.RegisteredCommands.push(languageServerClient.installLSPCommandName); // TODO: work out better way to do this..
 
     ctx.subscriptions.push(new LintCommand(ctx))
     if (getConfiguration().indexing.enabled) {
