@@ -25,7 +25,7 @@
 			"args": [
 				"${workspaceRoot}/templates",
 				"--extensionDevelopmentPath=${workspaceRoot}",
-				"--extensionTestsPath=${workspaceRoot}/out/test"
+				"--extensionTestsPath=${workspaceRoot}/out/test/index"
 			],
 			"stopOnEntry": false,
 			"sourceMaps": true,
