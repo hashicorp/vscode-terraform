@@ -11,11 +11,11 @@ import {
 } from 'vscode-languageclient';
 import { workspace, window, QuickPickItem } from 'vscode';
 import * as tar from 'tar';
+import { getConfiguration } from './configuration';
 
 export class ExperimentalLanguageClient {
     public async start(ctx: vscode.ExtensionContext) {
-        const serverLocation = vscode.workspace
-            .getConfiguration('terraform').get('languageServer.location') as string || Path.join(ctx.extensionPath, "lspbin");
+        const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(ctx.extensionPath, "lspbin");
 
         const thisPlatform = process.platform;
 
@@ -76,7 +76,7 @@ export class ExperimentalLanguageClient {
             vscode.window.showErrorMessage("Terraform language server install aborted");
             return;
         }
-        
+
         // Create dir for lsp binary if it doesn't exist
         if (! fs.existsSync(path)) {
             fs.mkdirSync(path);
