@@ -8,3 +8,4 @@ hcl-hil/*.js
 .terraform
 *.tfplan
 *.tfplan.json
+lspbin
