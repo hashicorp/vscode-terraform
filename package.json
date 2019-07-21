@@ -91,6 +91,22 @@
       {
         "command": "terraform.installLanguageServer",
         "title": "Terraform: Install Language Server"
+      },
+      {
+        "command": "terraform.validate",
+        "title": "Terraform: Validate"
+      },
+      {
+        "command": "terraform.reindex",
+        "title": "Terraform: Reindex terraform files"
+      },
+      {
+        "command": "terraform.preview-graph",
+        "title": "Terraform: Preview Graph"
+      },
+      {
+        "command": "terraform.show-plan",
+        "title": "Terraform: Show Plan"
       }
     ],
     "grammars": [

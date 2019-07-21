@@ -69,20 +69,19 @@ export async function activate(ctx: vscode.ExtensionContext) {
     if (getConfiguration().languageServer.enabled) {
         await languageServerClient.start(ctx);
     } else {
-        ctx.subscriptions.push(vscode.commands.registerCommand(languageServerClient.installLSPCommandName, LSPNotEnabledCommandHandler));
+        Command.dynamicRegister(languageServerClient.installLSPCommandName, LSPNotEnabledCommandHandler);
     }
     Command.RegisteredCommands.push(languageServerClient.installLSPCommandName); // TODO: work out better way to do this..
 
     ctx.subscriptions.push(new LintCommand(ctx))
     if (getConfiguration().indexing.enabled) {
-
             ctx.subscriptions.push(
             new PlanCommand(runner, indexAdapter, ctx),
+            new IndexCommand(indexAdapter, ctx),
             new ValidateCommand(indexAdapter, runner, ctx),
             new ShowReferencesCommand(indexAdapter, ctx),
             new NavigateToSectionCommand(indexAdapter, ctx),
             new PreviewGraphCommand(indexAdapter, runner, ctx),
-            new IndexCommand(indexAdapter, ctx),
             new ReindexCommand(indexAdapter, watcher, ctx));
             // providers
             vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
@@ -107,6 +106,18 @@ export async function activate(ctx: vscode.ExtensionContext) {
                     await watcher.crawl();
                 }
             }
+    } else {
+        const IndexerNotEnabledCommandHandler = () => {
+            vscode.window.showErrorMessage('Cannot perform action currently using the Terraform Language Server not Indexer.');
+        };
+        Command.dynamicRegister(PlanCommand.CommandName, IndexerNotEnabledCommandHandler);
+        Command.dynamicRegister(IndexCommand.CommandName, IndexerNotEnabledCommandHandler);
+        Command.dynamicRegister(ValidateCommand.CommandName, IndexerNotEnabledCommandHandler);
+        Command.dynamicRegister(ShowReferencesCommand.CommandName, IndexerNotEnabledCommandHandler);
+        Command.dynamicRegister(NavigateToSectionCommand.CommandName, IndexerNotEnabledCommandHandler);
+        Command.dynamicRegister(PreviewGraphCommand.CommandName, IndexerNotEnabledCommandHandler);
+        Command.dynamicRegister(ReindexCommand.CommandName, IndexerNotEnabledCommandHandler);
+
     }
 
     const elapsed = process.hrtime(start);

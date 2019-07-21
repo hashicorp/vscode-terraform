@@ -34,8 +34,9 @@ class ReferenceQuickPick implements vscode.QuickPickItem {
 }
 
 export class ShowReferencesCommand extends Command {
+  public static readonly CommandName = "showReferences";
   constructor(private index: IndexAdapter, ctx: vscode.ExtensionContext) {
-    super("showReferences", ctx, CommandType.INTERNAL);
+    super(ShowReferencesCommand.CommandName, ctx, CommandType.INTERNAL);
   }
 
   protected async perform(section: Section): Promise<any> {

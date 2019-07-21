@@ -10,8 +10,9 @@ import { Command, CommandType } from "./command";
 const Dot = require('graphlib-dot');
 
 export class PreviewGraphCommand extends Command {
+  public static readonly CommandName = "preview-graph";
   constructor(private index: IndexAdapter, private runner: Runner, ctx: vscode.ExtensionContext) {
-    super("preview-graph", ctx, CommandType.PALETTE);
+    super(PreviewGraphCommand.CommandName, ctx, CommandType.PALETTE);
   }
 
   protected async perform(): Promise<any> {

@@ -16,6 +16,14 @@ export abstract class Command extends vscode.Disposable {
 
   static RegisteredCommands: string[] = [];
 
+  public static dynamicRegister(name: string, action: any) {
+    vscode.commands.registerCommand(
+      'terraform.' + name,
+      action
+    )
+    this.RegisteredCommands.push('terraform.' + name);
+  }
+
   constructor(readonly name: string, protected ctx: vscode.ExtensionContext, type: CommandType) {
     super(() => this.disposables.map(d => d.dispose()));
 

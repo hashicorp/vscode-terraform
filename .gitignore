@@ -9,3 +9,4 @@ hcl-hil/*.js
 *.tfplan
 *.tfplan.json
 lspbin
+tf-tsp.log

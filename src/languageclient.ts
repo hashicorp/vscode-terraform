@@ -12,9 +12,10 @@ import {
 import { workspace, window, QuickPickItem } from 'vscode';
 import * as tar from 'tar';
 import { getConfiguration } from './configuration';
+import { Command } from './commands/command';
 
 export class ExperimentalLanguageClient {
-    public installLSPCommandName = 'terraform.installLanguageServer';
+    public installLSPCommandName = 'installLanguageServer';
     public async start(ctx: vscode.ExtensionContext) {
         vscode.window.showInformationMessage("Starting experimental Terraform Language server")
         const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(ctx.extensionPath, "lspbin");
@@ -108,8 +109,7 @@ export class ExperimentalLanguageClient {
                     }
                 });
         };
-        ctx.subscriptions.push(vscode.commands.registerCommand(this.installLSPCommandName, commandHandler));
-
+        Command.dynamicRegister(this.installLSPCommandName, commandHandler);
     }
 
     public async installLanguageServer(platform: string, path: string): Promise<void> {
