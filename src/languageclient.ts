@@ -28,6 +28,7 @@ export class ExperimentalLanguageClient {
         if (!fs.existsSync(executablePath)) {
             let continueInstall = await vscode.window.showInformationMessage(
                 "Would you like to install Terraform Language Server from juliosueiras/terraform-lsp? \n This provides experimental Terraform 0.12 support",
+                { modal: true },
                 "Install", "Abort");
             if (continueInstall === "Abort") {
                 vscode.window.showErrorMessage("Terraform language server install aborted");
@@ -81,19 +82,25 @@ export class ExperimentalLanguageClient {
 
         // Register command to re-run installer
         const commandHandler = async () => {
+            // Exit the existing running server
             try {
                 await langClient.stop();
             } catch {
-                // Expected
+                // Expected until PR merged
             }
-            // Todo:
-            // Shutdown method on LSP not implemented :(
-            //    `await langClient.stop();` fails
-            //
-            // We need the process to be stopped so we can overwrite the binary with the new version.
-            // This is a hack for the time beind based on internal property of the languageClient object.
-            const PID = langClient["_serverProcess"].pid;
-            process.kill(PID, 9)
+
+            try {
+                // Fixed (hopefully) by: https://github.com/juliosueiras/terraform-lsp/pull/11
+                // Shutdown method on LSP not implemented :(
+                //    `await langClient.stop();` fails
+                //
+                // We need the process to be stopped so we can overwrite the binary with the new version.
+                // This is a hack for the time beind based on internal property of the languageClient object.
+                const PID = langClient["_serverProcess"].pid;
+                process.kill(PID, 9)
+            } catch {
+                // May occur until PR merged
+            }
 
             await this.installLanguageServer(thisPlatform, serverLocation);
             const action = 'Reload';
@@ -101,6 +108,7 @@ export class ExperimentalLanguageClient {
             vscode.window
                 .showInformationMessage(
                     `Reload window in order for the new language server configuration to take effect.`,
+                    { modal: true },
                     action
                 )
                 .then(selectedAction => {
