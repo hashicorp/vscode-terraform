@@ -27,6 +27,7 @@ import { Runner } from './runner';
 import * as telemetry from './telemetry';
 import { ModuleOverview } from './views/module-overview';
 import { ExperimentalLanguageClient } from './languageclient';
+import { ToggleLanguageServerCommand } from './commands/toggleLanguageServer';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 const logger = new logging.Logger("extension");
@@ -63,6 +64,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
     }
 
     const languageServerClient = new ExperimentalLanguageClient();
+    ctx.subscriptions.push(new ToggleLanguageServerCommand(ctx));
     const LSPNotEnabledCommandHandler = () => {
         vscode.window.showErrorMessage('Cannot perform action Terraform Language Server not currently enabled.');
     };

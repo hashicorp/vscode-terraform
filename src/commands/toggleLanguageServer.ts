@@ -1,0 +1,28 @@
+import * as vscode from "vscode";
+import { IndexAdapter } from "../index/index-adapter";
+import { Command, CommandType } from "./command";
+import { getConfiguration } from "../configuration";
+import { ExperimentalLanguageClient } from "../languageclient";
+import _ = require("lodash");
+
+export class ToggleLanguageServerCommand extends Command {
+  public static readonly CommandName = "toggleLanguageServer";
+
+  constructor(ctx: vscode.ExtensionContext) {
+    super(ToggleLanguageServerCommand.CommandName, ctx, CommandType.PALETTE);
+  }
+
+  protected async perform(uri: vscode.Uri): Promise<boolean> {
+    let indexConfig = _.clone(getConfiguration().indexing);
+    indexConfig.enabled = !indexConfig.enabled;
+    let langServerConfig = _.clone(getConfiguration().languageServer);
+    langServerConfig.enabled = !langServerConfig.enabled;
+
+    await vscode.workspace.getConfiguration().update("terraform.indexing", indexConfig, vscode.ConfigurationTarget.Global);
+    await vscode.workspace.getConfiguration().update("terraform.languageServer", langServerConfig, vscode.ConfigurationTarget.Global);
+
+    ExperimentalLanguageClient.reloadWindow();
+
+    return true;
+  }
+}

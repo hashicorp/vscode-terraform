@@ -103,21 +103,20 @@ export class ExperimentalLanguageClient {
             }
 
             await this.installLanguageServer(thisPlatform, serverLocation);
-            const action = 'Reload';
-
-            vscode.window
-                .showInformationMessage(
-                    `Reload window in order for the new language server configuration to take effect.`,
-                    { modal: true },
-                    action
-                )
-                .then(selectedAction => {
-                    if (selectedAction === action) {
-                        vscode.commands.executeCommand('workbench.action.reloadWindow');
-                    }
-                });
+            ExperimentalLanguageClient.reloadWindow();
         };
         Command.dynamicRegister(this.installLSPCommandName, commandHandler);
+    }
+
+    public static async reloadWindow() {
+        const action = 'Reload';
+        await vscode.window
+            .showInformationMessage(`Reload window in order for the new language server configuration to take effect.`, { modal: true }, action)
+            .then(selectedAction => {
+                if (selectedAction === action) {
+                    vscode.commands.executeCommand('workbench.action.reloadWindow');
+                }
+            });
     }
 
     public async installLanguageServer(platform: string, path: string): Promise<void> {
