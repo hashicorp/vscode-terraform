@@ -102,14 +102,19 @@ export class ExperimentalLanguageClient {
         ctx.subscriptions.push(langClient.start());
     }
 
-    public static async reloadWindow() {
+    public static async reloadWindow(prompt: boolean = true) {
         const action = 'Reload';
-        await vscode.window
-            .showInformationMessage(`Reload window in order for the new language server configuration to take effect.`, { modal: true }, action)
-            .then(selectedAction => {
-                if (selectedAction === action) {
-                    vscode.commands.executeCommand('workbench.action.reloadWindow');
-                }
-            });
+        if (prompt) {
+            await vscode.window
+                .showInformationMessage(`Reload window in order for the new language server configuration to take effect.`, { modal: true }, action)
+                .then(selectedAction => {
+                    if (selectedAction === action) {
+                        vscode.commands.executeCommand('workbench.action.reloadWindow');
+                    }
+                });
+
+        } else {
+            await vscode.commands.executeCommand('workbench.action.reloadWindow');
+        }
     }
 }
