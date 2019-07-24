@@ -17,10 +17,6 @@ export class InstallLanguageServerCommand extends Command {
   }
 
   protected async perform(releaseId: string = null): Promise<void> {
-    // if (!getConfiguration().languageServer.enabled) {
-    //   vscode.window.showErrorMessage('Cannot perform action Terraform Language Server not currently enabled.');
-    // }
-
     ExperimentalLanguageClient.stopIfRunning();
 
     const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(this.ctx.extensionPath, "lspbin");

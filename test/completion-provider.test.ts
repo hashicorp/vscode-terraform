@@ -1,18 +1,18 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 
-async function executeProvider(uri: vscode.Uri, position: vscode.Position): Promise<vscode.CompletionList> {
+export async function executeProvider(uri: vscode.Uri, position: vscode.Position): Promise<vscode.CompletionList> {
     let result = await vscode.commands.executeCommand('vscode.executeCompletionItemProvider', uri, position);
     return result as vscode.CompletionList;
 }
 
-function shouldHaveFunctionCompletion(list: vscode.CompletionList, label: string): vscode.CompletionItem {
+export function shouldHaveFunctionCompletion(list: vscode.CompletionList, label: string): vscode.CompletionItem {
     return list.items.find((i) => {
         return i.kind === vscode.CompletionItemKind.Function && i.label === label;
     });
 }
 
-function shouldHaveCompletion(list: vscode.CompletionList, id: string, kind?: vscode.CompletionItemKind): vscode.CompletionItem {
+export function shouldHaveCompletion(list: vscode.CompletionList, id: string, kind?: vscode.CompletionItemKind): vscode.CompletionItem {
     return list.items.find((i) => {
         if (kind && i.kind !== kind)
             return false;
