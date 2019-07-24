@@ -12,16 +12,21 @@ export class ToggleLanguageServerCommand extends Command {
     super(ToggleLanguageServerCommand.CommandName, ctx, CommandType.PALETTE);
   }
 
-  protected async perform(uri: vscode.Uri): Promise<boolean> {
+  protected async perform(prompt: boolean = true): Promise<boolean> {
+    // Disable indexing
     let indexConfig = _.clone(getConfiguration().indexing);
     indexConfig.enabled = !indexConfig.enabled;
+
+    // Enable LSP
     let langServerConfig = _.clone(getConfiguration().languageServer);
     langServerConfig.enabled = !langServerConfig.enabled;
 
+    // Update config
     await vscode.workspace.getConfiguration().update("terraform.indexing", indexConfig, vscode.ConfigurationTarget.Global);
     await vscode.workspace.getConfiguration().update("terraform.languageServer", langServerConfig, vscode.ConfigurationTarget.Global);
 
-    ExperimentalLanguageClient.reloadWindow(false);
+    // Reload the window to start the server
+    await ExperimentalLanguageClient.reloadWindow(false);
 
     return true;
   }
