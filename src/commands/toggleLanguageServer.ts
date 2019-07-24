@@ -21,7 +21,7 @@ export class ToggleLanguageServerCommand extends Command {
     await vscode.workspace.getConfiguration().update("terraform.indexing", indexConfig, vscode.ConfigurationTarget.Global);
     await vscode.workspace.getConfiguration().update("terraform.languageServer", langServerConfig, vscode.ConfigurationTarget.Global);
 
-    ExperimentalLanguageClient.reloadWindow();
+    ExperimentalLanguageClient.reloadWindow(false);
 
     return true;
   }
