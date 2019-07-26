@@ -106,7 +106,7 @@ export class InstallLanguageServerCommand extends Command {
             })
           )
           unzipStream.on("finish", () => {
-            ExperimentalLanguageClient.reloadWindow();
+            // ExperimentalLanguageClient.reloadWindow();
             resolve();
           });
         } catch (err) {
