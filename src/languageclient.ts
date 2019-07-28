@@ -38,87 +38,95 @@ export class ExperimentalLanguageClient {
         }
     }
     public async start(ctx: vscode.ExtensionContext) {
-        await vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: "Starting Experimental Language Server",
-            cancellable: false
-        }, async (progress) => {
-            const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(ctx.extensionPath, "lspbin");
+        return new Promise(async (resolve, reject) => {
+            await vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: "Starting Experimental Language Server",
+                cancellable: false
+            }, async (progress) => {
+                try {
+                    const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(ctx.extensionPath, "lspbin");
 
-            const thisPlatform = process.platform;
-            const executableName = thisPlatform === "win32" ? "terraform-lsp.exe" : "terraform-lsp";
-            const executablePath = Path.join(serverLocation, executableName);
+                    const thisPlatform = process.platform;
+                    const executableName = thisPlatform === "win32" ? "terraform-lsp.exe" : "terraform-lsp";
+                    const executablePath = Path.join(serverLocation, executableName);
 
-            if (!fs.existsSync(executablePath)) {
-                let continueInstall = await vscode.window.showInformationMessage(
-                    "Would you like to install Terraform Language Server from juliosueiras/terraform-lsp? \n This provides experimental Terraform 0.12 support",
-                    { modal: true },
-                    "Install", "Abort");
-                if (continueInstall === "Abort") {
-                    vscode.window.showErrorMessage("Terraform language server install aborted");
-                    return;
-                }
-                progress.report({
-                    message: "Downloading Language Server",
-                    increment: 20
-                })
-                vscode.commands.executeCommand(InstallLanguageServerCommand.CommandName);
-            }
-
-            progress.report({
-                message: "Initializing Language Server",
-                increment: 40
-            })
-
-            let serverOptions: ServerOptions = {
-                command: executablePath,
-                args: [],
-                options: {
-                    env: {
-                        ...process.env
+                    if (!fs.existsSync(executablePath)) {
+                        let continueInstall = await vscode.window.showInformationMessage(
+                            "Would you like to install Terraform Language Server from juliosueiras/terraform-lsp? \n This provides experimental Terraform 0.12 support",
+                            { modal: true },
+                            "Install", "Abort");
+                        if (continueInstall === "Abort") {
+                            vscode.window.showErrorMessage("Terraform language server install aborted");
+                            return;
+                        }
+                        progress.report({
+                            message: "Downloading Language Server",
+                            increment: 20
+                        })
+                        vscode.commands.executeCommand(InstallLanguageServerCommand.CommandName);
                     }
-                }
-            };
-
-            // Options to control the language client
-            let clientOptions: LanguageClientOptions = {
-                documentSelector: [{ scheme: 'file', language: 'terraform' }],
-                synchronize: {
-                    configurationSection: 'terraformLanguageServer',
-                    // Notify the server about file changes to '.clientrc files contained in the workspace
-                    fileEvents: workspace.createFileSystemWatcher('**/*.tf'),
-                }
-            };
-
-            // Create the language client and start the client.
-            let langClient = new LanguageClient(
-                'terraformLanguageServer',
-                'Language Server',
-                serverOptions,
-                clientOptions,
-                true
-            );
-
-            ExperimentalLanguageClient.client = langClient;
-
-            langClient.trace = 2;
-
-            langClient.onReady().then(() => {
-                const capabilities = langClient.initializeResult && langClient.initializeResult.capabilities;
-                if (!capabilities) {
-                    return vscode.window.showErrorMessage('The language server is not able to serve any features at the moment.');
-                } else {
 
                     progress.report({
-                        message: "Language Server Ready",
-                        increment: 100
+                        message: "Initializing Language Server",
+                        increment: 40
                     })
-                    ExperimentalLanguageClient.isRunning = true;
+
+                    let serverOptions: ServerOptions = {
+                        command: executablePath,
+                        args: [],
+                        options: {
+                            env: {
+                                ...process.env
+                            }
+                        }
+                    };
+
+                    // Options to control the language client
+                    let clientOptions: LanguageClientOptions = {
+                        documentSelector: [{ scheme: 'file', language: 'terraform' }],
+                        synchronize: {
+                            configurationSection: 'terraformLanguageServer',
+                            // Notify the server about file changes to '.clientrc files contained in the workspace
+                            fileEvents: workspace.createFileSystemWatcher('**/*.tf'),
+                        }
+                    };
+
+                    // Create the language client and start the client.
+                    let langClient = new LanguageClient(
+                        'terraformLanguageServer',
+                        'Language Server',
+                        serverOptions,
+                        clientOptions,
+                        true
+                    );
+
+                    ExperimentalLanguageClient.client = langClient;
+
+                    langClient.trace = 2;
+
+                    langClient.onReady().then(() => {
+                        const capabilities = langClient.initializeResult && langClient.initializeResult.capabilities;
+                        if (!capabilities) {
+                            return vscode.window.showErrorMessage('The language server is not able to serve any features at the moment.');
+                        } else {
+
+                            progress.report({
+                                message: "Language Server Ready",
+                                increment: 100
+                            })
+                            ExperimentalLanguageClient.isRunning = true;
+
+                            resolve();
+                        }
+                    });
+
+                    // Start the client. This will also launch the server
+                    ctx.subscriptions.push(langClient.start());
+                } catch (e) {
+                    reject(e);
                 }
             });
-
-            // Start the client. This will also launch the server
-            ctx.subscriptions.push(langClient.start());
         });
     }
 
