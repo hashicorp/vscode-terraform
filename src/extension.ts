@@ -64,12 +64,12 @@ export async function activate(ctx: vscode.ExtensionContext) {
         ctx.subscriptions.push(watcher);
     }
 
-    const languageServerClient = new ExperimentalLanguageClient();
+    const languageServerClient = new ExperimentalLanguageClient(ctx);
     ctx.subscriptions.push(new ToggleLanguageServerCommand(ctx));
     ctx.subscriptions.push(new InstallLanguageServerCommand(ctx));
 
     if (getConfiguration().languageServer.enabled) {
-        await languageServerClient.start(ctx);
+        await languageServerClient.start();
     }
 
     ctx.subscriptions.push(new LintCommand(ctx))

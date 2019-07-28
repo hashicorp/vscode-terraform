@@ -9,10 +9,26 @@ import {
 import { workspace } from 'vscode';
 import { getConfiguration } from './configuration';
 import { InstallLanguageServerCommand } from './commands/installLanguageServer';
+import * as Octokit from '@octokit/rest';
 
 export class ExperimentalLanguageClient {
+    public get currentReleaseId(): string {
+        return this.ctx.globalState.get("tfLspReleaseId");
+    }
+    public set currentReleaseId(v: string) {
+        this.ctx.globalState.update("tfLspReleaseId", v);
+    }
     private static client: LanguageClient;
     public static isRunning: boolean = false;
+    private ctx: vscode.ExtensionContext;
+
+    /**
+     *  Create a new instance of the language server client
+     */
+    constructor(ctx: vscode.ExtensionContext) {
+        this.ctx = ctx;
+    }
+
     public static async stopIfRunning() {
         let langClient = ExperimentalLanguageClient.client;
         if (langClient === null) {
@@ -36,8 +52,10 @@ export class ExperimentalLanguageClient {
         } catch {
             // May occur until PR merged
         }
+
+        this.isRunning = false;
     }
-    public async start(ctx: vscode.ExtensionContext) {
+    public async start(prompt: boolean = true) {
         return new Promise(async (resolve, reject) => {
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
@@ -45,7 +63,7 @@ export class ExperimentalLanguageClient {
                 cancellable: false
             }, async (progress) => {
                 try {
-                    const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(ctx.extensionPath, "lspbin");
+                    const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(this.ctx.extensionPath, "lspbin");
 
                     const thisPlatform = process.platform;
                     const executableName = thisPlatform === "win32" ? "terraform-lsp.exe" : "terraform-lsp";
@@ -122,27 +140,27 @@ export class ExperimentalLanguageClient {
                     });
 
                     // Start the client. This will also launch the server
-                    ctx.subscriptions.push(langClient.start());
+                    this.ctx.subscriptions.push(langClient.start());
+
+                    try {
+                        // After server is running lets do a check to see if a newer one exists
+                        const octokit = new Octokit();
+                        const release = await octokit.repos.getLatestRelease({
+                            owner: 'juliosueiras',
+                            repo: 'terraform-lsp'
+                        });
+
+                        if (this.currentReleaseId !== release.data.id.toString()) {
+                            vscode.window.showInformationMessage(`A newer Lanaguage Server is available ${release.data.tag_name}. Run the 'Install/Update Language Server' command to update`);
+                        }
+                    } catch (e) {
+                        return vscode.window.showErrorMessage(`Failed checking for newer language server version. Error: ${e}`);
+                    }
+
                 } catch (e) {
                     reject(e);
                 }
             });
         });
-    }
-
-    public static async reloadWindow(prompt: boolean = true) {
-        const action = 'Reload';
-        await vscode.commands.executeCommand('workbench.action.reloadWindow');
-        // if (prompt) {
-        //     await vscode.window
-        //         .showInformationMessage(`Reload window in order for the new language server configuration to take effect.`,
-        //         { modal: true }, action)
-        //         .then(selectedAction => {
-        //             if (selectedAction === action) {
-        //                 vscode.commands.executeCommand('workbench.action.reloadWindow');
-        //             }
-        //         });
-        // } else {
-        // }
     }
 }
