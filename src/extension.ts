@@ -29,6 +29,8 @@ import { ModuleOverview } from './views/module-overview';
 import { ExperimentalLanguageClient } from './languageclient';
 import { ToggleLanguageServerCommand } from './commands/toggleLanguageServer';
 import { InstallLanguageServerCommand } from './commands/installLanguageServer';
+import * as cp from 'child_process';
+import { version } from 'punycode';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 const logger = new logging.Logger("extension");
@@ -69,7 +71,9 @@ export async function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(new InstallLanguageServerCommand(ctx));
 
     if (getConfiguration().languageServer.enabled) {
-        await languageServerClient.start();
+            await languageServerClient.start();
+    } else {
+        informUserAboutLspIfTf12();
     }
 
     ctx.subscriptions.push(new LintCommand(ctx))
@@ -140,6 +144,17 @@ export async function activate(ctx: vscode.ExtensionContext) {
         if (Command.RegisteredCommands.indexOf(cmd.command) === -1) {
             throw new Error(`Command ${cmd.command} (${cmd.title}) not registered`);
         }
+    }
+}
+
+function informUserAboutLspIfTf12() {
+    try {
+        const versionResponse = cp.execSync("terraform --version");
+        if (versionResponse.includes("Terraform v0.12")) {
+            vscode.window.showInformationMessage("For Terraform 0.12 support try enabling the experimental language server with the 'Terraform: Enable/Disable Language Server' command");
+        }
+    } catch {
+        // Swallow this error
     }
 }
 
