@@ -105,8 +105,14 @@ export class InstallLanguageServerCommand extends Command {
               }
             })
           )
-          unzipStream.on("finish", () => {
-            // ExperimentalLanguageClient.reloadWindow();
+          unzipStream.on("finish", async () => {
+            const langClient = new ExperimentalLanguageClient(this.ctx);
+            try {
+              await langClient.start();
+            } catch (e) {
+              vscode.window.showErrorMessage(`Failed to start server: ${e}`);
+            }
+            langClient.currentReleaseId = releaseId;
             resolve();
           });
         } catch (err) {

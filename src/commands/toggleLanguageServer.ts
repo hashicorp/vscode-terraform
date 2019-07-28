@@ -27,7 +27,7 @@ export class ToggleLanguageServerCommand extends Command {
 
     // Reload the window to start the server
     if (langServerConfig.enabled) {
-      await new ExperimentalLanguageClient().start(this.ctx);
+      await new ExperimentalLanguageClient(this.ctx).start();
     } else {
       ExperimentalLanguageClient.stopIfRunning();
     }
