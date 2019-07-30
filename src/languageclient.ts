@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as Path from 'path';
+import * as ps from 'process';
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -86,8 +87,23 @@ export class ExperimentalLanguageClient {
                     }
 
                     progress.report({
+                        message: "Installing/Downloading common providers",
+                        increment: 30
+                    })
+
+                    // To work around issues with provider discovery in the current LSP
+                    // we install some common providers in the ./lspbin directory
+                    // this also enables use with tf projects where `tf init` hasn't been run
+                    // see https://github.com/juliosueiras/terraform-lsp/issues/12 for details
+                    try {
+                        await this.installCommonProviders(serverLocation);
+                    } catch (e) {
+                        vscode.window.showErrorMessage(`Failed to download common providers: ${e}`);
+                    }
+
+                    progress.report({
                         message: "Initializing Language Server",
-                        increment: 40
+                        increment: 50
                     })
 
                     let serverOptions: ServerOptions = {
@@ -139,6 +155,11 @@ export class ExperimentalLanguageClient {
                         }
                     });
 
+                    progress.report({
+                        message: "Initializing Language Server",
+                        increment: 70
+                    })
+
                     // Start the client. This will also launch the server
                     this.ctx.subscriptions.push(langClient.start());
 
@@ -162,5 +183,78 @@ export class ExperimentalLanguageClient {
                 }
             });
         });
+
+    }
+
+    private async installCommonProviders(serverLocation: string) {
+        let terminal = vscode.window.createTerminal("Terraform: Install providers");
+        const defaultProvidersPath = Path.join(serverLocation, "providers.tf");
+        if (!fs.existsSync(defaultProvidersPath)) {
+            fs.writeFileSync(defaultProvidersPath, `
+provider "aws" {}
+provider "azurerm" {}
+provider "google" {}
+provider "alicloud" {}
+provider "heml" {}
+provider "kubernetes" {}
+provider "random" {}
+provider "null" {}
+provider "external" {}
+provider "template" {}
+provider "archive" {}
+                        `);
+        }
+        const defaultProvidersPluginsPath = Path.join(serverLocation, ".terraform", "plugins");
+        if (!fs.existsSync(defaultProvidersPluginsPath)) {
+            terminal.show();
+            terminal.sendText(`cd ${serverLocation} && terraform init`);
+            terminal.sendText(`echo "Done" && exit 0`);
+            let terminalPid = await terminal.processId;
+            // Hack to wait on the process to exit
+            let isRunning = true;
+            while (isRunning) {
+                try {
+                    ps.kill(terminalPid, 0);
+                } catch (e) {
+                    isRunning = false;
+                }
+            }
+        }
+        const providerBinaries = this.findFilesInDir(defaultProvidersPluginsPath, "terraform-provider");
+        providerBinaries.forEach(file => {
+            const newLocation = Path.join(serverLocation, file.filename);
+            fs.copyFileSync(file.fullPath, newLocation);
+            fs.chmodSync(newLocation, '777');
+        });
+    }
+
+    /**
+     * Find all files recursively in specific folder with specific extension, e.g:
+     * findFilesInDir('./project/src', '.html') ==> ['./project/src/a.html','./project/src/build/index.html']
+     * @param  {String} startPath    Path relative to this file or other file which requires this files
+     * @param  {String} filter       Extension name, e.g: '.html'
+     * @return {Array}               Result files with path string in an array
+     */
+    private findFilesInDir(startPath: string, filter: string) {
+
+        let results = [];
+
+        if (!fs.existsSync(startPath)) {
+            console.log("no dir ", startPath);
+            return;
+        }
+
+        let files = fs.readdirSync(startPath);
+        for (let i = 0; i < files.length; i++) {
+            let fullPath = Path.join(startPath, files[i]);
+            let stat = fs.lstatSync(fullPath);
+            if (stat.isDirectory()) {
+                results = results.concat(this.findFilesInDir(fullPath, filter));
+            } else if (fullPath.indexOf(filter) >= 0) {
+                console.log('-- found: ', fullPath);
+                results.push({ fullPath: fullPath, filename: files[i] });
+            }
+        }
+        return results;
     }
 }

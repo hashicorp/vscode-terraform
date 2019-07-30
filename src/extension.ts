@@ -71,7 +71,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(new InstallLanguageServerCommand(ctx));
 
     if (getConfiguration().languageServer.enabled) {
-            await languageServerClient.start();
+        await languageServerClient.start();
     } else {
         informUserAboutLspIfTf12();
     }
