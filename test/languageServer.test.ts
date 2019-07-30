@@ -4,7 +4,7 @@ import { ToggleLanguageServerCommand } from '../src/commands/toggleLanguageServe
 import { getConfiguration } from '../src/configuration';
 import { InstallLanguageServerCommand } from '../src/commands/installLanguageServer';
 import { ExperimentalLanguageClient } from '../src/languageclient';
-import { executeProvider, shouldHaveCompletion, shouldHaveFunctionCompletion } from './completion-provider.test'
+import { executeProvider, shouldHaveCompletion } from './completion-provider.test'
 
 
 suite("Language Server", () => {
