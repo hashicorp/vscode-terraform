@@ -11,6 +11,7 @@ export interface TerraformLanguageServerConfiguration {
   enabled: boolean;
   args: boolean;
   pathToBinary: string;
+  installCommonProviders: boolean;
 }
 
 

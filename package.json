@@ -218,6 +218,11 @@
               "description": "Enables or disables the indexing",
               "default": false
             },
+            "installCommonProviders": {
+              "type": "boolean",
+              "description": "To aid intellisense this automatically installs common providers for the LSP",
+              "default": true
+            },
             "args": {
               "type": "array",
               "description": "Arguments to pass to the language server",
@@ -266,7 +271,7 @@
     "@types/lodash": "^4.14.136",
     "@types/minimatch": "^3.0.3",
     "@types/mocha": "^2.2.48",
-    "@types/node": "^6.14.7",
+    "@types/node": "^8.5.0",
     "@types/uuid": "^3.4.5",
     "@types/vscode": "^1.36.0",
     "chalk": "^2.4.2",
