@@ -6,7 +6,6 @@ import { InstallLanguageServerCommand } from '../src/commands/installLanguageSer
 import { ExperimentalLanguageClient } from '../src/languageclient';
 import { executeProvider, shouldHaveCompletion } from './completion-provider.test'
 
-
 suite("Language Server", () => {
   test("Install", async () => {
     await vscode.commands.executeCommand('terraform.' + InstallLanguageServerCommand.CommandName, '18762624');
@@ -66,5 +65,5 @@ suite("Language Server", () => {
     });
 
     assert(!ExperimentalLanguageClient.isRunning, "Expect Language Server to be stopped")
-  }).timeout(1000);
+  }).timeout(10000);
 });
