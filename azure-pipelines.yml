@@ -6,12 +6,12 @@ strategy:
     linux:
       imageName: 'ubuntu-16.04'
     # The build needs docker so skipping macOS for now
-    # mac:
-    #  imageName: 'macOS-10.14'
+    mac:
+     imageName: 'macOS-10.14'
     # Docker fails on Windows, temp. disabling for now, it is
     # time to just bundle hcl-hil.js directly
-    # windows:
-    #  imageName: 'vs2017-win2016'
+    windows:
+     imageName: 'vs2017-win2016'
 
 pool:
   vmImage: $(imageName)

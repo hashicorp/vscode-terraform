@@ -96,6 +96,8 @@ gulp.task('generate-hcl-hil.js', gulp.series('create-output-directory', 'generat
         if (code !== 0) {
             done(new Error(`docker run gopher-hcl-gopherjs failed with code ${code}`));
         } else {
+            // Keep a copy in git to speed up builds.
+            fs.copyFileSync('out/src/hcl-hil.js', 'hcl-hil/hcl-hil.js');
             done();
         }
     });
@@ -214,10 +216,12 @@ gulp.task('generate-release-notes', function generateReleaseNotes(done) {
 });
 
 // figure if we want to skip hcl-hil.js generation
-const hclJsAlreadyBuilt = fs.existsSync("out/src/hcl-hil.js");
+const hclJsAlreadyBuilt = fs.existsSync("hcl-hil/hcl-hil.js");
 const skipHclHilJs = helpers.offlineBuild || (hclJsAlreadyBuilt && !helpers.forceWrapperGeneration);
 if (skipHclHilJs) {
     log(`${chalk.yellow('INFO')}: skipping generation of hcl-hil.js, you can force generation using --force-wrapper-generation`);
+    mkdirp.sync('out/src');
+    fs.copyFileSync('hcl-hil/hcl-hil.js', 'out/src/hcl-hil.js');
 }
 
 // compile
