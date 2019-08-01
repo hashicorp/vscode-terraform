@@ -88,18 +88,18 @@ export class ExperimentalLanguageClient {
                             message: "Downloading Language Server",
                             increment: 20
                         })
-                        vscode.commands.executeCommand(InstallLanguageServerCommand.CommandName);
+                        await vscode.commands.executeCommand('terraform.' + InstallLanguageServerCommand.CommandName);
                     }
 
-                    progress.report({
-                        message: "Installing/Downloading common providers",
-                        increment: 30
-                    })
 
                     // To work around issues with provider discovery in the current LSP
                     // we install some common providers in the ./lspbin directory
                     // this also enables use with tf projects where `tf init` hasn't been run
                     // see https://github.com/juliosueiras/terraform-lsp/issues/12 for details
+                    progress.report({
+                        message: "Installing/Downloading common providers",
+                        increment: 30
+                    })
                     try {
                         await this.installCommonProviders(serverLocation);
                     } catch (e) {
@@ -184,6 +184,7 @@ export class ExperimentalLanguageClient {
                     }
 
                 } catch (e) {
+                    vscode.window.showErrorMessage(`Failed starting language server. Error: ${e}`);
                     reject(e);
                 }
             });
@@ -200,7 +201,7 @@ provider "aws" {}
 provider "azurerm" {}
 provider "google" {}
 provider "alicloud" {}
-provider "heml" {}
+provider "helm" {}
 provider "kubernetes" {}
 provider "random" {}
 provider "null" {}

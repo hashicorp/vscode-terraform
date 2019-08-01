@@ -17,7 +17,7 @@ export class InstallLanguageServerCommand extends Command {
   }
 
   protected async perform(releaseId: string = null): Promise<void> {
-    ExperimentalLanguageClient.stopIfRunning();
+    await ExperimentalLanguageClient.stopIfRunning();
 
     const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(this.ctx.extensionPath, "lspbin");
 
@@ -102,6 +102,7 @@ export class InstallLanguageServerCommand extends Command {
               cwd: serverLocation,
               onwarn: (message, data) => {
                 console.log(message);
+                reject(message);
               }
             })
           )
