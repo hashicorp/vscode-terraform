@@ -9,9 +9,9 @@ strategy:
     mac:
      imageName: 'macOS-10.14'
     # Docker fails on Windows, temp. disabling for now, it is
-    # time to just bundle hcl-hil.js directly
-    windows:
-     imageName: 'vs2017-win2016'
+    # # time to just bundle hcl-hil.js directly
+    # windows:
+    #  imageName: 'vs2017-win2016'
 
 pool:
   vmImage: $(imageName)
@@ -52,6 +52,9 @@ steps:
     DISPLAY: ':99.0'
 
 - bash: |
+    # clean out providers and lsp 
+    rm -r ./lspbin
+    # package
     vsce package
   displayName: Creating extension package
 
