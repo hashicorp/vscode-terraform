@@ -66,9 +66,14 @@ export class ExperimentalLanguageClient {
                 try {
                     const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(this.ctx.extensionPath, "lspbin");
 
+                    if (!fs.existsSync(serverLocation)) {
+                        fs.mkdirSync(serverLocation)
+                    }
+
                     const thisPlatform = process.platform;
                     const executableName = thisPlatform === "win32" ? "terraform-lsp.exe" : "terraform-lsp";
-                    const executablePath = Path.join(serverLocation, executableName);
+                    let executablePath = Path.join(serverLocation, executableName);
+
 
                     if (!fs.existsSync(executablePath)) {
                         let continueInstall = await vscode.window.showInformationMessage(
