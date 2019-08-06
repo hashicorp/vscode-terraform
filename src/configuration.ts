@@ -14,7 +14,6 @@ export interface TerraformLanguageServerConfiguration {
   installCommonProviders: boolean;
 }
 
-
 export interface TerraformCodeLensConfiguration {
   enabled: boolean;
 }
