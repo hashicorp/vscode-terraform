@@ -16,7 +16,7 @@ export class InstallLanguageServerCommand extends Command {
     super(InstallLanguageServerCommand.CommandName, ctx, CommandType.PALETTE);
   }
 
-  protected async perform(releaseId: string = null): Promise<void> {
+  protected async perform(releaseId: string = null, githubRealeaseData: string = null): Promise<void> {
     await ExperimentalLanguageClient.stopIfRunning();
 
     const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(this.ctx.extensionPath, "lspbin");
@@ -29,14 +29,21 @@ export class InstallLanguageServerCommand extends Command {
     // Download language server
     const octokit = new Octokit();
 
-    // What releases are available?
-    const availableReleses = await octokit.repos.listReleases({
-      owner: 'juliosueiras',
-      repo: 'terraform-lsp'
-    });
+    let availableReleses: Octokit.ReposListReleasesResponse;
+    if (githubRealeaseData) {
+      availableReleses = JSON.parse(githubRealeaseData) as Octokit.ReposListReleasesResponse;
+    } else {
+      // What releases are available?
+      let apiRespose = await octokit.repos.listReleases({
+        owner: 'juliosueiras',
+        repo: 'terraform-lsp'
+      });
+      availableReleses = apiRespose.data;
+    }
+
 
     let releaseOptions = [];
-    availableReleses.data.forEach(r => {
+    availableReleses.forEach(r => {
       releaseOptions.push({
         label: r.name,
         description: `Is Prerelease version?: ${r.prerelease} Tag: ${r.tag_name}`,
@@ -53,7 +60,7 @@ export class InstallLanguageServerCommand extends Command {
       releaseId = choice.detail;
     }
 
-    const releaseDetails = availableReleses.data.filter((v) => v.id.toString() === releaseId)[0];
+    const releaseDetails = availableReleses.filter((v) => v.id.toString() === releaseId)[0];
 
     let platform = process.platform.toString();
     platform = platform === "win32" ? "windows" : platform;
