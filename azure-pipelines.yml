@@ -52,9 +52,6 @@ steps:
     DISPLAY: ':99.0'
 
 - bash: |
-    # clean out providers and lsp 
-    rm -r ./lspbin
-    # package
     vsce package
   displayName: Creating extension package
 

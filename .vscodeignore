@@ -16,3 +16,4 @@ tslint.json
 .jshintrc
 .markdownlint.json
 .travis.yml
+lspbin
