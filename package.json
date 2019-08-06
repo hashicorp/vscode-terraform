@@ -315,6 +315,7 @@
   "dependencies": {
     "@octokit/rest": "^16.28.4",
     "applicationinsights": "^1.4.0",
+    "glob": "^7.1.4",
     "graphlib-dot": "^0.6.2",
     "lodash": "^4.17.15",
     "minimatch": "^3.0.4",

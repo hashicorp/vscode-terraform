@@ -117,7 +117,7 @@ gulp.task(
             }
           });
         }));
-
+}));
 
 // copy autocompletion data
 gulp.task(
@@ -241,41 +241,32 @@ gulp.task('generate-release-notes', function generateReleaseNotes(done) {
 });
 
 // figure if we want to skip hcl-hil.js generation
-<<<<<<< HEAD
-const hclJsAlreadyBuilt = fs.existsSync('out/src/hcl-hil.js');
+const hclJsAlreadyBuilt = fs.existsSync('hcl-hil/hcl-hil.js');
 const skipHclHilJs = helpers.offlineBuild ||
     (hclJsAlreadyBuilt && !helpers.forceWrapperGeneration);
 if (skipHclHilJs) {
   log(`${
       chalk.yellow(
           'INFO')}: skipping generation of hcl-hil.js, you can force generation using --force-wrapper-generation`);
-  == == === const hclJsAlreadyBuilt = fs.existsSync('hcl-hil/hcl-hil.js');
-  const skipHclHilJs = helpers.offlineBuild ||
-      (hclJsAlreadyBuilt && !helpers.forceWrapperGeneration);
-  if (skipHclHilJs) {
-    log(`${
-        chalk.yellow(
-            'INFO')}: skipping generation of hcl-hil.js, you can force generation using --force-wrapper-generation`);
-    mkdirp.sync('out/src');
-    fs.copyFileSync('hcl-hil/hcl-hil.js', 'out/src/hcl-hil.js');
->>>>>>> Tweak: Commit hcl-hils to allow cross plat build/testing
-  }
+  mkdirp.sync('out/src');
+  fs.copyFileSync('hcl-hil/hcl-hil.js', 'out/src/hcl-hil.js');
+}
 
-  // compile
-  gulp.task(
-      'build',
-      gulp.series(
-          skipHclHilJs ? [] : ['generate-hcl-hil.js'],
-          'copy-autocompletion-data', 'copy-html-templates',
-          // 'generate-constants-keyfile',
-          'generate-release-notes', 'compile'));
+// compile
+gulp.task(
+    'build',
+    gulp.series(
+        skipHclHilJs ? [] : ['generate-hcl-hil.js'], 'copy-autocompletion-data',
+        'copy-html-templates',
+        // 'generate-constants-keyfile',
+        'generate-release-notes', 'compile'));
 
-  // watch
-  gulp.task('watch', gulp.series('build', () => {
-    return gulp.watch(
-        ['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'],
-        gulp.series('copy-html-templates', 'lint', 'test-no-fail', 'compile'));
-  }));
+// watch
+gulp.task('watch', gulp.series('build', () => {
+  return gulp.watch(
+      ['src/**/*.ts', 'src/ui/*.html', 'test/**/*.ts'],
+      gulp.series('copy-html-templates', 'lint', 'test-no-fail', 'compile'));
+}));
 
-  // default
-  gulp.task('default', gulp.series('build', 'lint', 'test'));
+// default
+gulp.task('default', gulp.series('build', 'lint', 'test'));
