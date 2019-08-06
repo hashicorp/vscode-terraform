@@ -43,7 +43,7 @@ steps:
   displayName: Running unit tests
 
 - bash: |
-    npm run compile && npm run integration-test
+    npm run integration-test
   displayName: Running integration tests
   env:
     DISPLAY: ':99.0'

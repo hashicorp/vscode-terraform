@@ -1,6 +1,10 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 suite("CodeLense Tests", () => {
   test("Annotates sections", async () => {
     let doc = await vscode.workspace.openTextDocument({
@@ -56,10 +60,13 @@ resource "null_resource" "reference_test" {
     let successful = await vscode.commands.executeCommand('terraform.index-document', doc.uri) as boolean;
     assert(successful, "forced indexing not successful");
 
+    await delay(1000);
+
     let lenses = await vscode.commands.executeCommand('vscode.executeCodeLensProvider', doc.uri, 10) as vscode.CodeLens[];
+
     assert.equal(lenses.length, 2);
 
     assert.equal(lenses[0].range.start.line, 1);
     assert.equal(lenses[0].command.title, "1 references");
-  });
+  }).timeout(5000);
 });
