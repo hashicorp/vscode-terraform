@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as Path from 'path';
 import * as ps from 'process';
+import * as glob from 'glob';
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -232,10 +233,20 @@ provider "archive" {}
                 }
             }
         }
-        const providerBinaries = this.findFilesInDir(defaultProvidersPluginsPath, "terraform-provider");
+        const providerBinaries = glob.sync(
+            Path.join(
+                serverLocation,
+                ".terraform",
+                "plugins",
+                "**",
+                "terraform-provider*")
+        );
+        if (!providerBinaries) {
+            return vscode.window.showErrorMessage(`Failed to copy default providers into lspbin. Extension may not function correctly`);
+        }
         providerBinaries.forEach(file => {
-            const newLocation = Path.join(serverLocation, file.filename);
-            fs.copyFileSync(file.fullPath, newLocation);
+            const newLocation = Path.join(serverLocation, Path.basename(file));
+            fs.copyFileSync(file, newLocation);
             fs.chmodSync(newLocation, '777');
         });
     }
@@ -263,35 +274,5 @@ provider "archive" {}
         }
 
         return false;
-    }
-
-    /**
-     * Find all files recursively in specific folder with specific extension, e.g:
-     * findFilesInDir('./project/src', '.html') ==> ['./project/src/a.html','./project/src/build/index.html']
-     * @param  {String} startPath    Path relative to this file or other file which requires this files
-     * @param  {String} filter       Extension name, e.g: '.html'
-     * @return {Array}               Result files with path string in an array
-     */
-    private findFilesInDir(startPath: string, filter: string) {
-
-        let results = [];
-
-        if (!fs.existsSync(startPath)) {
-            console.log("no dir ", startPath);
-            return;
-        }
-
-        let files = fs.readdirSync(startPath);
-        for (let i = 0; i < files.length; i++) {
-            let fullPath = Path.join(startPath, files[i]);
-            let stat = fs.lstatSync(fullPath);
-            if (stat.isDirectory()) {
-                results = results.concat(this.findFilesInDir(fullPath, filter));
-            } else if (fullPath.indexOf(filter) >= 0) {
-                console.log('-- found: ', fullPath);
-                results.push({ fullPath: fullPath, filename: files[i] });
-            }
-        }
-        return results;
     }
 }
