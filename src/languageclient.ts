@@ -221,8 +221,10 @@ provider "archive" {}
         const defaultProvidersPluginsPath = Path.join(serverLocation, ".terraform", "plugins");
         if (!fs.existsSync(defaultProvidersPluginsPath)) {
             terminal.show();
-            terminal.sendText(`cd ${serverLocation} && terraform init`);
-            terminal.sendText(`echo "Done" && exit 0`);
+            terminal.sendText(`cd ${serverLocation}`);
+            terminal.sendText(`terraform init`);
+            terminal.sendText(`echo "Done"`);
+            terminal.sendText(`exit 0`);
             let terminalPid = await terminal.processId;
             // Hack to wait on the process to exit
             let isRunning = true;
