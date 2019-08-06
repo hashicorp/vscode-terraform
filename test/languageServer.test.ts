@@ -56,16 +56,8 @@ suite("Language Server", () => {
     assert.equal(getConfiguration().languageServer.enabled, false, "Expect language server to be enabled");
     assert.equal(getConfiguration().indexing.enabled, true, "Expect indexing to be enabled");
 
-    let doc = await vscode.workspace.openTextDocument({
-      language: "terraform",
-      content:
-        'resource "aws_s3_bucket" "document-link-test" {\n' +
-        '  bucket = "document-link-test"\n' +
-        '}'
-    });
-
     assert(!ExperimentalLanguageClient.isRunning, "Expect Language Server to be stopped");
-  }).timeout(10000);
+  }).timeout(100000);
 });
 
 const githubReleaseData = `[
