@@ -94,7 +94,7 @@ export interface AstKey {
 export interface AstItem {
     Keys: AstKey[];
     Assign: AstPosition;
-    Val: AstVal,
+    Val: AstVal;
     LeadComment: any;
     LineComment: any;
 }

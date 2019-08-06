@@ -3,7 +3,7 @@ export interface InterpolationFunctionDefinition {
     name: string;
     description: string;
     parameters: string[];
-};
+}
 
 export const KnownFunctions: InterpolationFunctionDefinition[] = [
     {

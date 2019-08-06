@@ -60,7 +60,7 @@ suite("Index Tests", () => {
     });
 
     test("formats simple map correctly", () => {
-      const [ast, error] = parseHcl('variable "region" { default = { a = "b" c = "d" } }')
+      const [ast, error] = parseHcl('variable "region" { default = { a = "b" c = "d" } }');
       let val = findValue(ast.Node.Items[0], "default");
 
       assert.equal(valueToMarkdown(val), "- a: `b`\n- c: `d`");
@@ -68,7 +68,7 @@ suite("Index Tests", () => {
     });
 
     test("formats map of list correctly", () => {
-      const [ast, error] = parseHcl('variable "region" { default = { a = ["a", "b"] } }')
+      const [ast, error] = parseHcl('variable "region" { default = { a = ["a", "b"] } }');
       let val = findValue(ast.Node.Items[0], "default");
 
       assert.equal(valueToMarkdown(val), "- a:\n  1. `a`\n  2. `b`");
@@ -76,7 +76,7 @@ suite("Index Tests", () => {
     });
 
     test("formats map of map correctly", () => {
-      const [ast, error] = parseHcl('variable "region" { default = { a = { "a" = "b" } } }')
+      const [ast, error] = parseHcl('variable "region" { default = { a = { "a" = "b" } } }');
       let val = findValue(ast.Node.Items[0], "default");
 
       assert.equal(valueToMarkdown(val), "- a:\n  - a: `b`");
@@ -84,7 +84,7 @@ suite("Index Tests", () => {
     });
 
     test("formats group correctly", () => {
-      const [ast, error] = parseHcl('resource "type" "region" { group { a = "b" } }')
+      const [ast, error] = parseHcl('resource "type" "region" { group { a = "b" } }');
       let val = findValue(ast.Node.Items[0], "group");
 
       assert.equal(valueToMarkdown(val), "- a: `b`");

@@ -277,6 +277,8 @@
     "compile": "gulp compile",
     "watch": "gulp watch",
     "gulp": "gulp",
+    "tslint": "tslint --project ./",
+    "tslint-fix": "tslint --project ./ --fix",
     "vscode:prepublish": "npm install --no-save && npm run gulp -- --require-appinsights-key",
     "test": "gulp test",
     "integration-test": "node ./out/test/run-test.js",

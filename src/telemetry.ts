@@ -127,7 +127,7 @@ class TelemetryReporter extends vscode.Disposable {
       'common.vscodemachineid': vscode.env.machineId,
       'common.vscodesessionid': vscode.env.sessionId,
       'common.vscodeversion': vscode.version
-    }
+    };
   }
 }
 

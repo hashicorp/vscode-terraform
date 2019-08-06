@@ -63,7 +63,7 @@ type Issue = {
   message: string;
   line: number;
   file: string;
-}
+};
 
 function typeToSeverity(type: string): vscode.DiagnosticSeverity {
   switch (type) {

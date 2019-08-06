@@ -30,7 +30,6 @@ import { ExperimentalLanguageClient } from './languageclient';
 import { ToggleLanguageServerCommand } from './commands/toggleLanguageServer';
 import { InstallLanguageServerCommand } from './commands/installLanguageServer';
 import * as cp from 'child_process';
-import { version } from 'punycode';
 
 export let outputChannel = vscode.window.createOutputChannel("Terraform");
 const logger = new logging.Logger("extension");
@@ -44,7 +43,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
     const start = process.hrtime();
 
     if (getConfiguration().languageServer.enabled && getConfiguration().indexing.enabled) {
-        vscode.window.showErrorMessage("You have `terraform.indexing.enabled` and `terraform.languageServer.enabled`. We strongly suggest only enabling one of these as they may cause issues when running together.")
+        vscode.window.showErrorMessage("You have `terraform.indexing.enabled` and `terraform.languageServer.enabled`. We strongly suggest only enabling one of these as they may cause issues when running together.");
     }
 
     let indexAdapter = new IndexAdapter(new Index, getConfiguration().indexing.exclude || []);
@@ -76,7 +75,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
         informUserAboutLspIfTf12();
     }
 
-    ctx.subscriptions.push(new LintCommand(ctx))
+    ctx.subscriptions.push(new LintCommand(ctx));
     if (getConfiguration().indexing.enabled) {
             ctx.subscriptions.push(
             new PlanCommand(runner, indexAdapter, ctx),
@@ -95,7 +94,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
             vscode.languages.registerRenameProvider(documentSelector, new RenameProvider(indexAdapter)),
             vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
             vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter)),
-            vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter))
+            vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter));
             // views
             vscode.window.registerTreeDataProvider('terraform-modules', new ModuleOverview(indexAdapter));
             if (getConfiguration().codelens.enabled) {
@@ -132,7 +131,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
     if (vscode.extensions.getExtension('erd0s.terraform-autocomplete')) {
         const message =
             "The extension erd0s.terraform-autocomplete is known to cause issues with the Terraform plugin\n" +
-            "please refer to https://github.com/mauve/vscode-terraform/issues/102 for more information."
+            "please refer to https://github.com/mauve/vscode-terraform/issues/102 for more information.";
         vscode.window.showInformationMessage(message);
         logger.error(message);
     }

@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { IndexAdapter } from "../index/index-adapter";
 import { Command, CommandType } from "./command";
 import { getConfiguration } from "../configuration";
 import { ExperimentalLanguageClient } from "../languageclient";

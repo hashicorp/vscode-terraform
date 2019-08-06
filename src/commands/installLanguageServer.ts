@@ -33,7 +33,7 @@ export class InstallLanguageServerCommand extends Command {
     const availableReleses = await octokit.repos.listReleases({
       owner: 'juliosueiras',
       repo: 'terraform-lsp'
-    })
+    });
 
     let releaseOptions = [];
     availableReleses.data.forEach(r => {
@@ -45,7 +45,7 @@ export class InstallLanguageServerCommand extends Command {
     });
 
     if (!releaseId) {
-      let choice = await vscode.window.showQuickPick(releaseOptions, { placeHolder: "Terraform language server install - please pick a version" })
+      let choice = await vscode.window.showQuickPick(releaseOptions, { placeHolder: "Terraform language server install - please pick a version" });
       if (choice === undefined) {
         vscode.window.showErrorMessage("You must pick a version to complete installation");
         return;
@@ -88,7 +88,7 @@ export class InstallLanguageServerCommand extends Command {
                 reject(message);
               }
             })
-          )
+          );
           unzipStream.on("finish", async () => {
             const langClient = new ExperimentalLanguageClient(this.ctx);
             try {
