@@ -35,46 +35,29 @@ export class InstallLanguageServerCommand extends Command {
       repo: 'terraform-lsp'
     })
 
-    if (!releaseId) {
-      let releaseOptions = [];
-      availableReleses.data.forEach(r => {
-        releaseOptions.push({
-          label: r.name,
-          description: `Is Prerelease version?: ${r.prerelease} Tag: ${r.tag_name}`,
-          detail: r.id.toString()
-        } as QuickPickItem);
-      });
+    let releaseOptions = [];
+    availableReleses.data.forEach(r => {
+      releaseOptions.push({
+        label: r.name,
+        description: `Is Prerelease version?: ${r.prerelease} Tag: ${r.tag_name}`,
+        detail: r.id.toString()
+      } as QuickPickItem);
+    });
 
+    if (!releaseId) {
       let choice = await vscode.window.showQuickPick(releaseOptions, { placeHolder: "Terraform language server install - please pick a version" })
       if (choice === undefined) {
         vscode.window.showErrorMessage("You must pick a version to complete installation");
         return;
       }
-
       releaseId = choice.detail;
     }
 
-    const release = await octokit.repos.getRelease({
-      owner: 'juliosueiras',
-      repo: 'terraform-lsp',
-      release_id: Number.parseFloat(releaseId)
-    })
+    const releaseDetails = availableReleses.data.filter((v) => v.id.toString() === releaseId)[0];
 
-    // The github releases refer to `windows` not `win32` so
-    // change the platform string if we're on `win32`
     let platform = process.platform.toString();
     platform = platform === "win32" ? "windows" : platform;
-
-    let downloadUrl = "NotFound";
-    release.data.assets.forEach(asset => {
-      if (!asset.name.endsWith('.tar.gz')) {
-        return;
-      }
-
-      if (asset.name.includes(platform)) {
-        downloadUrl = asset.browser_download_url;
-      }
-    });
+    const downloadUrl = this.getDownloadUrl(releaseDetails, platform);
 
     if (downloadUrl === "NotFound") {
       vscode.window.showErrorMessage(`Failed to install, releases for the Lanugage server didn't contain a release for your platform: ${platform}`);
@@ -122,5 +105,18 @@ export class InstallLanguageServerCommand extends Command {
         }
       });
     });
+  }
+
+  private getDownloadUrl(release: Octokit.ReposGetReleaseResponse, platform: string) {
+    let downloadUrl = "NotFound";
+    release.assets.forEach(asset => {
+      if (!asset.name.endsWith('.tar.gz')) {
+        return;
+      }
+      if (asset.name.includes(platform)) {
+        downloadUrl = asset.browser_download_url;
+      }
+    });
+    return downloadUrl;
   }
 }

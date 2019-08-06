@@ -19,6 +19,7 @@ export class ExperimentalLanguageClient {
     public set currentReleaseId(v: string) {
         this.ctx.globalState.update("tfLspReleaseId", v);
     }
+
     private static client: LanguageClient;
     public static isRunning: boolean = false;
     private ctx: vscode.ExtensionContext;
@@ -169,16 +170,7 @@ export class ExperimentalLanguageClient {
                     this.ctx.subscriptions.push(langClient.start());
 
                     try {
-                        // After server is running lets do a check to see if a newer one exists
-                        const octokit = new Octokit();
-                        const release = await octokit.repos.getLatestRelease({
-                            owner: 'juliosueiras',
-                            repo: 'terraform-lsp'
-                        });
-
-                        if (this.currentReleaseId !== release.data.id.toString()) {
-                            vscode.window.showInformationMessage(`A newer Lanaguage Server is available ${release.data.tag_name}. Run the 'Install/Update Language Server' command to update`);
-                        }
+                        await this.checkForUpdatedLsp();
                     } catch (e) {
                         return vscode.window.showErrorMessage(`Failed checking for newer language server version. Error: ${e}`);
                     }
@@ -190,6 +182,20 @@ export class ExperimentalLanguageClient {
             });
         });
 
+    }
+
+    private async checkForUpdatedLsp() {
+        if (this.shouldCheckForLastestRelease()) {
+            // After server is running lets do a check to see if a newer one exists
+            const octokit = new Octokit();
+            const release = await octokit.repos.getLatestRelease({
+                owner: 'juliosueiras',
+                repo: 'terraform-lsp'
+            });
+            if (this.currentReleaseId !== release.data.id.toString()) {
+                vscode.window.showInformationMessage(`A newer Lanaguage Server is available ${release.data.tag_name}. Run the 'Install/Update Language Server' command to update`);
+            }
+        }
     }
 
     private async installCommonProviders(serverLocation: string) {
@@ -232,6 +238,31 @@ provider "archive" {}
             fs.copyFileSync(file.fullPath, newLocation);
             fs.chmodSync(newLocation, '777');
         });
+    }
+
+    /**
+     * Limit the calls to the github api
+     * so updates are only checked for once a day
+     * no matter how may times vscode is launched
+     */
+    private shouldCheckForLastestRelease(): boolean {
+        const lastUpdateKey = "tfLspLastUpdateCheck";
+        let dateLastCheckedValue = this.ctx.globalState.get(lastUpdateKey) as string;
+        if (dateLastCheckedValue === undefined) {
+            this.ctx.globalState.update(lastUpdateKey, new Date());
+            return true;
+        }
+
+        const dateLastChecked = new Date(dateLastCheckedValue);
+        const dateNow = new Date();
+
+        // Only run the check once a day
+        if (dateNow.getDay() !== dateLastChecked.getDay()) {
+            this.ctx.globalState.update(lastUpdateKey, new Date());
+            return true;
+        }
+
+        return false;
     }
 
     /**
