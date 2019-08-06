@@ -58,6 +58,7 @@ export class ExperimentalLanguageClient {
 
         this.isRunning = false;
     }
+
     public async start(prompt: boolean = true) {
         return new Promise(async (resolve, reject) => {
             await vscode.window.withProgress({
