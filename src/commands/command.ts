@@ -20,7 +20,7 @@ export abstract class Command extends vscode.Disposable {
     vscode.commands.registerCommand(
       'terraform.' + name,
       action
-    )
+    );
     this.RegisteredCommands.push('terraform.' + name);
   }
 

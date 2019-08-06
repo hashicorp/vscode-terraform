@@ -56,7 +56,7 @@ export class Reference {
       return {
         section_type: this.type,
         name: this.parts[0]
-      }
+      };
     }
 
     if (this.type === "data") {
@@ -64,7 +64,7 @@ export class Reference {
         section_type: this.type,
         type: this.parts[0],
         name: this.parts[1]
-      }
+      };
     }
 
     if (this.type === "module") {
@@ -73,14 +73,14 @@ export class Reference {
       return {
         section_type: this.type,
         name: this.parts[0]
-      }
+      };
     }
 
     if (this.type === "local") {
       return {
         section_type: "local",
         name: this.parts[0]
-      }
+      };
     }
 
     // assume resource
@@ -88,7 +88,7 @@ export class Reference {
       section_type: "resource",
       type: this.type,
       name: this.parts[0]
-    }
+    };
   }
 
   valuePath(): string[] {

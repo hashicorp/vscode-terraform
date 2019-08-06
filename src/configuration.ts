@@ -38,7 +38,7 @@ export interface TerraformConfiguration {
   languageServer: TerraformLanguageServerConfiguration;
   codelens: TerraformCodeLensConfiguration;
   telemetry: TerraformTelemetryConfiguration;
-  format: TerraformFormatConfiguration
+  format: TerraformFormatConfiguration;
 }
 
 export interface TerraformFormatConfiguration {

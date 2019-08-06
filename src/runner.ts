@@ -50,7 +50,7 @@ async function getTerraformVersion(binaryPath: string): Promise<TerraformExecuta
   return {
     path: binaryPath,
     version: TerraformVersion.parse(lines[0])
-  }
+  };
 }
 
 export class Runner extends vscode.Disposable {

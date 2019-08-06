@@ -5,6 +5,7 @@
       "parameters",
       "statements"
     ],
+    "semicolon": [true, "always"],
     "ban": false,
     "class-name": true,
     "comment-format": [

@@ -66,7 +66,7 @@ export enum ConstraintOperator {
   GreaterThanEqual = ">=",
   LessThanEqual = "<=",
   Pessimistic = "~>"
-};
+}
 
 export class VersionConstraint {
   constructor(readonly operator: ConstraintOperator,

@@ -44,7 +44,7 @@ export class PlanCommand extends Command {
       }
       return executable;
     } else {
-      let executable = this.runner.defaultExecutable
+      let executable = this.runner.defaultExecutable;
       if (!executable) {
         throw new Error(`No terraform executable available`);
       }

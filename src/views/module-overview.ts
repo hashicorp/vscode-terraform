@@ -178,19 +178,19 @@ export class ModuleOverview extends vscode.Disposable implements vscode.TreeData
       collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
       id: group.uri.toString(),
       iconPath: vscode.ThemeIcon.Folder
-    }
+    };
   }
 
   private propertyToTreeItem(property: Property): vscode.TreeItem {
     if (typeof property.value === "string") {
       return {
         label: `${property.name}: ${property.value}`
-      }
+      };
     } else {
       return {
         label: property.name,
         collapsibleState: vscode.TreeItemCollapsibleState.Collapsed
-      }
+      };
     }
   }
 

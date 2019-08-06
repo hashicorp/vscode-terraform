@@ -35,4 +35,4 @@ export class Property {
 
     return property.getPropertyRecursive(remaining[0], remaining.slice(1));
   }
-};
+}

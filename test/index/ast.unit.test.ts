@@ -59,7 +59,7 @@ suite("Index Tests", () => {
         });
 
         test("getText returns the text of a token", () => {
-            let list = ast.Node.Items[0].Val.List as AstList
+            let list = ast.Node.Items[0].Val.List as AstList;
             let text = getText(list.Items[0].Keys[0].Token);
 
             assert.equal(text, "default");

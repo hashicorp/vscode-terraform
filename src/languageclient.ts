@@ -51,7 +51,7 @@ export class ExperimentalLanguageClient {
             // We need the process to be stopped so we can overwrite the binary with the new version.
             // This is a hack for the time beind based on internal property of the languageClient object.
             const PID = langClient["_serverProcess"].pid;
-            process.kill(PID, 9)
+            process.kill(PID, 9);
         } catch {
             // May occur until PR merged
         }
@@ -69,7 +69,7 @@ export class ExperimentalLanguageClient {
                     const serverLocation = getConfiguration().languageServer.pathToBinary || Path.join(this.ctx.extensionPath, "lspbin");
 
                     if (!fs.existsSync(serverLocation)) {
-                        fs.mkdirSync(serverLocation)
+                        fs.mkdirSync(serverLocation);
                     }
 
                     const thisPlatform = process.platform;
@@ -89,7 +89,7 @@ export class ExperimentalLanguageClient {
                         progress.report({
                             message: "Downloading Language Server",
                             increment: 20
-                        })
+                        });
                         await vscode.commands.executeCommand('terraform.' + InstallLanguageServerCommand.CommandName);
                     }
 
@@ -101,7 +101,7 @@ export class ExperimentalLanguageClient {
                     progress.report({
                         message: "Installing/Downloading common providers",
                         increment: 30
-                    })
+                    });
                     try {
                         await this.installCommonProviders(serverLocation);
                     } catch (e) {
@@ -111,7 +111,7 @@ export class ExperimentalLanguageClient {
                     progress.report({
                         message: "Initializing Language Server",
                         increment: 50
-                    })
+                    });
 
                     let serverOptions: ServerOptions = {
                         command: executablePath,
@@ -155,7 +155,7 @@ export class ExperimentalLanguageClient {
                             progress.report({
                                 message: "Language Server Ready",
                                 increment: 100
-                            })
+                            });
                             ExperimentalLanguageClient.isRunning = true;
 
                             resolve();
@@ -165,7 +165,7 @@ export class ExperimentalLanguageClient {
                     progress.report({
                         message: "Initializing Language Server",
                         increment: 70
-                    })
+                    });
 
                     // Start the client. This will also launch the server
                     this.ctx.subscriptions.push(langClient.start());

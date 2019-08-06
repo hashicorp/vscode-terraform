@@ -4,7 +4,7 @@ import { ToggleLanguageServerCommand } from '../src/commands/toggleLanguageServe
 import { getConfiguration } from '../src/configuration';
 import { InstallLanguageServerCommand } from '../src/commands/installLanguageServer';
 import { ExperimentalLanguageClient } from '../src/languageclient';
-import { executeProvider, shouldHaveCompletion } from './completion-provider.test'
+import { executeProvider, shouldHaveCompletion } from './completion-provider.test';
 
 suite("Language Server", () => {
   test("Install", async () => {
@@ -26,7 +26,7 @@ suite("Language Server", () => {
         '}'
     });
 
-    assert(ExperimentalLanguageClient.isRunning, "Expect Language Server to be running")
+    assert(ExperimentalLanguageClient.isRunning, "Expect Language Server to be running");
   }).timeout(100000);
 
 
@@ -42,10 +42,10 @@ suite("Language Server", () => {
 
     let completions = await executeProvider(doc.uri, new vscode.Position(1, 15));
 
-    assert(ExperimentalLanguageClient.isRunning, "Expect Language Server to be running")
+    assert(ExperimentalLanguageClient.isRunning, "Expect Language Server to be running");
     assert.notEqual(completions.items.length, 0, "completions should not be empty");
 
-    assert(shouldHaveCompletion(completions, "variable"))
+    assert(shouldHaveCompletion(completions, "variable"));
 
   }).timeout(1000);
 
@@ -64,6 +64,6 @@ suite("Language Server", () => {
         '}'
     });
 
-    assert(!ExperimentalLanguageClient.isRunning, "Expect Language Server to be stopped")
+    assert(!ExperimentalLanguageClient.isRunning, "Expect Language Server to be stopped");
   }).timeout(10000);
 });

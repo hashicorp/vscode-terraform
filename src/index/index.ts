@@ -4,13 +4,13 @@ import { dirname, IndexGroup } from "./group";
 
 export interface IndexOptions {
     exclude?: string[];
-};
+}
 
 export interface ProviderInfo {
     name: string;
     alias?: string;
     version: string;
-};
+}
 
 export class Index {
     private _groups = new Map<string, IndexGroup>();
