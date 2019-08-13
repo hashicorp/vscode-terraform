@@ -221,7 +221,7 @@ provider "archive" {}
         const defaultProvidersPluginsPath = Path.join(serverLocation, ".terraform", "plugins");
         if (!fs.existsSync(defaultProvidersPluginsPath)) {
             terminal.show();
-            terminal.sendText(`cd ${serverLocation}`);
+            terminal.sendText(`cd "${serverLocation}"`);
             terminal.sendText(`terraform init`);
             terminal.sendText(`echo "Done"`);
             terminal.sendText(`exit 0`);
