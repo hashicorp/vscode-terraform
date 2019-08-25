@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "1.4.9999-dev",
+  "version": "1.4.0",
   "publisher": "mauve",
   "license": "BSD-3-Clause",
   "engines": {
