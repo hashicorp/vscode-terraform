@@ -117,7 +117,6 @@ gulp.task(
             }
           });
         }));
-}));
 
 // copy autocompletion data
 gulp.task(

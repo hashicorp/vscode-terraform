@@ -10,7 +10,7 @@ Thanks to [@lawrencegripper](https://github.com/lawrencegripper) and [@juliosuei
 
 Sadly, I am currently very busy with my work so I cannot dedicate anytime to this project, however I am very lucky to have enthuastic users who have stepped up and started to fix small issues and add some features.
 
-Terraform 0.12 support is still not available, but some progress is being made in issue https://github.com/mauve/vscode-terraform/issues/157 if you want to see this support land, I would kindly ask you to get involved with the users in that ticket.
+Terraform 0.12 support is still not available, but some progress is being made in issue [Issue 157](https://github.com/mauve/vscode-terraform/issues/157) if you want to see this support land, I would kindly ask you to get involved with the users in that ticket.
 
 ## Fixes
 
