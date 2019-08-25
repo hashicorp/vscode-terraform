@@ -16,4 +16,5 @@ tslint.json
 .jshintrc
 .markdownlint.json
 .travis.yml
-lspbin
+lspbin/**
+.nyc_output/**
