@@ -216,6 +216,7 @@ provider "null" {}
 provider "external" {}
 provider "template" {}
 provider "archive" {}
+provider "local" {}
                         `);
         }
         const defaultProvidersPluginsPath = Path.join(serverLocation, ".terraform", "plugins");
