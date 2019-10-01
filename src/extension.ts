@@ -60,7 +60,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
     );
 
     let watcher: FileSystemWatcher;
-    if (vscode.workspace.rootPath && getConfiguration().indexing.enabled) {
+    if (getConfiguration().indexing.enabled) {
         watcher = new FileSystemWatcher(indexAdapter);
         ctx.subscriptions.push(watcher);
     }
@@ -77,7 +77,7 @@ export async function activate(ctx: vscode.ExtensionContext) {
 
     ctx.subscriptions.push(new LintCommand(ctx));
     if (getConfiguration().indexing.enabled) {
-            ctx.subscriptions.push(
+        ctx.subscriptions.push(
             new PlanCommand(runner, indexAdapter, ctx),
             new IndexCommand(indexAdapter, ctx),
             new ValidateCommand(indexAdapter, runner, ctx),
@@ -85,8 +85,8 @@ export async function activate(ctx: vscode.ExtensionContext) {
             new NavigateToSectionCommand(indexAdapter, ctx),
             new PreviewGraphCommand(indexAdapter, runner, ctx),
             new ReindexCommand(indexAdapter, watcher, ctx));
-            // providers
-            vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
+        // providers
+        vscode.languages.registerCompletionItemProvider(documentSelector, new CompletionProvider(indexAdapter), '.', '"', '{', '(', '['),
             vscode.languages.registerDefinitionProvider(documentSelector, new DefinitionProvider(indexAdapter)),
             vscode.languages.registerDocumentSymbolProvider(documentSelector, new DocumentSymbolProvider(indexAdapter)),
             vscode.languages.registerWorkspaceSymbolProvider(new WorkspaceSymbolProvider(indexAdapter)),
@@ -95,19 +95,17 @@ export async function activate(ctx: vscode.ExtensionContext) {
             vscode.languages.registerHoverProvider(documentSelector, new HoverProvider(indexAdapter)),
             vscode.languages.registerDocumentLinkProvider(documentSelector, new DocumentLinkProvider(indexAdapter)),
             vscode.languages.registerFoldingRangeProvider(documentSelector, new CodeFoldingProvider(indexAdapter));
-            // views
-            vscode.window.registerTreeDataProvider('terraform-modules', new ModuleOverview(indexAdapter));
-            if (getConfiguration().codelens.enabled) {
-                ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(indexAdapter)));
-            }
-            // operations which should only work in a local context (as opposed to live-share)
-            if (vscode.workspace.rootPath) {
-                ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
-                // start to build the index
-                if (watcher) {
-                    await watcher.crawl();
-                }
-            }
+        // views
+        vscode.window.registerTreeDataProvider('terraform-modules', new ModuleOverview(indexAdapter));
+        if (getConfiguration().codelens.enabled) {
+            ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(documentSelector, new CodeLensProvider(indexAdapter)));
+        }
+        // operations which should only work in a local context (as opposed to live-share)
+        ctx.subscriptions.push(vscode.workspace.onDidChangeTextDocument((e) => liveIndex(indexAdapter, e)));
+        // start to build the index
+        if (watcher) {
+            await watcher.crawl();
+        }
     } else {
         const IndexerNotEnabledCommandHandler = () => {
             vscode.window.showErrorMessage('Cannot perform action currently using the Terraform Language Server not Indexer.');

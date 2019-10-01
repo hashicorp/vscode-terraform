@@ -10,6 +10,10 @@ function liveIndexEnabledForDocument(cfg: TerraformIndexConfiguration, doc: vsco
     return false;
   }
 
+  if (doc.uri.scheme !== "file") {
+    return false;
+  }
+
   return cfg.enabled && cfg.liveIndexing;
 }
 
