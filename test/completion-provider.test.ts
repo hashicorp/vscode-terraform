@@ -209,6 +209,7 @@ suite("Autocompletion Tests", () => {
 
             assert(!!shouldHaveCompletion(completions, "aws_alb_listener", vscode.CompletionItemKind.Class), "should some aws type for completion");
             assert(!!shouldHaveCompletion(completions, "azurerm_lb", vscode.CompletionItemKind.Class), "should some azurerm data completion");
+            assert(!!shouldHaveCompletion(completions, "azuread_user", vscode.CompletionItemKind.Class), "should have some azuread data completion");
             assert(!!shouldHaveCompletion(completions, "google_project_iam_member", vscode.CompletionItemKind.Class), "should some google completion");
             assert(!!shouldHaveCompletion(completions, "oci_audit_configuration", vscode.CompletionItemKind.Class), "should have some oci completion");
             // TODO: fix
