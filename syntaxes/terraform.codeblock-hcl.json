@@ -1,22 +1,22 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "sltest",
+	"name": "sltest-hcl",
 	"fileTypes": [],
 	"injectionSelector": "L:markup.fenced_code.block.markdown",
 	"patterns": [
 		{
-			"include": "#terraform-code-block-terraform"
+			"include": "#terraform-code-block-hcl"
 		}
 	],
 	"repository": {
-		"terraform-code-block-terraform": {
-			"begin": "(?<=[`~])terraform(\\s+[^`~]*)?$",
+		"terraform-code-block-hcl": {
+			"begin": "(?<=[`~])hcl(\\s+[^`~]*)?$",
 			"end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
 			"patterns": [
 				{
 					"begin": "(^|\\G)(\\s*)(.*)",  
 					"while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
-					"contentName": "meta.embedded.block.terraform",
+					"contentName": "meta.embedded.block.terraform-hcl",
 					"patterns": [
 						{
 							"include": "source.terraform"
@@ -26,5 +26,5 @@
 			]
 		}
 	},
-	"scopeName": "text.markdown.terraform.codeblock-terraform"
+	"scopeName": "text.markdown.terraform.codeblock-hcl"
 }

@@ -136,8 +136,15 @@
         "path": "./syntaxes/terraform.json"
       },
       {
-        "scopeName": "text.markdown.terraform.codeblock",
+        "scopeName": "text.markdown.terraform.codeblock-terraform",
         "path": "./syntaxes/terraform.codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ]
+      },
+      {
+        "scopeName": "text.markdown.terraform.codeblock-hcl",
+        "path": "./syntaxes/terraform.codeblock-hcl.json",
         "injectTo": [
           "text.html.markdown"
         ]
