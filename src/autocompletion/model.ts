@@ -1,6 +1,6 @@
 const awsResources: ITerraformData = require("../data/terraform-provider-aws.json");
 const azureResources: ITerraformData = require("../data/terraform-provider-azurerm.json");
-const azureadResources: ITerraformData = require("../data/terraform-provider-azuread.json")
+const azureadResources: ITerraformData = require("../data/terraform-provider-azuread.json");
 const googleResources: ITerraformData = require("../data/terraform-provider-google.json");
 const ociResources: ITerraformData = require("../data/terraform-provider-oci.json");
 const openstackResources: ITerraformData = require("../data/terraform-provider-openstack.json");
