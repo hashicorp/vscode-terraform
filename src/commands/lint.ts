@@ -26,7 +26,9 @@ export class LintCommand extends Command {
 
       const workspaceDir = workspaceFolder.uri.fsPath;
       try {
-        const issues = await lint(configuration["lintPath"], configuration["lintConfig"], workspaceDir);
+        const allFindings = await lint(configuration["lintPath"], configuration["lintConfig"], workspaceDir);
+        const issues = allFindings["issues"].concat(allFindings["errors"]);
+
         this.logger.info(`${issues.length} issues`);
 
         this.groupIssues(issues).forEach((diagnostics, file) => {
