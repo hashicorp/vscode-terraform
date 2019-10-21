@@ -209,6 +209,7 @@ provider "aws" {}
 provider "azurerm" {}
 provider "google" {}
 provider "alicloud" {}
+provider "oci" {}
 provider "helm" {}
 provider "kubernetes" {}
 provider "random" {}
