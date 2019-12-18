@@ -34,11 +34,11 @@ export class IndexAdapter extends vscode.Disposable {
     this.disposables.map(d => d.dispose());
   }
 
-  private onDidChangeWorkspaceFolders(e: vscode.WorkspaceFoldersChangeEvent) {
+  private onDidChangeWorkspaceFolders = (e: vscode.WorkspaceFoldersChangeEvent) => {
     // TODO: remove all groups which are part e.removed[]
   }
 
-  private onDidChangeConfiguration(e: vscode.ConfigurationChangeEvent) {
+  private onDidChangeConfiguration = (e: vscode.ConfigurationChangeEvent) => {
     if (!e.affectsConfiguration("terraform.indexing"))
       return;
     this.excludePaths = getConfiguration().indexing.exclude || [];
