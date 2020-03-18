@@ -71,8 +71,7 @@
         ],
         "extensions": [
           ".tf",
-          ".tfvars",
-          ".hcl"
+          ".tfvars"
         ],
         "configuration": "./language-configuration.json"
       },
