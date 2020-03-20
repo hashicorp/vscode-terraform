@@ -1,0 +1,24 @@
+{
+	"name": "terraform-vscode-client",
+	"description": "Terraform VSCode integration",
+	"author": "hashicorp",
+	"license": "MPL-2.0",
+	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hashicorp/terraform-vscode-extension.git"
+	},
+	"engines": {
+		"vscode": "^1.36.0"
+	},
+	"scripts": {
+		"update-vscode": "vscode-install",
+		"postinstall": "vscode-install"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^5.2.1"
+	},
+	"devDependencies": {
+		"vscode": "^1.1.35"
+	}
+}
