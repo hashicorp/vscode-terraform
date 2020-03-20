@@ -1,12 +1,5 @@
+node_modules/
 *.vsix
 .DS_Store
-node_modules/
-out/
 .vscode-test
 npm-debug.log
-# hcl-hil/*.js
-.terraform
-*.tfplan
-*.tfplan.json
-lspbin
-tf-tsp.log

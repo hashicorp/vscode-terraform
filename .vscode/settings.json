@@ -1,36 +1,6 @@
-// Place your settings in this file to overwrite default and user settings.
 {
-	"files.exclude": {
-		"out": false // set this to true to hide the "out" folder with the compiled JS files
-	},
-	"search.exclude": {
-		"out": true
-	},
-	"terraform.templateDirectory": "templates",
-	"mocha.files.glob": "test/**/*.unit.test.ts",
-	"mocha.options": {
-		"ui": "tdd",
-		"reporter": "spec"
-	},
-	"cSpell.words": [
-		"APPINSIGHTS",
-		"Hashicorp",
-		"Hashicorp's",
-		"filesize",
-		"gopherjs",
-		"graphlib",
-		"keyfile",
-		"reindex",
-		"terraform",
-		"tflint",
-		"tfsmurf",
-		"tfstate",
-		"tfvars",
-		"transpiled",
-		"vsce"
-	],
-	"mocha.requires": [
-		"ts-node/register",
-		"source-map-support/register"
-	]
+	"editor.insertSpaces": false,
+	"tslint.enable": true,
+	"typescript.tsc.autoDetect": "off",
+	"typescript.preferences.quoteStyle": "single"
 }
