@@ -25,7 +25,7 @@
     "workspaceContains:**/*.tf",
     "onCommand:terraform.toggleLanguageServer"
   ],
-  "main": "./client/out/extension",
+  "main": "./out/extension",
   "contributes": {
     "languages": [
       {
@@ -115,13 +115,18 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
+    "vscode:prepublish": "npm run update-vscode && npm run compile",
     "compile": "tsc -b",
     "watch": "tsc -b -w",
-    "postinstall": "cd client && npm install && cd ..",
+    "update-vscode": "vscode-install",
+    "postinstall": "vscode-install",
     "test": "sh ./scripts/e2e.sh"
   },
+  "dependencies": {
+    "vscode-languageclient": "^5.2.1"
+  },
   "devDependencies": {
+    "vscode": "^1.1.35",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
     "tslint": "^5.16.0",
