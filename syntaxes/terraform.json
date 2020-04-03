@@ -274,7 +274,11 @@
           "include": "#string_interpolation"
         },
         {
-          "match": "([\\w\\-\\/\\._\\\\%]+)",
+          "name": "constant.character.escape.doublequote",
+          "match": "\\\\\""
+        },
+        {
+          "match": "([#\\w\\-\\/\\._\\\\%]+)",
           "name": "string.quoted.double.terraform"
         }
       ]
