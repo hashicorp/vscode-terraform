@@ -153,3 +153,7 @@ Press `F2` to automatically rename a variable and its usages.
 ### Module Overview
 
 ![A custom view is contributed which shows an overview of all modules](https://raw.githubusercontent.com/mauve/vscode-terraform/master/images/terraform-module-overview.png)
+
+## Credits
+
+- [Mikael Olenfalk](https://github.com/mauve) - creating and supporting the [vscode-terraform](https://github.com/mauve/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
