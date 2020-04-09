@@ -54,6 +54,12 @@
         "path": "./syntaxes/terraform.tmGrammar.json"
       }
     ],
+    "snippets": [
+      {
+        "language": "terraform",
+        "path": "./snippets/terraform.json"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Terraform",
