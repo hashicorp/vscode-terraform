@@ -17,8 +17,23 @@ function activate(context) {
     let commandOutput = vscode.window.createOutputChannel("Terraform");
     let config = vscode.workspace.getConfiguration("terraform");
     let useLs = config.get("languageServer.external");
-    context.subscriptions.push(vscode.commands.registerCommand('terraform.validate', () => {
-        const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+    // Terraform Commands
+    const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(document => {
+        if (rootPath && config.get("fmtOnSave") && document.languageId == "terraform") {
+            child_process_1.exec(`terraform fmt -recursive -no-color ${rootPath}`, (err, stdout, stderr) => {
+                if (err) {
+                    commandOutput.appendLine(err.message);
+                }
+                if (stdout) {
+                    // Success! Do we want to log anything?
+                }
+                if (stderr) {
+                    commandOutput.appendLine(stderr);
+                }
+            });
+        }
+    }), vscode.commands.registerCommand('terraform.validate', () => {
         if (rootPath) {
             commandOutput.show();
             child_process_1.exec(`terraform validate -no-color ${rootPath}`, (err, stdout, stderr) => {
@@ -34,6 +49,7 @@ function activate(context) {
             });
         }
     }));
+    // Language Server
     context.subscriptions.push(vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {
         if (useLs) {
             useLs = false;
