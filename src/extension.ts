@@ -5,13 +5,34 @@ import {
 	ServerOptions,
 	Executable
 } from 'vscode-languageclient';
-import cp = require('child_process');
+import { exec, execFile } from 'child_process';
 
 let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
+	let commandOutput = vscode.window.createOutputChannel("Terraform");
 	let config = vscode.workspace.getConfiguration("terraform");
 	let useLs = config.get("languageServer.external");
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('terraform.validate', () => {
+			const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+			if (rootPath) {
+				commandOutput.show();
+				exec(`terraform validate -no-color ${rootPath}`, (err, stdout, stderr) => {
+					if (err) {
+						commandOutput.appendLine(err.message);
+					}
+					if (stdout) {
+						vscode.window.showInformationMessage(stdout);
+					}
+					if (stderr) {
+						commandOutput.appendLine(stderr);
+					}
+				});
+			}
+		})
+	);
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {
@@ -67,7 +88,7 @@ async function installLs(config: vscode.WorkspaceConfiguration) {
 	// find out if we have it installed
 	// check the version
 	const lspPath: string = config.get("languageServer.pathToBinary") || '';
-	cp.execFile(lspPath, ['terraform-ls', '-v'], (err, stdout, stderr) => {
+	execFile(lspPath, ['terraform-ls', '-v'], (err, stdout, stderr) => {
 		if (err) {
 			console.log(`Error when running the command "terraform-ls -v": `, err);
 			return;
@@ -86,7 +107,7 @@ function startLsClient(config: vscode.WorkspaceConfiguration) {
 	let serverOptions: ServerOptions;
 	let setup = vscode.window.createOutputChannel("Language Server");
 
-	setup.appendLine("Launching language server...")
+	setup.appendLine("Launching language server...");
 	let cmd: string = config.get("languageServer.pathToBinary") || '';
 
 	let executable: Executable = {

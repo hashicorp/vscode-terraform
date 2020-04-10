@@ -111,6 +111,10 @@
       {
         "command": "terraform.toggleLanguageServer",
         "title": "Terraform: Enable/Disable Language Server"
+      },
+      {
+        "command": "terraform.validate",
+        "title": "Terraform: Validate"
       }
     ]
   },
@@ -126,10 +130,10 @@
     "vscode-languageclient": "^5.2.1"
   },
   "devDependencies": {
-    "vscode": "^1.1.35",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
     "tslint": "^5.16.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "vscode": "^1.1.35"
   }
 }
