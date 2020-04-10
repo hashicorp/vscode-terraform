@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_languageclient_1 = require("vscode-languageclient");
 const child_process_1 = require("child_process");
+const terraform_command_1 = require("./terraform_command");
 let client;
 function activate(context) {
     let commandOutput = vscode.window.createOutputChannel("Terraform");
@@ -33,21 +34,12 @@ function activate(context) {
                 }
             });
         }
+    }), vscode.commands.registerCommand('terraform.init', () => {
+        terraform_command_1.runCommand(rootPath, commandOutput, 'init');
+    }), vscode.commands.registerCommand('terraform.plan', () => {
+        terraform_command_1.runCommand(rootPath, commandOutput, 'plan');
     }), vscode.commands.registerCommand('terraform.validate', () => {
-        if (rootPath) {
-            commandOutput.show();
-            child_process_1.exec(`terraform validate -no-color ${rootPath}`, (err, stdout, stderr) => {
-                if (err) {
-                    commandOutput.appendLine(err.message);
-                }
-                if (stdout) {
-                    vscode.window.showInformationMessage(stdout);
-                }
-                if (stderr) {
-                    commandOutput.appendLine(stderr);
-                }
-            });
-        }
+        terraform_command_1.runCommand(rootPath, commandOutput, 'validate');
     }));
     // Language Server
     context.subscriptions.push(vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {

@@ -6,6 +6,7 @@ import {
 	Executable
 } from 'vscode-languageclient';
 import { exec, execFile } from 'child_process';
+import { runCommand } from './terraform_command';
 
 let client: LanguageClient;
 
@@ -33,21 +34,14 @@ export function activate(context: vscode.ExtensionContext) {
 				});
 			}
 		}),
+		vscode.commands.registerCommand('terraform.init', () => {
+			runCommand(rootPath, commandOutput, 'init');
+		}),
+		vscode.commands.registerCommand('terraform.plan', () => {
+			runCommand(rootPath, commandOutput, 'plan');
+		}),
 		vscode.commands.registerCommand('terraform.validate', () => {
-			if (rootPath) {
-				commandOutput.show();
-				exec(`terraform validate -no-color ${rootPath}`, (err, stdout, stderr) => {
-					if (err) {
-						commandOutput.appendLine(err.message);
-					}
-					if (stdout) {
-						vscode.window.showInformationMessage(stdout);
-					}
-					if (stderr) {
-						commandOutput.appendLine(stderr);
-					}
-				});
-			}
+			runCommand(rootPath, commandOutput, 'validate');
 		})
 	);
 

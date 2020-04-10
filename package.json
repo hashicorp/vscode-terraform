@@ -118,6 +118,14 @@
         "title": "Terraform: Enable/Disable Language Server"
       },
       {
+        "command": "terraform.init",
+        "title": "Terraform: Init"
+      },
+      {
+        "command": "terraform.plan",
+        "title": "Terraform: Plan"
+      },
+      {
         "command": "terraform.validate",
         "title": "Terraform: Validate"
       }
