@@ -102,7 +102,6 @@ async function installThenStart(context: vscode.ExtensionContext, config: vscode
 	} else {
 		const installer = new LanguageServerInstaller;
 		const installDir: string = `${context.extensionPath}/lsp`
-		console.log('Setting install path to', installDir);
 		installer.install(installDir).then(() => {
 			config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
 			startLsClient(`${installDir}/terraform-ls`, config);

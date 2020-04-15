@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_languageclient_1 = require("vscode-languageclient");
 const child_process_1 = require("child_process");
+const languageServerInstaller_1 = require("./languageServerInstaller");
 const terraform_command_1 = require("./terraform_command");
 let client;
 function activate(context) {
@@ -42,20 +43,18 @@ function activate(context) {
         terraform_command_1.runCommand(rootPath, commandOutput, 'validate');
     }));
     // Language Server
-    context.subscriptions.push(vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('terraform.installLanguageServer', () => {
+        installThenStart(context, config);
+    }), vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {
+        stopLsClient();
         if (useLs) {
             useLs = false;
-            stopLsClient();
         }
         else {
             useLs = true;
-            installLs(config);
-            startLsClient(config);
+            installThenStart(context, config);
         }
         config.update("languageServer.external", useLs, vscode.ConfigurationTarget.Global);
-    }));
-    context.subscriptions.push(vscode.commands.registerCommand('terraform.installLanguageServer', () => {
-        installLs(config);
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((event) => {
         if (!event.affectsConfiguration('terraform.languageServer')) {
@@ -71,7 +70,7 @@ function activate(context) {
         }
     }));
     if (useLs) {
-        startLsClient(config);
+        installThenStart(context, config);
     }
 }
 exports.activate = activate;
@@ -82,48 +81,48 @@ function deactivate() {
     return client.stop();
 }
 exports.deactivate = deactivate;
-function installLs(config) {
+function installThenStart(context, config) {
     return __awaiter(this, void 0, void 0, function* () {
-        // find out if we have it installed
-        // check the version
-        const lspPath = config.get("languageServer.pathToBinary") || '';
-        child_process_1.execFile(lspPath, ['terraform-ls', '-v'], (err, stdout, stderr) => {
-            if (err) {
-                console.log(`Error when running the command "terraform-ls -v": `, err);
-                return;
-            }
-            if (stderr) {
-                vscode.window.showErrorMessage('No terraform-ls binary found');
-                return;
-            }
-            console.log('Found terraform-ls version ', stdout);
-        });
-        // install if not present
-        // offer to install a new one if old version is here
+        let command = config.get("languageServer.pathToBinary");
+        if (command) { // Skip install/upgrade if user has set custom binary path
+            startLsClient(command, config);
+        }
+        else {
+            const installer = new languageServerInstaller_1.LanguageServerInstaller;
+            const installDir = `${context.extensionPath}/lsp`;
+            installer.install(installDir).then(() => {
+                config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
+                startLsClient(`${installDir}/terraform-ls`, config);
+            }).catch((err) => {
+                config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
+                console.log(err);
+            });
+        }
     });
 }
-function startLsClient(config) {
-    let serverOptions;
-    let setup = vscode.window.createOutputChannel("Language Server");
-    setup.appendLine("Launching language server...");
-    let cmd = config.get("languageServer.pathToBinary") || '';
-    let executable = {
-        command: cmd,
-        args: config.get("languageServer.args"),
-        options: {}
-    };
-    serverOptions = {
-        run: executable,
-        debug: executable
-    };
-    let clientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'terraform' }],
-        synchronize: {
-            fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
-        },
-    };
-    client = new vscode_languageclient_1.LanguageClient('languageServer', 'Language Server', serverOptions, clientOptions);
-    return client.start();
+function startLsClient(cmd, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let serverOptions;
+        let setup = vscode.window.createOutputChannel("Language Server");
+        setup.appendLine("Launching language server...");
+        let executable = {
+            command: cmd,
+            args: config.get("languageServer.args"),
+            options: {}
+        };
+        serverOptions = {
+            run: executable,
+            debug: executable
+        };
+        let clientOptions = {
+            documentSelector: [{ scheme: 'file', language: 'terraform' }],
+            synchronize: {
+                fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
+            },
+        };
+        client = new vscode_languageclient_1.LanguageClient('languageServer', 'Language Server', serverOptions, clientOptions);
+        return client.start();
+    });
 }
 function stopLsClient() {
     if (!client) {

@@ -14,7 +14,6 @@ export class LanguageServerInstaller {
 		return new Promise<void>((resolve, reject) => {
 			cp.exec(lspCmd, (err, stdout, stderr) => {
 				if (err) {
-					console.log('Unable to check installed version of terraform-ls');
 					this.checkCurrent().then((version: string) => {
 						fs.mkdirSync(directory, { recursive: true });
 						this.installPkg(directory, version).then(() => {
@@ -28,7 +27,6 @@ export class LanguageServerInstaller {
 					});
 				} else if (stderr) { // Version outputs to stderr
 					const installedVersion: string = stderr;
-					console.log('Found terraform-ls version', installedVersion);
 					this.checkCurrent().then((newVersion: string) => {
 						if (semver.gt(newVersion, installedVersion, { includePrerelease: true })) {
 							const installMsg = `A new language server release is available: ${newVersion}. Install now?`;
@@ -67,7 +65,6 @@ export class LanguageServerInstaller {
 			})
 			.then(({ data }) => {
 				const newVersion = semver.clean(data.name);
-				console.log("Current ls release:", newVersion);
 				resolve(newVersion);
 			})
 			.catch((err) => {
@@ -101,7 +98,6 @@ export class LanguageServerInstaller {
 					}
 					break;
 				default: // If we're on an unexpected system or can't read this, abort
-					console.log('No supported platform found');
 					return Promise.reject();
 			}
 
@@ -116,7 +112,7 @@ export class LanguageServerInstaller {
 				title: "Installing terraform-ls"
 			}, (progress, token) => {
 				token.onCancellationRequested(() => {
-					console.log("User canceled language server install");
+					return reject();
 				});
 
 				progress.report({ increment: 10 });
@@ -138,7 +134,6 @@ export class LanguageServerInstaller {
 	}
 
 	download(downloadUrl: string, installPath: string) {
-		// console.log('Downloading update from', downloadUrl);
 		return new Promise<any>((resolve, reject) => {
 			const request = https.request(downloadUrl, (response) => {
 				if (response.statusCode === 301 || response.statusCode === 302) { // redirect for CDN
