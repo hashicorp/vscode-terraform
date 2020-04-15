@@ -5,7 +5,9 @@ import {
 	ServerOptions,
 	Executable
 } from 'vscode-languageclient';
-import { exec, execFile } from 'child_process';
+
+import { exec } from 'child_process';
+import { LanguageServerInstaller } from './languageServerInstaller';
 import { runCommand } from './terraform_command';
 
 let client: LanguageClient;
@@ -48,22 +50,18 @@ export function activate(context: vscode.ExtensionContext) {
 	// Language Server
 
 	context.subscriptions.push(
+		vscode.commands.registerCommand('terraform.installLanguageServer', () => {
+			installThenStart(context, config);
+		}),
 		vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {
+			stopLsClient();
 			if (useLs) {
 				useLs = false;
-				stopLsClient();
 			} else {
 				useLs = true;
-				installLs(config);
-				startLsClient(config);
+				installThenStart(context, config);
 			}
 			config.update("languageServer.external", useLs, vscode.ConfigurationTarget.Global);
-		})
-	);
-
-	context.subscriptions.push(
-		vscode.commands.registerCommand('terraform.installLanguageServer', () => {
-			installLs(config);
 		})
 	);
 
@@ -86,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 	
 	if (useLs) {
-		startLsClient(config);
+		installThenStart(context, config);
 	}
 }
 
@@ -97,31 +95,29 @@ export function deactivate(): Thenable<void> | undefined {
 	return client.stop();
 }
 
-async function installLs(config: vscode.WorkspaceConfiguration) {
-	// find out if we have it installed
-	// check the version
-	const lspPath: string = config.get("languageServer.pathToBinary") || '';
-	execFile(lspPath, ['terraform-ls', '-v'], (err, stdout, stderr) => {
-		if (err) {
-			console.log(`Error when running the command "terraform-ls -v": `, err);
-			return;
-		}
-		if (stderr) {
-			vscode.window.showErrorMessage('No terraform-ls binary found');
-			return;
-		}
-		console.log('Found terraform-ls version ', stdout);
-	})
-	// install if not present
-	// offer to install a new one if old version is here
+async function installThenStart(context: vscode.ExtensionContext, config: vscode.WorkspaceConfiguration) {
+	let command: string = config.get("languageServer.pathToBinary");
+	if (command) { // Skip install/upgrade if user has set custom binary path
+		startLsClient(command, config);
+	} else {
+		const installer = new LanguageServerInstaller;
+		const installDir: string = `${context.extensionPath}/lsp`
+		console.log('Setting install path to', installDir);
+		installer.install(installDir).then(() => {
+			config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
+			startLsClient(`${installDir}/terraform-ls`, config);
+		}).catch((err) => {
+			config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
+			console.log(err);
+		});
+	}
 }
 
-function startLsClient(config: vscode.WorkspaceConfiguration) {
+async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
 	let serverOptions: ServerOptions;
 	let setup = vscode.window.createOutputChannel("Language Server");
 
-	setup.appendLine("Launching language server...");
-	let cmd: string = config.get("languageServer.pathToBinary") || '';
+	setup.appendLine("Launching language server...")
 
 	let executable: Executable = {
 		command: cmd,
