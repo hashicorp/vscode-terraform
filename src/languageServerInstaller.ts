@@ -58,7 +58,7 @@ export class LanguageServerInstaller {
 
 	checkCurrent() {
 		const octokit = new Octokit();
-		return new Promise<any>((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 			octokit.repos.getLatestRelease({
 				owner: 'hashicorp',
 				repo: 'terraform-ls'
@@ -134,7 +134,7 @@ export class LanguageServerInstaller {
 	}
 
 	download(downloadUrl: string, installPath: string) {
-		return new Promise<any>((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 			const request = https.request(downloadUrl, (response) => {
 				if (response.statusCode === 301 || response.statusCode === 302) { // redirect for CDN
 					const redirectUrl: string = response.headers.location;
