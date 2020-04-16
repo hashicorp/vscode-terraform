@@ -155,6 +155,9 @@
 					"include": "#operators"
 				},
 				{
+					"include": "#tuple_for_expression"
+				},
+				{
 					"include": "#brackets"
 				},
 				{
@@ -407,9 +410,6 @@
 				},
 				{
 					"include": "#expressions"
-				},
-				{
-					"include": "#tuple_for_expression"
 				}
 			]
 		},
@@ -520,9 +520,12 @@
 			"end": "\\,|$\\n?|(?=\\})"
 		},
 		"tuple_for_expression": {
-			"begin": "\\bfor\\b",
+			"begin": "\\b(\\[)(for)\\b",
 			"beginCaptures": {
-				"0": {
+				"1": {
+					"name": "punctuation.section.brackets.begin.terraform"
+				},
+				"2": {
 					"comment": "for expression (arrays)",
 					"name": "keyword.control.terraform"
 				}
