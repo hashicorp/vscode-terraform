@@ -10,7 +10,7 @@ import * as yauzl from 'yauzl';
 
 export class LanguageServerInstaller {
 	public async install(directory: string) {
-		const lspCmd: string = `${directory}/terraform-ls --version`;
+		const lspCmd = `${directory}/terraform-ls --version`;
 		return new Promise<void>((resolve, reject) => {
 			cp.exec(lspCmd, (err, stdout, stderr) => {
 				if (err) {

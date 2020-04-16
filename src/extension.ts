@@ -13,8 +13,8 @@ import { runCommand } from './terraform_command';
 let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
-	let commandOutput = vscode.window.createOutputChannel("Terraform");
-	let config = vscode.workspace.getConfiguration("terraform");
+	const commandOutput = vscode.window.createOutputChannel("Terraform");
+	const config = vscode.workspace.getConfiguration("terraform");
 	let useLs = config.get("languageServer.external");
 
 	// Terraform Commands
@@ -96,12 +96,12 @@ export function deactivate(): Thenable<void> | undefined {
 }
 
 async function installThenStart(context: vscode.ExtensionContext, config: vscode.WorkspaceConfiguration) {
-	let command: string = config.get("languageServer.pathToBinary");
+	const command: string = config.get("languageServer.pathToBinary");
 	if (command) { // Skip install/upgrade if user has set custom binary path
 		startLsClient(command, config);
 	} else {
 		const installer = new LanguageServerInstaller;
-		const installDir: string = `${context.extensionPath}/lsp`
+		const installDir = `${context.extensionPath}/lsp`
 		installer.install(installDir).then(() => {
 			config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
 			startLsClient(`${installDir}/terraform-ls`, config);
@@ -114,11 +114,11 @@ async function installThenStart(context: vscode.ExtensionContext, config: vscode
 
 async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
 	let serverOptions: ServerOptions;
-	let setup = vscode.window.createOutputChannel("Language Server");
+	const setup = vscode.window.createOutputChannel("Language Server");
 
 	setup.appendLine("Launching language server...")
 
-	let executable: Executable = {
+	const executable: Executable = {
 		command: cmd,
 		args: config.get("languageServer.args"),
 		options: {}
@@ -128,7 +128,7 @@ async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration)
 		debug: executable
 	};
 
-	let clientOptions: LanguageClientOptions = {
+	const clientOptions: LanguageClientOptions = {
 		documentSelector: [{ scheme: 'file', language: 'terraform' }],
 		synchronize: {
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')

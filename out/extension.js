@@ -16,8 +16,8 @@ const languageServerInstaller_1 = require("./languageServerInstaller");
 const terraform_command_1 = require("./terraform_command");
 let client;
 function activate(context) {
-    let commandOutput = vscode.window.createOutputChannel("Terraform");
-    let config = vscode.workspace.getConfiguration("terraform");
+    const commandOutput = vscode.window.createOutputChannel("Terraform");
+    const config = vscode.workspace.getConfiguration("terraform");
     let useLs = config.get("languageServer.external");
     // Terraform Commands
     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
@@ -83,7 +83,7 @@ function deactivate() {
 exports.deactivate = deactivate;
 function installThenStart(context, config) {
     return __awaiter(this, void 0, void 0, function* () {
-        let command = config.get("languageServer.pathToBinary");
+        const command = config.get("languageServer.pathToBinary");
         if (command) { // Skip install/upgrade if user has set custom binary path
             startLsClient(command, config);
         }
@@ -103,9 +103,9 @@ function installThenStart(context, config) {
 function startLsClient(cmd, config) {
     return __awaiter(this, void 0, void 0, function* () {
         let serverOptions;
-        let setup = vscode.window.createOutputChannel("Language Server");
+        const setup = vscode.window.createOutputChannel("Language Server");
         setup.appendLine("Launching language server...");
-        let executable = {
+        const executable = {
             command: cmd,
             args: config.get("languageServer.args"),
             options: {}
@@ -114,7 +114,7 @@ function startLsClient(cmd, config) {
             run: executable,
             debug: executable
         };
-        let clientOptions = {
+        const clientOptions = {
             documentSelector: [{ scheme: 'file', language: 'terraform' }],
             synchronize: {
                 fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
