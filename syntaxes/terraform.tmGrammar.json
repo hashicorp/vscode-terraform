@@ -158,6 +158,9 @@
 					"include": "#tuple_for_expression"
 				},
 				{
+					"include": "#object_for_expression"
+				},
+				{
 					"include": "#brackets"
 				},
 				{
@@ -429,9 +432,6 @@
 			},
 			"patterns": [
 				{
-					"include": "#object_for_expression"
-				},
-				{
 					"include": "#comments"
 				},
 				{
@@ -520,13 +520,13 @@
 			"end": "\\,|$\\n?|(?=\\})"
 		},
 		"tuple_for_expression": {
-			"begin": "\\b(\\[)(for)\\b",
+			"begin": "(\\[)(for)\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.section.brackets.begin.terraform"
 				},
 				"2": {
-					"comment": "for expression (arrays)",
+					"comment": "for expression (tuple)",
 					"name": "keyword.control.terraform"
 				}
 			},
@@ -543,10 +543,13 @@
 			]
 		},
 		"object_for_expression": {
-			"begin": "\\bfor\\b",
+			"begin": "(\\{)(for)\\b",
 			"beginCaptures": {
-				"0": {
-					"comment": "for expression (arrays)",
+				"1": {
+					"name": "punctuation.section.braces.begin.terraform"
+				},
+				"2": {
+					"comment": "for expression (object)",
 					"name": "keyword.control.terraform"
 				}
 			},
