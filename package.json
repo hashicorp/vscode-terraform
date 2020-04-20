@@ -67,7 +67,7 @@
         "terraform.languageServer.external": {
           "scope": "resource",
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Whether an external language server binary should be launched."
         },
         "terraform.languageServer.pathToBinary": {

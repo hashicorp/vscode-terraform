@@ -29,7 +29,7 @@ export class LanguageServerInstaller {
 					this.checkCurrent().then((version: string) => {
 						fs.mkdirSync(directory, { recursive: true });
 						this.installPkg(directory, version, identifer).then(() => {
-							vscode.window.showInformationMessage(`Installed terraform-ls ${version}`, 'Start server');
+							vscode.window.showInformationMessage(`Installed terraform-ls ${version}`);
 							return resolve();
 						}).catch((err) => {
 							return reject(err);
@@ -46,7 +46,7 @@ export class LanguageServerInstaller {
 								if (selected === 'Install') {
 									fs.mkdirSync(directory, { recursive: true });
 									this.installPkg(directory, newVersion, identifer).then(() => {
-										vscode.window.showInformationMessage(`Installed terraform-ls ${newVersion}`, 'Start server');
+										vscode.window.showInformationMessage(`Installed terraform-ls ${newVersion}`);
 										return resolve();
 									}).catch((err) => {
 										return reject(err);
