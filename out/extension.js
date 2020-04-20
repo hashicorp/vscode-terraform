@@ -70,7 +70,7 @@ function activate(context) {
         }
     }));
     if (useLs) {
-        installThenStart(context, config);
+        return installThenStart(context, config);
     }
 }
 exports.activate = activate;
