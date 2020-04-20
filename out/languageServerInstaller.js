@@ -20,13 +20,25 @@ const yauzl = require("yauzl");
 class LanguageServerInstaller {
     install(directory) {
         return __awaiter(this, void 0, void 0, function* () {
-            const lspCmd = `${directory}/terraform-ls --version`;
             return new Promise((resolve, reject) => {
+                let identifer;
+                let extensionVersion = '2.0.0'; // TODO set this programatically
+                let tfVersion;
+                let vscodeVersion = vscode.version;
+                try {
+                    const checkTfVersion = cp.execSync('terraformy -v');
+                    tfVersion = semver.coerce(checkTfVersion.toString()).toString();
+                }
+                catch (err) {
+                    tfVersion = 'x.x.x'; // TODO better placeholder?
+                }
+                identifer = `Terraform-VSCode/${extensionVersion} Terraform/${tfVersion} VSCode/${vscodeVersion}`;
+                const lspCmd = `${directory}/terraform-ls --version`;
                 cp.exec(lspCmd, (err, stdout, stderr) => {
                     if (err) {
                         this.checkCurrent().then((version) => {
                             fs.mkdirSync(directory, { recursive: true });
-                            this.installPkg(directory, version).then(() => {
+                            this.installPkg(directory, version, identifer).then(() => {
                                 vscode.window.showInformationMessage(`Installed terraform-ls ${version}`, 'Start server');
                                 return resolve();
                             }).catch((err) => {
@@ -44,7 +56,7 @@ class LanguageServerInstaller {
                                 vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel').then((selected) => {
                                     if (selected === 'Install') {
                                         fs.mkdirSync(directory, { recursive: true });
-                                        this.installPkg(directory, newVersion).then(() => {
+                                        this.installPkg(directory, newVersion, identifer).then(() => {
                                             vscode.window.showInformationMessage(`Installed terraform-ls ${newVersion}`, 'Start server');
                                             return resolve();
                                         }).catch((err) => {
@@ -86,7 +98,7 @@ class LanguageServerInstaller {
             });
         });
     }
-    installPkg(installDir, version, downloadUrl) {
+    installPkg(installDir, version, identifer, downloadUrl) {
         if (!downloadUrl) {
             const platform = os.platform();
             const arch = os.arch();
@@ -128,7 +140,7 @@ class LanguageServerInstaller {
                 });
                 progress.report({ increment: 10 });
                 return new Promise((resolve, reject) => {
-                    this.download(downloadUrl, `${installDir}/terraform-ls_v${version}.zip`).then((pkgName) => {
+                    this.download(downloadUrl, `${installDir}/terraform-ls_v${version}.zip`, identifer).then((pkgName) => {
                         progress.report({ increment: 50 });
                         return resolve(this.unpack(installDir, pkgName));
                     }).catch((err) => {
@@ -142,12 +154,13 @@ class LanguageServerInstaller {
             });
         });
     }
-    download(downloadUrl, installPath) {
+    download(downloadUrl, installPath, identifier) {
+        const headers = { 'User-Agent': identifier };
         return new Promise((resolve, reject) => {
-            const request = https.request(downloadUrl, (response) => {
+            const request = https.request(downloadUrl, { headers: headers }, (response) => {
                 if (response.statusCode === 301 || response.statusCode === 302) { // redirect for CDN
                     const redirectUrl = response.headers.location;
-                    return resolve(this.download(redirectUrl, installPath));
+                    return resolve(this.download(redirectUrl, installPath, identifier));
                 }
                 if (response.statusCode !== 200) {
                     return reject(response.statusMessage);
