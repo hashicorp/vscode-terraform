@@ -132,7 +132,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run update-vscode && npm run compile",
+    "vscode:prepublish": "npm run test && npm run compile",
     "compile": "tsc -b",
     "watch": "tsc -b -w",
     "test": "node ./out/test/runTest.js"
