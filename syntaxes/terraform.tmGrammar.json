@@ -520,7 +520,7 @@
 			"end": "\\,|$\\n?|(?=\\})"
 		},
 		"tuple_for_expression": {
-			"begin": "(\\[)(for)\\b",
+			"begin": "(\\[)\\s?(for)\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.section.brackets.begin.terraform"
@@ -543,7 +543,7 @@
 			]
 		},
 		"object_for_expression": {
-			"begin": "(\\{)(for)\\b",
+			"begin": "(\\{)\\s?(for)\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.section.braces.begin.terraform"
