@@ -23,16 +23,8 @@ class LanguageServerInstaller {
             return new Promise((resolve, reject) => {
                 let identifer;
                 let extensionVersion = '2.0.0'; // TODO set this programatically
-                let tfVersion;
                 let vscodeVersion = vscode.version;
-                try {
-                    const checkTfVersion = cp.execSync('terraformy -v');
-                    tfVersion = semver.coerce(checkTfVersion.toString()).toString();
-                }
-                catch (err) {
-                    tfVersion = 'x.x.x'; // TODO better placeholder?
-                }
-                identifer = `Terraform-VSCode/${extensionVersion} Terraform/${tfVersion} VSCode/${vscodeVersion}`;
+                identifer = `Terraform-VSCode/${extensionVersion} VSCode/${vscodeVersion}`;
                 const lspCmd = `${directory}/terraform-ls --version`;
                 cp.exec(lspCmd, (err, stdout, stderr) => {
                     if (err) {
