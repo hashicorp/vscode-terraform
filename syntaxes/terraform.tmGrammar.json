@@ -261,7 +261,7 @@
 			]
 		},
 		"string_interpolation": {
-			"begin": "(\\$|\\%)\\{",
+			"begin": "(\\G|[^%$])[%$]{",
 			"comment": "String interpolation",
 			"name": "meta.interpolation.terraform",
 			"beginCaptures": {
