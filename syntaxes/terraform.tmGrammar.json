@@ -288,6 +288,11 @@
 				},
 				{
 					"include": "#expressions"
+				},
+				{
+					"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+					"comment": "Local Identifiers",
+					"name": "variable.other.readwrite.terraform"
 				}
 			]
 		},
@@ -413,6 +418,11 @@
 				},
 				{
 					"include": "#expressions"
+				},
+				{
+					"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+					"comment": "Local Identifiers",
+					"name": "variable.other.readwrite.terraform"
 				}
 			]
 		},
@@ -435,35 +445,32 @@
 					"include": "#comments"
 				},
 				{
-					"include": "#expressions"
-				},
-				{
-					"match": "\\s*((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*",
+					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*(.+)\\n",
 					"comment": "Literal, named object key",
 					"captures": {
-						"0": {
-							"patterns": [
-								{
-									"include": "#object_key_values"
-								}
-							]
-						},
 						"1": {
 							"name": "meta.mapping.key.terraform string.unquoted.terraform"
 						},
 						"2": {
 							"name": "keyword.operator.terraform"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#object_key_values"
+								}
+							]
 						}
 					}
 				},
 				{
-					"match": "((\\\").*(\\\"))\\s*(\\=)\\s*",
+					"match": "\\b((\").*(\"))\\s*(\\=)\\s*(.+)\\n",
 					"comment": "String object key",
 					"captures": {
 						"0": {
 							"patterns": [
 								{
-									"include": "#object_key_values"
+									"include": "#named_value_references"
 								}
 							]
 						},
@@ -478,6 +485,13 @@
 						},
 						"4": {
 							"name": "keyword.operator.terraform"
+						},
+						"5": {
+							"patterns": [
+								{
+									"include": "#object_key_values"
+								}
+							]
 						}
 					}
 				},
@@ -490,11 +504,6 @@
 							"name": "punctuation.section.parens.begin.terraform"
 						}
 					},
-					"patterns": [
-						{
-							"include": "#object_key_values"
-						}
-					],
 					"end": "(\\))\\s*(\\=)\\s*",
 					"endCaptures": {
 						"1": {
@@ -503,12 +512,22 @@
 						"2": {
 							"name": "keyword.operator.terraform"
 						}
-					}
+					},
+					"patterns": [
+						{
+							"include": "#named_value_references"
+						},
+						{
+							"include": "#attribute_access"
+						}
+					]
+				},
+				{
+					"include": "#object_key_values"
 				}
 			]
 		},
 		"object_key_values": {
-			"begin": "\\w+",
 			"patterns": [
 				{
 					"include": "#comments"
@@ -516,8 +535,7 @@
 				{
 					"include": "#expressions"
 				}
-			],
-			"end": "\\,|$\\n?|(?=\\})"
+			]
 		},
 		"tuple_for_expression": {
 			"begin": "(\\[)\\s?(for)\\b",
@@ -608,25 +626,31 @@
 					"name": "keyword.operator.accessor.terraform"
 				}
 			},
-			"end": "[\\w+\\*]",
+			"end": "\\w+(\\[[0-9\\*]+\\])?",
 			"endCaptures": {
-				"patterns": [
-					{
-						"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-						"comment": "Attribute access",
-						"name": "variable.other.member.terraform"
-					},
-					{
-						"match": "\\d+",
-						"comment": "Subscript",
-						"name": "constant.numeric.integer.terraform"
-					},
-					{
-						"match": "\\*",
-						"comment": "Attribute-only splat",
-						"name": "keyword.operator.splat.terraform"
-					}
-				]
+				"0": {
+					"patterns": [
+						{
+							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+							"comment": "Attribute access",
+							"name": "variable.other.member.terraform"
+						}
+					]
+				},
+				"1": {
+					"patterns": [
+						{
+							"match": "\\d+",
+							"comment": "Subscript",
+							"name": "constant.numeric.integer.terraform"
+						},
+						{
+							"match": "\\*",
+							"comment": "Attribute-only splat",
+							"name": "keyword.operator.splat.terraform"
+						}	
+					]
+				}
 			}
 		},
 		"functions": {
