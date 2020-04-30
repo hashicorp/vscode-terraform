@@ -41,6 +41,11 @@
 			"comment": "Constant values available only to Terraform.",
 			"name": "support.constant.terraform"
 		},
+		"local_identifiers": {
+			"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+			"comment": "Local Identifiers",
+			"name": "variable.other.readwrite.terraform"
+		},
 		"terraform_type_keywords": {
 			"match": "\\b(any|string|number|bool)\\b",
 			"comment": "Type keywords known to Terraform.",
@@ -290,9 +295,7 @@
 					"include": "#expressions"
 				},
 				{
-					"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-					"comment": "Local Identifiers",
-					"name": "variable.other.readwrite.terraform"
+					"include": "#local_identifiers"
 				}
 			]
 		},
@@ -420,9 +423,7 @@
 					"include": "#expressions"
 				},
 				{
-					"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-					"comment": "Local Identifiers",
-					"name": "variable.other.readwrite.terraform"
+					"include": "#local_identifiers"
 				}
 			]
 		},
@@ -613,9 +614,7 @@
 					"include": "#comma"
 				},
 				{
-					"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-					"comment": "Local Identifiers",
-					"name": "variable.other.readwrite.terraform"
+					"include": "#local_identifiers"
 				}
 			]
 		},
@@ -711,9 +710,7 @@
 					"include": "expressions"
 				},
 				{
-					"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-					"comment": "Local Identifiers",
-					"scope": "variable.other.readwrite.terraform"
+					"include": "#local_identifiers"
 				}
 			]
 		}
