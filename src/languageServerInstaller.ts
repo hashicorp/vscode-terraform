@@ -167,8 +167,7 @@ export class LanguageServerInstaller {
 
 	unpack(directory: string, pkgName: string) {
 		return new Promise<void>((resolve, reject) => {
-			const fileName = `${directory}/terraform-ls`;
-			const binFile = fs.createWriteStream(fileName);
+			let executable: string;
 			yauzl.open(pkgName, { lazyEntries: true }, (err, zipfile) => {
 				if (err) {
 					return reject(err);
@@ -181,16 +180,17 @@ export class LanguageServerInstaller {
 						}
 						readStream.on('end', () => {
 							zipfile.readEntry(); // Close it
-						});						  
-						readStream.pipe(binFile);
+						});
+
+						executable = `${directory}/${entry.fileName}`;
+						const destination = fs.createWriteStream(executable);
+						readStream.pipe(destination);
 					});
 				});
 				zipfile.on('close', () => {
+					fs.chmodSync(executable, '755');
 					return resolve();
 				});
-			});
-			binFile.on('close', () => {
-				fs.chmodSync(fileName, '755');
 			});
 		});
 	}
