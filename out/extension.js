@@ -103,7 +103,7 @@ function installThenStart(context, config) {
 function startLsClient(cmd, config) {
     return __awaiter(this, void 0, void 0, function* () {
         let serverOptions;
-        const setup = vscode.window.createOutputChannel("Language Server");
+        const setup = vscode.window.createOutputChannel("Language Server Client");
         setup.appendLine("Launching language server...");
         const executable = {
             command: cmd,
