@@ -21,21 +21,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
 	context.subscriptions.push(
-		vscode.workspace.onDidSaveTextDocument(document => {
-			if (rootPath && config.get("fmtOnSave") && document.languageId == "terraform") {
-				exec(`terraform fmt -recursive -no-color ${rootPath}`, (err, stdout, stderr) => {
-					if (err) {
-						commandOutput.appendLine(err.message);
-					}
-					if (stdout) {
-						// Success! Do we want to log anything?
-					}
-					if (stderr) {
-						commandOutput.appendLine(stderr);
-					}
-				});
-			}
-		}),
 		vscode.commands.registerCommand('terraform.init', () => {
 			runCommand(rootPath, commandOutput, 'init');
 		}),

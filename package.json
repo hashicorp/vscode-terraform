@@ -100,11 +100,6 @@
           ],
           "default": "off",
           "description": "Traces the communication between VS Code and the language server."
-        },
-        "terraform.fmtOnSave": {
-          "scope": "resource",
-          "type": "boolean",
-          "default": false
         }
       }
     },

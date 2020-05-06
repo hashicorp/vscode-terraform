@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_languageclient_1 = require("vscode-languageclient");
-const child_process_1 = require("child_process");
 const languageServerInstaller_1 = require("./languageServerInstaller");
 const terraform_command_1 = require("./terraform_command");
 let client;
@@ -21,21 +20,7 @@ function activate(context) {
     let useLs = config.get("languageServer.external");
     // Terraform Commands
     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(document => {
-        if (rootPath && config.get("fmtOnSave") && document.languageId == "terraform") {
-            child_process_1.exec(`terraform fmt -recursive -no-color ${rootPath}`, (err, stdout, stderr) => {
-                if (err) {
-                    commandOutput.appendLine(err.message);
-                }
-                if (stdout) {
-                    // Success! Do we want to log anything?
-                }
-                if (stderr) {
-                    commandOutput.appendLine(stderr);
-                }
-            });
-        }
-    }), vscode.commands.registerCommand('terraform.init', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('terraform.init', () => {
         terraform_command_1.runCommand(rootPath, commandOutput, 'init');
     }), vscode.commands.registerCommand('terraform.plan', () => {
         terraform_command_1.runCommand(rootPath, commandOutput, 'plan');
