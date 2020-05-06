@@ -1,4 +1,4 @@
-<img alt="Terraform" src="https://www.terraform.io/assets/images/logo-hashicorp-3f10732f.svg" width="600px">
+<img alt="Terraform" src="./terraform.png">
 
 ## Adds syntax highlighting and other editing features for <a href="https://www.terraform.io/">Terraform</a> files in integration with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls)
 
