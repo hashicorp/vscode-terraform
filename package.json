@@ -64,42 +64,48 @@
       "type": "object",
       "title": "Terraform",
       "properties": {
-        "terraform.languageServer.external": {
-          "scope": "resource",
-          "type": "boolean",
-          "default": true,
-          "description": "Whether an external language server binary should be launched."
-        },
-        "terraform.languageServer.pathToBinary": {
-          "scope": "resource",
-          "type": "string",
-          "default": "",
-          "description": "Path to language server binary (optional)"
-        },
-        "terraform.languageServer.args": {
-          "scope": "resource",
-          "type": "array",
-          "default": [
-            "serve"
-          ],
-          "description": "Arguments to pass to language server binary"
-        },
-        "terraform.languageServer.maxNumberOfProblems": {
-          "scope": "resource",
-          "type": "number",
-          "default": 100,
-          "description": "Controls the maximum number of problems produced by the server."
-        },
-        "terraform.languageServer.trace.server": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VS Code and the language server."
+        "terraform.languageServer": {
+          "type": "object",
+          "description": "Language Server settings",
+          "properties": {
+            "external": {
+              "scope": "resource",
+              "type": "boolean",
+              "default": true,
+              "description": "Whether an external language server binary should be launched."
+            },
+            "pathToBinary": {
+              "scope": "resource",
+              "type": "string",
+              "default": "",
+              "description": "Path to language server binary (optional)"
+            },
+            "args": {
+              "scope": "resource",
+              "type": "array",
+              "default": [
+                "serve"
+              ],
+              "description": "Arguments to pass to language server binary"
+            },
+            "maxNumberOfProblems": {
+              "scope": "resource",
+              "type": "number",
+              "default": 100,
+              "description": "Controls the maximum number of problems produced by the server."
+            },
+            "trace.server": {
+              "scope": "window",
+              "type": "string",
+              "enum": [
+                "off",
+                "messages",
+                "verbose"
+              ],
+              "default": "off",
+              "description": "Traces the communication between VS Code and the language server."
+            }
+          }
         }
       }
     },

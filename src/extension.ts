@@ -6,7 +6,6 @@ import {
 	Executable
 } from 'vscode-languageclient';
 
-import { exec } from 'child_process';
 import { LanguageServerInstaller } from './languageServerInstaller';
 import { runCommand } from './terraform_command';
 
@@ -15,10 +14,20 @@ let client: LanguageClient;
 export function activate(context: vscode.ExtensionContext) {
 	const commandOutput = vscode.window.createOutputChannel("Terraform");
 	const config = vscode.workspace.getConfiguration("terraform");
+
+	// get rid of pre-2.0.0 settings
+	if (config.has('languageServer.enabled')) {
+		config.update('languageServer',
+			{ "external": true, "args": [ "serve" ], "enabled": undefined },
+			true
+		)
+	}
 	let useLs = config.get("languageServer.external");
 
 	// Terraform Commands
 
+	// TODO switch to using the workspace/execute_command API
+	// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_executeCommand
 	const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.init', () => {
@@ -56,14 +65,12 @@ export function activate(context: vscode.ExtensionContext) {
 				if (!event.affectsConfiguration('terraform.languageServer')) {
 					return;
 				}
-				if (event.affectsConfiguration('terraform.languageServer.external')) {
-					const reloadMsg = 'Reload VSCode window to apply language server changes';
-					vscode.window.showInformationMessage(reloadMsg, 'Reload').then((selected) => {
-						if (selected === 'Reload') {
-							vscode.commands.executeCommand('workbench.action.reloadWindow');
-						}
-					});
-				}
+				const reloadMsg = 'Reload VSCode window to apply language server changes';
+				vscode.window.showInformationMessage(reloadMsg, 'Reload').then((selected) => {
+					if (selected === 'Reload') {
+						vscode.commands.executeCommand('workbench.action.reloadWindow');
+					}
+				});
 			}
 		)
 	);
