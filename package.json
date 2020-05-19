@@ -35,10 +35,15 @@
           "terraform"
         ],
         "extensions": [
-          ".tf",
-          ".tfvars"
+          ".tf"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "tfvars",
+        "extensions": [
+          ".tfvars"
+        ]
       },
       {
         "id": "json",
