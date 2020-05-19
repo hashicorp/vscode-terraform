@@ -7,7 +7,7 @@ import {
 } from 'vscode-languageclient';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
-import { runCommand } from './terraform_command';
+import { runCommand } from './terraformCommand';
 
 let client: LanguageClient;
 

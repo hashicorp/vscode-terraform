@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const vscode_languageclient_1 = require("vscode-languageclient");
 const languageServerInstaller_1 = require("./languageServerInstaller");
-const terraform_command_1 = require("./terraform_command");
+const terraformCommand_1 = require("./terraformCommand");
 let client;
 function activate(context) {
     const commandOutput = vscode.window.createOutputChannel("Terraform");
@@ -27,11 +27,11 @@ function activate(context) {
     // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_executeCommand
     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
     context.subscriptions.push(vscode.commands.registerCommand('terraform.init', () => {
-        terraform_command_1.runCommand(rootPath, commandOutput, 'init');
+        terraformCommand_1.runCommand(rootPath, commandOutput, 'init');
     }), vscode.commands.registerCommand('terraform.plan', () => {
-        terraform_command_1.runCommand(rootPath, commandOutput, 'plan');
+        terraformCommand_1.runCommand(rootPath, commandOutput, 'plan');
     }), vscode.commands.registerCommand('terraform.validate', () => {
-        terraform_command_1.runCommand(rootPath, commandOutput, 'validate');
+        terraformCommand_1.runCommand(rootPath, commandOutput, 'validate');
     }));
     // Language Server
     context.subscriptions.push(vscode.commands.registerCommand('terraform.installLanguageServer', () => {
