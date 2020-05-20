@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
 function runCommand(rootPath, outputChannel, command) {
     if (rootPath) {
-        outputChannel.show();
+        outputChannel.show(true);
         outputChannel.appendLine(`Running terraform ${command}`);
         console.log(rootPath);
         child_process_1.exec(`terraform ${command} -no-color ${rootPath}`, (err, stdout, stderr) => {
