@@ -106,7 +106,7 @@ async function installThenStart(context: vscode.ExtensionContext, config: vscode
 
 async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
 	let serverOptions: ServerOptions;
-	const setup = vscode.window.createOutputChannel("Language Server Client");
+	const setup = vscode.window.createOutputChannel("Language Server");
 	setup.appendLine("Launching language server...")
 
 	const executable: Executable = {
@@ -124,6 +124,8 @@ async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration)
 		synchronize: {
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
 		},
+		outputChannel: setup,
+		revealOutputChannelOn: 3 // error
 	};
 
 	client = new LanguageClient(
