@@ -50,6 +50,7 @@ class LanguageServerInstaller {
                                         fs.mkdirSync(directory, { recursive: true });
                                         this.installPkg(directory, newVersion, identifer).then(() => {
                                             vscode.window.showInformationMessage(`Installed terraform-ls ${newVersion}`);
+                                            console.log(`LS installed to ${directory}`);
                                             return resolve();
                                         }).catch((err) => {
                                             return reject(err);
