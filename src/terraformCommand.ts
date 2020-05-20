@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 export function runCommand(rootPath: string, outputChannel: vscode.OutputChannel, command: string) {
 	if (rootPath) {
-		outputChannel.show();
+		outputChannel.show(true);
 		outputChannel.appendLine(`Running terraform ${command}`);
 		console.log(rootPath);
 		exec(`terraform ${command} -no-color ${rootPath}`, (err, stdout, stderr) => {
