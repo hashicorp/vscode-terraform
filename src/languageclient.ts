@@ -195,7 +195,7 @@ export class ExperimentalLanguageClient {
                 repo: 'terraform-lsp'
             });
             if (this.currentReleaseId !== release.data.id.toString()) {
-                vscode.window.showInformationMessage(`A newer Lanaguage Server is available ${release.data.tag_name}. Run the 'Install/Update Language Server' command to update`);
+                vscode.window.showInformationMessage(`A newer Language Server is available ${release.data.tag_name}. Run the 'Install/Update Language Server' command to update`);
             }
         }
     }
