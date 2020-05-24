@@ -110,6 +110,13 @@
               "default": "off",
               "description": "Traces the communication between VS Code and the language server."
             }
+          },
+          "default": {
+            "external": true,
+            "pathToBinary": "",
+            "args": ["serve"],
+            "maxNumberOfProblems": 100,
+            "trace.server": "off"
           }
         }
       }
