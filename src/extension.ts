@@ -105,10 +105,11 @@ async function installThenStart(context: vscode.ExtensionContext, config: vscode
 }
 
 async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
+	const binaryName = cmd.split("/").pop();
 	let serverOptions: ServerOptions;
 	let serverArgs: string[] = config.get("languageServer.args");
 
-	const setup = vscode.window.createOutputChannel("Language Server");
+	const setup = vscode.window.createOutputChannel(binaryName);
 	setup.appendLine(`Launching language server: ${cmd} ${serverArgs}`)
 
 	const executable: Executable = {
