@@ -19,10 +19,10 @@ export class LanguageServerInstaller {
 			const lspCmd = `${directory}/terraform-ls --version`;
 			cp.exec(lspCmd, (err, stdout, stderr) => {
 				if (err) {
-					this.checkCurrent().then((version: string) => {
+					this.checkCurrent().then((currentRelease) => {
 						fs.mkdirSync(directory, { recursive: true });
-						this.installPkg(directory, version, identifer).then(() => {
-							vscode.window.showInformationMessage(`Installed terraform-ls ${version}`);
+						this.installPkg(directory, currentRelease, identifer).then(() => {
+							vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
 							return resolve();
 						}).catch((err) => {
 							return reject(err);
@@ -32,14 +32,14 @@ export class LanguageServerInstaller {
 					});
 				} else if (stderr) { // Version outputs to stderr
 					const installedVersion: string = stderr;
-					this.checkCurrent().then((newVersion: string) => {
-						if (semver.gt(newVersion, installedVersion, { includePrerelease: true })) {
-							const installMsg = `A new language server release is available: ${newVersion}. Install now?`;
+					this.checkCurrent().then((currentRelease) => {
+						if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
+							const installMsg = `A new language server release is available: ${currentRelease.version}. Install now?`;
 							vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel').then((selected) => {
 								if (selected === 'Install') {
 									fs.mkdirSync(directory, { recursive: true });
-									this.installPkg(directory, newVersion, identifer).then(() => {
-										vscode.window.showInformationMessage(`Installed terraform-ls ${newVersion}`);
+									this.installPkg(directory, currentRelease, identifer).then(() => {
+										vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
 										console.log(`LS installed to ${directory}`);
 										return resolve();
 									}).catch((err) => {
@@ -63,52 +63,54 @@ export class LanguageServerInstaller {
 	}
 
 	checkCurrent() {
-		const octokit = new Octokit();
-		return new Promise<string>((resolve, reject) => {
-			octokit.repos.getLatestRelease({
-				owner: 'hashicorp',
-				repo: 'terraform-ls'
-			})
-			.then(({ data }) => {
-				const newVersion = semver.clean(data.name);
-				resolve(newVersion);
-			})
-			.catch((err) => {
-				reject(err);
+		const releasesUrl = "https://releases.hashicorp.com/terraform-ls/index.json";
+		return new Promise<any>((resolve, reject) => {
+			const request = https.request(releasesUrl, (response) => {
+				if (response.statusCode !== 200) {
+					return reject(response.statusMessage);
+				}
+
+				let releaseData = "";
+				response.on('data', (chunk) => {
+					releaseData += chunk;
+				});
+				response.on('end', () => {
+					try {
+						const releases = JSON.parse(releaseData).versions;
+						const currentRelease = Object.keys(releases).sort(semver.rcompare)[0];
+						return resolve(releases[currentRelease]);	
+					} catch (err) {
+						return reject(err);
+					}
+				});
 			});
+
+			request.on('error', (error) => { return reject(error); });
+			request.end();
 		});
 	}
 
-	installPkg(installDir: string, version: string, identifer: string, downloadUrl?: string): Promise<void> {
+	installPkg(installDir: string, release, identifer: string, downloadUrl?: string): Promise<void> {
 		if (!downloadUrl) {
-			const platform = os.platform();
-			const arch = os.arch();
-			let pkgName: string;
+			let arch = os.arch();
+			let platform = os.platform().toString();
 
-			switch (platform) {
-				case 'darwin':
-					pkgName = 'darwin_amd64';
+			switch (arch) {
+				case 'x64':
+					arch = 'amd64'
 					break;
-				case 'linux':
-					if (arch == 'x64') {
-						pkgName = 'linux_amd64';
-					} else if (arch == 'x32') {
-						pkgName = 'linux_386';
-					}
+				case 'x32':
+					arch = '386'
 					break;
-				case 'win32':
-					if (arch == 'x64') {
-						pkgName = 'windows_amd64';
-					} else if (arch == 'x32') {
-						pkgName = 'windows_386';
-					}
-					break;
-				default: // If we're on an unexpected system or can't read this, abort
-					return Promise.reject();
 			}
-
-			pkgName = `terraform-ls_${version}_${pkgName}`;
-			downloadUrl = `https://github.com/hashicorp/terraform-ls/releases/download/v${version}/${pkgName}.zip`;
+			if (platform === 'win32') {
+				platform = 'windows'
+			}
+			downloadUrl = release.builds.find(b => b.os === platform && b.arch === arch).url;
+			if (!downloadUrl) {
+				// No matching build found
+				return Promise.reject();
+			}
 		}
 
 		return new Promise<void>((resolve, reject) => {
@@ -123,7 +125,7 @@ export class LanguageServerInstaller {
 
 				progress.report({ increment: 10 });
 				return new Promise<void>((resolve, reject) => {
-					this.download(downloadUrl, `${installDir}/terraform-ls_v${version}.zip`, identifer).then((pkgName) => {
+					this.download(downloadUrl, `${installDir}/terraform-ls_v${release.version}.zip`, identifer).then((pkgName) => {
 						progress.report({ increment: 50 });
 						return resolve(this.unpack(installDir, pkgName));
 					}).catch((err) => {
