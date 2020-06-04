@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 import cp = require('child_process');
 import * as fs from 'fs';
 import * as https from 'https';
-import { Octokit } from '@octokit/rest';
 import * as os from 'os';
 import * as semver from 'semver';
 import * as yauzl from 'yauzl';
@@ -19,7 +18,7 @@ export class LanguageServerInstaller {
 			const lspCmd = `${directory}/terraform-ls --version`;
 			cp.exec(lspCmd, (err, stdout, stderr) => {
 				if (err) {
-					this.checkCurrent().then((currentRelease) => {
+					this.checkCurrent(identifer).then((currentRelease) => {
 						fs.mkdirSync(directory, { recursive: true });
 						this.installPkg(directory, currentRelease, identifer).then(() => {
 							vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
@@ -32,7 +31,7 @@ export class LanguageServerInstaller {
 					});
 				} else if (stderr) { // Version outputs to stderr
 					const installedVersion: string = stderr;
-					this.checkCurrent().then((currentRelease) => {
+					this.checkCurrent(identifer).then((currentRelease) => {
 						if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
 							const installMsg = `A new language server release is available: ${currentRelease.version}. Install now?`;
 							vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel').then((selected) => {
@@ -62,10 +61,11 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	checkCurrent() {
+	checkCurrent(identifier: string) {
 		const releasesUrl = "https://releases.hashicorp.com/terraform-ls/index.json";
+		const headers = { 'User-Agent': identifier };
 		return new Promise<any>((resolve, reject) => {
-			const request = https.request(releasesUrl, (response) => {
+			const request = https.request(releasesUrl, { headers: headers }, (response) => {
 				if (response.statusCode !== 200) {
 					return reject(response.statusMessage);
 				}
