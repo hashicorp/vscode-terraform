@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
-  "version": "2.0.0-rc.0",
+  "version": "2.0.0-rc.1",
   "publisher": "hashicorp",
   "license": "BSD-3-Clause",
   "engines": {
@@ -114,7 +114,9 @@
           "default": {
             "external": true,
             "pathToBinary": "",
-            "args": ["serve"],
+            "args": [
+              "serve"
+            ],
             "maxNumberOfProblems": 100,
             "trace.server": "off"
           }
