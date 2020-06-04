@@ -1,1 +1,0 @@
-${var.secretName ? var.secretName : local.secretName}

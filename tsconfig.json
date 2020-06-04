@@ -3,17 +3,11 @@
         "module": "commonjs",
         "target": "es6",
         "outDir": "out",
-        "lib": [
-            "es6"
-        ],
-        "sourceMap": true,
-        "rootDir": ".",
-        "allowJs": true,
-        "typeRoots": ["node_modules/@types"]
+        "rootDir": "src",
+        "sourceMap": true
     },
     "include": [
-        "src/**/*",
-        "test/**/*"
+        "src"
     ],
     "exclude": [
         "node_modules",

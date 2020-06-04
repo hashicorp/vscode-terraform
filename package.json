@@ -2,12 +2,12 @@
   "icon": "terraform.png",
   "name": "terraform",
   "displayName": "Terraform",
-  "description": "Syntax highlighting, linting, formatting, and validation for Hashicorp's Terraform",
-  "version": "1.4.0",
-  "publisher": "mauve",
+  "description": "Syntax highlighting and autocompletion for Terraform",
+  "version": "2.0.0-rc.0",
+  "publisher": "hashicorp",
   "license": "BSD-3-Clause",
   "engines": {
-    "vscode": "^1.36.0"
+    "vscode": "^1.42.0"
   },
   "categories": [
     "Programming Languages",
@@ -17,51 +17,16 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mauve/vscode-terraform.git"
+    "url": "https://github.com/hashicorp/terraform-vscode-extension.git"
   },
   "activationEvents": [
     "onLanguage:terraform",
-    "onCommand:terraform.validate",
-    "onCommand:terraform.lint",
-    "onCommand:terraform.preview-graph",
     "onView:terraform-modules",
-    "workspaceContains:**/*.tf"
+    "workspaceContains:**/*.tf",
+    "onCommand:terraform.toggleLanguageServer"
   ],
-  "main": "./out/src/extension",
+  "main": "./out/extension",
   "contributes": {
-    "taskDefinitions": [
-      {
-        "type": "terraform",
-        "required": [
-          "command"
-        ],
-        "properties": {
-          "command": {
-            "type": "string"
-          },
-          "path": {
-            "type": "string"
-          }
-        }
-      }
-    ],
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "terraform-explorer",
-          "title": "Terraform Explorer",
-          "icon": "terraform.svg"
-        }
-      ]
-    },
-    "views": {
-      "terraform-explorer": [
-        {
-          "id": "terraform-modules",
-          "name": "Modules"
-        }
-      ]
-    },
     "languages": [
       {
         "id": "terraform",
@@ -70,11 +35,15 @@
           "terraform"
         ],
         "extensions": [
-          ".tf",
-          ".tfvars",
-          ".hcl"
+          ".tf"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "tfvars",
+        "extensions": [
+          ".tfvars"
+        ]
       },
       {
         "id": "json",
@@ -83,27 +52,76 @@
         ]
       }
     ],
+    "grammars": [
+      {
+        "language": "terraform",
+        "scopeName": "scope.terraform",
+        "path": "./syntaxes/terraform.tmGrammar.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "terraform",
+        "path": "./snippets/terraform.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Terraform",
+      "properties": {
+        "terraform.languageServer": {
+          "type": "object",
+          "description": "Language Server settings",
+          "properties": {
+            "external": {
+              "scope": "resource",
+              "type": "boolean",
+              "default": true,
+              "description": "Whether an external language server binary should be launched."
+            },
+            "pathToBinary": {
+              "scope": "resource",
+              "type": "string",
+              "default": "",
+              "description": "Path to language server binary (optional)"
+            },
+            "args": {
+              "scope": "resource",
+              "type": "array",
+              "default": [
+                "serve"
+              ],
+              "description": "Arguments to pass to language server binary"
+            },
+            "maxNumberOfProblems": {
+              "scope": "resource",
+              "type": "number",
+              "default": 100,
+              "description": "Controls the maximum number of problems produced by the server."
+            },
+            "trace.server": {
+              "scope": "window",
+              "type": "string",
+              "enum": [
+                "off",
+                "messages",
+                "verbose"
+              ],
+              "default": "off",
+              "description": "Traces the communication between VS Code and the language server."
+            }
+          },
+          "default": {
+            "external": true,
+            "pathToBinary": "",
+            "args": ["serve"],
+            "maxNumberOfProblems": 100,
+            "trace.server": "off"
+          }
+        }
+      }
+    },
     "commands": [
-      {
-        "command": "terraform.validate",
-        "title": "Terraform: Validate"
-      },
-      {
-        "command": "terraform.lint",
-        "title": "Terraform: Lint"
-      },
-      {
-        "command": "terraform.reindex",
-        "title": "Terraform: Reindex terraform files"
-      },
-      {
-        "command": "terraform.preview-graph",
-        "title": "Terraform: Preview Graph"
-      },
-      {
-        "command": "terraform.show-plan",
-        "title": "Terraform: Show Plan"
-      },
       {
         "command": "terraform.installLanguageServer",
         "title": "Terraform: Install/Update Language Server"
@@ -113,219 +131,44 @@
         "title": "Terraform: Enable/Disable Language Server"
       },
       {
+        "command": "terraform.init",
+        "title": "Terraform: Init"
+      },
+      {
+        "command": "terraform.plan",
+        "title": "Terraform: Plan"
+      },
+      {
         "command": "terraform.validate",
         "title": "Terraform: Validate"
-      },
-      {
-        "command": "terraform.reindex",
-        "title": "Terraform: Reindex terraform files"
-      },
-      {
-        "command": "terraform.preview-graph",
-        "title": "Terraform: Preview Graph"
-      },
-      {
-        "command": "terraform.show-plan",
-        "title": "Terraform: Show Plan"
       }
-    ],
-    "grammars": [
-      {
-        "language": "terraform",
-        "scopeName": "source.terraform",
-        "path": "./syntaxes/terraform.json"
-      },
-      {
-        "scopeName": "text.markdown.terraform.codeblock",
-        "path": "./syntaxes/terraform.codeblock.json",
-        "injectTo": [
-          "text.html.markdown"
-        ]
-      }
-    ],
-    "configuration": {
-      "type": "object",
-      "title": "Terraform configuration",
-      "properties": {
-        "terraform.format": {
-          "type": "object",
-          "description": "Formatting settings",
-          "properties": {
-            "ignoreExtensionsOnSave": {
-              "type": "array",
-              "default": [],
-              "description": "List of extensions to not format when invoking the 'Format Document' command",
-              "items": {
-                "type": "string",
-                "description": "File extension"
-              }
-            }
-          },
-          "default": {
-            "ignoreExtensionsOnSave": [
-              ".tfsmurf"
-            ]
-          }
-        },
-        "terraform.path": {
-          "type": "string",
-          "default": "terraform",
-          "description": "Path to the `terraform` executable"
-        },
-        "terraform.paths": {
-          "type": "array",
-          "default": [],
-          "description": "List of terraform paths or paths with versions"
-        },
-        "terraform.templateDirectory": {
-          "type": "string",
-          "default": "templates",
-          "description": "A relative path to where your templates are stored relative to the workspace root."
-        },
-        "terraform.lintPath": {
-          "type": "string",
-          "default": "tflint",
-          "description": "Path to the `tflint` executable."
-        },
-        "terraform.lintConfig": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "default": null,
-          "description": "Path to the `tflint` config file."
-        },
-        "terraform.indexing": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "description": "Enables or disables the indexing"
-            },
-            "liveIndexing": {
-              "type": "boolean",
-              "description": "Enables live indexing (requires indexing to be enabled)"
-            },
-            "liveIndexingDelay": {
-              "type": "number",
-              "description": "The number of milliseconds to delay before execution. Resets with each keystroke."
-            },
-            "exclude": {
-              "type": "array",
-              "description": "Paths to exclude from indexing."
-            }
-          },
-          "default": {
-            "enabled": true,
-            "liveIndexing": false,
-            "delay": 500,
-            "exclude": [
-              ".terraform/**/*",
-              "**/.terraform/**/*"
-            ]
-          },
-          "description": "Indexes all terraform sources to get live syntax errors, rename support, go to symbol, and much more..."
-        },
-        "terraform.languageServer": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "description": "Enables or disables the indexing",
-              "default": false
-            },
-            "installCommonProviders": {
-              "type": "boolean",
-              "description": "To aid intellisense this automatically installs common providers for the LSP",
-              "default": true
-            },
-            "args": {
-              "type": "array",
-              "description": "Arguments to pass to the language server",
-              "default": []
-            },
-            "pathToBinary": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "description": "The path to an existing binary for the Language Server. This allows users to run custom builds rather than download pre-build releases",
-              "default": null
-            }
-          },
-          "default": {
-            "enabled": false,
-            "args": []
-          },
-          "description": "Configures how the language server runs and works"
-        },
-        "terraform.codelens.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable/disable the CodeLens feature"
-        },
-        "terraform.telemetry.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable/disable telemetry reporting for this plugin. The global `telemetry.enableTelemetry` is also respected. If the global is disabled, this setting has no effect."
-        }
-      }
-    }
+    ]
   },
   "scripts": {
-    "clean": "git clean -xdf",
-    "compile": "gulp compile",
-    "watch": "gulp watch",
-    "gulp": "gulp",
-    "tslint": "tslint --project ./",
-    "tslint-fix": "tslint --project ./ --fix",
-    "vscode:prepublish": "npm install --no-save && npm run gulp -- --require-appinsights-key",
-    "test": "gulp test",
-    "integration-test": "node ./out/test/run-test.js",
-    "publish": "npm run clean && vsce publish",
-    "package": "npm run clean && vsce package"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.136",
-    "@types/minimatch": "^3.0.3",
-    "@types/mocha": "^2.2.48",
-    "@types/node": "^8.5.0",
-    "@types/uuid": "^3.4.5",
-    "@types/vscode": "^1.36.0",
-    "chalk": "^2.4.2",
-    "gulp": "^4.0.2",
-    "gulp-decompress": "^2.0.2",
-    "gulp-download": "0.0.1",
-    "gulp-json-transform": "^0.4.7",
-    "gulp-merge-json": "^1.3.1",
-    "gulp-mocha": "^6.0.0",
-    "gulp-rename": "^1.4.0",
-    "gulp-run": "^1.7.1",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-tslint": "^8.1.4",
-    "gulp-typescript": "^4.0.2",
-    "gulp-using": "^0.1.1",
-    "mkdirp": "^0.5.1",
-    "mocha": "^5.2.0",
-    "pump": "^3.0.0",
-    "source-map-support": "^0.5.12",
-    "ts-node": "^7.0.1",
-    "tslint": "^5.18.0",
-    "typescript": "^3.0.0",
-    "vscode-test": "^1.0.2"
+    "vscode:prepublish": "npm run test && npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "test": "node ./out/test/runTest.js"
   },
   "dependencies": {
-    "@octokit/rest": "^16.28.4",
-    "applicationinsights": "^1.4.0",
-    "glob": "^7.1.4",
-    "graphlib-dot": "^0.6.2",
-    "lodash": "^4.17.15",
-    "minimatch": "^3.0.4",
-    "tar": "^4.4.10",
-    "typed-rest-client": "^1.5.0",
-    "uuid": "^3.3.2",
-    "viz.js": "^1.8.2",
+    "@octokit/rest": "^17.1.3",
+    "@types/semver": "^7.1.0",
+    "semver": "^7.1.3",
     "vscode-languageclient": "^5.2.1",
-    "vscode-uri": "^1.0.5"
+    "yauzl": "^2.10.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.42.0",
+    "@types/yauzl": "^2.9.1",
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "@typescript-eslint/parser": "^2.28.0",
+    "eslint": "^6.8.0",
+    "glob": "^7.1.6",
+    "mocha": "^7.1.1",
+    "typescript": "^3.6.4",
+    "vscode-test": "1.3.0"
   }
 }

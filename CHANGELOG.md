@@ -1,3 +1,23 @@
+# 2.0.0
+
+The Terraform VSCode extension has [a new home at HashiCorp](https://www.hashicorp.com/blog/supporting-the-hashicorp-terraform-extension-for-visual-studio-code/)! We're integrating with a [new language server](https://github.com/hashicorp/terraform-ls) designed to create a stable integration with Terraform through public APIs. When you upgrade to v2.0.0, the new language server will be installed by default, and checking for updates automatically.
+
+Two commands have been added to manage the language server manually, which you can access via the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette): "Terraform: Install/Update Language Server" and "Terraform: Enable/Disable Language Server".
+
+If you want to use a custom-built language server, it can be enabled with the Terraform extension setting "terraform.languageServer.pathToBinary". Include the full path and binary name.
+
+In this version, we've updated the syntax highlighting to work under Terraform 0.12. Errors that were seen in trying to read 0.12 files have also been eliminated. Highlighting and other core features will be partially compatible under 0.11 as well but continuing development will only focus on 0.12 and future versions. If you work in 0.11, you should [pin your extension to an earlier version](https://code.visualstudio.com/updates/v1_30#_install-previous-versions).
+
+Other updates:
+
+* Full-document formatting is provided through the language server and [can be configured](https://code.visualstudio.com/docs/editor/codebasics#_formatting) through user or workspace settings
+* Added shortcuts (snippets) for variable and for_each syntax -- `fore`, `vare`, `varm`
+* For contributors, the TypeScript testing and linting frameworks have been brought current with the recommended packages
+* Logos now match the current brand guidelines (pretty snazzy!)
+* Auto-completion, hover, and definition features are now managed by the language server, so see their [changelog](https://github.com/hashicorp/terraform-ls/blob/master/CHANGELOG.md) for the most recent updates
+* External commands such as `terraform validate` and `tflint` are removed from the extension, but we plan to add hooks for these and/or additional integrations via the language server.
+* The outline view and model overview have been removed for now in order to focus on core features
+
 # 1.4.0
 
 Thanks to [@lawrencegripper](https://github.com/lawrencegripper) and [@juliosueiras](https://github.com/juliosueiras) we now have the first release in place which supports Terraform 0.12 using a new and shiny language server. In order to start using the language server you need to change the configuration to enable it or run the command `Terraform: Enable/Disable Language Server` or set `terraform.languageServer.enabled` to `true`.
