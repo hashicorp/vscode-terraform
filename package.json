@@ -70,45 +70,29 @@
       "title": "Terraform",
       "properties": {
         "terraform.languageServer": {
+          "scope": "machine-overridable",
           "type": "object",
           "description": "Language Server settings",
           "properties": {
             "external": {
-              "scope": "resource",
+              "scope": "machine-overridable",
               "type": "boolean",
               "default": true,
               "description": "Whether an external language server binary should be launched."
             },
             "pathToBinary": {
-              "scope": "resource",
+              "scope": "machine-overridable",
               "type": "string",
               "default": "",
               "description": "Path to language server binary (optional)"
             },
             "args": {
-              "scope": "resource",
+              "scope": "machine-overridable",
               "type": "array",
               "default": [
                 "serve"
               ],
               "description": "Arguments to pass to language server binary"
-            },
-            "maxNumberOfProblems": {
-              "scope": "resource",
-              "type": "number",
-              "default": 100,
-              "description": "Controls the maximum number of problems produced by the server."
-            },
-            "trace.server": {
-              "scope": "window",
-              "type": "string",
-              "enum": [
-                "off",
-                "messages",
-                "verbose"
-              ],
-              "default": "off",
-              "description": "Traces the communication between VS Code and the language server."
             }
           },
           "default": {
