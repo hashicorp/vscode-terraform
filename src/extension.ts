@@ -47,15 +47,14 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('terraform.installLanguageServer', () => {
 			installThenStart(context, config);
 		}),
-		vscode.commands.registerCommand('terraform.toggleLanguageServer', () => {
+		vscode.commands.registerCommand('terraform.enableLanguageServer', () => {
 			stopLsClient();
-			if (useLs) {
-				useLs = false;
-			} else {
-				useLs = true;
-				installThenStart(context, config);
-			}
-			config.update("languageServer.external", useLs, vscode.ConfigurationTarget.Global);
+			installThenStart(context, config);
+			config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
+		}),
+		vscode.commands.registerCommand('terraform.disableLanguageServer', () => {
+			config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
+			stopLsClient();
 		})
 	);
 

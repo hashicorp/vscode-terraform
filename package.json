@@ -23,7 +23,7 @@
     "onLanguage:terraform",
     "onView:terraform-modules",
     "workspaceContains:**/*.tf",
-    "onCommand:terraform.toggleLanguageServer"
+    "onCommand:terraform.enableLanguageServer"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -129,8 +129,12 @@
         "title": "Terraform: Install/Update Language Server"
       },
       {
-        "command": "terraform.toggleLanguageServer",
-        "title": "Terraform: Enable/Disable Language Server"
+        "command": "terraform.enableLanguageServer",
+        "title": "Terraform: Enable Language Server"
+      },
+      {
+        "command": "terraform.disableLanguageServer",
+        "title": "Terraform: Disable Language Server"
       },
       {
         "command": "terraform.init",
