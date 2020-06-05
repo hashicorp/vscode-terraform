@@ -171,6 +171,11 @@ export class LanguageServerInstaller {
 	unpack(directory: string, pkgName: string) {
 		return new Promise<void>((resolve, reject) => {
 			let executable: string;
+			if (fs.existsSync(`${directory}/terraform-ls`)) {
+				fs.unlinkSync(`${directory}/terraform-ls`);
+			} else if (fs.existsSync(`${directory}/terraform-ls.exe`)) {
+				fs.unlinkSync(`${directory}/terraform-ls.exe`);
+			}
 			yauzl.open(pkgName, { lazyEntries: true }, (err, zipfile) => {
 				if (err) {
 					return reject(err);
