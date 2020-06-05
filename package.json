@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-rc.2",
   "publisher": "hashicorp",
   "license": "BSD-3-Clause",
   "engines": {
