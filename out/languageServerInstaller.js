@@ -27,7 +27,7 @@ class LanguageServerInstaller {
                 const lspCmd = `${directory}/terraform-ls --version`;
                 cp.exec(lspCmd, (err, stdout, stderr) => {
                     if (err) {
-                        this.checkCurrent().then((currentRelease) => {
+                        this.checkCurrent(identifer).then((currentRelease) => {
                             fs.mkdirSync(directory, { recursive: true });
                             this.installPkg(directory, currentRelease, identifer).then(() => {
                                 vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
@@ -41,7 +41,7 @@ class LanguageServerInstaller {
                     }
                     else if (stderr) { // Version outputs to stderr
                         const installedVersion = stderr;
-                        this.checkCurrent().then((currentRelease) => {
+                        this.checkCurrent(identifer).then((currentRelease) => {
                             if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
                                 const installMsg = `A new language server release is available: ${currentRelease.version}. Install now?`;
                                 vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel').then((selected) => {
@@ -74,10 +74,11 @@ class LanguageServerInstaller {
             });
         });
     }
-    checkCurrent() {
+    checkCurrent(identifier) {
         const releasesUrl = "https://releases.hashicorp.com/terraform-ls/index.json";
+        const headers = { 'User-Agent': identifier };
         return new Promise((resolve, reject) => {
-            const request = https.request(releasesUrl, (response) => {
+            const request = https.request(releasesUrl, { headers: headers }, (response) => {
                 if (response.statusCode !== 200) {
                     return reject(response.statusMessage);
                 }
@@ -175,6 +176,12 @@ class LanguageServerInstaller {
     unpack(directory, pkgName) {
         return new Promise((resolve, reject) => {
             let executable;
+            if (fs.existsSync(`${directory}/terraform-ls`)) {
+                fs.unlinkSync(`${directory}/terraform-ls`);
+            }
+            else if (fs.existsSync(`${directory}/terraform-ls.exe`)) {
+                fs.unlinkSync(`${directory}/terraform-ls.exe`);
+            }
             yauzl.open(pkgName, { lazyEntries: true }, (err, zipfile) => {
                 if (err) {
                     return reject(err);
