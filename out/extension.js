@@ -41,8 +41,8 @@ function activate(context) {
         installThenStart(context, config);
         config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
     }), vscode.commands.registerCommand('terraform.disableLanguageServer', () => {
-        stopLsClient();
         config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
+        stopLsClient();
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((event) => {
         if (!event.affectsConfiguration('terraform.languageServer')) {
