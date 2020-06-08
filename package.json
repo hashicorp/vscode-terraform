@@ -14,6 +14,9 @@
     "vscode": "^1.42.0"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
+  "bugs": {
+    "url": "https://github.com/hashicorp/vscode-terraform/issues"
+  },
   "categories": [
     "Programming Languages",
     "Other",
