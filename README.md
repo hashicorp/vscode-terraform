@@ -1,10 +1,5 @@
 # Terraform VS Code Extension
 
-* VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform
-* Discussion / Q & A: https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46
-
----
-
 <img alt="Terraform" src="https://www.terraform.io/assets/images/logo-hashicorp-3f10732f.svg" width="600px">
 
 The HashiCorp Terraform VS Code extension adds syntax highlighting and other editing features for <a href="https://www.terraform.io/">Terraform</a> files using the [Terraform Language Server](https://github.com/hashicorp/terraform-ls).
