@@ -2,27 +2,15 @@
 
 <img alt="Terraform" src="https://www.terraform.io/assets/images/logo-hashicorp-3f10732f.svg" width="600px">
 
-## Adds syntax highlighting and other editing features for <a href="https://www.terraform.io/">Terraform</a> files in integration with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls)
-
-<!-- <p align="center">
-  <a href="https://mauvezero.visualstudio.com/vscode-terraform/_build?definitionId=5">
-    <img src="https://mauvezero.visualstudio.com/vscode-terraform/_apis/build/status/mauve.vscode-terraform?branchName=master">
-  </a>
-  <a href="https://github.com/mauve/vscode-terraform/releases">
-    <img src="https://img.shields.io/github/release/mauve/vscode-terraform.svg" alt="Release">
-  </a>
-</p> -->
-<!-- markdownlint-enable -->
-<!-- markdownlint-disable MD002 MD013 MD041 -->
+The HashiCorp Terraform VS Code extension adds syntax highlighting and other editing features for <a href="https://www.terraform.io/">Terraform</a> files using the [Terraform Language Server](https://github.com/hashicorp/terraform-ls).
 
 ## Features
 
-- Manages installation and updates of the [Terraform Language Server (terraform-ls)](https://github.com/hashicorp/terraform-ls)
-- Adds auto-completion via terraform-ls
-  1. Terraform provider and resource names
-  2. `for_each` and `variable` syntax shortcuts (`fore`, `vare`, `varm`)
+- Manages installation and updates of the [Terraform Language Server (terraform-ls)](https://github.com/hashicorp/terraform-ls), exposing its features:
+  - Initialized provider completion (resource names, data source names, attribute names)
 - Includes syntax highlighting for `.tf` and `.tfvars` files (and `.hcl`) -- including all syntax changes new to Terraform 0.12
 - Closes braces and quotes
+- Includes `for_each` and `variable` syntax shortcuts (`fore`, `vare`, `varm`)
 
 ## Release History
 
