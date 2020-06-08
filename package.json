@@ -13,6 +13,7 @@
   "engines": {
     "vscode": "^1.42.0"
   },
+  "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "categories": [
     "Programming Languages",
     "Other",
