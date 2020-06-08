@@ -1,4 +1,4 @@
-# HashiCorp Terraform VS Code Extension
+# Terraform VS Code Extension
 
 <img alt="Terraform" src="https://www.terraform.io/assets/images/logo-hashicorp-3f10732f.svg" width="600px">
 
