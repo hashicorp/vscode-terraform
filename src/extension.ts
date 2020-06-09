@@ -28,18 +28,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// TODO switch to using the workspace/execute_command API
 	// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_executeCommand
-	const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-	context.subscriptions.push(
-		vscode.commands.registerCommand('terraform.init', () => {
-			runCommand(rootPath, commandOutput, 'init');
-		}),
-		vscode.commands.registerCommand('terraform.plan', () => {
-			runCommand(rootPath, commandOutput, 'plan');
-		}),
-		vscode.commands.registerCommand('terraform.validate', () => {
-			runCommand(rootPath, commandOutput, 'validate');
-		})
-	);
+	// const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+	// context.subscriptions.push(
+	// 	vscode.commands.registerCommand('terraform.init', () => {
+	// 		runCommand(rootPath, commandOutput, 'init');
+	// 	}),
+	// 	vscode.commands.registerCommand('terraform.plan', () => {
+	// 		runCommand(rootPath, commandOutput, 'plan');
+	// 	}),
+	// 	vscode.commands.registerCommand('terraform.validate', () => {
+	// 		runCommand(rootPath, commandOutput, 'validate');
+	// 	})
+	// );
 
 	// Language Server
 
