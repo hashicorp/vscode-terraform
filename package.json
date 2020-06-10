@@ -1,9 +1,5 @@
 {
   "icon": "terraform.png",
-  "galleryBanner": {
-    "color": "#ffffff",
-    "theme": "dark"
-  },
   "name": "terraform",
   "displayName": "HashiCorp Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
