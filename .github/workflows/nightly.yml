@@ -1,0 +1,29 @@
+name: Build Nightly
+on:
+  schedule:
+    - cron: '0 2 * * *' # run at 2 AM UTC
+
+jobs:
+  nightly:
+    name: Build Nightly
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      - name: setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: clean install dependencies
+        run: npm ci    
+      
+      - name: compile and create vsix
+        run: vsce package
+
+#       - name: upload vsix as artifact
+#         uses: actions/upload-artifact@v1
+#         with:
+#           name: vsix-viewer-${{steps.gitversion.outputs.semVer}}.vsix
+#           path: ${{github.workspace}}/vsix-viewer-${{steps.gitversion.outputs.semVer}}.vsix
