@@ -21,7 +21,7 @@ jobs:
         run: npm ci    
       
       - name: compile and create vsix
-        run: vsce package
+        run: npm run package
 
 #       - name: upload vsix as artifact
 #         uses: actions/upload-artifact@v1
