@@ -1,9 +1,8 @@
 name: Build Nightly
 on:
+  push:
   schedule:
     - cron: '0 2 * * *' # run at 2 AM UTC
-    # for debugging
-    - cron: '*/5 * * * *' # every 5 minutes
 
 jobs:
   nightly:
