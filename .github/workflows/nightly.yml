@@ -21,10 +21,10 @@ jobs:
         run: npm ci    
       
       - name: compile and create vsix
-        run: npm run package -o extension-nightly.vsix
+        run: npm run package -- -o extension-nightly.vsix
 
       - name: upload vsix as artifact
         uses: actions/upload-artifact@v1
         with:
           name: vscode-terraform-nightly-${{github.sha}}.vsix
-          path: ${{github.workspace}}/extension-nightly.vsix
+          path: ${{github.workspace}}\extension-nightly.vsix
