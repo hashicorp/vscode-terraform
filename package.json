@@ -143,10 +143,6 @@
     },
     "commands": [
       {
-        "command": "terraform.installLanguageServer",
-        "title": "Terraform: Install/Update Language Server"
-      },
-      {
         "command": "terraform.enableLanguageServer",
         "title": "Terraform: Enable Language Server"
       },

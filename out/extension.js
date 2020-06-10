@@ -37,9 +37,7 @@ function activate(context) {
     // 	})
     // );
     // Language Server
-    context.subscriptions.push(vscode.commands.registerCommand('terraform.installLanguageServer', () => {
-        installThenStart(context, config);
-    }), vscode.commands.registerCommand('terraform.enableLanguageServer', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('terraform.enableLanguageServer', () => {
         stopLsClient();
         installThenStart(context, config);
         config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);

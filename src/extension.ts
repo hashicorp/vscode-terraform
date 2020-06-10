@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// get rid of pre-2.0.0 settings
 	if (config.has('languageServer.enabled')) {
 		config.update('languageServer',
-			{ "external": true, "args": [ "serve" ], "enabled": undefined },
+			{ "external": true, "args": ["serve"], "enabled": undefined },
 			true
 		)
 	}
@@ -44,9 +44,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// Language Server
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('terraform.installLanguageServer', () => {
-			installThenStart(context, config);
-		}),
 		vscode.commands.registerCommand('terraform.enableLanguageServer', () => {
 			stopLsClient();
 			installThenStart(context, config);
@@ -73,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		)
 	);
-	
+
 	if (useLs) {
 		return installThenStart(context, config);
 	}
