@@ -1,6 +1,6 @@
 name: Build Nightly
 on:
-  push:
+  push: # TODO: remove this, only for debugging....
   schedule:
     - cron: '0 2 * * *' # run at 2 AM UTC
 
