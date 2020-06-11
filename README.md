@@ -24,8 +24,7 @@ See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/master/CH
 
 ## Terraform 0.11
 
-If you are using a Terraform version prior to 0.12.0, you can install the old version of this extension manually by downloading the vsix from [here](https://github.com/hashicorp/vscode-terraform/releases/tag/1.3.12). Version pinning in the VSCode UI will not work, due to namespace changes between v1 and v2.
-It is possible to have both versions installed at the same time, but you should always use one by manually enabling/disabling either to avoid any conflicts and unexpected situations.
+If you are using a Terraform version prior to 0.12.0, you can install the pre-transfer version of this extension manually by [following the instructions in the wiki](https://github.com/hashicorp/vscode-terraform/wiki/Install-a-Pre-transfer-Version).
 
 ## Credits
 
