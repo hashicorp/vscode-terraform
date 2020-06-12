@@ -30,9 +30,6 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
- - OS and version: [e.g. Mac, Catalina]
- - VS Code version: [e.g. 1.46.0]
-
 **VS Code version**
 Copy this from VS Code (Help -> About -> Copy):
 
