@@ -45,7 +45,7 @@ OS: Windows_NT x64 10.0.19635
 ```
  
 **Extension version**
-Copy this from the extension (Manage -> Copy):
+Copy this from the extension (Extensions Pane -> Terraform -> Manage / Settings -> Copy):
 
 ```
 Name: Terraform
