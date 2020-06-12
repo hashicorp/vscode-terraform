@@ -1,6 +1,6 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Terraform Langauge Features / Bugs
+  - name: Terraform Language Features / Bugs
     url: https://github.com/hashicorp/terraform-ls/issues
     about: >-
       Most of the language features of the VS Code extension are supplied by the Terraform
