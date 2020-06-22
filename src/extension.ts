@@ -124,7 +124,7 @@ async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration)
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
 		},
 		outputChannel: setup,
-		revealOutputChannelOn: 3 // error
+		revealOutputChannelOn: 4 // hide always
 	};
 
 	client = new LanguageClient(
