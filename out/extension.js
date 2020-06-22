@@ -109,7 +109,7 @@ function startLsClient(cmd, config) {
                 fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
             },
             outputChannel: setup,
-            revealOutputChannelOn: 3 // error
+            revealOutputChannelOn: 4 // hide always
         };
         client = new vscode_languageclient_1.LanguageClient('languageServer', 'Language Server', serverOptions, clientOptions);
         return client.start();
