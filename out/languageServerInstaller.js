@@ -77,10 +77,10 @@ class LanguageServerInstaller {
         });
     }
     checkCurrent(userAgent) {
-        const releasesUrl = "https://releases.hashicorp.com/terraform-ls/index.json";
+        const indexUrl = `${releasesUrl}/index.json`;
         const headers = { 'User-Agent': userAgent };
         return new Promise((resolve, reject) => {
-            const request = https.request(releasesUrl, { headers: headers }, (response) => {
+            const request = https.request(indexUrl, { headers: headers }, (response) => {
                 if (response.statusCode !== 200) {
                     return reject(response.statusMessage);
                 }
