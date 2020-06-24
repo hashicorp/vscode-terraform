@@ -223,7 +223,7 @@ export class LanguageServerInstaller {
 					if (!shasumLine) {
 						return reject(`Install error: no matching SHA sum for ${buildName}`);
 					}
-					const shasum = shasumLine.split(" ")[0];
+					const shasum = shasumLine.split("  ")[0];
 					if (hash.digest('hex') !== shasum) {
 						return reject(`Install error: SHA sum for ${buildName} does not match`);
 					} else {
