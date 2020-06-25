@@ -95,7 +95,7 @@ async function installThenStart(context: vscode.ExtensionContext, config: vscode
 			startLsClient(`${installDir}/terraform-ls`, config);
 		}).catch((err) => {
 			config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
-			console.log(err);
+		vscode.window.showErrorMessage(err);
 		});
 	}
 }
