@@ -191,11 +191,7 @@ export class LanguageServerInstaller {
 				const pkg = fs.createWriteStream(installPath);
 				response.pipe(pkg);
 				response.on('end', () => {
-					try {
-						return resolve();
-					} catch (err) {
-						return reject(err);
-					}
+					return resolve();
 				});
 			});
 
