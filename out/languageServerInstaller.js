@@ -137,40 +137,27 @@ class LanguageServerInstaller {
                 title: "Installing terraform-ls"
             }, (progress, token) => {
                 token.onCancellationRequested(() => {
-                    // TODO clean up partial downloads
                     return reject();
                 });
                 progress.report({ increment: 30 });
-                return new Promise((resolve, reject) => {
-                    this.download(downloadUrl, destination, userAgent).then(() => {
+                return this.download(downloadUrl, destination, userAgent)
+                    .then(() => {
+                    progress.report({ increment: 30 });
+                    return this.verify(release, destination, build.filename)
+                        .then(() => {
                         progress.report({ increment: 30 });
-                        this.verify(release, destination, build.filename).then(() => {
-                            progress.report({ increment: 30 });
-                            this.unpack(installDir, destination).then(() => {
-                                return resolve();
-                            }).catch((err) => {
-                                return reject(err);
-                            });
-                        }).catch((err) => {
-                            return reject(err);
-                        });
-                    }).catch((err) => {
-                        return reject(err);
+                        return this.unpack(installDir, destination);
                     });
-                }).then(() => {
-                    return resolve();
-                }, (err) => {
-                    try {
-                        fs.unlinkSync(destination);
-                    }
-                    finally {
-                        return reject(err);
-                    }
                 });
             }).then(() => {
                 return resolve();
             }, (err) => {
-                return reject(err);
+                try {
+                    fs.unlinkSync(destination);
+                }
+                finally {
+                    return reject(err);
+                }
             });
         });
     }
