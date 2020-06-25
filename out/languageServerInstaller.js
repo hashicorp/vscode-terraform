@@ -128,7 +128,7 @@ class LanguageServerInstaller {
             this.removeOldBinary(installDir, platform);
         }
         catch (_a) {
-            // ignore
+            // ignore missing binary (new install)
         }
         return new Promise((resolve, reject) => {
             vscode.window.withProgress({

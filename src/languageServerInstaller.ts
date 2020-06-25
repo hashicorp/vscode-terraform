@@ -119,7 +119,7 @@ export class LanguageServerInstaller {
 		try {
 			this.removeOldBinary(installDir, platform);
 		} catch {
-			// ignore
+			// ignore missing binary (new install)
 		}
 
 		return new Promise<void>((resolve, reject) => {
