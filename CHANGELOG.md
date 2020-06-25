@@ -1,8 +1,10 @@
 # 2.0.2 (2020-06-23)
 
+* Verify shasum of language server binary on install (#414)
+
 Bugs:
 
-* Hide language server output window to prevent stealing focus
+* Hide language server output window to prevent stealing focus (#408)
 
 # 2.0.1
 
