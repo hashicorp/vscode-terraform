@@ -11,25 +11,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const cp = require("child_process");
+const crypto = require("crypto");
 const fs = require("fs");
 const https = require("https");
 const os = require("os");
 const semver = require("semver");
 const yauzl = require("yauzl");
+const releasesUrl = "https://releases.hashicorp.com/terraform-ls";
 class LanguageServerInstaller {
     install(directory) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                let identifer;
+                let userAgent;
                 let extensionVersion = '2.0.0'; // TODO set this programatically
                 let vscodeVersion = vscode.version;
-                identifer = `Terraform-VSCode/${extensionVersion} VSCode/${vscodeVersion}`;
+                userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscodeVersion}`;
                 const lspCmd = `${directory}/terraform-ls --version`;
                 cp.exec(lspCmd, (err, stdout, stderr) => {
                     if (err) {
-                        this.checkCurrent(identifer).then((currentRelease) => {
+                        this.checkCurrent(userAgent).then((currentRelease) => {
                             fs.mkdirSync(directory, { recursive: true });
-                            this.installPkg(directory, currentRelease, identifer).then(() => {
+                            this.installPkg(directory, currentRelease, userAgent).then(() => {
                                 vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
                                 return resolve();
                             }).catch((err) => {
@@ -41,13 +43,13 @@ class LanguageServerInstaller {
                     }
                     else if (stderr) { // Version outputs to stderr
                         const installedVersion = stderr;
-                        this.checkCurrent(identifer).then((currentRelease) => {
+                        this.checkCurrent(userAgent).then((currentRelease) => {
                             if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
                                 const installMsg = `A new language server release is available: ${currentRelease.version}. Install now?`;
                                 vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel').then((selected) => {
                                     if (selected === 'Install') {
                                         fs.mkdirSync(directory, { recursive: true });
-                                        this.installPkg(directory, currentRelease, identifer).then(() => {
+                                        this.installPkg(directory, currentRelease, userAgent).then(() => {
                                             vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
                                             console.log(`LS installed to ${directory}`);
                                             return resolve();
@@ -74,17 +76,17 @@ class LanguageServerInstaller {
             });
         });
     }
-    checkCurrent(identifier) {
-        const releasesUrl = "https://releases.hashicorp.com/terraform-ls/index.json";
-        const headers = { 'User-Agent': identifier };
+    checkCurrent(userAgent) {
+        const indexUrl = `${releasesUrl}/index.json`;
+        const headers = { 'User-Agent': userAgent };
         return new Promise((resolve, reject) => {
-            const request = https.request(releasesUrl, { headers: headers }, (response) => {
+            const request = https.request(indexUrl, { headers: headers }, (response) => {
                 if (response.statusCode !== 200) {
                     return reject(response.statusMessage);
                 }
                 let releaseData = "";
-                response.on('data', (chunk) => {
-                    releaseData += chunk;
+                response.on('data', (data) => {
+                    releaseData += data;
                 });
                 response.on('end', () => {
                     try {
@@ -101,26 +103,32 @@ class LanguageServerInstaller {
             request.end();
         });
     }
-    installPkg(installDir, release, identifer, downloadUrl) {
+    installPkg(installDir, release, userAgent) {
+        const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
+        let platform = os.platform().toString();
+        if (platform === 'win32') {
+            platform = 'windows';
+        }
+        let arch = os.arch();
+        switch (arch) {
+            case 'x64':
+                arch = 'amd64';
+                break;
+            case 'x32':
+                arch = '386';
+                break;
+        }
+        const build = release.builds.find(b => b.os === platform && b.arch === arch);
+        const downloadUrl = build.url;
         if (!downloadUrl) {
-            let arch = os.arch();
-            let platform = os.platform().toString();
-            switch (arch) {
-                case 'x64':
-                    arch = 'amd64';
-                    break;
-                case 'x32':
-                    arch = '386';
-                    break;
-            }
-            if (platform === 'win32') {
-                platform = 'windows';
-            }
-            downloadUrl = release.builds.find(b => b.os === platform && b.arch === arch).url;
-            if (!downloadUrl) {
-                // No matching build found
-                return Promise.reject();
-            }
+            // No matching build found
+            return Promise.reject();
+        }
+        try {
+            this.removeOldBinary(installDir, platform);
+        }
+        catch (_a) {
+            // ignore missing binary (new install)
         }
         return new Promise((resolve, reject) => {
             vscode.window.withProgress({
@@ -131,21 +139,35 @@ class LanguageServerInstaller {
                 token.onCancellationRequested(() => {
                     return reject();
                 });
-                progress.report({ increment: 10 });
-                return new Promise((resolve, reject) => {
-                    this.download(downloadUrl, `${installDir}/terraform-ls_v${release.version}.zip`, identifer).then((pkgName) => {
-                        progress.report({ increment: 50 });
-                        return resolve(this.unpack(installDir, pkgName));
-                    }).catch((err) => {
-                        return reject(err);
+                progress.report({ increment: 30 });
+                return this.download(downloadUrl, destination, userAgent)
+                    .then(() => {
+                    progress.report({ increment: 30 });
+                    return this.verify(release, destination, build.filename)
+                        .then(() => {
+                        progress.report({ increment: 30 });
+                        return this.unpack(installDir, destination);
                     });
                 });
             }).then(() => {
                 return resolve();
             }, (err) => {
-                return reject(err);
+                try {
+                    fs.unlinkSync(destination);
+                }
+                finally {
+                    return reject(err);
+                }
             });
         });
+    }
+    removeOldBinary(directory, platform) {
+        if (platform === "windows") {
+            fs.unlinkSync(`${directory}/terraform-ls.exe`);
+        }
+        else {
+            fs.unlinkSync(`${directory}/terraform-ls`);
+        }
     }
     download(downloadUrl, installPath, identifier) {
         const headers = { 'User-Agent': identifier };
@@ -161,27 +183,46 @@ class LanguageServerInstaller {
                 const pkg = fs.createWriteStream(installPath);
                 response.pipe(pkg);
                 response.on('end', () => {
-                    try {
-                        return resolve(installPath);
-                    }
-                    catch (err) {
-                        return reject(err);
-                    }
+                    return resolve();
                 });
             });
             request.on('error', (error) => { return reject(error); });
             request.end();
         });
     }
+    verify(release, pkg, buildName) {
+        return new Promise((resolve, reject) => {
+            const hash = crypto.createHash('sha256');
+            const pkgStream = fs.createReadStream(pkg);
+            pkgStream.on('data', (data) => {
+                hash.update(data);
+            });
+            let shasumResponse = "";
+            https.get(`${releasesUrl}/${release.version}/${release.shasums}`, (response) => {
+                response.on('data', (data) => {
+                    shasumResponse += data;
+                });
+                response.on('end', () => {
+                    const shasumLine = shasumResponse.split(`\n`).find(line => line.includes(buildName));
+                    if (!shasumLine) {
+                        return reject(`Install error: no matching SHA sum for ${buildName}`);
+                    }
+                    const shasum = shasumLine.split("  ")[0];
+                    if (hash.digest('hex') !== shasum) {
+                        return reject(`Install error: SHA sum for ${buildName} does not match`);
+                    }
+                    else {
+                        return resolve();
+                    }
+                });
+            }).on('error', (err) => {
+                return reject(err);
+            });
+        });
+    }
     unpack(directory, pkgName) {
         return new Promise((resolve, reject) => {
             let executable;
-            if (fs.existsSync(`${directory}/terraform-ls`)) {
-                fs.unlinkSync(`${directory}/terraform-ls`);
-            }
-            else if (fs.existsSync(`${directory}/terraform-ls.exe`)) {
-                fs.unlinkSync(`${directory}/terraform-ls.exe`);
-            }
             yauzl.open(pkgName, { lazyEntries: true }, (err, zipfile) => {
                 if (err) {
                     return reject(err);

@@ -82,7 +82,7 @@ function installThenStart(context, config) {
                 startLsClient(`${installDir}/terraform-ls`, config);
             }).catch((err) => {
                 config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
-                console.log(err);
+                vscode.window.showErrorMessage(err);
             });
         }
     });
