@@ -20,6 +20,17 @@ The 2.0.0 release integrates a new [Language Server package from HashiCorp](http
 
 In addition, this new version brings the syntax highlighting up to date with all HCL2 features, as needed for Terraform 0.12 and above.
 
+**Configuration Changes** Please note that in 2.x, the configuration differs from 1.4.0, if you are having issues with the Language Server starting, you can reset the configuration to the following:
+
+```json
+{
+  "terraform.languageServer": {
+    "enabled": true,
+    "args": []
+  }
+}
+```
+
 See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/master/CHANGELOG.md) for more information.
 
 ## Terraform 0.11
