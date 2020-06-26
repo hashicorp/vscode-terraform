@@ -58,15 +58,16 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(
 			(event: vscode.ConfigurationChangeEvent) => {
-				if (!event.affectsConfiguration('terraform.languageServer')) {
+				if (event.affectsConfiguration("terraform")) {
+					const reloadMsg = "Reload VSCode window to apply language server changes";
+					vscode.window.showInformationMessage(reloadMsg, "Reload").then((selected) => {
+						if (selected === "Reload") {
+							vscode.commands.executeCommand("workbench.action.reloadWindow");
+						}
+					});	
+				} else {
 					return;
 				}
-				const reloadMsg = 'Reload VSCode window to apply language server changes';
-				vscode.window.showInformationMessage(reloadMsg, 'Reload').then((selected) => {
-					if (selected === 'Reload') {
-						vscode.commands.executeCommand('workbench.action.reloadWindow');
-					}
-				});
 			}
 		)
 	);
@@ -104,13 +105,20 @@ async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration)
 	const binaryName = cmd.split("/").pop();
 	let serverOptions: ServerOptions;
 	let serverArgs: string[] = config.get("languageServer.args");
+	let additionalArgs: string[];
+
+	if (config.has("rootModules")) {
+		const rootModules: string[] = config.get("rootModules");
+		additionalArgs = rootModules.map(module => `-root-module=${module}`);
+	}
+	const args = serverArgs.concat(additionalArgs);
 
 	const setup = vscode.window.createOutputChannel(binaryName);
-	setup.appendLine(`Launching language server: ${cmd} ${serverArgs}`)
+	setup.appendLine(`Launching language server: ${cmd} ${args.join(" ")}`);
 
 	const executable: Executable = {
 		command: cmd,
-		args: serverArgs,
+		args: args,
 		options: {}
 	}
 	serverOptions = {

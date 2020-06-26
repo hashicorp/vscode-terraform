@@ -134,6 +134,11 @@
             "maxNumberOfProblems": 100,
             "trace.server": "off"
           }
+        },
+        "terraform.rootModules": {
+          "scope": "resource",
+          "type": "array",
+          "description": "Per-workspace list of module directories for the language server to read"
         }
       }
     },
