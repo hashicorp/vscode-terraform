@@ -22,20 +22,17 @@ class LanguageServerInstaller {
     install(directory) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                let userAgent;
-                let extensionVersion = '2.0.0'; // TODO set this programatically
-                let vscodeVersion = vscode.version;
-                userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscodeVersion}`;
+                const extensionVersion = '2.0.0'; // TODO set this programatically
                 const lspCmd = `${directory}/terraform-ls --version`;
+                const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
                 cp.exec(lspCmd, (err, stdout, stderr) => {
                     if (err) {
-                        this.checkCurrent(userAgent).then((currentRelease) => {
-                            fs.mkdirSync(directory, { recursive: true });
-                            this.installPkg(directory, currentRelease, userAgent).then(() => {
+                        return this.checkCurrent(userAgent)
+                            .then((currentRelease) => {
+                            return this.installPkg(directory, currentRelease, userAgent)
+                                .then(() => {
                                 vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
                                 return resolve();
-                            }).catch((err) => {
-                                return reject(err);
                             });
                         }).catch((err) => {
                             return reject(err);
@@ -46,12 +43,12 @@ class LanguageServerInstaller {
                         this.checkCurrent(userAgent).then((currentRelease) => {
                             if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
                                 const installMsg = `A new language server release is available: ${currentRelease.version}. Install now?`;
-                                vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel').then((selected) => {
+                                vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel')
+                                    .then((selected) => {
                                     if (selected === 'Install') {
-                                        fs.mkdirSync(directory, { recursive: true });
-                                        this.installPkg(directory, currentRelease, userAgent).then(() => {
+                                        return this.installPkg(directory, currentRelease, userAgent)
+                                            .then(() => {
                                             vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
-                                            console.log(`LS installed to ${directory}`);
                                             return resolve();
                                         }).catch((err) => {
                                             return reject(err);
@@ -105,6 +102,7 @@ class LanguageServerInstaller {
     }
     installPkg(installDir, release, userAgent) {
         const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
+        fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
         let platform = os.platform().toString();
         if (platform === 'win32') {
             platform = 'windows';
@@ -122,7 +120,7 @@ class LanguageServerInstaller {
         const downloadUrl = build.url;
         if (!downloadUrl) {
             // No matching build found
-            return Promise.reject();
+            return Promise.reject("Install error: no matching terraform-ls binary for platform");
         }
         try {
             this.removeOldBinary(installDir, platform);
