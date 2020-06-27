@@ -11,7 +11,7 @@ As HashiCorp’s first version release since taking over the project, in the nea
 Workflow Improvements
 Integration of terraform init, plan, and apply commands.
  
-### Terraform Workspace Management (#357)
+### Terraform Workspace Management ([#357](https://github.com/hashicorp/vscode-terraform/issues/357))
 Include the ability to show the current workspace, list available workspaces, and switch between them.
  
 ### Terraform Cloud Integration
