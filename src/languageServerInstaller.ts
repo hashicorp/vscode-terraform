@@ -23,7 +23,6 @@ export class LanguageServerInstaller {
 						.then((currentRelease) => {
 							return this.installPkg(directory, currentRelease, userAgent)
 						.then(() => {
-							vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
 							return resolve();
 						});
 					}).catch((err) => {
@@ -39,7 +38,6 @@ export class LanguageServerInstaller {
 								if (selected === 'Install') {
 									return this.installPkg(directory, currentRelease, userAgent)
 									.then(() => {
-										vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}`);
 										return resolve();
 									}).catch((err) => {
 										return reject(err);
@@ -142,7 +140,13 @@ export class LanguageServerInstaller {
 					})
 				})
 			}).then(() => {
-				return resolve();
+				vscode.window.showInformationMessage(`Installed terraform-ls ${release.version}.`, "View Changelog")
+				.then((selected) => {
+					if (selected === "View Changelog") {
+						vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${release.version}`));
+					}
+					return resolve();
+				});
 			},
 			(err) => {
 				try {
