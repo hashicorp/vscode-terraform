@@ -138,6 +138,10 @@
         "terraform.rootModules": {
           "scope": "resource",
           "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []          
           "description": "Per-workspace list of module directories for the language server to read"
         }
       }
