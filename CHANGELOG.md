@@ -1,6 +1,7 @@
 # 2.0.2 (2020-06-23)
 
 * Verify shasum of language server binary on install (#414)
+* Add link to language server changelog on completed install (#424)
 
 Bugs:
 
