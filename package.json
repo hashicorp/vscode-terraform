@@ -141,7 +141,7 @@
           "items": {
             "type": "string"
           },
-          "default": []          
+          "default": [],
           "description": "Per-workspace list of module directories for the language server to read"
         }
       }
