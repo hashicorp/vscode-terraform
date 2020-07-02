@@ -84,7 +84,7 @@
 			"end": "\\*/"
 		},
 		"attribute_definition": {
-			"match": "(\\()?((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)(\\))?\\s*(\\=[^\\=|\\>])\\s*",
+			"match": "(\\()?((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)(\\))?\\s*(\\=(?!\\=|\\>))\\s*",
 			"comment": "Identifier \"=\" with optional parens",
 			"name": "variable.declaration.terraform",
 			"captures": {
@@ -173,6 +173,9 @@
 				},
 				{
 					"include": "#attribute_access"
+				},
+				{
+					"include": "#structural_types"
 				},
 				{
 					"include": "#functions"
@@ -651,6 +654,89 @@
 					]
 				}
 			}
+		},
+		"structural_types": {
+			"patterns": [
+				{
+					"begin": "(object)(\\()(\\{)\\s*",
+					"name": "meta.function-call.terraform",
+					"comment": "Object structural type",
+					"beginCaptures": {
+						"1": {
+							"name": "support.function.builtin.terraform"
+						},
+						"2": {
+							"name": "punctuation.section.parens.begin.terraform"
+						},
+						"3": {
+							"name": "punctuation.section.braces.begin.terraform"
+						}
+					},
+					"end": "(\\})(\\))",
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.section.braces.end.terraform"
+						},
+						"2": {
+							"name": "punctuation.section.parens.end.terraform"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comma"
+						},
+						{
+							"match": "((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=(?!\\=|\\>))\\s*",
+							"comment": "Identifier \"=\"",
+							"name": "variable.declaration.terraform",
+							"captures": {
+								"1": {
+									"name": "variable.other.readwrite.terraform"
+								},
+								"2": {
+									"name": "keyword.operator.assignment.terraform"
+								}
+							}
+						},
+						{
+							"include": "#terraform_type_keywords"
+						}
+					]
+				},
+				{
+					"begin": "(tuple)(\\()(\\[)\\s*",
+					"name": "meta.function-call.terraform",
+					"comment": "Tuple structural type",
+					"beginCaptures": {
+						"1": {
+							"name": "support.function.builtin.terraform"
+						},
+						"2": {
+							"name": "punctuation.section.parens.begin.terraform"
+						},
+						"3": {
+							"name": "punctuation.section.brackets.begin.terraform"
+						}
+					},
+					"end": "(\\])(\\))",
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.section.brackets.end.terraform"
+						},
+						"2": {
+							"name": "punctuation.section.parens.end.terraform"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comma"
+						},
+						{
+							"include": "#terraform_type_keywords"
+						}
+					]
+				}
+			]
 		},
 		"functions": {
 			"begin": "(\\w+)(\\()",
