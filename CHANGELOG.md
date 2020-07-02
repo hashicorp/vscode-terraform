@@ -2,6 +2,7 @@
 
 * Verify shasum of language server binary on install (#414)
 * Add link to language server changelog on completed install (#424)
+* Add syntax for object and tuple structural types (#428)
 
 Bugs:
 
