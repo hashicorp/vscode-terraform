@@ -37,6 +37,11 @@ See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/master/CH
 
 If you are using a Terraform version prior to 0.12.0, you can install the pre-transfer version of this extension manually by [following the instructions in the wiki](https://github.com/hashicorp/vscode-terraform/wiki/Install-a-Pre-transfer-Version).
 
+## Known Issues
+
+* Multi-folder workspaces are not yet supported. ([info](https://github.com/hashicorp/vscode-terraform/issues/329#issuecomment-639378948))
+* Single-folder workspaces in which the root module is not the top-level folder are not supported. ([info](https://github.com/hashicorp/vscode-terraform/issues/329#issuecomment-639107179))
+
 ## Credits
 
 - [Mikael Olenfalk](https://github.com/mauve) - creating and supporting the [vscode-terraform](https://github.com/mauve/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
