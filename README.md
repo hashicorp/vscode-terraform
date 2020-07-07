@@ -40,7 +40,7 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 ## Known Issues
 
 * Multi-folder workspaces are not yet supported. ([info](https://github.com/hashicorp/vscode-terraform/issues/329#issuecomment-639378948))
-* Single-folder workspaces in which the root module is not the top-level folder are not supported. ([info](https://github.com/hashicorp/vscode-terraform/issues/329#issuecomment-639107179))
+* A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
 ## Credits
 
