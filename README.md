@@ -39,7 +39,7 @@ In addition, this new version brings the syntax highlighting up to date with all
   "terraform.languageServer": {
     "enabled": true,
     "args": [
-      "server"
+      "serve"
     ]
   }
 }
