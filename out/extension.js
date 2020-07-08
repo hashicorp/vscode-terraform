@@ -46,7 +46,7 @@ function activate(context) {
         stopLsClient();
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((event) => {
-        if (event.affectsConfiguration("terraform")) {
+        if (event.affectsConfiguration("terraform") || event.affectsConfiguration("terraform-ls")) {
             const reloadMsg = "Reload VSCode window to apply language server changes";
             vscode.window.showInformationMessage(reloadMsg, "Reload").then((selected) => {
                 if (selected === "Reload") {
@@ -92,19 +92,15 @@ function installThenStart(context, config) {
 function startLsClient(cmd, config) {
     return __awaiter(this, void 0, void 0, function* () {
         const binaryName = cmd.split("/").pop();
+        const lsConfig = vscode.workspace.getConfiguration("terraform-ls");
+        const serverArgs = config.get("languageServer.args");
         let serverOptions;
-        let serverArgs = config.get("languageServer.args");
-        let additionalArgs;
-        if (config.has("rootModules")) {
-            const rootModules = config.get("rootModules");
-            additionalArgs = rootModules.map(module => `-root-module=${module}`);
-        }
-        const args = serverArgs.concat(additionalArgs);
+        let initializationOptions = { rootModulePaths: lsConfig.get("rootModules") };
         const setup = vscode.window.createOutputChannel(binaryName);
-        setup.appendLine(`Launching language server: ${cmd} ${args.join(" ")}`);
+        setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(" ")}`);
         const executable = {
             command: cmd,
-            args: args,
+            args: serverArgs,
             options: {}
         };
         serverOptions = {
@@ -116,6 +112,7 @@ function startLsClient(cmd, config) {
             synchronize: {
                 fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
             },
+            initializationOptions: initializationOptions,
             outputChannel: setup,
             revealOutputChannelOn: 4 // hide always
         };

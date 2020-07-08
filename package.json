@@ -135,7 +135,7 @@
             "trace.server": "off"
           }
         },
-        "terraform.rootModules": {
+        "terraform-ls.rootModules": {
           "scope": "resource",
           "type": "array",
           "items": {
