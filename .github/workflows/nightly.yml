@@ -1,8 +1,9 @@
 name: Build Nightly
 on:
-  push: # TODO: remove this, only for debugging....
+  workflow_dispatch: # manual invocation
   schedule:
     - cron: '0 2 * * *' # run at 2 AM UTC
+      
 
 jobs:
   nightly:
