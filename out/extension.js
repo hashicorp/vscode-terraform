@@ -46,15 +46,17 @@ function activate(context) {
         stopLsClient();
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((event) => {
-        if (!event.affectsConfiguration('terraform.languageServer')) {
+        if (event.affectsConfiguration("terraform") || event.affectsConfiguration("terraform-ls")) {
+            const reloadMsg = "Reload VSCode window to apply language server changes";
+            vscode.window.showInformationMessage(reloadMsg, "Reload").then((selected) => {
+                if (selected === "Reload") {
+                    vscode.commands.executeCommand("workbench.action.reloadWindow");
+                }
+            });
+        }
+        else {
             return;
         }
-        const reloadMsg = 'Reload VSCode window to apply language server changes';
-        vscode.window.showInformationMessage(reloadMsg, 'Reload').then((selected) => {
-            if (selected === 'Reload') {
-                vscode.commands.executeCommand('workbench.action.reloadWindow');
-            }
-        });
     }));
     if (useLs) {
         return installThenStart(context, config);
@@ -90,10 +92,12 @@ function installThenStart(context, config) {
 function startLsClient(cmd, config) {
     return __awaiter(this, void 0, void 0, function* () {
         const binaryName = cmd.split("/").pop();
+        const lsConfig = vscode.workspace.getConfiguration("terraform-ls");
+        const serverArgs = config.get("languageServer.args");
         let serverOptions;
-        let serverArgs = config.get("languageServer.args");
+        let initializationOptions = { rootModulePaths: lsConfig.get("rootModules") };
         const setup = vscode.window.createOutputChannel(binaryName);
-        setup.appendLine(`Launching language server: ${cmd} ${serverArgs}`);
+        setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(" ")}`);
         const executable = {
             command: cmd,
             args: serverArgs,
@@ -108,6 +112,7 @@ function startLsClient(cmd, config) {
             synchronize: {
                 fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
             },
+            initializationOptions: initializationOptions,
             outputChannel: setup,
             revealOutputChannelOn: 4 // hide always
         };

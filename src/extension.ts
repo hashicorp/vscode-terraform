@@ -58,15 +58,16 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(
 			(event: vscode.ConfigurationChangeEvent) => {
-				if (!event.affectsConfiguration('terraform.languageServer')) {
+				if (event.affectsConfiguration("terraform") || event.affectsConfiguration("terraform-ls")) {
+					const reloadMsg = "Reload VSCode window to apply language server changes";
+					vscode.window.showInformationMessage(reloadMsg, "Reload").then((selected) => {
+						if (selected === "Reload") {
+							vscode.commands.executeCommand("workbench.action.reloadWindow");
+						}
+					});	
+				} else {
 					return;
 				}
-				const reloadMsg = 'Reload VSCode window to apply language server changes';
-				vscode.window.showInformationMessage(reloadMsg, 'Reload').then((selected) => {
-					if (selected === 'Reload') {
-						vscode.commands.executeCommand('workbench.action.reloadWindow');
-					}
-				});
 			}
 		)
 	);
@@ -102,11 +103,13 @@ async function installThenStart(context: vscode.ExtensionContext, config: vscode
 
 async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
 	const binaryName = cmd.split("/").pop();
+	const lsConfig = vscode.workspace.getConfiguration("terraform-ls");
+	const serverArgs: string[] = config.get("languageServer.args");
 	let serverOptions: ServerOptions;
-	let serverArgs: string[] = config.get("languageServer.args");
+	let initializationOptions = { rootModulePaths: lsConfig.get("rootModules") };
 
 	const setup = vscode.window.createOutputChannel(binaryName);
-	setup.appendLine(`Launching language server: ${cmd} ${serverArgs}`)
+	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(" ")}`);
 
 	const executable: Executable = {
 		command: cmd,
@@ -123,6 +126,7 @@ async function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration)
 		synchronize: {
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
 		},
+		initializationOptions: initializationOptions,
 		outputChannel: setup,
 		revealOutputChannelOn: 4 // hide always
 	};

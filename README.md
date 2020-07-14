@@ -12,6 +12,18 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 - Closes braces and quotes
 - Includes `for_each` and `variable` syntax shortcuts (`fore`, `vare`, `varm`)
 
+## Configuration
+
+If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
+```
+{
+    "terraform-ls.rootModules": [
+        "/module1",
+        "/module2"
+    ]
+}
+```
+
 ## Release History
 
 **v2.0.0**  is the first official release from HashiCorp, prior releases were by [Mikael Olenfalk](https://github.com/mauve).
