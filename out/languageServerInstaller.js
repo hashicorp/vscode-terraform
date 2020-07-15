@@ -194,11 +194,39 @@ class LanguageServerInstaller {
     }
     verify(release, pkg, buildName) {
         return new Promise((resolve, reject) => {
-            const hash = crypto.createHash('sha256');
-            const pkgStream = fs.createReadStream(pkg);
-            pkgStream.on('data', (data) => {
-                hash.update(data);
+            Promise.all([
+                this.calculateFileSha256Sum(pkg),
+                this.downloadSha256Sum(release, buildName)
+            ]).then((values) => {
+                const localSum = values[0];
+                const remoteSum = values[1];
+                if (remoteSum !== localSum) {
+                    return reject(`Install error: SHA sum for ${buildName} does not match.\n` +
+                        `(expected: ${remoteSum} calculated: ${localSum})`);
+                }
+                else {
+                    return resolve();
+                }
             });
+        });
+    }
+    calculateFileSha256Sum(path) {
+        return new Promise((resolve, reject) => {
+            const inputStream = fs.createReadStream(path);
+            const hash = crypto.createHash('sha256');
+            inputStream.on('readable', () => {
+                const data = inputStream.read();
+                if (data) {
+                    hash.update(data);
+                }
+                else {
+                    return resolve(hash.digest('hex'));
+                }
+            });
+        });
+    }
+    downloadSha256Sum(release, buildName) {
+        return new Promise((resolve, reject) => {
             let shasumResponse = "";
             https.get(`${releasesUrl}/${release.version}/${release.shasums}`, (response) => {
                 response.on('data', (data) => {
@@ -209,13 +237,7 @@ class LanguageServerInstaller {
                     if (!shasumLine) {
                         return reject(`Install error: no matching SHA sum for ${buildName}`);
                     }
-                    const shasum = shasumLine.split("  ")[0];
-                    if (hash.digest('hex') !== shasum) {
-                        return reject(`Install error: SHA sum for ${buildName} does not match`);
-                    }
-                    else {
-                        return resolve();
-                    }
+                    return resolve(shasumLine.split("  ")[0]);
                 });
             }).on('error', (err) => {
                 return reject(err);
