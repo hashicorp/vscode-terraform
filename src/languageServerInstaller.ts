@@ -95,7 +95,7 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	installPkg(installDir: string, release: { builds: any[]; version: string; }, userAgent: string): Promise<void> {
+	installPkg(installDir: string, release: Release, userAgent: string): Promise<void> {
 		const destination: string = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
