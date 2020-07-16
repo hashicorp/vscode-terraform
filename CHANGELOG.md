@@ -1,4 +1,4 @@
-# 2.1.1 (Unreleased)
+# 2.1.1 (2020-07-15)
 
 * Fix race in shasum verification (#438)
 
