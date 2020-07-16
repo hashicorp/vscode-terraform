@@ -1,3 +1,7 @@
+# 2.1.1 (Unreleased)
+
+* Fix race in shasum verification (#438)
+
 # 2.1.0 (2020-07-14)
 
 * Verify shasum of language server binary on install (#414)
