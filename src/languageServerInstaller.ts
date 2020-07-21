@@ -125,19 +125,16 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	verify(release: Release, pkg: string, buildName: string) {
-		return Promise.all([
+	async verify(release: Release, pkg: string, buildName: string) {
+		const values = await Promise.all([
 			this.calculateFileSha256Sum(pkg),
 			this.downloadSha256Sum(release, buildName)
-		]).then((values) => {
-			const localSum = values[0];
-			const remoteSum = values[1];
-
-			if (remoteSum !== localSum) {
-				throw new Error(`Install error: SHA sum for ${buildName} does not match.\n` +
-					`(expected: ${remoteSum} calculated: ${localSum})`);
-			}
-		});
+		]);
+		const [localSum, remoteSum] = values;
+		if (remoteSum !== localSum) {
+			throw new Error(`Install error: SHA sum for ${buildName} does not match.\n` +
+				`(expected: ${remoteSum} calculated: ${localSum})`);
+		}
 	}
 
 	calculateFileSha256Sum(path: string) {
@@ -150,15 +147,13 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	downloadSha256Sum(release: Release, buildName: string) {
-		return httpsRequest(`${releasesUrl}/${release.version}/${release.shasums}`)
-			.then(shasumResponse => {
-				const shasumLine = shasumResponse.split(`\n`).find(line => line.includes(buildName));
-				if (!shasumLine) {
-					throw new Error(`Install error: no matching SHA sum for ${buildName}`);
-				}
-				return shasumLine.split("  ")[0]
-			});
+	async downloadSha256Sum(release: Release, buildName: string) {
+		const shasumResponse = await httpsRequest(`${releasesUrl}/${release.version}/${release.shasums}`);
+		const shasumLine = shasumResponse.split(`\n`).find(line => line.includes(buildName));
+		if (!shasumLine) {
+			throw new Error(`Install error: no matching SHA sum for ${buildName}`);
+		}
+		return shasumLine.split("  ")[0];
 	}
 
 	unpack(directory: string, pkgName: string) {
