@@ -21,146 +21,78 @@ const releasesUrl = "https://releases.hashicorp.com/terraform-ls";
 class LanguageServerInstaller {
     install(directory) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const extensionVersion = '2.0.0'; // TODO set this programatically
-                const lspCmd = `${directory}/terraform-ls --version`;
-                const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
-                cp.exec(lspCmd, (err, stdout, stderr) => {
-                    if (err) {
-                        return this.checkCurrent(userAgent)
-                            .then((currentRelease) => {
-                            return this.installPkg(directory, currentRelease, userAgent)
-                                .then(() => {
-                                return resolve();
-                            });
-                        }).catch((err) => {
-                            return reject(err);
-                        });
-                    }
-                    else if (stderr) { // Version outputs to stderr
-                        const installedVersion = stderr;
-                        this.checkCurrent(userAgent).then((currentRelease) => {
-                            if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
-                                const installMsg = `A new language server release is available: ${currentRelease.version}. Install now?`;
-                                vscode.window.showInformationMessage(installMsg, 'Install', 'Cancel')
-                                    .then((selected) => {
-                                    if (selected === 'Install') {
-                                        return this.installPkg(directory, currentRelease, userAgent)
-                                            .then(() => {
-                                            return resolve();
-                                        }).catch((err) => {
-                                            return reject(err);
-                                        });
-                                    }
-                                    else if (selected === 'Cancel') {
-                                        return resolve();
-                                    }
-                                });
-                            }
-                            else {
-                                return resolve();
-                            }
-                        });
-                    }
-                    else {
-                        vscode.window.showErrorMessage('Unable to install terraform-ls');
-                        console.log(stdout);
-                        return reject();
-                    }
-                });
-            });
-        });
-    }
-    checkCurrent(userAgent) {
-        const indexUrl = `${releasesUrl}/index.json`;
-        const headers = { 'User-Agent': userAgent };
-        return new Promise((resolve, reject) => {
-            const request = https.request(indexUrl, { headers: headers }, (response) => {
-                if (response.statusCode !== 200) {
-                    return reject(response.statusMessage);
+            const extensionVersion = '2.1.2'; // TODO set this programatically
+            const lspCmd = `${directory}/terraform-ls --version`;
+            const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
+            let isInstalled = true;
+            try {
+                var { stdout, installedVersion } = yield exec(lspCmd);
+            }
+            catch (err) {
+                // TODO: verify error was in fact binary not found
+                isInstalled = false;
+            }
+            const currentRelease = yield checkLatest(userAgent);
+            if (isInstalled && semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
+                const selected = yield vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
+                if (selected === 'Cancel') {
+                    return;
                 }
-                let releaseData = "";
-                response.on('data', (data) => {
-                    releaseData += data;
-                });
-                response.on('end', () => {
-                    try {
-                        const releases = JSON.parse(releaseData).versions;
-                        const currentRelease = Object.keys(releases).sort(semver.rcompare)[0];
-                        return resolve(releases[currentRelease]);
-                    }
-                    catch (err) {
-                        return reject(err);
-                    }
-                });
-            });
-            request.on('error', (error) => { return reject(error); });
-            request.end();
+            }
+            try {
+                yield this.installPkg(directory, currentRelease, userAgent);
+            }
+            catch (err) {
+                vscode.window.showErrorMessage('Unable to install terraform-ls');
+                console.log(stdout);
+                throw err;
+            }
+            const selected = yield vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}.`, "View Changelog");
+            if (selected === "View Changelog") {
+                return vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${currentRelease.version}`));
+            }
         });
     }
     installPkg(installDir, release, userAgent) {
-        const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
-        fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
-        let platform = os.platform().toString();
-        if (platform === 'win32') {
-            platform = 'windows';
-        }
-        let arch = os.arch();
-        switch (arch) {
-            case 'x64':
-                arch = 'amd64';
-                break;
-            case 'x32':
-                arch = '386';
-                break;
-        }
-        const build = release.builds.find(b => b.os === platform && b.arch === arch);
-        const downloadUrl = build.url;
-        if (!downloadUrl) {
-            // No matching build found
-            return Promise.reject("Install error: no matching terraform-ls binary for platform");
-        }
-        try {
-            this.removeOldBinary(installDir, platform);
-        }
-        catch (_a) {
-            // ignore missing binary (new install)
-        }
-        return new Promise((resolve, reject) => {
-            vscode.window.withProgress({
+        return __awaiter(this, void 0, void 0, function* () {
+            const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
+            fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
+            let platform = os.platform().toString();
+            if (platform === 'win32') {
+                platform = 'windows';
+            }
+            let arch = os.arch();
+            switch (arch) {
+                case 'x64':
+                    arch = 'amd64';
+                    break;
+                case 'x32':
+                    arch = '386';
+                    break;
+            }
+            const build = release.builds.find(b => b.os === platform && b.arch === arch);
+            const downloadUrl = build.url;
+            if (!downloadUrl) {
+                throw new Error("Install error: no matching terraform-ls binary for platform");
+            }
+            try {
+                this.removeOldBinary(installDir, platform);
+            }
+            catch (_a) {
+                // ignore missing binary (new install)
+            }
+            return vscode.window.withProgress({
                 cancellable: true,
                 location: vscode.ProgressLocation.Notification,
                 title: "Installing terraform-ls"
-            }, (progress, token) => {
-                token.onCancellationRequested(() => {
-                    return reject();
-                });
+            }, (progress, token) => __awaiter(this, void 0, void 0, function* () {
                 progress.report({ increment: 30 });
-                return this.download(downloadUrl, destination, userAgent)
-                    .then(() => {
-                    progress.report({ increment: 30 });
-                    return this.verify(release, destination, build.filename)
-                        .then(() => {
-                        progress.report({ increment: 30 });
-                        return this.unpack(installDir, destination);
-                    });
-                });
-            }).then(() => {
-                vscode.window.showInformationMessage(`Installed terraform-ls ${release.version}.`, "View Changelog")
-                    .then((selected) => {
-                    if (selected === "View Changelog") {
-                        vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${release.version}`));
-                    }
-                    return resolve();
-                });
-            }, (err) => {
-                try {
-                    fs.unlinkSync(destination);
-                }
-                finally {
-                    return reject(err);
-                }
-            });
+                yield this.download(downloadUrl, destination, userAgent);
+                progress.report({ increment: 30 });
+                yield this.verify(release, destination, build.filename);
+                progress.report({ increment: 30 });
+                return this.unpack(installDir, destination);
+            }));
         });
     }
     removeOldBinary(directory, platform) {
@@ -174,7 +106,7 @@ class LanguageServerInstaller {
     download(downloadUrl, installPath, identifier) {
         const headers = { 'User-Agent': identifier };
         return new Promise((resolve, reject) => {
-            const request = https.request(downloadUrl, { headers: headers }, (response) => {
+            https.request(downloadUrl, { headers: headers }, (response) => {
                 if (response.statusCode === 301 || response.statusCode === 302) { // redirect for CDN
                     const redirectUrl = response.headers.location;
                     return resolve(this.download(redirectUrl, installPath, identifier));
@@ -182,66 +114,46 @@ class LanguageServerInstaller {
                 if (response.statusCode !== 200) {
                     return reject(response.statusMessage);
                 }
-                const pkg = fs.createWriteStream(installPath);
-                response.pipe(pkg);
-                response.on('end', () => {
-                    return resolve();
-                });
-            });
-            request.on('error', (error) => { return reject(error); });
-            request.end();
+                response
+                    .on('error', reject)
+                    .on('end', resolve)
+                    .pipe(fs.createWriteStream(installPath))
+                    .on('error', reject);
+            })
+                .on('error', reject)
+                .end();
         });
     }
     verify(release, pkg, buildName) {
-        return new Promise((resolve, reject) => {
-            Promise.all([
-                this.calculateFileSha256Sum(pkg),
-                this.downloadSha256Sum(release, buildName)
-            ]).then((values) => {
-                const localSum = values[0];
-                const remoteSum = values[1];
-                if (remoteSum !== localSum) {
-                    return reject(`Install error: SHA sum for ${buildName} does not match.\n` +
-                        `(expected: ${remoteSum} calculated: ${localSum})`);
-                }
-                else {
-                    return resolve();
-                }
-            });
+        return Promise.all([
+            this.calculateFileSha256Sum(pkg),
+            this.downloadSha256Sum(release, buildName)
+        ]).then((values) => {
+            const localSum = values[0];
+            const remoteSum = values[1];
+            if (remoteSum !== localSum) {
+                throw new Error(`Install error: SHA sum for ${buildName} does not match.\n` +
+                    `(expected: ${remoteSum} calculated: ${localSum})`);
+            }
         });
     }
     calculateFileSha256Sum(path) {
         return new Promise((resolve, reject) => {
-            const inputStream = fs.createReadStream(path);
             const hash = crypto.createHash('sha256');
-            inputStream.on('readable', () => {
-                const data = inputStream.read();
-                if (data) {
-                    hash.update(data);
-                }
-                else {
-                    return resolve(hash.digest('hex'));
-                }
-            });
+            fs.createReadStream(path)
+                .on('error', reject)
+                .on('data', data => hash.update(data))
+                .on('end', () => resolve(hash.digest('hex')));
         });
     }
     downloadSha256Sum(release, buildName) {
-        return new Promise((resolve, reject) => {
-            let shasumResponse = "";
-            https.get(`${releasesUrl}/${release.version}/${release.shasums}`, (response) => {
-                response.on('data', (data) => {
-                    shasumResponse += data;
-                });
-                response.on('end', () => {
-                    const shasumLine = shasumResponse.split(`\n`).find(line => line.includes(buildName));
-                    if (!shasumLine) {
-                        return reject(`Install error: no matching SHA sum for ${buildName}`);
-                    }
-                    return resolve(shasumLine.split("  ")[0]);
-                });
-            }).on('error', (err) => {
-                return reject(err);
-            });
+        return httpsRequest(`${releasesUrl}/${release.version}/${release.shasums}`)
+            .then(shasumResponse => {
+            const shasumLine = shasumResponse.split(`\n`).find(line => line.includes(buildName));
+            if (!shasumLine) {
+                throw new Error(`Install error: no matching SHA sum for ${buildName}`);
+            }
+            return shasumLine.split("  ")[0];
         });
     }
     unpack(directory, pkgName) {
@@ -274,4 +186,44 @@ class LanguageServerInstaller {
     }
 }
 exports.LanguageServerInstaller = LanguageServerInstaller;
+function exec(cmd) {
+    return new Promise((resolve, reject) => {
+        cp.exec(cmd, (err, stdout, stderr) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve({ stdout, stderr });
+        });
+    });
+}
+function httpsRequest(url, options = {}) {
+    return new Promise((resolve, reject) => {
+        https.request(url, options, res => {
+            if (res.statusCode === 301 || res.statusCode === 302) { // follow redirects
+                const redirectUrl = res.headers.location;
+                return resolve(httpsRequest(redirectUrl, options));
+            }
+            if (res.statusCode !== 200) {
+                return reject(res.statusMessage);
+            }
+            let body = '';
+            res.on('data', data => {
+                body += data;
+            })
+                .on('end', () => resolve(body));
+        })
+            .on('error', reject)
+            .end();
+    });
+}
+function checkLatest(userAgent) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const indexUrl = `${releasesUrl}/index.json`;
+        const headers = { 'User-Agent': userAgent };
+        const body = yield httpsRequest(indexUrl, { headers });
+        let releases = JSON.parse(body);
+        const currentRelease = Object.keys(releases.versions).sort(semver.rcompare)[0];
+        return releases.versions[currentRelease];
+    });
+}
 //# sourceMappingURL=languageServerInstaller.js.map
