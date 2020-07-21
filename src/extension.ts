@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 						if (selected === "Reload") {
 							vscode.commands.executeCommand("workbench.action.reloadWindow");
 						}
-					});	
+					});
 				} else {
 					return;
 				}
@@ -87,17 +87,18 @@ export function deactivate(): Thenable<void> | undefined {
 async function installThenStart(context: vscode.ExtensionContext, config: vscode.WorkspaceConfiguration) {
 	const command: string = config.get("languageServer.pathToBinary");
 	if (command) { // Skip install/upgrade if user has set custom binary path
-		startLsClient(command, config);
+		await startLsClient(command, config);
 	} else {
 		const installer = new LanguageServerInstaller;
-		const installDir = `${context.extensionPath}/lsp`
-		installer.install(installDir).then(() => {
-			config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
-			startLsClient(`${installDir}/terraform-ls`, config);
-		}).catch((err) => {
-			config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
-		vscode.window.showErrorMessage(err);
-		});
+		const installDir = `${context.extensionPath}/lsp`;
+
+		try {
+			await installer.install(installDir);
+			await startLsClient(`${installDir}/terraform-ls`, config);
+		} catch (err) {
+			vscode.window.showErrorMessage(err);
+			throw err;
+		}
 	}
 }
 

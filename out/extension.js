@@ -74,18 +74,19 @@ function installThenStart(context, config) {
     return __awaiter(this, void 0, void 0, function* () {
         const command = config.get("languageServer.pathToBinary");
         if (command) { // Skip install/upgrade if user has set custom binary path
-            startLsClient(command, config);
+            yield startLsClient(command, config);
         }
         else {
             const installer = new languageServerInstaller_1.LanguageServerInstaller;
             const installDir = `${context.extensionPath}/lsp`;
-            installer.install(installDir).then(() => {
-                config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
-                startLsClient(`${installDir}/terraform-ls`, config);
-            }).catch((err) => {
-                config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
+            try {
+                yield installer.install(installDir);
+                yield startLsClient(`${installDir}/terraform-ls`, config);
+            }
+            catch (err) {
                 vscode.window.showErrorMessage(err);
-            });
+                throw err;
+            }
         }
     });
 }

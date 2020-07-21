@@ -47,10 +47,13 @@ class LanguageServerInstaller {
                 console.log(stdout);
                 throw err;
             }
-            const selected = yield vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}.`, "View Changelog");
-            if (selected === "View Changelog") {
-                return vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${currentRelease.version}`));
-            }
+            // Do not wait on the showInformationMessage
+            vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}.`, "View Changelog")
+                .then(selected => {
+                if (selected === "View Changelog") {
+                    return vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${currentRelease.version}`));
+                }
+            });
         });
     }
     installPkg(installDir, release, userAgent) {
