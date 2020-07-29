@@ -21,7 +21,7 @@ const releasesUrl = "https://releases.hashicorp.com/terraform-ls";
 class LanguageServerInstaller {
     install(directory) {
         return __awaiter(this, void 0, void 0, function* () {
-            const extensionVersion = '2.1.2'; // TODO set this programatically
+            const { version: extensionVersion } = require('../package.json');
             const lspCmd = `${directory}/terraform-ls --version`;
             const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
             let isInstalled = true;
