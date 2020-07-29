@@ -26,16 +26,21 @@ class LanguageServerInstaller {
             const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
             let isInstalled = true;
             try {
-                var { stdout, installedVersion } = yield exec(lspCmd);
+                var { stdout, stderr: installedVersion } = yield exec(lspCmd);
             }
             catch (err) {
                 // TODO: verify error was in fact binary not found
                 isInstalled = false;
             }
             const currentRelease = yield checkLatest(userAgent);
-            if (isInstalled && semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
-                const selected = yield vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
-                if (selected === 'Cancel') {
+            if (isInstalled) {
+                if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
+                    const selected = yield vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
+                    if (selected === 'Cancel') {
+                        return;
+                    }
+                }
+                else {
                     return;
                 }
             }
