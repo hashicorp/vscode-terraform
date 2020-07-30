@@ -1,3 +1,7 @@
+# 2.2.0 (Unreleased)
+
+* Refactor and fix install bugs (#444)
+
 # 2.1.1 (2020-07-15)
 
 * Fix race in shasum verification (#438)
