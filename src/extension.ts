@@ -112,7 +112,10 @@ function newClient(cmd: string, folder: string) {
 	const channelName = `${binaryName}/${folder}`;
 	const f = pathToWorkspaceFolder(folder);
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
-	let initializationOptions = { rootModulePaths: config('terraform-ls', f).get('rootModules') };
+	let initializationOptions = { 
+		rootModulePaths: config('terraform-ls', f).get('rootModules'),
+		excludeModulePaths: config('terraform-ls', f).get("rootModules-exclude")
+	};
 
 	const setup = vscode.window.createOutputChannel(channelName);
 	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${folder}`);

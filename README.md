@@ -24,6 +24,16 @@ If you have multiple root modules in your workspace, you can configure the langu
 }
 ```
 
+If you want to automatically search root modules in your workspace and exclude some folders,  you can configure the language server settings to identify them.
+```
+{
+    "terraform-ls.rootModules-exclude": [
+        "/module3",
+        "/module4"
+    ]
+}
+```
+
 ## Release History
 
 **v2.0.0**  is the first official release from HashiCorp, prior releases were by [Mikael Olenfalk](https://github.com/mauve).
