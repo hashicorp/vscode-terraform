@@ -14,15 +14,14 @@ let client: LanguageClient;
 export async function activate(context: vscode.ExtensionContext) {
 	const commandOutput = vscode.window.createOutputChannel("Terraform");
 	const config = vscode.workspace.getConfiguration("terraform");
-
 	// get rid of pre-2.0.0 settings
 	if (config.has('languageServer.enabled')) {
+		const defaults = require("../package.json").contributes.configuration.properties['terraform.languageServer'].default;
 		await config.update('languageServer',
-			{ "external": true, "args": ["serve"], "enabled": undefined },
+			Object.assign(defaults, { enabled: undefined }),
 			true
 		)
 	}
-	let useLs = config.get("languageServer.external");
 
 	// Terraform Commands
 
@@ -45,13 +44,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
-			await stopLsClient();
-			await installThenStart(context, config);
-			return config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
+			await stopClients();
+			await startClients(context, config);
+			// TODO: this throws as an unregistered configuration in this callback?
+			// in theory this could cause an infinite loop with the reload hook below
+			// return config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
-			await config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
-			return stopLsClient();
+			await stopClients();
+			// TODO: this throws as an unregistered configuration in this callback?
+			// in theory this could cause an infinite loop with the reload hook below
+			// return config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
 		})
 	);
 
@@ -69,34 +72,32 @@ export async function activate(context: vscode.ExtensionContext) {
 		)
 	);
 
+	const useLs: boolean = config.get("languageServer.external");
 	if (useLs) {
-		return installThenStart(context, config);
+		return vscode.commands.executeCommand("terraform.enableLanguageServer");
 	}
 }
 
 export function deactivate() {
-	return stopLsClient();
+	return stopClients();
 }
 
-async function installThenStart(context: vscode.ExtensionContext, config: vscode.WorkspaceConfiguration) {
-	const command: string = config.get("languageServer.pathToBinary");
-	if (command) { // Skip install/upgrade if user has set custom binary path
-		return startLsClient(command, config);
-	} else {
-		const installer = new LanguageServerInstaller;
+async function startClients(context: vscode.ExtensionContext, config: vscode.WorkspaceConfiguration) {
+	let command: string = config.get("languageServer.pathToBinary");
+	if (!command) { // Skip install/upgrade if user has set custom binary path
 		const installDir = `${context.extensionPath}/lsp`;
-
 		try {
-			await installer.install(installDir);
+			await (new LanguageServerInstaller).install(installDir);
 		} catch (err) {
 			vscode.window.showErrorMessage(err);
 			throw err;
 		}
-		return startLsClient(`${installDir}/terraform-ls`, config);
+		command = `${installDir}/terraform-ls`;
 	}
+	return startClient(command, config);
 }
 
-function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
+function startClient(cmd: string, config: vscode.WorkspaceConfiguration) {
 	const binaryName = cmd.split("/").pop();
 	const lsConfig = vscode.workspace.getConfiguration("terraform-ls");
 	const serverArgs: string[] = config.get("languageServer.args");
@@ -136,7 +137,7 @@ function startLsClient(cmd: string, config: vscode.WorkspaceConfiguration) {
 	return client.start();
 }
 
-async function stopLsClient() {
+async function stopClients() {
 	if (!client) {
 		return;
 	}
