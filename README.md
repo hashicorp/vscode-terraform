@@ -24,10 +24,10 @@ If you have multiple root modules in your workspace, you can configure the langu
 }
 ```
 
-If you want to automatically search root modules in your workspace and exclude some folders,  you can configure the language server settings to identify them.
+If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
 ```
 {
-    "terraform-ls.rootModules-exclude": [
+    "terraform-ls.excludeRootModules": [
         "/module3",
         "/module4"
     ]
