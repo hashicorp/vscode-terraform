@@ -114,7 +114,7 @@ function newClient(cmd: string, folder: string) {
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
 	let initializationOptions = { 
 		rootModulePaths: config('terraform-ls', f).get('rootModules'),
-		excludeModulePaths: config('terraform-ls', f).get("rootModules-exclude")
+		excludeModulePaths: config('terraform-ls', f).get('excludeRootModules')
 	};
 
 	const setup = vscode.window.createOutputChannel(channelName);
