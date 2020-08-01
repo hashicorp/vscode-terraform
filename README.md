@@ -37,7 +37,7 @@ In addition, this new version brings the syntax highlighting up to date with all
 ```json
 {
   "terraform.languageServer": {
-    "enabled": true,
+    "external": true,
     "args": [
       "serve"
     ]
