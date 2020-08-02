@@ -10,14 +10,15 @@ import { LanguageServerInstaller } from './languageServerInstaller';
 import { runCommand } from './terraformCommand';
 
 let clients: Map<string, LanguageClient> = new Map();
+let extensionPath: string;
 
 export async function activate(context: vscode.ExtensionContext) {
+	extensionPath = context.extensionPath;
 	const commandOutput = vscode.window.createOutputChannel("Terraform");
-	const config = vscode.workspace.getConfiguration("terraform");
 	// get rid of pre-2.0.0 settings
-	if (config.has('languageServer.enabled')) {
+	if (config('terraform').has('languageServer.enabled')) {
 		const defaults = require("../package.json").contributes.configuration.properties['terraform.languageServer'].default;
-		await config.update('languageServer',
+		await config('terraform').update('languageServer',
 			Object.assign(defaults, { enabled: undefined }),
 			true
 		)
@@ -43,28 +44,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Subscriptions
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
-			await stopClients();
-			let command: string = config.get("languageServer.pathToBinary");
-			if (!command) { // Skip install/upgrade if user has set custom binary path
-				const installDir = `${context.extensionPath}/lsp`;
-				try {
-					await (new LanguageServerInstaller).install(installDir);
-				} catch (err) {
-					vscode.window.showErrorMessage(err);
-					throw err;
-				}
-				command = `${installDir}/terraform-ls`;
-			}
-			await startClients(command, config.get("languageServer.args"));
+			await startClients();
 			// TODO: this throws as an unregistered configuration in this callback?
 			// in theory this could cause an infinite loop with the reload hook below
-			// return config.update("languageServer.external", true, vscode.ConfigurationTarget.Global);
+			// return config('terraform').update("languageServer.external", true, vscode.ConfigurationTarget.Global);
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
 			await stopClients();
 			// TODO: this throws as an unregistered configuration in this callback?
 			// in theory this could cause an infinite loop with the reload hook below
-			// return config.update("languageServer.external", false, vscode.ConfigurationTarget.Global);
+			// return config('terraform').update("languageServer.external", false, vscode.ConfigurationTarget.Global);
 		}),
 		vscode.workspace.onDidChangeConfiguration(
 			async (event: vscode.ConfigurationChangeEvent) => {
@@ -77,9 +66,19 @@ export async function activate(context: vscode.ExtensionContext) {
 				}
 			}
 		),
+		vscode.workspace.onDidChangeWorkspaceFolders(
+			async (event: vscode.WorkspaceFoldersChangeEvent) => {
+				if (event.removed.length > 0) {
+					await stopClients(sortedWorkspaceFolders(event.removed));
+				}
+				if (event.removed.length > 0) {
+					await startClients(sortedWorkspaceFolders(event.added));
+				}
+			}
+		)
 	);
 
-	const useLs: boolean = config.get("languageServer.external");
+	const useLs: boolean = config('terraform').get("languageServer.external");
 	if (useLs) {
 		return vscode.commands.executeCommand("terraform.enableLanguageServer");
 	}
@@ -89,22 +88,23 @@ export function deactivate() {
 	return stopClients();
 }
 
-async function startClients(command: string, serverArgs: string[], folders = workspaceFolders()) {
+async function startClients(folders = sortedWorkspaceFolders()) {
+	console.log("Starting:", folders);
+	const command = await pathToBinary();
 	let disposables: vscode.Disposable[] = [];
 	for (const folder of folders) {
-		const client = newClient(command, serverArgs, folder);
+		const client = newClient(command, folder);
 		disposables.push(client.start());
 		clients.set(folder, client);
 	}
 	return disposables
 }
 
-function newClient(cmd: string, serverArgs: string[], folder: string) {
+function newClient(cmd: string, folder: string) {
 	const binaryName = cmd.split("/").pop();
-	const channelName = `${binaryName}/${folder}`
-	const lsConfig = vscode.workspace.getConfiguration("terraform-ls");
-	let serverOptions: ServerOptions;
-	let initializationOptions = { rootModulePaths: lsConfig.get("rootModules") };
+	const channelName = `${binaryName}/${folder}`;
+	const serverArgs: string[] = config('terraform').get('languageServer.args');
+	let initializationOptions = { rootModulePaths: config('terraform').get("rootModules") };
 
 	const setup = vscode.window.createOutputChannel(channelName);
 	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(" ")} for folder: ${folder}`);
@@ -113,8 +113,8 @@ function newClient(cmd: string, serverArgs: string[], folder: string) {
 		command: cmd,
 		args: serverArgs,
 		options: {}
-	}
-	serverOptions = {
+	};
+	const serverOptions: ServerOptions = {
 		run: executable,
 		debug: executable
 	};
@@ -137,7 +137,8 @@ function newClient(cmd: string, serverArgs: string[], folder: string) {
 	);
 }
 
-async function stopClients(folders = workspaceFolders()) {
+async function stopClients(folders = sortedWorkspaceFolders()) {
+	console.log("Stopping:", folders);
 	let promises: Thenable<void>[] = [];
 	for (const folder of folders) {
 		if (clients.has(folder)) {
@@ -150,12 +151,39 @@ async function stopClients(folders = workspaceFolders()) {
 	return Promise.all(promises);
 }
 
-function workspaceFolders(): string[] {
-	return vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(folder => {
+let _pathToBinaryPromise: Promise<string>
+async function pathToBinary(): Promise<string> {
+	if (!_pathToBinaryPromise) {
+		let command: string = config('terraform').get("languageServer.pathToBinary");
+		if (!command) { // Skip install/upgrade if user has set custom binary path
+			const installDir = `${extensionPath}/lsp`;
+			try {
+				await (new LanguageServerInstaller).install(installDir);
+			} catch (err) {
+				vscode.window.showErrorMessage(err);
+				throw err;
+			}
+			command = `${installDir}/terraform-ls`;
+		}
+		_pathToBinaryPromise = Promise.resolve(command);
+	}
+	return _pathToBinaryPromise;
+}
+
+function config(section: string) {
+	return vscode.workspace.getConfiguration(section);
+}
+
+// this was lifted from a sample, having the folders sorted may not be necessary
+function sortedWorkspaceFolders(folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders): string[] {
+	if (!folders) {
+		return [];
+	}
+	return folders.map(folder => {
 		let result = folder.uri.toString();
 		if (result.charAt(result.length - 1) !== '/') {
 			result = result + '/';
 		}
 		return result;
-	}).sort((a, b) => a.length - b.length) : [];
+	}).sort((a, b) => a.length - b.length);
 }
