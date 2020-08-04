@@ -71,7 +71,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				if (event.removed.length > 0) {
 					await stopClients(sortedWorkspaceFolders(event.removed));
 				}
-				if (event.removed.length > 0) {
+				if (event.added.length > 0) {
 					await startClients(sortedWorkspaceFolders(event.added));
 				}
 			}
@@ -93,9 +93,13 @@ async function startClients(folders = sortedWorkspaceFolders()) {
 	const command = await pathToBinary();
 	let disposables: vscode.Disposable[] = [];
 	for (const folder of folders) {
-		const client = newClient(command, folder);
-		disposables.push(client.start());
-		clients.set(folder, client);
+		if (!clients.has(folder)) {
+			const client = newClient(command, folder);
+			disposables.push(client.start());
+			clients.set(folder, client);
+		} else {
+			console.log(`Client for folder: ${folder} already started`);
+		}
 	}
 	return disposables
 }
@@ -118,12 +122,10 @@ function newClient(cmd: string, folder: string) {
 		run: executable,
 		debug: executable
 	};
-
+	const f = vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folder));
 	const clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file', language: 'terraform' }],
-		synchronize: {
-			fileEvents: vscode.workspace.createFileSystemWatcher('**/*.tf')
-		},
+		documentSelector: [{ scheme: 'file', language: 'terraform', pattern: `${f.uri.fsPath}/**/*` }],
+		workspaceFolder: f,
 		initializationOptions: initializationOptions,
 		outputChannel: setup,
 		revealOutputChannelOn: 4 // hide always
@@ -145,7 +147,7 @@ async function stopClients(folders = sortedWorkspaceFolders()) {
 			promises.push(clients.get(folder).stop());
 			clients.delete(folder);
 		} else {
-			console.error(`Attempted to stop a client for folder: ${folder} but no client exists`);
+			console.log(`Attempted to stop a client for folder: ${folder} but no client exists`);
 		}
 	}
 	return Promise.all(promises);
