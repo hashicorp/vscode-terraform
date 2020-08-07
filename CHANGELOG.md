@@ -1,6 +1,7 @@
 # 2.2.0 (Unreleased)
 
 * Refactor and fix install bugs (#444)
+* Perform PGP verification of zip/shasums (#450)
 
 # 2.1.1 (2020-07-15)
 
