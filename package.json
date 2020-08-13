@@ -166,26 +166,26 @@
     "test": "npm run test-compile && node ./out/test/runTest.js"
   },
   "dependencies": {
-    "@octokit/rest": "^17.1.3",
-    "@types/semver": "^7.1.0",
+    "@octokit/rest": "^17.11.2",
+    "@types/semver": "^7.3.1",
     "openpgp": "^4.10.7",
-    "semver": "^7.1.3",
-    "vscode-languageclient": "^5.2.1",
+    "semver": "^7.3.2",
+    "vscode-languageclient": "^6.1.3",
     "yauzl": "^2.10.0"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.1",
+    "@types/glob": "^7.1.3",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^12.11.7",
-    "@types/vscode": "^1.42.0",
+    "@types/node": "^12.12.54",
+    "@types/vscode": "^1.47.0",
     "@types/yauzl": "^2.9.1",
-    "@typescript-eslint/eslint-plugin": "^2.28.0",
-    "@typescript-eslint/parser": "^2.28.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
-    "mocha": "^7.1.1",
-    "typescript": "^3.6.4",
-    "vsce": "^1.77.0",
+    "mocha": "^7.2.0",
+    "typescript": "^3.9.7",
+    "vsce": "^1.78.0",
     "vscode-test": "1.3.0"
   }
 }
