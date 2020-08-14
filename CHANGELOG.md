@@ -3,6 +3,7 @@
 * Refactor and fix install bugs (#444)
 * Perform PGP verification of zip/shasums (#450)
 * Upgrade LS client library to major version 6 (#454)
+* Fix block syntax labels (#458)
 
 # 2.1.1 (2020-07-15)
 
