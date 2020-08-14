@@ -109,7 +109,7 @@
 				"1": {
 					"patterns": [
 						{
-							"match": "resource|provider|variable|output|locals|module|data|terraform",
+							"match": "\\b(?:resource|provider|variable|output|locals|module|data|terraform)\\b",
 							"name": "storage.type.terraform"
 						},
 						{
