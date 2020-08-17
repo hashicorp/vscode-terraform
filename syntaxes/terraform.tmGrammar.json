@@ -650,7 +650,7 @@
 							"match": "\\*",
 							"comment": "Attribute-only splat",
 							"name": "keyword.operator.splat.terraform"
-						}	
+						}
 					]
 				}
 			}
@@ -793,7 +793,7 @@
 			},
 			"patterns": [
 				{
-					"include": "expressions"
+					"include": "#expressions"
 				},
 				{
 					"include": "#local_identifiers"
