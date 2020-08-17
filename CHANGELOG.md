@@ -4,6 +4,7 @@
 * Perform PGP verification of zip/shasums (#450)
 * Upgrade LS client library to major version 6 (#454)
 * Fix block syntax labels (#458)
+* Fix parenthesis syntax error (#459)
 
 # 2.1.1 (2020-07-15)
 
