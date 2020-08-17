@@ -20,10 +20,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {
 		try {
-			let current = config('terraform').get('languageServer');
-			await config('terraform').update('languageServer', Object.assign(current, { enabled: undefined }), vscode.ConfigurationTarget.Global);
+			await config('terraform').update('languageServer', { enabled: undefined, external: true }, vscode.ConfigurationTarget.Global);
 		} catch (err) {
-			console.error(`Error trying to erase terraform.languageServer.enabled: ${err.message}`);
+			console.error(`Error trying to erase pre-2.0.0 settings: ${err.message}`);
 		}
 	}
 
@@ -48,12 +47,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
 			enableDisableByCommand = true;
-			await config('terraform').update('languageServer', { external: true }, vscode.ConfigurationTarget.Global);
+			let current = config('terraform').get('languageServer');
+			await config('terraform').update('languageServer', Object.assign(current, { external: true }), vscode.ConfigurationTarget.Global);
 			return startClients();
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
 			enableDisableByCommand = true;
-			await config('terraform').update('languageServer', { external: false }, vscode.ConfigurationTarget.Global);
+			let current = config('terraform').get('languageServer');
+			await config('terraform').update('languageServer', Object.assign(current, { external: false }), vscode.ConfigurationTarget.Global);
 			return stopClients();
 		}),
 		vscode.workspace.onDidChangeConfiguration(
