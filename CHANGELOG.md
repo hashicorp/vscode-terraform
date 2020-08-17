@@ -6,6 +6,8 @@
 * Fix block syntax labels (#458)
 * Fix parenthesis syntax error (#459)
 * Fix syntax highlighting for object expressions (#462)
+* Add configuration to exclude root modules (#446)
+* Multi folder workspace support (#448)
 
 # 2.1.1 (2020-07-15)
 
