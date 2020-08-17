@@ -21,7 +21,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (config('terraform').has('languageServer.enabled')) {
 		try {
 			let current = config('terraform').get('languageServer');
-			await config('terraform').update('languageServer', Object.assign(current, {enabled: undefined}), vscode.ConfigurationTarget.Global);
+			await config('terraform').update('languageServer', Object.assign(current, { enabled: undefined }), vscode.ConfigurationTarget.Global);
 		} catch (err) {
 			console.error(`Error trying to erase terraform.languageServer.enabled: ${err.message}`);
 		}
@@ -81,10 +81,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	const useLs: boolean = config('terraform').get('languageServer.external');
-	console.log(useLs);
-	// if (useLs) {
-	// 	return vscode.commands.executeCommand('terraform.enableLanguageServer');
-	// }
+	if (useLs) {
+		return vscode.commands.executeCommand('terraform.enableLanguageServer');
+	}
 }
 
 export function deactivate() {
@@ -112,7 +111,7 @@ function newClient(cmd: string, folder: string) {
 	const channelName = `${binaryName}/${folder}`;
 	const f = pathToWorkspaceFolder(folder);
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
-	let initializationOptions = { 
+	let initializationOptions = {
 		rootModulePaths: config('terraform-ls', f).get('rootModules'),
 		excludeModulePaths: config('terraform-ls', f).get('excludeRootModules')
 	};
