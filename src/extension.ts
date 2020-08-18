@@ -113,7 +113,7 @@ function newClient(cmd: string, folder: string) {
 	const rootModulePaths: string[] = config('terraform-ls', f).get('rootModules');
 	const excludeModulePaths: string[] = config('terraform-ls', f).get('excludeRootModules');
 	if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
-		throw new Error('terraform-ls.rootModules and terraform-ls.excludeRootModules cannot both be set'); 
+		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload'); 
 	}
 	let initializationOptions = {};
 	if (rootModulePaths.length > 0) {
