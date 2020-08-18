@@ -11,8 +11,6 @@ import { runCommand } from './terraformCommand';
 
 let clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
-// tracks if a enabling/disabling change was done via command, avoids prompting reload
-let enableDisableByCommand = false;
 
 export async function activate(context: vscode.ExtensionContext) {
 	extensionPath = context.extensionPath;
@@ -46,21 +44,22 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Subscriptions
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
-			enableDisableByCommand = true;
-			let current = config('terraform').get('languageServer');
-			await config('terraform').update('languageServer', Object.assign(current, { external: true }), vscode.ConfigurationTarget.Global);
+			if (!enabled()) {
+				let current = config('terraform').get('languageServer');
+				await config('terraform').update('languageServer', Object.assign(current, { external: true }), vscode.ConfigurationTarget.Global);
+			}
 			return startClients();
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
-			enableDisableByCommand = true;
-			let current = config('terraform').get('languageServer');
-			await config('terraform').update('languageServer', Object.assign(current, { external: false }), vscode.ConfigurationTarget.Global);
+			if (enabled()) {
+				let current = config('terraform').get('languageServer');
+				await config('terraform').update('languageServer', Object.assign(current, { external: false }), vscode.ConfigurationTarget.Global);
+			}
 			return stopClients();
 		}),
 		vscode.workspace.onDidChangeConfiguration(
 			async (event: vscode.ConfigurationChangeEvent) => {
-				if (event.affectsConfiguration('terraform-ls') || (event.affectsConfiguration('terraform') && !enableDisableByCommand)) {
-					enableDisableByCommand = false;
+				if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
 					const reloadMsg = 'Reload VSCode window to apply language server changes';
 					const selected = await vscode.window.showInformationMessage(reloadMsg, 'Reload');
 					if (selected === 'Reload') {
@@ -81,8 +80,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		)
 	);
 
-	const useLs: boolean = config('terraform').get('languageServer.external');
-	if (useLs) {
+	if (enabled()) {
 		return vscode.commands.executeCommand('terraform.enableLanguageServer');
 	}
 }
@@ -110,7 +108,7 @@ async function startClients(folders = folderNames()) {
 function newClient(cmd: string, folder: string) {
 	const binaryName = cmd.split('/').pop();
 	const channelName = `${binaryName}/${folder}`;
-	const f = pathToWorkspaceFolder(folder);
+	const f = workspaceFolder(folder);
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
 	let initializationOptions = {
 		rootModulePaths: config('terraform-ls', f).get('rootModules'),
@@ -182,7 +180,7 @@ function config(section: string, scope?: vscode.ConfigurationScope) {
 	return vscode.workspace.getConfiguration(section, scope);
 }
 
-function pathToWorkspaceFolder(folder: string) {
+function workspaceFolder(folder: string) {
 	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folder));
 }
 
@@ -197,4 +195,8 @@ function folderNames(folders: readonly vscode.WorkspaceFolder[] = vscode.workspa
 		}
 		return result;
 	});
+}
+
+function enabled(): boolean {
+	return config('terraform').get('languageServer.external');
 }
