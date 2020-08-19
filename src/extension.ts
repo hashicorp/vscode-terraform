@@ -171,11 +171,14 @@ async function pathToBinary(): Promise<string> {
 		let command: string = config('terraform').get('languageServer.pathToBinary');
 		if (!command) { // Skip install/upgrade if user has set custom binary path
 			const installDir = `${extensionPath}/lsp`;
+			const installer = new LanguageServerInstaller();
 			try {
-				await (new LanguageServerInstaller).install(installDir);
+				await installer.install(installDir);
 			} catch (err) {
 				vscode.window.showErrorMessage(err);
 				throw err;
+			} finally {
+				await installer.cleanupZips(installDir);
 			}
 			command = `${installDir}/terraform-ls`;
 		}
