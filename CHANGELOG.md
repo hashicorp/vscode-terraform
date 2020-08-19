@@ -8,6 +8,7 @@
 * Fix syntax highlighting for object expressions (#462)
 * Add configuration to exclude root modules (#446)
 * Multi folder workspace support (#448)
+* Ensure downloaded zips are deleted (#464)
 
 # 2.1.1 (2020-07-15)
 

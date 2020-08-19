@@ -6,7 +6,8 @@ import * as https from 'https';
 import * as os from 'os';
 import * as semver from 'semver';
 import * as yauzl from 'yauzl';
-import openpgp = require('openpgp');
+import * as del from 'del';
+import * as openpgp from 'openpgp';
 
 
 const releasesUrl = "https://releases.hashicorp.com/terraform-ls";
@@ -235,6 +236,10 @@ export class LanguageServerInstaller {
 				});
 			});
 		});
+	}
+
+	public async cleanupZips(directory: string) {
+		return del(`${directory}/terraform-ls*.zip`, { force: true });
 	}
 }
 
