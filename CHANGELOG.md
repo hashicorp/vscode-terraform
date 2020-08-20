@@ -1,14 +1,17 @@
-# 2.2.0 (Unreleased)
+# 2.2.0 (2020-08-20)
 
-* Refactor and fix install bugs (#444)
 * Perform PGP verification of zip/shasums (#450)
 * Upgrade LS client library to major version 6 (#454)
+* Add multi-folder workspace support (#448)
+* Ensure downloaded zips are deleted (#464)
+* Add configuration to exclude root modules (#446)
+
+Bugs:
+
+* Refactor and fix install bugs (#444)
 * Fix block syntax labels (#458)
 * Fix parenthesis syntax error (#459)
 * Fix syntax highlighting for object expressions (#462)
-* Add configuration to exclude root modules (#446)
-* Multi folder workspace support (#448)
-* Ensure downloaded zips are deleted (#464)
 
 # 2.1.1 (2020-07-15)
 
