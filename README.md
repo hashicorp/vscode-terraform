@@ -14,7 +14,7 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 
 ## Getting Started
 
-**IMPORTANT:** After installing, you must perform a `terraform init` to provide `terraform-ls` with an up-to-date Provider schema. The language-server will not work correctly without first completing this step!
+**IMPORTANT:** After installing, you must perform a `terraform init` to provide `terraform-ls` with an up-to-date provider schemas. The language server will not work correctly without first completing this step!
 
 1. Install the extension from the Marketplace
 1. Reload VS Code after the installation (click the reload button next to the extension).
