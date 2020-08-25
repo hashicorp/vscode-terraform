@@ -1,3 +1,7 @@
+# 2.2.1 (2020-08-24)
+
+* Fix object key syntax highlighting (#475)
+
 # 2.2.0 (2020-08-20)
 
 * Perform PGP verification of zip/shasums (#450)
