@@ -1,0 +1,18 @@
+name: Syntax Tests
+
+on:
+  push:
+    paths:
+      - 'syntaxes/**'
+  pull_request:
+    paths:
+      - 'syntaxes/**'
+jobs:
+  syntax_tests:
+    name: Run Syntax Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: SublimeText/syntax-test-action@v1
+        with:
+          build: 4073  # or 'latest' for the latest ST3 build
