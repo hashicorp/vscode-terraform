@@ -12,6 +12,17 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 - Closes braces and quotes
 - Includes `for_each` and `variable` syntax shortcuts (`fore`, `vare`, `varm`)
 
+## Getting Started
+
+**IMPORTANT:** After installing, you must perform a `terraform init` to provide `terraform-ls` with an up-to-date Provider schema. The language-server will not work correctly without first completing this step!
+
+1. Install the extension from the Marketplace
+1. Reload VS Code after the installation (click the reload button next to the extension).
+1. Perform a `terraform init` to provide `terraform-ls` with an up-to-date Provider schema
+1. Open your desired Workspace and/or the root folder containing your Terraform files. Note: see *Known Issues* below about multi-folder workspaces
+1. Depending on your settings in VS Code, completion will start automatically (if not inside quotes/string literal, on certain trigger characters), or you can explicitly trigger completion via keyboard combination (Ctrl+Space on Windows, control+space on Mac).
+
+
 ## Configuration
 
 If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
