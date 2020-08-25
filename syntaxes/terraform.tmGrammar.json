@@ -449,7 +449,7 @@
 					"include": "#comments"
 				},
 				{
-					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*([\\w\"]+)",
+					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*(\".+\"|[\\w\\._-]+)",
 					"comment": "Literal, named object key",
 					"captures": {
 						"1": {
@@ -468,7 +468,7 @@
 					}
 				},
 				{
-					"match": "\\b((\").*(\"))\\s*(\\=)\\s*([\\w\"]+)",
+					"match": "\\b((\").*(\"))\\s*(\\=)\\s*(\".+\"|[\\w\\._-]+)",
 					"comment": "String object key",
 					"captures": {
 						"0": {
