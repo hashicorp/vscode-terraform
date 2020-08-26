@@ -449,7 +449,7 @@
 					"include": "#comments"
 				},
 				{
-					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*(\".+\"|[\\w\\._-]+)",
+					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*",
 					"comment": "Literal, named object key",
 					"captures": {
 						"1": {
@@ -457,18 +457,11 @@
 						},
 						"2": {
 							"name": "keyword.operator.terraform"
-						},
-						"3": {
-							"patterns": [
-								{
-									"include": "#object_key_values"
-								}
-							]
 						}
 					}
 				},
 				{
-					"match": "\\b((\").*(\"))\\s*(\\=)\\s*(\".+\"|[\\w\\._-]+)",
+					"match": "\\b((\").*(\"))\\s*(\\=)\\s*",
 					"comment": "String object key",
 					"captures": {
 						"0": {
@@ -489,13 +482,6 @@
 						},
 						"4": {
 							"name": "keyword.operator.terraform"
-						},
-						"5": {
-							"patterns": [
-								{
-									"include": "#object_key_values"
-								}
-							]
 						}
 					}
 				},
