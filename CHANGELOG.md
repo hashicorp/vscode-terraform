@@ -1,6 +1,7 @@
 # 2.2.1 (2020-08-24)
 
 * Fix object key syntax highlighting (#475)
+* Fix additional object key matching issues (#478)
 
 # 2.2.0 (2020-08-20)
 
