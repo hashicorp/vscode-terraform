@@ -25,6 +25,10 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 
 ## Configuration
 
+This extension offers several configuration options. To modify these, navigate to the extension view within VS Code, select the settings cog and choose Extension settings, or alternatively, modify the `.vscode/settings.json` file in the root of your working directory. 
+
+
+### Multiple Workspaces
 If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
 ```
 {
@@ -43,6 +47,14 @@ If you want to automatically search root modules in your workspace and exclude s
         "/module4"
     ]
 }
+```
+
+### Formatting
+To enable formatting, it is recommended that the following be added to the extension settings for the Terraform extension:
+```
+    "[terraform]": {
+        "editor.formatOnSave": true
+    }
 ```
 
 ## Release History
