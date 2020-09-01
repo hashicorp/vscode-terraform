@@ -51,13 +51,13 @@ interface Release {
 }
 
 export class LanguageServerInstaller {
-	public async install(directory: string) {
+	public async install(directory: string): Promise<void> {
 		const { version: extensionVersion } = require('../package.json');
 		const lspCmd = `${directory}/terraform-ls --version`;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 		let isInstalled = true;
 		try {
-			var { stdout, stderr: installedVersion } = await exec(lspCmd);
+			var { stderr: installedVersion } = await exec(lspCmd);
 		} catch (err) {
 			// TODO: verify error was in fact binary not found
 			isInstalled = false;
@@ -92,7 +92,7 @@ export class LanguageServerInstaller {
 	}
 
 	async installPkg(installDir: string, release: Release, userAgent: string): Promise<void> {
-		const destination: string = `${installDir}/terraform-ls_v${release.version}.zip`;
+		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
 		let platform = os.platform().toString();
@@ -135,7 +135,7 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	removeOldBinary(directory: string, platform: string) {
+	removeOldBinary(directory: string, platform: string): void {
 		if (platform === "windows") {
 			fs.unlinkSync(`${directory}/terraform-ls.exe`);
 		} else {
@@ -165,7 +165,7 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	async verify(release: Release, pkg: string, buildName: string) {
+	async verify(release: Release, pkg: string, buildName: string): Promise<void> {
 		const [localSum, remoteSum] = await Promise.all([
 			this.calculateFileSha256Sum(pkg),
 			this.downloadSha256Sum(release, buildName)
@@ -176,7 +176,7 @@ export class LanguageServerInstaller {
 		}
 	}
 
-	calculateFileSha256Sum(path: string) {
+	calculateFileSha256Sum(path: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			const hash = crypto.createHash('sha256');
 			fs.createReadStream(path)
@@ -186,7 +186,7 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	async downloadSha256Sum(release: Release, buildName: string) {
+	async downloadSha256Sum(release: Release, buildName: string): Promise<string> {
 		const [shasumResponse, signature] = await Promise.all([
 			httpsRequest(`${releasesUrl}/${release.version}/${release.shasums}`),
 			httpsRequest(`${releasesUrl}/${release.version}/${release.shasums_signature}`, {}, 'hex'),
@@ -208,7 +208,7 @@ export class LanguageServerInstaller {
 		return shasumLine.split("  ")[0];
 	}
 
-	unpack(directory: string, pkgName: string) {
+	unpack(directory: string, pkgName: string): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			let executable: string;
 			yauzl.open(pkgName, { lazyEntries: true }, (err, zipfile) => {
@@ -238,7 +238,7 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	public async cleanupZips(directory: string) {
+	public async cleanupZips(directory: string): Promise<string[]> {
 		return del(`${directory}/terraform-ls*.zip`, { force: true });
 	}
 }
@@ -254,7 +254,7 @@ function exec(cmd: string): Promise<any> {
 	});
 }
 
-function httpsRequest(url: string, options: https.RequestOptions = {}, encoding: string = 'utf8'): Promise<string> {
+function httpsRequest(url: string, options: https.RequestOptions = {}, encoding = 'utf8'): Promise<string> {
 	return new Promise((resolve, reject) => {
 		https.request(url, options, res => {
 			if (res.statusCode === 301 || res.statusCode === 302) { // follow redirects
@@ -277,7 +277,7 @@ async function checkLatest(userAgent: string): Promise<Release> {
 	const indexUrl = `${releasesUrl}/index.json`;
 	const headers = { 'User-Agent': userAgent };
 	const body = await httpsRequest(indexUrl, { headers });
-	let releases = JSON.parse(body);
+	const releases = JSON.parse(body);
 	const currentRelease = Object.keys(releases.versions).sort(semver.rcompare)[0];
 	return releases.versions[currentRelease];
 }
