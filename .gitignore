@@ -5,3 +5,4 @@ node_modules/
 .vscode-test
 npm-debug.log
 lsp/
+.terraform/
