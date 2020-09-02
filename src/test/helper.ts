@@ -17,6 +17,7 @@ export async function activate(docUri: vscode.Uri): Promise<void> {
 		editor = await vscode.window.showTextDocument(doc);
 	} catch (e) {
 		console.error(e);
+		throw e;
 	}
 }
 

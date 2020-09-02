@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as cp from 'child_process';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as https from 'https';
@@ -8,6 +7,7 @@ import * as semver from 'semver';
 import * as yauzl from 'yauzl';
 import * as del from 'del';
 import * as openpgp from 'openpgp';
+import { httpsRequest, exec } from './utils';
 
 
 const releasesUrl = "https://releases.hashicorp.com/terraform-ls";
@@ -241,36 +241,6 @@ export class LanguageServerInstaller {
 	public async cleanupZips(directory: string): Promise<string[]> {
 		return del(`${directory}/terraform-ls*.zip`, { force: true });
 	}
-}
-
-function exec(cmd: string): Promise<any> {
-	return new Promise((resolve, reject) => {
-		cp.exec(cmd, (err, stdout, stderr) => {
-			if (err) {
-				return reject(err);
-			}
-			return resolve({ stdout, stderr });
-		});
-	});
-}
-
-function httpsRequest(url: string, options: https.RequestOptions = {}, encoding = 'utf8'): Promise<string> {
-	return new Promise((resolve, reject) => {
-		https.request(url, options, res => {
-			if (res.statusCode === 301 || res.statusCode === 302) { // follow redirects
-				return resolve(httpsRequest(res.headers.location, options, encoding));
-			}
-			if (res.statusCode !== 200) {
-				return reject(res.statusMessage);
-			}
-			let body = '';
-			res.setEncoding(encoding)
-				.on('data', data => body += data)
-				.on('end', () => resolve(body));
-		})
-			.on('error', reject)
-			.end();
-	});
 }
 
 async function checkLatest(userAgent: string): Promise<Release> {

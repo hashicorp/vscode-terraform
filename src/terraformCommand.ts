@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
 
-export function runCommand(rootPath: string, outputChannel: vscode.OutputChannel, command: string) {
+export function runCommand(rootPath: string, outputChannel: vscode.OutputChannel, command: string): void {
 	if (rootPath) {
 		outputChannel.show(true);
 		outputChannel.appendLine(`Running terraform ${command}`);
