@@ -1,8 +1,18 @@
+# 2.2.3
+
+Bugs:
+
+*  Update object syntax highlighting to fix unmatched cases (#485)
+
 # 2.2.2 (2020-08-25)
+
+Bugs:
 
 * Fix additional object key matching issues (#478)
 
 # 2.2.1 (2020-08-24)
+
+Bugs:
 
 * Fix object key syntax highlighting (#475)
 
