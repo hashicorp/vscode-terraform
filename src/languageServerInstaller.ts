@@ -95,6 +95,7 @@ export class LanguageServerInstaller {
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
 		let platform = process.platform.toString();
+		console.log('PLATFORM:', platform);
 		if (platform === 'win32') {
 			platform = 'windows';
 		}
@@ -107,7 +108,7 @@ export class LanguageServerInstaller {
 				arch = '386'
 				break;
 		}
-		console.log('RELEASES:', release);
+		console.log('RELEASE:', release);
 		const build = release.builds.find(b => b.os === platform && b.arch === arch);
 		const downloadUrl = build.url;
 		if (!downloadUrl) {
