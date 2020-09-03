@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as https from 'https';
-import * as os from 'os';
 import * as semver from 'semver';
 import * as yauzl from 'yauzl';
 import * as del from 'del';
@@ -95,12 +94,12 @@ export class LanguageServerInstaller {
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
-		let platform = os.platform().toString();
+		let platform = process.platform.toString();
 		if (platform === 'win32') {
 			platform = 'windows';
 		}
-		let arch = os.arch();
-		switch (arch) {
+		let arch: string;
+		switch (process.arch) {
 			case 'x64':
 				arch = 'amd64'
 				break;
@@ -108,7 +107,7 @@ export class LanguageServerInstaller {
 				arch = '386'
 				break;
 		}
-
+		console.log('RELEASES:', release);
 		const build = release.builds.find(b => b.os === platform && b.arch === arch);
 		const downloadUrl = build.url;
 		if (!downloadUrl) {
