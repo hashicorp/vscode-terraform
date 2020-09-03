@@ -95,10 +95,10 @@ export class LanguageServerInstaller {
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
 		let platform = process.platform.toString();
-		console.log('PLATFORM:', platform);
 		if (platform === 'win32') {
 			platform = 'windows';
 		}
+		console.log('PLATFORM:', platform);
 		let arch: string;
 		switch (process.arch) {
 			case 'x64':
@@ -108,8 +108,9 @@ export class LanguageServerInstaller {
 				arch = '386'
 				break;
 		}
-		console.log('RELEASE:', release);
+		console.log('ARCH:', arch);
 		const build = release.builds.find(b => b.os === platform && b.arch === arch);
+		console.log('BUILD:', build);
 		const downloadUrl = build.url;
 		if (!downloadUrl) {
 			throw new Error("Install error: no matching terraform-ls binary for platform");
