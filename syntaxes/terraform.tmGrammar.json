@@ -486,7 +486,7 @@
 					}
 				},
 				{
-					"begin": "\\(",
+					"begin": "^\\s*\\(",
 					"comment": "Computed object key (any expression between parens)",
 					"name": "meta.mapping.key.terraform",
 					"beginCaptures": {
@@ -523,7 +523,22 @@
 					"include": "#comments"
 				},
 				{
-					"include": "#expressions"
+					"include": "#literal_values"
+				},
+				{
+					"include": "#operators"
+				},
+				{
+					"include": "#tuple_for_expression"
+				},
+				{
+					"include": "#object_for_expression"
+				},
+				{
+					"include": "#heredoc"
+				},
+				{
+					"include": "#functions"
 				}
 			]
 		},
