@@ -1,8 +1,13 @@
+.github
 .vscode
+.vscode-test
 .gitignore
+.hashibot.hcl
 src/
+out/*.test.*
 out/test/
 .eslintignore
 .eslintrc.js
 tsconfig.json
 lsp/
+testfixture/

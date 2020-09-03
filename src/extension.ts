@@ -12,7 +12,7 @@ import { runCommand } from './terraformCommand';
 const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
 
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
+export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	extensionPath = context.extensionPath;
 	const commandOutput = vscode.window.createOutputChannel('Terraform');
 	// get rid of pre-2.0.0 settings
@@ -81,8 +81,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	);
 
 	if (enabled()) {
-		return vscode.commands.executeCommand('terraform.enableLanguageServer');
+		await vscode.commands.executeCommand('terraform.enableLanguageServer');
 	}
+
+	// export public API
+	return { pathToBinary };
 }
 
 export function deactivate(): Promise<void[]> {

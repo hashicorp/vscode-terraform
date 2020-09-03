@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDocUri, activate } from './helper';
+import { getDocUri, open } from './helper';
 
 suite('document symbols', () => {
 	const docUri = getDocUri('sample.tf');
@@ -11,7 +11,7 @@ suite('document symbols', () => {
 });
 
 async function testSymbols(docUri: vscode.Uri, symbolNames: string[]) {
-	await activate(docUri);
+	await open(docUri);
 	// Executing the command `vscode.executeDocumentSymbolProvider` to simulate triggering completion
 	const symbols = (await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', docUri)) as vscode.SymbolInformation[];
 

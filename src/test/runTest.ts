@@ -1,10 +1,23 @@
 import * as path from 'path';
 import { runTests } from 'vscode-test';
+import * as del from 'del';
+import { exec } from '../utils';
+
+async function terraformInit() {
+  const cwd = process.cwd();
+  process.chdir('testFixture');
+  const { stdout } = await exec('terraform init -no-color');
+  console.log(stdout);
+  process.chdir(cwd);
+}
 
 async function main(): Promise<void> {
   try {
+    // initialize terraform before vscode opens
+    await terraformInit();
     // The folder containing the Extension Manifest package.json
     // Passed to `--extensionDevelopmentPath`
+    // this is also the process working dir, even if vscode opens another folder
     const extensionDevelopmentPath = path.resolve(__dirname, '../../');
 
     // The path to the extension test runner script
@@ -12,11 +25,15 @@ async function main(): Promise<void> {
     const extensionTestsPath = path.resolve(__dirname, './index');
 
     // Download VS Code, unzip it and run the integration test
-    await runTests({ extensionDevelopmentPath, extensionTestsPath });
+    // start in the fixtures folder to prevent the language server from walking all the
+    // project root folders, like node_modules
+    await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: ['testFixture'] });
   } catch (err) {
     console.error(err);
     console.error('Failed to run tests');
-    process.exit(1);
+    process.exitCode = 1;
+  } finally {
+    await del('testFixture/.terraform', { force: true });
   }
 }
 
