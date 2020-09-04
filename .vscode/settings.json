@@ -1,6 +1,5 @@
 {
     "editor.insertSpaces": false,
     "typescript.preferences.quoteStyle": "single",
-    "typescript.tsc.autoDetect": "off",
-    "files.eol": "\n"
+    "typescript.tsc.autoDetect": "off"
 }
