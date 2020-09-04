@@ -98,21 +98,17 @@ export class LanguageServerInstaller {
 		if (platform === 'win32') {
 			platform = 'windows';
 		}
-		console.log('PLATFORM:', platform);
 		let arch: string;
-		console.log('ARCH:', process.arch);
 		switch (process.arch) {
 			case 'x64':
 				arch = 'amd64'
 				break;
-			case 'x32':
+			case 'ia32':
 				arch = '386'
 				break;
 		}
 		const build = release.builds.find(b => b.os === platform && b.arch === arch);
-		console.log('BUILD:', build);
-		const downloadUrl = build.url;
-		if (!downloadUrl) {
+		if (!build) {
 			throw new Error("Install error: no matching terraform-ls binary for platform");
 		}
 		try {
@@ -128,7 +124,7 @@ export class LanguageServerInstaller {
 		}, async (progress, token) => {
 
 			progress.report({ increment: 30 });
-			await this.download(downloadUrl, destination, userAgent);
+			await this.download(build.url, destination, userAgent);
 			progress.report({ increment: 30 });
 			await this.verify(release, destination, build.filename)
 			progress.report({ increment: 30 });
