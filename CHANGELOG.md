@@ -1,8 +1,18 @@
+# 2.3.0 (Unreleased)
+
+Notes:
+
+* Setup integration tests in github actions (#483)
+
+Bugs:
+
+* Fix 32bit downloads of language server (#483)
+
 # 2.2.3 (2020-09-03)
 
 Bugs:
 
-*  Update object syntax highlighting to fix unmatched cases (#485)
+* Update object syntax highlighting to fix unmatched cases (#485)
 
 # 2.2.2 (2020-08-25)
 
