@@ -100,6 +100,7 @@ export class LanguageServerInstaller {
 		}
 		console.log('PLATFORM:', platform);
 		let arch: string;
+		console.log('ARCH:', process.arch);
 		switch (process.arch) {
 			case 'x64':
 				arch = 'amd64'
@@ -108,7 +109,6 @@ export class LanguageServerInstaller {
 				arch = '386'
 				break;
 		}
-		console.log('ARCH:', arch);
 		const build = release.builds.find(b => b.os === platform && b.arch === arch);
 		console.log('BUILD:', build);
 		const downloadUrl = build.url;
