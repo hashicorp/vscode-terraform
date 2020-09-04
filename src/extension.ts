@@ -9,10 +9,10 @@ import {
 import { LanguageServerInstaller } from './languageServerInstaller';
 import { runCommand } from './terraformCommand';
 
-let clients: Map<string, LanguageClient> = new Map();
+const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
 
-export async function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	extensionPath = context.extensionPath;
 	const commandOutput = vscode.window.createOutputChannel('Terraform');
 	// get rid of pre-2.0.0 settings
@@ -45,14 +45,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
 			if (!enabled()) {
-				let current = config('terraform').get('languageServer');
+				const current = config('terraform').get('languageServer');
 				await config('terraform').update('languageServer', Object.assign(current, { external: true }), vscode.ConfigurationTarget.Global);
 			}
 			return startClients();
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
 			if (enabled()) {
-				let current = config('terraform').get('languageServer');
+				const current = config('terraform').get('languageServer');
 				await config('terraform').update('languageServer', Object.assign(current, { external: false }), vscode.ConfigurationTarget.Global);
 			}
 			return stopClients();
@@ -81,18 +81,21 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	if (enabled()) {
-		return vscode.commands.executeCommand('terraform.enableLanguageServer');
+		await vscode.commands.executeCommand('terraform.enableLanguageServer');
 	}
+
+	// export public API
+	return { pathToBinary };
 }
 
-export function deactivate() {
+export function deactivate(): Promise<void[]> {
 	return stopClients();
 }
 
 async function startClients(folders = folderNames()) {
 	console.log('Starting:', folders);
 	const command = await pathToBinary();
-	let disposables: vscode.Disposable[] = [];
+	const disposables: vscode.Disposable[] = [];
 	for (const folder of folders) {
 		if (!clients.has(folder)) {
 			const client = newClient(command, folder);
@@ -153,7 +156,7 @@ function newClient(cmd: string, folder: string) {
 
 async function stopClients(folders = folderNames()) {
 	console.log('Stopping:', folders);
-	let promises: Thenable<void>[] = [];
+	const promises: Thenable<void>[] = [];
 	for (const folder of folders) {
 		if (clients.has(folder)) {
 			promises.push(clients.get(folder).stop());
