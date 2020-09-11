@@ -21,10 +21,11 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test/index"
+				"--extensionTestsPath=${workspaceFolder}/out/test/index",
+				"${workspaceFolder}/testFixture"
 			],
 			"outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-			"preLaunchTask": "npm: watch"
+			"preLaunchTask": "initAndWatch"
 		}
 	]
 }
