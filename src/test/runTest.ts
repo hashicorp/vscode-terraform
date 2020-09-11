@@ -1,6 +1,5 @@
 import * as path from 'path';
 import { runTests } from 'vscode-test';
-import * as del from 'del';
 import { exec } from '../utils';
 
 async function terraformInit() {
@@ -32,8 +31,6 @@ async function main(): Promise<void> {
     console.error(err);
     console.error('Failed to run tests');
     process.exitCode = 1;
-  } finally {
-    await del('testFixture/.terraform', { force: true });
   }
 }
 
