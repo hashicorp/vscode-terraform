@@ -12,7 +12,7 @@ suite('document symbols', () => {
 
 async function testSymbols(docUri: vscode.Uri, symbolNames: string[]) {
 	await open(docUri);
-	// Executing the command `vscode.executeDocumentSymbolProvider` to simulate triggering completion
+	// Executing the command `vscode.executeDocumentSymbolProvider` to simulate requesting doc symbols
 	const symbols = (await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', docUri)) as vscode.SymbolInformation[];
 
 	assert.ok(symbols.length === symbolNames.length);

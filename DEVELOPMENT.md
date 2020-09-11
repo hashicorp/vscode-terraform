@@ -22,4 +22,11 @@ We are an open source project on GitHub and would enjoy your contributions! Plea
 
 # Testing
 
-Automated tests can be written using [mocha](https://mochajs.org) and live inside `/src/test`. To run the tests from the command-line with `npm t` you will need to have closed any open VSCode windows. The tests can also be run within VSCode itself, using the debug task `Run Extension Tests`.
+Automated tests can be written using [mocha](https://mochajs.org) and live inside `./src` with file pattern `*.test.ts`. To run the tests from the command-line with `npm t` you will need to have closed any open VSCode windows. The tests can also be run within VSCode itself, using the debug task `Run Extension Tests`. It is required that `terraform` is available on `$PATH` for integration tests of the language server.
+
+## Integration Tests
+It is possible to write integration tests with the extension running against the language server. An example can be seen in [`./src/test/symbols.test.ts`](src/test/symbols.test.ts). Unfortunately automated user input does not appear to be possible (keypresses, cursor clicks), but some integration testing can be performed by using the vscode API to open/edit files, and triggering events/commands such as language server requests and verifying the responses.
+
+Helpers, such as the `open` helper should be added to [`./src/test/helper.ts`](src/test/helper.ts).
+
+Sample files for tests should be added to the [`./testFixture`](testFixture/) folder, this is the folder vscode will open with during tests, the running of `terraform init` has been automated. Starting from this folder will prevent the language server from walking this projects other folders that typically exist such as `node_modules`, however `process.cwd()` will be the project root.
