@@ -7,14 +7,12 @@ import {
 } from 'vscode-languageclient';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
-import { runCommand } from './terraformCommand';
 
 const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	extensionPath = context.extensionPath;
-	const commandOutput = vscode.window.createOutputChannel('Terraform');
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {
 		try {
@@ -23,23 +21,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			console.error(`Error trying to erase pre-2.0.0 settings: ${err.message}`);
 		}
 	}
-
-	// Terraform Commands
-
-	// TODO switch to using the workspace/execute_command API
-	// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_executeCommand
-	// const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-	// context.subscriptions.push(
-	// 	vscode.commands.registerCommand('terraform.init', () => {
-	// 		runCommand(rootPath, commandOutput, 'init');
-	// 	}),
-	// 	vscode.commands.registerCommand('terraform.plan', () => {
-	// 		runCommand(rootPath, commandOutput, 'plan');
-	// 	}),
-	// 	vscode.commands.registerCommand('terraform.validate', () => {
-	// 		runCommand(rootPath, commandOutput, 'validate');
-	// 	})
-	// );
 
 	// Subscriptions
 	context.subscriptions.push(
