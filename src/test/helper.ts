@@ -17,6 +17,12 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 	}
 }
 
+export async function sendRequest(): Promise<any[]> {
+	await activated();
+	const ext = vscode.extensions.getExtension('hashicorp.terraform');
+	return ext.exports.sendRequest();
+}
+
 let _activatedPromise: Promise<void>
 async function activated() {
 	if (!_activatedPromise) {

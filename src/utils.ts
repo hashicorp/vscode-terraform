@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as https from 'https';
 
@@ -29,4 +30,8 @@ export function httpsRequest(url: string, options: https.RequestOptions = {}, en
 			.on('error', reject)
 			.end();
 	});
+}
+
+export function workspaceFolder(uri: string) {
+	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(uri));
 }

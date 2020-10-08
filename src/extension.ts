@@ -3,10 +3,13 @@ import {
 	LanguageClient,
 	LanguageClientOptions,
 	ServerOptions,
-	Executable
+	Executable,
+	ExecuteCommandRequest,
+	ExecuteCommandParams
 } from 'vscode-languageclient';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
+import { workspaceFolder } from './utils';
 import { runCommand } from './terraformCommand';
 
 const clients: Map<string, LanguageClient> = new Map();
@@ -85,7 +88,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	}
 
 	// export public API
-	return { pathToBinary };
+	return { pathToBinary, sendRequest };
 }
 
 export function deactivate(): Promise<void[]> {
@@ -116,7 +119,7 @@ function newClient(cmd: string, folder: string) {
 	const rootModulePaths: string[] = config('terraform-ls', f).get('rootModules');
 	const excludeModulePaths: string[] = config('terraform-ls', f).get('excludeRootModules');
 	if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
-		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload'); 
+		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload');
 	}
 	let initializationOptions = {};
 	if (rootModulePaths.length > 0) {
@@ -190,12 +193,19 @@ async function pathToBinary(): Promise<string> {
 	return _pathToBinaryPromise;
 }
 
-function config(section: string, scope?: vscode.ConfigurationScope) {
-	return vscode.workspace.getConfiguration(section, scope);
+function sendRequest() {
+	const params: ExecuteCommandParams = {
+		command: "workspaces"
+	};
+	const promises: Promise<any>[] = [];
+	clients.forEach(client => {
+		promises.push(client.sendRequest(ExecuteCommandRequest.type, params));
+	});
+	return Promise.all(promises);
 }
 
-function workspaceFolder(folder: string) {
-	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folder));
+function config(section: string, scope?: vscode.ConfigurationScope) {
+	return vscode.workspace.getConfiguration(section, scope);
 }
 
 function folderNames(folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders): string[] {
