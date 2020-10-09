@@ -193,10 +193,7 @@ async function pathToBinary(): Promise<string> {
 	return _pathToBinaryPromise;
 }
 
-function sendRequest() {
-	const params: ExecuteCommandParams = {
-		command: "workspaces"
-	};
+function sendRequest(params: ExecuteCommandParams) {
 	const promises: Promise<any>[] = [];
 	clients.forEach(client => {
 		promises.push(client.sendRequest(ExecuteCommandRequest.type, params));

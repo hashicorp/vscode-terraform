@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import {
+	ExecuteCommandParams
+} from 'vscode-languageclient';
 
 export let doc: vscode.TextDocument;
 export let editor: vscode.TextEditor;
@@ -17,10 +20,10 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 	}
 }
 
-export async function sendRequest(): Promise<any[]> {
+export async function sendRequest(params: ExecuteCommandParams): Promise<any[]> {
 	await activated();
 	const ext = vscode.extensions.getExtension('hashicorp.terraform');
-	return ext.exports.sendRequest();
+	return ext.exports.sendRequest(params);
 }
 
 let _activatedPromise: Promise<void>
@@ -54,6 +57,9 @@ export async function sleep(ms: number): Promise<void> {
 export const getDocPath = (p: string): string => {
 	return path.resolve(__dirname, '../../testFixture', p);
 };
+
+export const testFolderPath =path.resolve(__dirname, '../../testFixture');
+
 export const getDocUri = (p: string): vscode.Uri => {
 	return vscode.Uri.file(getDocPath(p));
 };

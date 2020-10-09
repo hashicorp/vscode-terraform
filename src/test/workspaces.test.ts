@@ -1,10 +1,19 @@
 import * as assert from 'assert';
-import { sendRequest } from './helper';
+import { getDocUri, testFolderPath, open, sendRequest } from './helper';
 
-suite('workspaces', () => {
-	test('returns workspaces', async () => {
-		const workspaces = (await sendRequest()) as string[];
-		assert.equal(workspaces.length, 1);
-		console.log(workspaces);
+suite('rootmodule status', () => {
+	test('returns root', async () => {
+		const docUri = getDocUri('sample.tf');
+		await open(docUri);
+		// array will go away, currently sending to all clients
+		// should only be single client for single workspace folder
+		const [rootmodule] = await sendRequest({
+			command: "rootmodule",
+			arguments: [docUri.toString()]
+		});
+		assert.deepEqual(rootmodule, {
+			rootmodule: testFolderPath,
+			initialized: true
+		});
 	});
 });
