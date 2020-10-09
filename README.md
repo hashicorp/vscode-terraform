@@ -7,7 +7,8 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 ## Features
 
 - Manages installation and updates of the [Terraform Language Server (terraform-ls)](https://github.com/hashicorp/terraform-ls), exposing its features:
-  - Initialized provider completion (resource names, data source names, attribute names)
+  - Completion of initialized providers: resource names, data source names, attribute names
+  - Diagnostics to indicate HCL errors as you type
 - Includes syntax highlighting for `.tf` and `.tfvars` files -- including all syntax changes new to Terraform 0.12
 - Closes braces and quotes
 - Includes `for_each` and `variable` syntax shortcuts (`fore`, `vare`, `varm`)
