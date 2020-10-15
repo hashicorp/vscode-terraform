@@ -89,10 +89,10 @@ async function startClients(folders = folderNames()) {
 	return disposables
 }
 
-function newClient(cmd: string, folder: string) {
+function newClient(cmd: string, location: string) {
 	const binaryName = cmd.split('/').pop();
-	const channelName = `${binaryName}/${folder}`;
-	const f = workspaceFolder(folder);
+	const channelName = `${binaryName}: ${location}`;
+	const f: vscode.WorkspaceFolder = getWorkspaceFolder(location);
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
 	const rootModulePaths: string[] = config('terraform-ls', f).get('rootModules');
 	const excludeModulePaths: string[] = config('terraform-ls', f).get('excludeRootModules');
@@ -108,7 +108,7 @@ function newClient(cmd: string, folder: string) {
 	}
 
 	const setup = vscode.window.createOutputChannel(channelName);
-	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${folder}`);
+	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
 
 	const executable: Executable = {
 		command: cmd,
@@ -128,8 +128,8 @@ function newClient(cmd: string, folder: string) {
 	};
 
 	return new LanguageClient(
-		`languageServer/${folder}`,
-		`Language Server: ${folder}`,
+		`languageServer/${location}`,
+		`Language Server: ${location}`,
 		serverOptions,
 		clientOptions
 	);
@@ -175,21 +175,46 @@ function config(section: string, scope?: vscode.ConfigurationScope) {
 	return vscode.workspace.getConfiguration(section, scope);
 }
 
-function workspaceFolder(folder: string) {
-	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folder));
+function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder {
+	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folderName));
+}
+
+function getFolderName(folder: vscode.WorkspaceFolder): string {
+	let result = folder.uri.toString();
+	if (result.charAt(result.length - 1) !== '/') {
+		result = result + '/';
+	}
+	return result;
+}
+
+function sortedWorkspaceFolders() {
+	const workspaceFolders = vscode.workspace.workspaceFolders;
+	if (workspaceFolders) {
+		return vscode.workspace.workspaceFolders.map(f => getFolderName(f)).sort(
+			(a, b) => {
+				return a.length - b.length;
+			});
+	}
+	return [];
 }
 
 function folderNames(folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders): string[] {
-	if (!folders) {
-		return [];
-	}
-	return folders.map(folder => {
-		let result = folder.uri.toString();
-		if (result.charAt(result.length - 1) !== '/') {
-			result = result + '/';
+	const result = [];
+	// Sort workspace folders so that outer folders (shorter path) go before inner ones
+	const workspaceFolders = sortedWorkspaceFolders();
+	if (folders && workspaceFolders) {
+		const folderNames = folders.map(f => getFolderName(f));
+		for (let name of folderNames) {
+			const outerFolder = workspaceFolders.find(element => name.startsWith(element));
+			// If this folder isn't nested, the found item will be itself
+			if (outerFolder && (outerFolder !== name)) {
+				name = getFolderName(getWorkspaceFolder(outerFolder));
+			}
+			result.push(name);
 		}
-		return result;
-	});
+	}
+
+	return result;
 }
 
 function enabled(): boolean {
