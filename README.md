@@ -91,7 +91,7 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 * A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
 ## User Group
-We have a new user group for the Terraform VS Code extension. This group offers users of the Terraform VSCode Extension with a place to provide feedback, access to pre-release versions, and opportunities to influence the direction of this project. Collaboration and updates will be shared via HashiCorp Discuss (discuss.hashicorp.com), along with occasional live events.
+We're starting a user group for the Terraform VS Code extension. This group offers users of the Terraform VSCode Extension with a place to provide feedback, access to pre-release versions, and opportunities to influence the direction of this project. Collaboration and updates will be shared via HashiCorp Discuss (discuss.hashicorp.com), along with occasional live events.
 
 If you are interested, please complete and submit our [participation form](https://forms.gle/JY2Rwt3e657gRFHj9), and we will get back to you soon with an invite!
 
