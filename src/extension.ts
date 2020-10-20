@@ -66,7 +66,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	}
 
 	// export public API
-	return { pathToBinary };
+	return { pathToBinary, clients };
 }
 
 export function deactivate(): Promise<void[]> {
