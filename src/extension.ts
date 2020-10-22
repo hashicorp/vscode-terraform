@@ -7,6 +7,7 @@ import {
 } from 'vscode-languageclient';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
+import { config, getWorkspaceFolder, prunedFolderNames } from './utils';
 
 const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
@@ -52,10 +53,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		vscode.workspace.onDidChangeWorkspaceFolders(
 			async (event: vscode.WorkspaceFoldersChangeEvent) => {
 				if (event.removed.length > 0) {
-					await stopClients(folderNames(event.removed));
+					await stopClients(prunedFolderNames(event.removed));
 				}
 				if (event.added.length > 0) {
-					await startClients(folderNames(event.added));
+					await startClients(prunedFolderNames(event.added));
 				}
 			}
 		)
@@ -73,7 +74,7 @@ export function deactivate(): Promise<void[]> {
 	return stopClients();
 }
 
-async function startClients(folders = folderNames()) {
+async function startClients(folders = prunedFolderNames()) {
 	console.log('Starting:', folders);
 	const command = await pathToBinary();
 	const disposables: vscode.Disposable[] = [];
@@ -135,7 +136,7 @@ function newClient(cmd: string, location: string) {
 	);
 }
 
-async function stopClients(folders = folderNames()) {
+async function stopClients(folders = prunedFolderNames()) {
 	console.log('Stopping:', folders);
 	const promises: Thenable<void>[] = [];
 	for (const folder of folders) {
@@ -169,52 +170,6 @@ async function pathToBinary(): Promise<string> {
 		_pathToBinaryPromise = Promise.resolve(command);
 	}
 	return _pathToBinaryPromise;
-}
-
-function config(section: string, scope?: vscode.ConfigurationScope) {
-	return vscode.workspace.getConfiguration(section, scope);
-}
-
-function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder {
-	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folderName));
-}
-
-function getFolderName(folder: vscode.WorkspaceFolder): string {
-	let result = folder.uri.toString();
-	if (result.charAt(result.length - 1) !== '/') {
-		result = result + '/';
-	}
-	return result;
-}
-
-function sortedWorkspaceFolders() {
-	const workspaceFolders = vscode.workspace.workspaceFolders;
-	if (workspaceFolders) {
-		return vscode.workspace.workspaceFolders.map(f => getFolderName(f)).sort(
-			(a, b) => {
-				return a.length - b.length;
-			});
-	}
-	return [];
-}
-
-function folderNames(folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders): string[] {
-	const result = [];
-	// Sort workspace folders so that outer folders (shorter path) go before inner ones
-	const workspaceFolders = sortedWorkspaceFolders();
-	if (folders && workspaceFolders) {
-		const folderNames = folders.map(f => getFolderName(f));
-		for (let name of folderNames) {
-			const outerFolder = workspaceFolders.find(element => name.startsWith(element));
-			// If this folder isn't nested, the found item will be itself
-			if (outerFolder && (outerFolder !== name)) {
-				name = getFolderName(getWorkspaceFolder(outerFolder));
-			}
-			result.push(name);
-		}
-	}
-
-	return result;
 }
 
 function enabled(): boolean {
