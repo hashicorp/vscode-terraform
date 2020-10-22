@@ -7,7 +7,7 @@ import {
 } from 'vscode-languageclient';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
-import { config, getWorkspaceFolder, prunedFolderNames } from './utils';
+import { config, getWorkspaceFolder, prunedFolderNames } from './vscodeUtils';
 
 const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
