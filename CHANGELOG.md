@@ -7,6 +7,7 @@ Notes:
 Bugs:
 
 * Fix 32bit downloads of language server (#483)
+* Prune nested workspace folders to prevent running multiple language servers for the same directory (#499)
 
 # 2.2.3 (2020-09-03)
 
