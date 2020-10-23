@@ -7,14 +7,13 @@ import {
 } from 'vscode-languageclient';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
-import { runCommand } from './terraformCommand';
+import { config, getWorkspaceFolder, prunedFolderNames } from './vscodeUtils';
 
 const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	extensionPath = context.extensionPath;
-	const commandOutput = vscode.window.createOutputChannel('Terraform');
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {
 		try {
@@ -23,23 +22,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			console.error(`Error trying to erase pre-2.0.0 settings: ${err.message}`);
 		}
 	}
-
-	// Terraform Commands
-
-	// TODO switch to using the workspace/execute_command API
-	// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#workspace_executeCommand
-	// const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-	// context.subscriptions.push(
-	// 	vscode.commands.registerCommand('terraform.init', () => {
-	// 		runCommand(rootPath, commandOutput, 'init');
-	// 	}),
-	// 	vscode.commands.registerCommand('terraform.plan', () => {
-	// 		runCommand(rootPath, commandOutput, 'plan');
-	// 	}),
-	// 	vscode.commands.registerCommand('terraform.validate', () => {
-	// 		runCommand(rootPath, commandOutput, 'validate');
-	// 	})
-	// );
 
 	// Subscriptions
 	context.subscriptions.push(
@@ -71,10 +53,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		vscode.workspace.onDidChangeWorkspaceFolders(
 			async (event: vscode.WorkspaceFoldersChangeEvent) => {
 				if (event.removed.length > 0) {
-					await stopClients(folderNames(event.removed));
+					await stopClients(prunedFolderNames(event.removed));
 				}
 				if (event.added.length > 0) {
-					await startClients(folderNames(event.added));
+					await startClients(prunedFolderNames(event.added));
 				}
 			}
 		)
@@ -85,14 +67,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	}
 
 	// export public API
-	return { pathToBinary };
+	return { pathToBinary, clients };
 }
 
 export function deactivate(): Promise<void[]> {
 	return stopClients();
 }
 
-async function startClients(folders = folderNames()) {
+async function startClients(folders = prunedFolderNames()) {
 	console.log('Starting:', folders);
 	const command = await pathToBinary();
 	const disposables: vscode.Disposable[] = [];
@@ -108,10 +90,10 @@ async function startClients(folders = folderNames()) {
 	return disposables
 }
 
-function newClient(cmd: string, folder: string) {
+function newClient(cmd: string, location: string) {
 	const binaryName = cmd.split('/').pop();
-	const channelName = `${binaryName}/${folder}`;
-	const f = workspaceFolder(folder);
+	const channelName = `${binaryName}: ${location}`;
+	const f: vscode.WorkspaceFolder = getWorkspaceFolder(location);
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
 	const rootModulePaths: string[] = config('terraform-ls', f).get('rootModules');
 	const excludeModulePaths: string[] = config('terraform-ls', f).get('excludeRootModules');
@@ -127,7 +109,7 @@ function newClient(cmd: string, folder: string) {
 	}
 
 	const setup = vscode.window.createOutputChannel(channelName);
-	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${folder}`);
+	setup.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
 
 	const executable: Executable = {
 		command: cmd,
@@ -147,14 +129,14 @@ function newClient(cmd: string, folder: string) {
 	};
 
 	return new LanguageClient(
-		`languageServer/${folder}`,
-		`Language Server: ${folder}`,
+		`languageServer/${location}`,
+		`Language Server: ${location}`,
 		serverOptions,
 		clientOptions
 	);
 }
 
-async function stopClients(folders = folderNames()) {
+async function stopClients(folders = prunedFolderNames()) {
 	console.log('Stopping:', folders);
 	const promises: Thenable<void>[] = [];
 	for (const folder of folders) {
@@ -188,27 +170,6 @@ async function pathToBinary(): Promise<string> {
 		_pathToBinaryPromise = Promise.resolve(command);
 	}
 	return _pathToBinaryPromise;
-}
-
-function config(section: string, scope?: vscode.ConfigurationScope) {
-	return vscode.workspace.getConfiguration(section, scope);
-}
-
-function workspaceFolder(folder: string) {
-	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folder));
-}
-
-function folderNames(folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders): string[] {
-	if (!folders) {
-		return [];
-	}
-	return folders.map(folder => {
-		let result = folder.uri.toString();
-		if (result.charAt(result.length - 1) !== '/') {
-			result = result + '/';
-		}
-		return result;
-	});
 }
 
 function enabled(): boolean {
