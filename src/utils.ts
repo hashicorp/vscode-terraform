@@ -30,3 +30,7 @@ export function httpsRequest(url: string, options: https.RequestOptions = {}, en
 			.end();
 	});
 }
+
+export async function sleep(ms: number): Promise<void> {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}

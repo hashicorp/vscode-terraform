@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import {
 	LanguageClientOptions,
+	ExecuteCommandParams,
+	ExecuteCommandRequest
 } from 'vscode-languageclient';
 import {
 	LanguageClient,
@@ -10,11 +12,24 @@ import {
 import ShortUniqueId from 'short-unique-id';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
-import { config, getWorkspaceFolder, prunedFolderNames } from './vscodeUtils';
+import {
+	config,
+	getFolderName,
+	getWorkspaceFolder,
+	prunedFolderNames,
+	sortedWorkspaceFolders
+} from './vscodeUtils';
+import { sleep } from './utils';
 
-const uid = new ShortUniqueId();
-const clients: Map<string, LanguageClient> = new Map();
+interface terraformLanguageClient {
+	commandPrefix: string,
+	client: LanguageClient
+}
+
+const shortUid = new ShortUniqueId();
+const clients: Map<string, terraformLanguageClient> = new Map();
 let extensionPath: string;
+const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	extensionPath = context.extensionPath;
@@ -63,6 +78,33 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 					await startClients(prunedFolderNames(event.added));
 				}
 			}
+		),
+		vscode.window.onDidChangeActiveTextEditor(
+			async (event: vscode.TextEditor | undefined) => {
+				if (event && vscode.workspace.workspaceFolders[0]) { // make sure there's an open document in a folder
+					const documentUri = event.document.uri;
+					const client = getDocumentClient(documentUri);
+					if (client) {
+						try {
+							const response = await rootModules(client, documentUri.toString());
+							if (response.needsInit === false) {
+								terraformStatus.text = response.rootModules[0].uri;
+								terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
+								terraformStatus.tooltip = `Terraform modules loaded: ${response.rootModules.length}`;
+							} else {
+								terraformStatus.text = getWorkspaceFolder(documentUri.toString()).uri.toString();
+								terraformStatus.color = new vscode.ThemeColor('errorForeground');
+								terraformStatus.tooltip = "needs Terraform init";
+							}
+							// terraformStatus.command = "terraform.languageserver.terraformInit";
+							terraformStatus.show();
+						} catch (err) {
+							vscode.window.showErrorMessage(err);
+							terraformStatus.hide();
+						}
+					}
+				}
+			}
 		)
 	);
 
@@ -71,7 +113,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	}
 
 	// export public API
-	return { pathToBinary, clients };
+	return { getDocumentClient, pathToBinary, rootModules };
 }
 
 export function deactivate(): Promise<void[]> {
@@ -84,17 +126,18 @@ async function startClients(folders = prunedFolderNames()) {
 	const disposables: vscode.Disposable[] = [];
 	for (const folder of folders) {
 		if (!clients.has(folder)) {
-			const client = newClient(command, folder);
+			const commandPrefix = shortUid.seq();
+			const client = newClient(command, folder, commandPrefix);
 			disposables.push(client.start());
-			clients.set(folder, client);
+			clients.set(folder, { commandPrefix: commandPrefix, client });
 		} else {
 			console.log(`Client for folder: ${folder} already started`);
 		}
 	}
-	return disposables
+	return disposables;
 }
 
-function newClient(cmd: string, location: string) {
+function newClient(cmd: string, location: string, commandPrefix: string) {
 	const binaryName = cmd.split('/').pop();
 	const channelName = `${binaryName}: ${location}`;
 	const f: vscode.WorkspaceFolder = getWorkspaceFolder(location);
@@ -104,7 +147,7 @@ function newClient(cmd: string, location: string) {
 	if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
 		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload'); 
 	}
-	let initializationOptions = { commandPrefix: uid.seq() };
+	let initializationOptions = { commandPrefix: commandPrefix };
 	if (rootModulePaths.length > 0) {
 		initializationOptions = Object.assign(initializationOptions, { rootModulePaths });
 	}
@@ -145,7 +188,7 @@ async function stopClients(folders = prunedFolderNames()) {
 	const promises: Thenable<void>[] = [];
 	for (const folder of folders) {
 		if (clients.has(folder)) {
-			promises.push(clients.get(folder).stop());
+			promises.push(clients.get(folder).client.stop());
 			clients.delete(folder);
 		} else {
 			console.log(`Attempted to stop a client for folder: ${folder} but no client exists`);
@@ -154,7 +197,7 @@ async function stopClients(folders = prunedFolderNames()) {
 	return Promise.all(promises);
 }
 
-let _pathToBinaryPromise: Promise<string>
+let _pathToBinaryPromise: Promise<string>;
 async function pathToBinary(): Promise<string> {
 	if (!_pathToBinaryPromise) {
 		let command: string = config('terraform').get('languageServer.pathToBinary');
@@ -174,6 +217,52 @@ async function pathToBinary(): Promise<string> {
 		_pathToBinaryPromise = Promise.resolve(command);
 	}
 	return _pathToBinaryPromise;
+}
+
+function clientName(folderName: string, workspaceFolders: readonly string[] = sortedWorkspaceFolders()): string {
+	const outerFolder = workspaceFolders.find(element => folderName.startsWith(element));
+	// If this folder isn't nested, the found item will be itself
+	if (outerFolder && (outerFolder !== folderName)) {
+		folderName = getFolderName(getWorkspaceFolder(outerFolder));
+	}
+	return folderName;
+}
+
+function getDocumentClient(document: vscode.Uri): terraformLanguageClient {
+	return clients.get(clientName(document.toString()));
+}
+
+function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
+	return client.sendRequest(ExecuteCommandRequest.type, params);
+}
+
+interface rootModule {
+	uri: string
+}
+
+interface rootModuleResponse  {
+	rootModules: rootModule[],
+	needsInit: boolean
+}
+
+async function rootModulesCommand(languageClient: terraformLanguageClient, documentUri: string): Promise<any> {
+	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.rootmodules`, arguments: [`uri=${documentUri}`] };
+	return execWorkspaceCommand(languageClient.client, requestParams);
+}
+
+async function rootModules(languageClient: terraformLanguageClient, documentUri: string): Promise<rootModuleResponse> {
+	let doneLoading = false;
+	let rootModules: rootModule[];
+	for (let attempt = 0; attempt < 2 && !doneLoading; attempt++) {
+		const response = await rootModulesCommand(languageClient, documentUri);
+		await sleep(100);
+		doneLoading = response.doneLoading;
+		rootModules = response.rootModules;
+	}
+	if (!doneLoading) {
+		throw new Error(`Unable to load root modules for ${documentUri}`);
+	}
+	return { rootModules: rootModules, needsInit: rootModules.length === 0 };
 }
 
 function enabled(): boolean {

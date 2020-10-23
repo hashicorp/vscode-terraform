@@ -4,6 +4,14 @@ export function config(section: string, scope?: vscode.ConfigurationScope): vsco
 	return vscode.workspace.getConfiguration(section, scope);
 }
 
+export function getFolderName(folder: vscode.WorkspaceFolder): string {
+	let result = folder.uri.toString();
+	if (result.charAt(result.length - 1) !== '/') {
+		result = result + '/';
+	}
+	return result;
+}
+
 export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder {
 	return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folderName));
 }
@@ -27,17 +35,7 @@ export function prunedFolderNames(folders: readonly vscode.WorkspaceFolder[] = v
 	return result;
 }
 
-// Private functions
-
-function getFolderName(folder: vscode.WorkspaceFolder): string {
-	let result = folder.uri.toString();
-	if (result.charAt(result.length - 1) !== '/') {
-		result = result + '/';
-	}
-	return result;
-}
-
-function sortedWorkspaceFolders() {
+export function sortedWorkspaceFolders(): string[] {
 	const workspaceFolders = vscode.workspace.workspaceFolders;
 	if (workspaceFolders) {
 		return vscode.workspace.workspaceFolders.map(f => getFolderName(f)).sort(
