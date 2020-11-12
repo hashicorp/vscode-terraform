@@ -179,6 +179,7 @@
     "del": "^5.1.0",
     "openpgp": "^4.10.7",
     "semver": "^7.3.2",
+    "short-unique-id": "^3.2.0",
     "vscode-languageclient": "^6.1.3",
     "yauzl": "^2.10.0"
   },
