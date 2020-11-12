@@ -5,10 +5,12 @@ import {
 	ServerOptions,
 	Executable
 } from 'vscode-languageclient';
+import ShortUniqueId from 'short-unique-id';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
 import { config, getWorkspaceFolder, prunedFolderNames } from './vscodeUtils';
 
+const uid = new ShortUniqueId();
 const clients: Map<string, LanguageClient> = new Map();
 let extensionPath: string;
 
@@ -100,12 +102,12 @@ function newClient(cmd: string, location: string) {
 	if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
 		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload'); 
 	}
-	let initializationOptions = {};
+	let initializationOptions = { commandPrefix: uid.seq() };
 	if (rootModulePaths.length > 0) {
-		initializationOptions = { rootModulePaths };
+		initializationOptions = Object.assign(initializationOptions, { rootModulePaths });
 	}
 	if (excludeModulePaths.length > 0) {
-		initializationOptions = { excludeModulePaths };
+		initializationOptions = Object.assign(initializationOptions, { excludeModulePaths });
 	}
 
 	const setup = vscode.window.createOutputChannel(channelName);
