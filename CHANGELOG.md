@@ -1,14 +1,14 @@
-# 2.3.0 (Unreleased)
+# 2.3.0 (2020-11-12)
 
 Notes:
 
-* Setup integration tests in github actions (#483)
+* Set up integration tests in GitHub actions (#483)
 
 Bugs:
 
 * Fix 32bit downloads of language server (#483)
 * Prune nested workspace folders to prevent running multiple language servers for the same directory (#499)
-* Prefix workspace command names to prevent multi instance name collisions (#514)
+* Prefix workspace command names to prevent multi-instance name collisions (#514)
 
 # 2.2.3 (2020-09-03)
 
