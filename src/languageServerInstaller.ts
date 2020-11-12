@@ -52,11 +52,12 @@ interface Release {
 export class LanguageServerInstaller {
 	public async install(directory: string): Promise<void> {
 		const { version: extensionVersion } = require('../package.json');
-		const lspCmd = `${directory}/terraform-ls --version`;
+		const lsVersionCmd = `${directory}/terraform-ls --version`;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 		let isInstalled = true;
 		try {
-			var { stderr: installedVersion } = await exec(lspCmd);
+			var { stdout, stderr } = await exec(lsVersionCmd);
+			var installedVersion = stdout || stderr;
 		} catch (err) {
 			// TODO: verify error was in fact binary not found
 			isInstalled = false;
