@@ -6,7 +6,7 @@ suite('document symbols', () => {
 	const docUri = getDocUri('sample.tf');
 
 	test('returns symbols', async () => {
-		await testSymbols(docUri, ['provider.vault', 'resource.vault_auth_backend.b']);
+		await testSymbols(docUri, ['provider "vault"', 'resource "vault_auth_backend" "b"']);
 	});
 });
 
