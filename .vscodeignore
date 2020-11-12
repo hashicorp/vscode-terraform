@@ -11,3 +11,5 @@ out/test/
 tsconfig.json
 lsp/
 testfixture/
+DEVELOPMENT.md
+ROADMAP.md
