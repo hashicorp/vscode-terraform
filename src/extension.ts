@@ -93,7 +93,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 								terraformStatus.tooltip = `Terraform modules loaded: ${response.rootModules.length}`;
 							} else {
 								terraformStatus.text = getWorkspaceFolder(documentUri.toString()).uri.toString();
-								terraformStatus.color = new vscode.ThemeColor('errorForeground');
 								terraformStatus.tooltip = "needs Terraform init";
 							}
 							// terraformStatus.command = "terraform.languageserver.terraformInit";
