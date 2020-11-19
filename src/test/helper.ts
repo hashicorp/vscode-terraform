@@ -42,7 +42,7 @@ async function activated() {
 	return _activatedPromise;
 }
 
-export const testFolderPath =path.resolve(__dirname, '../../testFixture');
+export const testFolderPath = path.resolve(__dirname, '../../testFixture');
 
 export const getDocPath = (p: string): string => {
 	return path.resolve(__dirname, '../../testFixture', p);

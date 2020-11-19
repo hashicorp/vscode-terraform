@@ -10,8 +10,8 @@ suite('rootmodules', () => {
 		await open(documentUri);
 		const client = ext.exports.getDocumentClient(documentUri);
 		const response = await ext.exports.rootModules(client, documentUri.toString());
-		assert.strictEqual(response.rootModules, 1);
-		assert.strictEqual(response.rootModules[0], testFolderPath);
+		assert.strictEqual(response.rootModules.length, 1);
+		assert.strictEqual(response.rootModules[0].uri, `file://${testFolderPath}`);
 		assert.strictEqual(response.needsInit, false);
 	})
 })
