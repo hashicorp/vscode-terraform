@@ -254,9 +254,11 @@ async function rootModules(languageClient: terraformLanguageClient, documentUri:
 	let rootModules: rootModule[];
 	for (let attempt = 0; attempt < 2 && !doneLoading; attempt++) {
 		const response = await rootModulesCommand(languageClient, documentUri);
-		await sleep(100);
 		doneLoading = response.doneLoading;
 		rootModules = response.rootModules;
+		if (!doneLoading) {
+			await sleep(100);
+		}
 	}
 	if (!doneLoading) {
 		throw new Error(`Unable to load root modules for ${documentUri}`);
