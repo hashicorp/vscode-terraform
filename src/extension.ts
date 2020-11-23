@@ -1,10 +1,12 @@
 import * as vscode from 'vscode';
 import {
-	LanguageClient,
 	LanguageClientOptions,
-	ServerOptions,
-	Executable
 } from 'vscode-languageclient';
+import {
+	LanguageClient,
+	ServerOptions,
+	Executable,
+} from 'vscode-languageclient/node';
 import ShortUniqueId from 'short-unique-id';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
