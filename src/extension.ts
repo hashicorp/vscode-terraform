@@ -58,6 +58,36 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			}
 			return stopClients();
 		}),
+		vscode.commands.registerCommand('terraform.init', async () => {
+			vscode.window.showOpenDialog({
+				canSelectFiles: false,
+				canSelectFolders: true,
+				canSelectMany: false,
+				defaultUri: vscode.workspace.workspaceFolders[0].uri,
+				openLabel: "Initialize"
+			}).then(async (selected) => {
+				const moduleUri = selected[0];
+				const client = getDocumentClient(moduleUri);
+				await initCommand(client, moduleUri.toString());
+			});
+		}),
+		vscode.commands.registerCommand('terraform.initCurrent', async () => {
+			if (vscode.window.activeTextEditor) {
+				const documentUri = vscode.window.activeTextEditor.document.uri;
+				const client = getDocumentClient(documentUri);
+				const modules = await rootModules(client, documentUri.toString());
+
+				let selectedModule: string;
+				if (modules.rootModules.length > 1) {
+					const selected = await vscode.window.showQuickPick(modules.rootModules.map(m => m.uri), { canPickMany: false });
+					selectedModule = selected[0];
+				} else {
+					selectedModule = modules.rootModules[0].uri;
+				}
+
+				await initCommand(client, selectedModule);
+			}
+		}),
 		vscode.workspace.onDidChangeConfiguration(
 			async (event: vscode.ConfigurationChangeEvent) => {
 				if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
@@ -90,13 +120,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 							if (response.needsInit === false) {
 								terraformStatus.text = response.rootModules[0].uri;
 								terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
-								terraformStatus.tooltip = `Terraform modules loaded: ${response.rootModules.length}`;
+								terraformStatus.tooltip = `Click to run terraform init`;
+								terraformStatus.command = "terraform.initCurrent";
+								terraformStatus.show();
 							} else {
-								terraformStatus.text = getWorkspaceFolder(documentUri.toString()).uri.toString();
-								terraformStatus.tooltip = "needs Terraform init";
+								terraformStatus.hide();
 							}
-							// terraformStatus.command = "terraform.languageserver.terraformInit";
-							terraformStatus.show();
 						} catch (err) {
 							vscode.window.showErrorMessage(err);
 							terraformStatus.hide();
@@ -144,7 +173,7 @@ function newClient(cmd: string, location: string, commandPrefix: string) {
 	const rootModulePaths: string[] = config('terraform-ls', f).get('rootModules');
 	const excludeModulePaths: string[] = config('terraform-ls', f).get('excludeRootModules');
 	if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
-		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload'); 
+		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload');
 	}
 	let initializationOptions = { commandPrefix: commandPrefix };
 	if (rootModulePaths.length > 0) {
@@ -239,7 +268,7 @@ interface rootModule {
 	uri: string
 }
 
-interface rootModuleResponse  {
+interface rootModuleResponse {
 	rootModules: rootModule[],
 	needsInit: boolean
 }
@@ -264,6 +293,11 @@ async function rootModules(languageClient: terraformLanguageClient, documentUri:
 		throw new Error(`Unable to load root modules for ${documentUri}`);
 	}
 	return { rootModules: rootModules, needsInit: rootModules.length === 0 };
+}
+
+async function initCommand(languageClient: terraformLanguageClient, moduleUri: string): Promise<any> {
+	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.terraform.init`, arguments: [`uri=${moduleUri}`] };
+	return execWorkspaceCommand(languageClient.client, requestParams);
 }
 
 function enabled(): boolean {
