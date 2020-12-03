@@ -118,7 +118,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 						try {
 							const response = await rootModules(client, documentUri.toString());
 							if (response.needsInit === false) {
-								terraformStatus.text = response.rootModules[0].uri;
+								terraformStatus.text = `$(refresh) ${response.rootModules[0].uri}`;
 								terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
 								terraformStatus.tooltip = `Click to run terraform init`;
 								terraformStatus.command = "terraform.initCurrent";
