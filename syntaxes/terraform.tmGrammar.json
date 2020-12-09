@@ -110,7 +110,7 @@
 					"patterns": [
 						{
 							"match": "\\b(?:resource|provider|variable|output|locals|module|data|terraform)\\b",
-							"name": "storage.type.terraform"
+							"name": "entity.name.type.terraform"
 						},
 						{
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
