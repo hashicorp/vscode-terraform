@@ -16,6 +16,7 @@ import {
 	config,
 	getFolderName,
 	getWorkspaceFolder,
+	normalizeFolderName,
 	prunedFolderNames,
 	sortedWorkspaceFolders
 } from './vscodeUtils';
@@ -59,17 +60,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			return stopClients();
 		}),
 		vscode.commands.registerCommand('terraform.init', async () => {
-			vscode.window.showOpenDialog({
+			const selected = await vscode.window.showOpenDialog({
 				canSelectFiles: false,
 				canSelectFolders: true,
 				canSelectMany: false,
 				defaultUri: vscode.workspace.workspaceFolders[0].uri,
 				openLabel: "Initialize"
-			}).then(async (selected) => {
+
+			});
+			if (selected) {
 				const moduleUri = selected[0];
 				const client = getDocumentClient(moduleUri);
 				await initCommand(client, moduleUri.toString());
-			});
+			}
 		}),
 		vscode.commands.registerCommand('terraform.initCurrent', async () => {
 			if (vscode.window.activeTextEditor) {
@@ -84,7 +87,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				} else {
 					selectedModule = modules.rootModules[0].uri;
 				}
-
 				await initCommand(client, selectedModule);
 			}
 		}),
@@ -248,6 +250,7 @@ async function pathToBinary(): Promise<string> {
 }
 
 function clientName(folderName: string, workspaceFolders: readonly string[] = sortedWorkspaceFolders()): string {
+	folderName = normalizeFolderName(folderName);
 	const outerFolder = workspaceFolders.find(element => folderName.startsWith(element));
 	// If this folder isn't nested, the found item will be itself
 	if (outerFolder && (outerFolder !== folderName)) {

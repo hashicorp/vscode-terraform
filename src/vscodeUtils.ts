@@ -5,11 +5,15 @@ export function config(section: string, scope?: vscode.ConfigurationScope): vsco
 }
 
 export function getFolderName(folder: vscode.WorkspaceFolder): string {
-	let result = folder.uri.toString();
-	if (result.charAt(result.length - 1) !== '/') {
-		result = result + '/';
+	return normalizeFolderName(folder.uri.toString());
+}
+
+// Make sure that folder uris always end with a slash
+export function normalizeFolderName(folderName: string): string {
+	if (folderName.charAt(folderName.length - 1) !== '/') {
+		folderName = folderName + '/';
 	}
-	return result;
+	return folderName;
 }
 
 export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder {
