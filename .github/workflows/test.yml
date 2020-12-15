@@ -22,10 +22,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests
