@@ -10,7 +10,10 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, macos-11.0, ubuntu-latest, ubuntu-16.04]
+    runs-on: ${ matrix.os }
 
     steps:
       - name: Checkout Repo
