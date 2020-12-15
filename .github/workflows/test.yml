@@ -12,7 +12,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, macos-11.0]
+        os: [windows-latest, macos-latest, macos-11.0, ubuntu-16.04]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -22,6 +22,12 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
+      - name: Start Xvfb
+        run: |
+          set -e
+          /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
+          disown -ar
+        if: runner.os == 'Linux'
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests
