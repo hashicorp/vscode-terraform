@@ -64,6 +64,13 @@ export class LanguageServerInstaller {
 			case 'ia32':
 				arch = '386'
 				break;
+			case 'arm64':
+				if (platform === 'darwin') {
+					// On Apple Silicon, install the amd64 version and rely on Rosetta2
+					// until a native build is available.
+					arch = 'amd64'
+				}
+				break;
 		}
 		const build = release.getBuild(platform, arch);
 		if (!build) {
