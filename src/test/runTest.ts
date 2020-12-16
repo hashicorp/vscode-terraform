@@ -26,7 +26,21 @@ async function main(): Promise<void> {
     // Download VS Code, unzip it and run the integration test
     // start in the fixtures folder to prevent the language server from walking all the
     // project root folders, like node_modules
-    await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: ['testFixture'] });
+    await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: ['testFixture'] }); // use current release
+
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath,
+      version: 'insiders',
+      launchArgs: ['testFixture']
+    });
+
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath,
+      version: '1.48.2',
+      launchArgs: ['testFixture']
+    });
   } catch (err) {
     console.error(err);
     console.error('Failed to run tests');
