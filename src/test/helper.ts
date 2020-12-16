@@ -42,7 +42,7 @@ async function activated() {
 	return _activatedPromise;
 }
 
-export const testFolderPath = vscode.Uri.file(path.resolve(__dirname, '..', '..', 'testFixture')).toString();
+export const testFolderPath = vscode.Uri.file(path.resolve(__dirname, '..', '..', 'testFixture'));
 
 export const getDocPath = (p: string): string => {
 	return path.resolve(__dirname, '../../testFixture', p);
