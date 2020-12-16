@@ -12,23 +12,25 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, macos-11.0, ubuntu-16.04]
+        os: [windows-latest, macos-latest, macos-11.0, ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+      - name: Set up xvfb (Ubuntu)
+        run: |
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          echo ">>> Started xvfb"
+        if: matrix.os == 'ubuntu-latest'
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Start Xvfb
-        run: |
-          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-        if: matrix.os == 'ubuntu-16.04'
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests
         run: npm test
         env:
           CI: true
+          DISPLAY: ':99.0'
