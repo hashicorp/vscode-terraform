@@ -163,6 +163,14 @@
       {
         "command": "terraform.disableLanguageServer",
         "title": "Terraform: Disable Language Server"
+      },
+      {
+        "command": "terraform.init",
+        "title": "Terraform: init"
+      },
+      {
+        "command": "terraform.initCurrent",
+        "title": "Terraform: init current folder"
       }
     ]
   },
