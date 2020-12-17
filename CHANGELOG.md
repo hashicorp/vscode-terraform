@@ -1,6 +1,7 @@
 # 2.4.0 (Unreleased)
 
 * Use amd64 binary to support Apple Silicon Macs (#527)
+* Add command and statusbar interface for running terraform init (#495)
 
 # 2.3.0 (2020-11-12)
 
