@@ -2,6 +2,8 @@
 
 * Use amd64 binary to support Apple Silicon Macs (#527)
 * Add command and statusbar interface for running terraform init (#495)
+* Read LS version from stdout (#512)
+* Prepare for semantic token based highlighting (#523)
 
 # 2.3.0 (2020-11-12)
 
