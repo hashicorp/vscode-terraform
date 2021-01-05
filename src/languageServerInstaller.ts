@@ -52,32 +52,14 @@ export class LanguageServerInstaller {
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 	
-		let platform = process.platform.toString();
-		if (platform === 'win32') {
-			platform = 'windows';
-		}
-		let arch: string;
-		switch (process.arch) {
-			case 'x64':
-				arch = 'amd64'
-				break;
-			case 'ia32':
-				arch = '386'
-				break;
-			case 'arm64':
-				if (platform === 'darwin') {
-					// On Apple Silicon, install the amd64 version and rely on Rosetta2
-					// until a native build is available.
-					arch = 'amd64'
-				}
-				break;
-		}
-		const build = release.getBuild(platform, arch);
+		let os = goOs();
+		let arch = goArch();
+		const build = release.getBuild(os, arch);
 		if (!build) {
-			throw new Error("Install error: no matching terraform-ls binary for platform");
+			throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
 		}
 		try {
-			this.removeOldBinary(installDir, platform);
+			this.removeOldBinary(installDir, os);
 		} catch {
 			// ignore missing binary (new install)
 		}
@@ -96,8 +78,8 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	removeOldBinary(directory: string, platform: string): void {
-		if (platform === "windows") {
+	removeOldBinary(directory: string, goOs: string): void {
+		if (goOs === "windows") {
 			fs.unlinkSync(`${directory}/terraform-ls.exe`);
 		} else {
 			fs.unlinkSync(`${directory}/terraform-ls`);
@@ -107,4 +89,32 @@ export class LanguageServerInstaller {
 	public async cleanupZips(directory: string): Promise<string[]> {
 		return del(`${directory}/terraform-ls*.zip`, { force: true });
 	}
+}
+
+function goOs(): string {
+	let platform = process.platform.toString();
+	if (platform === 'win32') {
+		return 'windows';
+	}
+	if (platform === 'sunos') {
+		return 'solaris';
+	}
+	return platform;
+}
+
+function goArch(): string {
+	let arch = process.arch;
+
+	if (arch === 'ia32') {
+		return '386';
+	}
+	if (arch === 'x64') {
+		return 'amd64';
+	}
+	if (arch === 'arm64' && process.platform.toString() === 'darwin') {
+		// On Apple Silicon, install the amd64 version and rely on Rosetta2
+		// until a native build is available.
+		return 'amd64';
+	}
+	return arch;
 }
