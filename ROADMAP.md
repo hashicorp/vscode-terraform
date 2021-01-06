@@ -26,7 +26,7 @@ The [Terraform language server](https://github.com/hashicorp/terraform-ls), used
 ## Researching 
 
 - Expression completion
-
+- Code Lens support for `required_providers` block and resources
 ### Terraform Cloud Integration
 
 `terraform login` integration, and information/status about your cloud workspace for the current root modules
