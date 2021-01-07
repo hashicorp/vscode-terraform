@@ -1,7 +1,12 @@
-# 2.4.0 (Unreleased)
+# 2.4.0 (2021-01-07)
+
+Features:
 
 * Use amd64 binary to support Apple Silicon Macs (#527)
 * Add command and statusbar interface for running terraform init (#495)
+
+Language Server integration:
+
 * Read LS version from stdout (#512)
 * Prepare for semantic token based highlighting (#523)
 
