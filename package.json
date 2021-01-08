@@ -152,7 +152,19 @@
           },
           "default": [],
           "description": "Per-workspace list of module directories for the language server to exclude"
-        }
+        },
+        "terraform-ls.experimentalFeatures": {
+          "scope": "resource",
+          "type": "object",
+          "description": "Experimental (opt-in) terraform-ls features",
+          "properties": {
+            "validateOnSave": {
+              "scope": "resource",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }  
       }
     },
     "commands": [

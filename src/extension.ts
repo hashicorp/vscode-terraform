@@ -174,10 +174,13 @@ function newClient(cmd: string, location: string, commandPrefix: string) {
 	const serverArgs: string[] = config('terraform').get('languageServer.args');
 	const rootModulePaths: string[] = config('terraform-ls', f).get('rootModules');
 	const excludeModulePaths: string[] = config('terraform-ls', f).get('excludeRootModules');
+	const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
+
 	if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
 		throw new Error('Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload');
 	}
-	let initializationOptions = { commandPrefix };
+
+	let initializationOptions = { commandPrefix, experimentalFeatures };
 	if (rootModulePaths.length > 0) {
 		initializationOptions = Object.assign(initializationOptions, { rootModulePaths });
 	}
