@@ -1,3 +1,7 @@
+# 2.5.0 (unreleased)
+
+* Add setting for experimental features to enable validateOnSave (#536)
+
 # 2.4.0 (2021-01-07)
 
 Features:
