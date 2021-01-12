@@ -183,6 +183,10 @@
       {
         "command": "terraform.initCurrent",
         "title": "Terraform: init current folder"
+      },
+      {
+        "command": "terraform.validate",
+        "title": "Terraform: validate"
       }
     ]
   },

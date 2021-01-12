@@ -66,29 +66,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				canSelectMany: false,
 				defaultUri: vscode.workspace.workspaceFolders[0].uri,
 				openLabel: "Initialize"
-
 			});
 			if (selected) {
 				const moduleUri = selected[0];
 				const client = getDocumentClient(moduleUri);
-				await initCommand(client, moduleUri.toString());
+				const requestParams: ExecuteCommandParams = { command: `${client.commandPrefix}.terraform-ls.terraform.init`, arguments: [`uri=${moduleUri}`] };
+				await execWorkspaceCommand(client.client, requestParams);
 			}
 		}),
 		vscode.commands.registerCommand('terraform.initCurrent', async () => {
-			if (vscode.window.activeTextEditor) {
-				const documentUri = vscode.window.activeTextEditor.document.uri;
-				const client = getDocumentClient(documentUri);
-				const modules = await rootModules(client, documentUri.toString());
-
-				let selectedModule: string;
-				if (modules.rootModules.length > 1) {
-					const selected = await vscode.window.showQuickPick(modules.rootModules.map(m => m.uri), { canPickMany: false });
-					selectedModule = selected[0];
-				} else {
-					selectedModule = modules.rootModules[0].uri;
-				}
-				await initCommand(client, selectedModule);
-			}
+			await terraformCommand('init');
+		}),
+		vscode.commands.registerCommand('terraform.validate', async () => {
+			await terraformCommand('validate');
 		}),
 		vscode.workspace.onDidChangeConfiguration(
 			async (event: vscode.ConfigurationChangeEvent) => {
@@ -302,9 +292,25 @@ async function rootModules(languageClient: terraformLanguageClient, documentUri:
 	return { rootModules: rootModules, needsInit: rootModules.length === 0 };
 }
 
-async function initCommand(languageClient: terraformLanguageClient, moduleUri: string): Promise<any> {
-	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.terraform.init`, arguments: [`uri=${moduleUri}`] };
-	return execWorkspaceCommand(languageClient.client, requestParams);
+async function terraformCommand(command: string): Promise<any> {
+	if (vscode.window.activeTextEditor) {
+		const documentUri = vscode.window.activeTextEditor.document.uri;
+		const languageClient = getDocumentClient(documentUri);
+		const modules = await rootModules(languageClient, documentUri.toString());
+
+		let selectedModule: string;
+		if (modules.rootModules.length > 1) {
+			const selected = await vscode.window.showQuickPick(modules.rootModules.map(m => m.uri), { canPickMany: false });
+			selectedModule = selected[0];
+		} else {
+			selectedModule = modules.rootModules[0].uri;
+		}
+		const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.terraform.${command}`, arguments: [`uri=${selectedModule}`] };
+		return execWorkspaceCommand(languageClient.client, requestParams);
+	} else {
+		vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
+		return;
+	}
 }
 
 function enabled(): boolean {
