@@ -292,7 +292,7 @@ async function rootModules(languageClient: terraformLanguageClient, documentUri:
 	return { rootModules: rootModules, needsInit: rootModules.length === 0 };
 }
 
-async function terraformCommand(command: string) {
+async function terraformCommand(command: string): Promise<any> {
 	if (vscode.window.activeTextEditor) {
 		const documentUri = vscode.window.activeTextEditor.document.uri;
 		const languageClient = getDocumentClient(documentUri);
@@ -309,7 +309,7 @@ async function terraformCommand(command: string) {
 		return execWorkspaceCommand(languageClient.client, requestParams);
 	} else {
 		vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
-		return Promise.resolve();
+		return;
 	}
 }
 
