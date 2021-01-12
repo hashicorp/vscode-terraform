@@ -9,6 +9,8 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 - Manages installation and updates of the [Terraform Language Server (terraform-ls)](https://github.com/hashicorp/terraform-ls), exposing its features:
   - Completion of initialized providers: resource names, data source names, attribute names
   - Diagnostics to indicate HCL errors as you type
+  - Initialize the configuration using "Terraform: init" from the command palette
+  - Validation diagnostics using "Terraform: validate" from the command palette or a `validateOnSave` setting
 - Includes syntax highlighting for `.tf` and `.tfvars` files -- including all syntax changes new to Terraform 0.12
 - Closes braces and quotes
 - Includes `for_each` and `variable` syntax shortcuts (`fore`, `vare`, `varm`)
@@ -57,6 +59,15 @@ To enable formatting, it is recommended that the following be added to the exten
         "editor.formatOnSave": true
     }
 ```
+
+### Validation
+An experimental validate-on-save option can be enabled with the following setting:
+```
+    "terraform-ls.experimentalFeatures": {
+      "validateOnSave": true
+    }
+```
+This will create diagnostics for any elements that fail validation. `terraform validate` can also be run using the setting in the command palette.
 
 ## Release History
 
