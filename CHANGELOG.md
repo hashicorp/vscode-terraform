@@ -1,4 +1,6 @@
-# 2.5.0 (unreleased)
+# 2.5.0 (2020-01-14)
+
+Features:
 
 * Add setting for experimental features to enable validateOnSave (#536)
 * Add terraform validate command (#540)
