@@ -59,7 +59,6 @@
 		"description": "Variable (map)"
 	},
 	"For Expression (List)": {
-		"scope": "terraform",
 		"prefix": "for_list",
 		"body": [
 			"for ${3:item} in ${2:list} :",
@@ -68,7 +67,6 @@
 		"description": "Construct a list or map by transforming and filtering elements in another list."
 	},
 	"For Expression (Map)": {
-		"scope": "terraform",
 		"prefix": "for_map",
 		"body": [
 			"for ${2:key}, ${3:value} in ${1:map} :",
