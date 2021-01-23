@@ -1,13 +1,12 @@
-name: Build Nightly
+name: Build
 on:
-  workflow_dispatch: # manual invocation
-  schedule:
-    - cron: '0 2 * * *' # run at 2 AM UTC
-      
+  push:
+    branches:
+      - main
 
 jobs:
-  nightly:
-    name: Build Nightly
+  build:
+    name: Build
     runs-on: windows-latest
     steps:
       - name: checkout repo
@@ -22,10 +21,10 @@ jobs:
         run: npm ci    
       
       - name: compile and create vsix
-        run: npm run package -- -o extension-nightly.vsix
+        run: npm run package -- -o extension.vsix
 
       - name: upload vsix as artifact
         uses: actions/upload-artifact@v1
         with:
-          name: vscode-terraform-nightly-${{github.sha}}.vsix
-          path: ${{github.workspace}}\extension-nightly.vsix
+          name: vscode-terraform-${{github.sha}}.vsix
+          path: ${{github.workspace}}\extension.vsix
