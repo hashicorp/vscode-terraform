@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "HashiCorp Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
-  "version": "2.6.0",
+  "version": "2.5.0",
   "publisher": "hashicorp",
   "license": "MPL-2.0",
   "engines": {
