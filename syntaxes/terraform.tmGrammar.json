@@ -441,17 +441,17 @@
 			]
 		},
 		"objects": {
-			"name": "meta.braces.terraform keyword.operator",
+			"name": "meta.braces.terraform",
 			"begin": "\\{",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.section.braces.begin.terraform keyword.operator"
+					"name": "punctuation.section.braces.begin.terraform"
 				}
 			},
 			"end": "\\}",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.braces.end.terraform keyword.operator"
+					"name": "punctuation.section.braces.end.terraform"
 				}
 			},
 			"patterns": [
