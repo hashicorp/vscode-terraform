@@ -590,7 +590,7 @@
 			"begin": "\\.",
 			"beginCaptures": {
 				"0": {
-					"name": "keyword.operator.accessor.terraform variable"
+					"name": "keyword.operator.accessor.terraform"
 				}
 			},
 			"end": "[\\w_-]+",
@@ -600,7 +600,7 @@
 						{
 							"match": "\\b(?!null|false|true)[\\w_-]*\\b",
 							"comment": "Attribute access",
-							"name": "variable.other.member.terraform keyword.operator test123abc"
+							"name": "variable.other.member.terraform"
 						}
 					]
 				},
