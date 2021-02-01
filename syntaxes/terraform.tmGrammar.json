@@ -92,7 +92,7 @@
 					"name": "punctuation.section.parens.begin.terraform"
 				},
 				"2": {
-					"name": "variable.other.readwrite.terraform keyword.operator"
+					"name": "variable.other.property.terraform"
 				},
 				"3": {
 					"name": "punctuation.section.parens.end.terraform"
