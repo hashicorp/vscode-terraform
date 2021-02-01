@@ -305,17 +305,17 @@
 			"name": "string.unquoted.heredoc.terraform",
 			"beginCaptures": {
 				"1": {
-					"name": "keyword.control.heredoc.terraform constant"
+					"name": "keyword.control.heredoc.terraform"
 				},
 				"2": {
-					"name": "keyword.control.heredoc.terraform constant"
+					"name": "keyword.control.heredoc.terraform"
 				}
 			},
 			"end": "^\\s*\\2\\s*$",
 			"endCaptures": {
 				"0": {
 					"comment": "The heredoc token identifier (second capture above).",
-					"name": "keyword.control.heredoc.terraform constant"
+					"name": "keyword.control.heredoc.terraform"
 				}
 			},
 			"patterns": [
