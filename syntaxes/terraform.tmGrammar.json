@@ -39,12 +39,12 @@
 		"named_value_references": {
 			"match": "\\b(var|local|module|data|path|terraform)\\b",
 			"comment": "Constant values available only to Terraform.",
-			"name": "support.constant.terraform variable"
+			"name": "variable.other.readwrite.terraform constant.language.terraform"
 		},
 		"local_identifiers": {
 			"match": "\\b(?!null|false|true|for|in)[[:alpha:]][[:alnum:]_-]*\\b",
 			"comment": "Local Identifiers",
-			"name": "variable.other.readwrite.terraform"
+			"name": "variable.other.readwrite.terraform constant.language.terraform"
 		},
 		"terraform_type_keywords": {
 			"match": "\\b(any|string|number|bool)\\b",
@@ -266,13 +266,13 @@
 			"name": "meta.interpolation.terraform",
 			"beginCaptures": {
 				"0": {
-					"name": "keyword.other.interpolation.begin.terraform variable"
+					"name": "keyword.other.interpolation.begin.terraform constant.language.terraform"
 				}
 			},
 			"end": "\\}",
 			"endCaptures": {
 				"0": {
-					"name": "keyword.other.interpolation.end.terraform variable"
+					"name": "keyword.other.interpolation.end.terraform constant.language.terraform"
 				}
 			},
 			"patterns": [
