@@ -49,7 +49,7 @@
 		"terraform_type_keywords": {
 			"match": "\\b(any|string|number|bool)\\b",
 			"comment": "Type keywords known to Terraform.",
-			"name": "constant"
+			"name": "constant.language.terraform"
 		},
 		"comments": {
 			"patterns": [
