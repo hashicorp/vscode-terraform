@@ -305,7 +305,7 @@
 			"name": "string.unquoted.heredoc.terraform",
 			"beginCaptures": {
 				"1": {
-					"name": "keyword.operator.heredoc.terraform constant"
+					"name": "keyword.control.heredoc.terraform constant"
 				},
 				"2": {
 					"name": "keyword.control.heredoc.terraform constant"
