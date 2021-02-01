@@ -410,13 +410,13 @@
 			"begin": "\\[",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.section.brackets.begin.terraform keyword.operator"
+					"name": "punctuation.section.brackets.begin.terraform"
 				}
 			},
 			"end": "(\\*?)\\]",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.brackets.end.terraform keyword.operator"
+					"name": "punctuation.section.brackets.end.terraform"
 				},
 				"1": {
 					"name": "keyword.operator.splat.terraform constant.terraform"
