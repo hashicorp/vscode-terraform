@@ -463,7 +463,7 @@
 					"comment": "Literal, named object key",
 					"captures": {
 						"1": {
-							"name": "meta.mapping.key.terraform string.unquoted.terraform keyword.operator"
+							"name": "variable.other.property.terraform"
 						},
 						"2": {
 							"name": "variable"
