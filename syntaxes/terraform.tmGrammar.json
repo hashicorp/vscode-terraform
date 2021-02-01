@@ -656,7 +656,7 @@
 							"name": "variable.declaration.terraform",
 							"captures": {
 								"1": {
-									"name": "keyword.operator"
+									"name": "variable.other.property.terraform"
 								},
 								"2": {
 									"name": "keyword.operator.assignment.terraform"
