@@ -115,7 +115,7 @@
 						{
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
 							"comment": "Identifer label",
-							"name": "entity.name.label.terraform entity.name.function"
+							"name": "entity.name.type.terraform"
 						}
 					]
 				},
