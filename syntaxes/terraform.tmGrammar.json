@@ -98,7 +98,7 @@
 					"name": "punctuation.section.parens.end.terraform"
 				},
 				"4": {
-					"name": "keyword.operator.assignment.terraform variable"
+					"name": "keyword.operator.assignment.terraform"
 				}
 			}
 		},
@@ -659,7 +659,7 @@
 									"name": "keyword.operator"
 								},
 								"2": {
-									"name": "keyword.operator.assignment.terraform variable"
+									"name": "keyword.operator.assignment.terraform"
 								}
 							}
 						},
