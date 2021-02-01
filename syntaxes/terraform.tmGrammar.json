@@ -127,13 +127,13 @@
 					]
 				},
 				"3": {
-					"name": "punctuation.section.block.begin.terraform keyword.operator"
+					"name": "punctuation.section.block.begin.terraform"
 				}
 			},
 			"end": "\\}",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.block.end.terraform keyword.operator"
+					"name": "punctuation.section.block.end.terraform"
 				}
 			},
 			"patterns": [
