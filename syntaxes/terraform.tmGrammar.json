@@ -721,13 +721,13 @@
 					]
 				},
 				"2": {
-					"name": "punctuation.section.parens.begin.terraform entity.name.function"
+					"name": "punctuation.section.parens.begin.terraform"
 				}
 			},
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.parens.end.terraform entity.name.function"
+					"name": "punctuation.section.parens.end.terraform"
 				}
 			},
 			"patterns": [
