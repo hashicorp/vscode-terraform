@@ -682,19 +682,19 @@
 							"name": "support.function.builtin.terraform"
 						},
 						"2": {
-							"name": "punctuation.section.parens.begin.terraform meta.template.expression.terraform"
+							"name": "punctuation.section.parens.begin.terraform"
 						},
 						"3": {
-							"name": "punctuation.section.brackets.begin.terraform meta.template.expression.terraform"
+							"name": "punctuation.section.brackets.begin.terraform"
 						}
 					},
 					"end": "(\\])(\\))",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.section.brackets.end.terraform meta.template.expression.terraform"
+							"name": "punctuation.section.brackets.end.terraform"
 						},
 						"2": {
-							"name": "punctuation.section.parens.end.terraform meta.template.expression.terraform"
+							"name": "punctuation.section.parens.end.terraform"
 						}
 					},
 					"patterns": [
