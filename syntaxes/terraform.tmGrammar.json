@@ -89,13 +89,13 @@
 			"name": "variable.declaration.terraform",
 			"captures": {
 				"1": {
-					"name": "punctuation.section.parens.begin.terraform"
+					"name": "punctuation.section.parens.begin.terraform meta.template.expression.terraform"
 				},
 				"2": {
 					"name": "variable.other.property.terraform"
 				},
 				"3": {
-					"name": "punctuation.section.parens.end.terraform"
+					"name": "punctuation.section.parens.end.terraform meta.template.expression.terraform"
 				},
 				"4": {
 					"name": "keyword.operator.assignment.terraform"
@@ -410,13 +410,13 @@
 			"begin": "\\[",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.section.brackets.begin.terraform"
+					"name": "punctuation.section.brackets.begin.terraform meta.template.expression.terraform"
 				}
 			},
 			"end": "(\\*?)\\]",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.brackets.end.terraform"
+					"name": "punctuation.section.brackets.end.terraform meta.template.expression.terraform"
 				},
 				"1": {
 					"name": "keyword.operator.splat.terraform constant.terraform"
@@ -501,13 +501,13 @@
 					"name": "meta.mapping.key.terraform",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.section.parens.begin.terraform"
+							"name": "punctuation.section.parens.begin.terraform meta.template.expression.terraform"
 						}
 					},
 					"end": "(\\))\\s*(\\=)\\s*",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.section.parens.end.terraform"
+							"name": "punctuation.section.parens.end.terraform meta.template.expression.terraform"
 						},
 						"2": {
 							"name": "keyword.operator.terraform"
@@ -634,13 +634,13 @@
 							"name": "punctuation.section.parens.begin.terraform"
 						},
 						"3": {
-							"name": "punctuation.section.braces.begin.terraform keyword.operator"
+							"name": "punctuation.section.braces.begin.terraform"
 						}
 					},
 					"end": "(\\})(\\))",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.section.braces.end.terraform keyword.operator"
+							"name": "punctuation.section.braces.end.terraform"
 						},
 						"2": {
 							"name": "punctuation.section.parens.end.terraform"
@@ -677,19 +677,19 @@
 							"name": "support.function.builtin.terraform"
 						},
 						"2": {
-							"name": "punctuation.section.parens.begin.terraform"
+							"name": "punctuation.section.parens.begin.terraform meta.template.expression.terraform"
 						},
 						"3": {
-							"name": "punctuation.section.brackets.begin.terraform"
+							"name": "punctuation.section.brackets.begin.terraform meta.template.expression.terraform"
 						}
 					},
 					"end": "(\\])(\\))",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.section.brackets.end.terraform"
+							"name": "punctuation.section.brackets.end.terraform meta.template.expression.terraform"
 						},
 						"2": {
-							"name": "punctuation.section.parens.end.terraform"
+							"name": "punctuation.section.parens.end.terraform meta.template.expression.terraform"
 						}
 					},
 					"patterns": [
@@ -721,13 +721,13 @@
 					]
 				},
 				"2": {
-					"name": "punctuation.section.parens.begin.terraform"
+					"name": "punctuation.section.parens.begin.terraform meta.template.expression.terraform"
 				}
 			},
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.parens.end.terraform"
+					"name": "punctuation.section.parens.end.terraform meta.template.expression.terraform"
 				}
 			},
 			"patterns": [
@@ -750,13 +750,13 @@
 			"comment": "Parens - matched *after* function syntax",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.section.parens.begin.terraform"
+					"name": "punctuation.section.parens.begin.terraform meta.template.expression.terraform"
 				}
 			},
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.parens.end.terraform"
+					"name": "punctuation.section.parens.end.terraform meta.template.expression.terraform"
 				}
 			},
 			"patterns": [
