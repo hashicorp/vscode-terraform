@@ -624,7 +624,6 @@
 			"patterns": [
 				{
 					"begin": "(object)(\\()(\\{)\\s*",
-					"name": "meta.function-call.terraform support.function.builtin.terraform",
 					"comment": "Object structural type",
 					"beginCaptures": {
 						"1": {
@@ -647,6 +646,12 @@
 						}
 					},
 					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#functions"
+						},
 						{
 							"include": "#comma"
 						},
