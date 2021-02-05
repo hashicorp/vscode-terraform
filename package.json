@@ -187,6 +187,10 @@
       {
         "command": "terraform.validate",
         "title": "Terraform: validate"
+      },
+      {
+        "command": "terraform.plan",
+        "title": "Terraform: plan"
       }
     ]
   },

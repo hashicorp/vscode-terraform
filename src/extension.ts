@@ -77,6 +77,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		vscode.commands.registerCommand('terraform.initCurrent', async () => {
 			await terraformCommand('init');
 		}),
+		vscode.commands.registerCommand('terraform.plan', async () => {
+			await terraformCommand('plan', false);
+		}),
 		vscode.commands.registerCommand('terraform.validate', async () => {
 			await terraformCommand('validate');
 		}),
@@ -292,7 +295,7 @@ async function rootModules(languageClient: terraformLanguageClient, documentUri:
 	return { rootModules: rootModules, needsInit: rootModules.length === 0 };
 }
 
-async function terraformCommand(command: string): Promise<any> {
+async function terraformCommand(command: string, languageServerExec = true): Promise<any> {
 	if (vscode.window.activeTextEditor) {
 		const documentUri = vscode.window.activeTextEditor.document.uri;
 		const languageClient = getDocumentClient(documentUri);
@@ -305,8 +308,24 @@ async function terraformCommand(command: string): Promise<any> {
 		} else {
 			selectedModule = modules.rootModules[0].uri;
 		}
-		const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.terraform.${command}`, arguments: [`uri=${selectedModule}`] };
-		return execWorkspaceCommand(languageClient.client, requestParams);
+
+		if (languageServerExec) {
+			const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.terraform.${command}`, arguments: [`uri=${selectedModule}`] };
+			return execWorkspaceCommand(languageClient.client, requestParams);
+		} else {
+			const terminalName = `Terraform ${selectedModule}`;
+			const moduleURI = vscode.Uri.parse(selectedModule);
+			const terraformCommand = await vscode.window.showInputBox(
+				{ value: `terraform ${command}`, prompt: `Run in ${selectedModule}` }
+			);
+			if (terraformCommand) {
+				const terminal = vscode.window.terminals.find(t => t.name == terminalName ) ||
+				vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
+				terminal.sendText(terraformCommand);
+				terminal.show();
+			}
+			return;
+		}
 	} else {
 		vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
 		return;
