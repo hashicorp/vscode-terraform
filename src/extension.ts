@@ -59,6 +59,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			}
 			return stopClients();
 		}),
+		vscode.commands.registerCommand('terraform.apply', async () => {
+			await terraformCommand('apply', false);
+		}),
 		vscode.commands.registerCommand('terraform.init', async () => {
 			const selected = await vscode.window.showOpenDialog({
 				canSelectFiles: false,
