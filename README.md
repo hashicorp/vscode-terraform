@@ -10,6 +10,7 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
   - Completion of initialized providers: resource names, data source names, attribute names
   - Diagnostics to indicate HCL errors as you type
   - Initialize the configuration using "Terraform: init" from the command palette
+  - Run `terraform plan` and `terraform apply` from the command palette
   - Validation diagnostics using "Terraform: validate" from the command palette or a `validateOnSave` setting
 - Includes syntax highlighting for `.tf` and `.tfvars` files -- including all syntax changes new to Terraform 0.12
 - Closes braces and quotes

@@ -1,4 +1,4 @@
-# 2.6.0 (unreleased)
+# 2.6.0 (2021-02-09)
 
 * Execute terraform plan and apply using the VSCode terminal #551
 
