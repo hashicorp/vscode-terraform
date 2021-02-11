@@ -209,6 +209,7 @@
     "openpgp": "^4.10.9",
     "semver": "^7.3.4",
     "short-unique-id": "^3.2.3",
+    "vscode-extension-telemetry": "^0.1.6",
     "vscode-languageclient": "^7.0.0-next.12",
     "yauzl": "^2.10.0"
   },

@@ -10,6 +10,7 @@ import {
 	Executable,
 } from 'vscode-languageclient/node';
 import ShortUniqueId from 'short-unique-id';
+import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { LanguageServerInstaller } from './languageServerInstaller';
 import {
@@ -27,12 +28,22 @@ interface terraformLanguageClient {
 	client: LanguageClient
 }
 
-const shortUid = new ShortUniqueId();
 const clients: Map<string, terraformLanguageClient> = new Map();
-let extensionPath: string;
+const shortUid = new ShortUniqueId();
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
+// Telemetry config
+const extensionId = 'hashicorp.terraform';
+const appInsightsKey = '885372d2-6f3c-499f-9d25-b8b219983a52';
+let reporter: TelemetryReporter;
+
+let extensionPath: string;
+
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
+	const extensionVersion = vscode.extensions.getExtension(extensionId).packageJSON.version;
+	reporter = new TelemetryReporter(extensionId, extensionVersion, appInsightsKey);
+	context.subscriptions.push(reporter);
+
 	extensionPath = context.extensionPath;
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {
@@ -126,6 +137,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 							}
 						} catch (err) {
 							vscode.window.showErrorMessage(err);
+							reporter.sendTelemetryException(err);
 							terraformStatus.hide();
 						}
 					}
@@ -156,6 +168,7 @@ async function startClients(folders = prunedFolderNames()) {
 			const client = newClient(command, folder, commandPrefix);
 			disposables.push(client.start());
 			clients.set(folder, { commandPrefix, client });
+			reporter.sendTelemetryEvent('startClient');
 		} else {
 			console.log(`Client for folder: ${folder} already started`);
 		}
@@ -237,6 +250,7 @@ async function pathToBinary(): Promise<string> {
 				await installer.install(installDir);
 			} catch (err) {
 				vscode.window.showErrorMessage(err);
+				reporter.sendTelemetryException(err);
 				throw err;
 			} finally {
 				await installer.cleanupZips(installDir);
