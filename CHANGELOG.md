@@ -1,6 +1,12 @@
+# 2.7.1 (unreleased)
+
+* Add telemetry for error reporting #557
+
 # 2.6.0 (2021-02-09)
 
-* Execute terraform plan and apply using the VSCode terminal #551
+Features:
+
+* Execute terraform plan and apply using the VSCode terminal (#551)
 
 # 2.5.0 (2021-01-14)
 
