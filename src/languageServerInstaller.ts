@@ -15,10 +15,10 @@ export class LanguageServerInstaller {
 		let installedVersion: string;
 		try {
 			installedVersion = await getLsVersion(directory);
-			console.log(`Found installed LS ${installedVersion}`);
-			isInstalled = true
+			isInstalled = true;
 		} catch (err) {
-			console.log(`failed to get version: ${err}`);
+			// TODO: verify error was in fact binary not found
+			isInstalled = false;
 		}
 
 		const currentRelease = await getRelease("terraform-ls", "latest", userAgent);
@@ -98,15 +98,17 @@ async function getLsVersion(dirPath: string): Promise<string> {
 	fs.accessSync(lsBinPath, fs.constants.X_OK);
 
 	try {
-		var { stdout } = await exec(`${lsBinPath} version -json`);
-		let jsonOutput = JSON.parse(stdout);
+		let jsonCmd: { stdout: string };
+		jsonCmd = await exec(`${lsBinPath} version -json`);
+		let jsonOutput = JSON.parse(jsonCmd.stdout);
 		return jsonOutput.version
 	} catch (err) {
 		// assume older version of LS which didn't have json flag
 		if (err.status != 0) {
 			try {
-				var { stdout, stderr } = await exec(`${lsBinPath} -version`);
-				let version = stdout || stderr
+				let plainCmd: { stdout: string, stderr: string };
+				plainCmd = await exec(`${lsBinPath} -version`);
+				let version = plainCmd.stdout || plainCmd.stderr
 				return version
 			} catch (err) {
 				throw err
