@@ -8,13 +8,14 @@ import { Release, getRelease } from '@hashicorp/js-releases';
 
 export class LanguageServerInstaller {
 	public async install(directory: string): Promise<void> {
-		const { version: extensionVersion } = require('../package.json');
+		const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
 		const lsVersionCmd = `${directory}/terraform-ls --version`;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 		let isInstalled = true;
+		let installedVersion: string;
 		try {
 			var { stdout, stderr } = await exec(lsVersionCmd);
-			var installedVersion = stdout || stderr;
+			installedVersion = stdout || stderr;
 		} catch (err) {
 			// TODO: verify error was in fact binary not found
 			isInstalled = false;
@@ -35,7 +36,6 @@ export class LanguageServerInstaller {
 			await this.installPkg(currentRelease, directory, userAgent);
 		} catch (err) {
 			vscode.window.showErrorMessage('Unable to install terraform-ls');
-			console.error(err);
 			throw err;
 		}
 
