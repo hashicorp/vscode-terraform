@@ -11,15 +11,16 @@ export class LanguageServerInstaller {
 		const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
 		const lsVersionCmd = `${directory}/terraform-ls --version`;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
-		let isInstalled = true;
+		let isInstalled = false;
 		let installedVersion: string;
 		try {
-			var { stdout, stderr } = await exec(lsVersionCmd);
-			installedVersion = stdout || stderr;
+			installedVersion = await getLsVersion(directory);
+			isInstalled = true
+			console.log(`Found installed LS ${installedVersion}`);
 		} catch (err) {
-			// TODO: verify error was in fact binary not found
-			isInstalled = false;
+			console.log(`failed to get version: ${err}`);
 		}
+
 		const currentRelease = await getRelease("terraform-ls", "latest", userAgent);
 		if (isInstalled) {
 			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
@@ -88,6 +89,31 @@ export class LanguageServerInstaller {
 
 	public async cleanupZips(directory: string): Promise<string[]> {
 		return del(`${directory}/terraform-ls*.zip`, { force: true });
+	}
+}
+
+async function getLsVersion(dirPath: string): Promise<string> {
+	const lsBinPath = `${dirPath}/terraform-ls`;
+
+	fs.accessSync(lsBinPath, fs.constants.X_OK);
+
+	try {
+		var { stdout } = await exec(`${lsBinPath} version -json`);
+		let jsonOutput = JSON.parse(stdout);
+		return jsonOutput.version
+	} catch (err) {
+		// assume older version of LS which didn't have json flag
+		if (err.status != 0) {
+			try {
+				var { stdout, stderr } = await exec(`${lsBinPath} -version`);
+				let version = stdout || stderr
+				return version
+			} catch (err) {
+				throw err
+			}
+		} else {
+			throw err
+		}
 	}
 }
 
