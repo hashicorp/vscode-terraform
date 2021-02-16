@@ -15,8 +15,8 @@ export class LanguageServerInstaller {
 		let installedVersion: string;
 		try {
 			installedVersion = await getLsVersion(directory);
-			isInstalled = true
 			console.log(`Found installed LS ${installedVersion}`);
+			isInstalled = true
 		} catch (err) {
 			console.log(`failed to get version: ${err}`);
 		}
