@@ -1,4 +1,4 @@
-# 2.7.1 (unreleased)
+# 2.7.0 (unreleased)
 
 * Add telemetry for error reporting #557
 
