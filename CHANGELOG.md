@@ -1,6 +1,10 @@
-# 2.7.0 (unreleased)
+# 2.7.0 (2021-02-22)
 
-* Add telemetry for error reporting #557
+* Add telemetry for error reporting (#557)
+
+Language server integration:
+
+* Use version JSON output of LS during installation (#560)
 
 # 2.6.0 (2021-02-09)
 
