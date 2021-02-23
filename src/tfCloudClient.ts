@@ -26,7 +26,6 @@ export class TFCloudClient {
 		if (this.credentials) {
 			const source = Object.keys(this.credentials)[0];
 			const uri = encodeURI(`https://${source}/api/v2${endpoint}`);
-			console.log(uri)
 			const options = {
 				method: 'GET',
 				headers: {

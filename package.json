@@ -221,13 +221,30 @@
       },
       {
         "command": "tfc.connect",
-        "title": "Terraform Cloud: Connect"
+        "title": "Terraform Cloud: connect"
       },
       {
         "command": "tfc.openLink",
-        "title": "Terraform Cloud: Open"
+        "title": "Terraform Cloud: open"
+      },
+      {
+        "command": "tfc.refresh",
+        "title": "Terraform Cloud: refresh",
+        "icon": {
+          "light": "assets/light/refresh.svg",
+					"dark": "assets/dark/refresh.svg"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "tfc.refresh",
+          "when": "view == tfcRuns || view == tfcWorkspaces",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
