@@ -3,7 +3,6 @@ import { homedir } from 'os';
 import { httpsRequest } from './utils';
 
 export class TFCloudClient {
-	private data = {};
 	private credentials = {};
 	private _current_runs = [];
 	private _workspaces = [];
@@ -15,7 +14,7 @@ export class TFCloudClient {
 
 		const memberships = await this.tfcRequest(`/organization-memberships`);
 		const organizations = JSON.parse(memberships).data.map(m => m.relationships.organization.data.id);
-		// TODO: have some kind of selector for multiple memberships
+		// TODO: have some kind of selector for multiple memberships -- or merge them?
 		const response = await this.tfcRequest(`/organizations/${organizations[0]}/workspaces?include=current_run`);
 		this._workspaces = JSON.parse(response).data;
 		this._current_runs = this._workspaces.map(w => w.relationships['current-run'].data).filter(r => r);

@@ -3,7 +3,7 @@ import * as path from 'path';
 import { TFCloudClient } from './tfCloudClient';
 
 export class TfcRunsProvider implements vscode.TreeDataProvider<Run> {
-	private client = new TFCloudClient();
+	private client: TFCloudClient;
 	private status: string;
 
 	private _onDidChangeTreeData: vscode.EventEmitter<Run | undefined | void> = new vscode.EventEmitter<Run | undefined | void>();
@@ -19,8 +19,8 @@ export class TfcRunsProvider implements vscode.TreeDataProvider<Run> {
 		return element;
 	}
 
-	async loadData(): Promise<void> {
-		await this.client.refresh();
+	async loadData(client: TFCloudClient): Promise<void> {
+		this.client = client;
 		this.status = "initialized";
 		this.refresh();
 	}
