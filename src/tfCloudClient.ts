@@ -8,18 +8,21 @@ export class TFCloudClient {
 	private _workspaces = [];
 
 	async refresh(): Promise<boolean> {
-		const homeDir = homedir();
-		const login = await vscode.workspace.fs.readFile(vscode.Uri.parse(`${homeDir}/.terraform.d/credentials.tfrc.json`));
-		this.credentials = JSON.parse(login.toString()).credentials;
-
-		const memberships = await this.tfcRequest(`/organization-memberships`);
-		const organizations = JSON.parse(memberships).data.map(m => m.relationships.organization.data.id);
-		// TODO: have some kind of selector for multiple memberships -- or merge them?
-		const response = await this.tfcRequest(`/organizations/${organizations[0]}/workspaces?include=current_run`);
-		this._workspaces = JSON.parse(response).data;
-		this._current_runs = this._workspaces.map(w => w.relationships['current-run'].data).filter(r => r);
-
-		return true;
+		try {
+			const homeDir = homedir();
+			const login = await vscode.workspace.fs.readFile(vscode.Uri.parse(`${homeDir}/.terraform.d/credentials.tfrc.json`));
+			this.credentials = JSON.parse(login.toString()).credentials;
+	
+			const memberships = await this.tfcRequest(`/organization-memberships`);
+			const organizations = JSON.parse(memberships).data.map(m => m.relationships.organization.data.id);
+			// TODO: have some kind of selector for multiple memberships -- or merge them?
+			const response = await this.tfcRequest(`/organizations/${organizations[0]}/workspaces?include=current_run`);
+			this._workspaces = JSON.parse(response).data;
+			this._current_runs = this._workspaces.map(w => w.relationships['current-run'].data).filter(r => r);
+			return true;
+		} catch (error) {
+			return Promise.reject(error);
+		}
 	}
 
 	async tfcRequest(endpoint: string): Promise<string> {

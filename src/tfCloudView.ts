@@ -15,6 +15,8 @@ export class TFCloudView {
 				vscode.window.registerTreeDataProvider("tfcWorkspaces", workspacesProvider);
 				runsProvider.loadData(client);
 				workspacesProvider.loadData(client);
+			}).catch(() => {
+				this.handleConnectionError();
 			});
 		});
 		vscode.commands.registerCommand("tfc.openLink", async (link) => {
@@ -24,7 +26,18 @@ export class TFCloudView {
 			client.refresh().then(() => {
 				runsProvider.loadData(client);
 				workspacesProvider.loadData(client);
+			}).catch(() => {
+				this.handleConnectionError();
 			});
-		})
+		});
+	}
+
+	private handleConnectionError() {
+		vscode.window.showErrorMessage("Unable to connect to Terraform Cloud. You may need to log in.",
+		"Run terraform login").then((selection) => {
+			if (selection) {
+				vscode.commands.executeCommand('terraform.login');
+			}
+		});
 	}
 }
