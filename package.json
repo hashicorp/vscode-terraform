@@ -220,6 +220,10 @@
         "title": "Terraform: plan"
       },
       {
+        "command": "terraform.login",
+        "title": "Terraform: login"
+      },
+      {
         "command": "tfc.connect",
         "title": "Terraform Cloud: connect"
       },

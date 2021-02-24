@@ -97,6 +97,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		vscode.commands.registerCommand('terraform.initCurrent', async () => {
 			await terraformCommand('init');
 		}),
+		vscode.commands.registerCommand('terraform.login', async () => {
+			await terraformCommand('login', false);
+		}),
 		vscode.commands.registerCommand('terraform.plan', async () => {
 			await terraformCommand('plan', false);
 		}),
