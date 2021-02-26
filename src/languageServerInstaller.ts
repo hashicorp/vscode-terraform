@@ -39,13 +39,7 @@ export class LanguageServerInstaller {
 			throw err;
 		}
 
-		// Do not wait on the showInformationMessage
-		vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}.`, "View Changelog")
-			.then(selected => {
-				if (selected === "View Changelog") {
-					return vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${currentRelease.version}`));
-				}
-			})
+		this.showChangelog(currentRelease.version);
 	}
 
 	async installPkg(release: Release, installDir: string, userAgent: string): Promise<void> {
@@ -78,8 +72,8 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	removeOldBinary(directory: string, goOs: string): void {
-		if (goOs === "windows") {
+	removeOldBinary(directory: string, os: string): void {
+		if (os === "windows") {
 			fs.unlinkSync(`${directory}/terraform-ls.exe`);
 		} else {
 			fs.unlinkSync(`${directory}/terraform-ls`);
@@ -88,6 +82,16 @@ export class LanguageServerInstaller {
 
 	public async cleanupZips(directory: string): Promise<string[]> {
 		return del(`${directory}/terraform-ls*.zip`, { force: true });
+	}
+
+	showChangelog(version: string): void {
+		vscode.window.showInformationMessage(`Installed terraform-ls ${version}.`, "View Changelog")
+			.then(selected => {
+				if (selected === "View Changelog") {
+					vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${version}`));
+				}
+			});
+		return;
 	}
 }
 
