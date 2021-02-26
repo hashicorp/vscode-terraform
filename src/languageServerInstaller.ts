@@ -24,7 +24,7 @@ export class LanguageServerInstaller {
 		if (isInstalled) {
 			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
 				const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
-				if (selected === 'Cancel') {
+				if (selected !== 'Install') { // selected is undefined if the user closes the message
 					return;
 				}
 			} else {
