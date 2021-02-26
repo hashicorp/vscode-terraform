@@ -9,7 +9,6 @@ import { Release, getRelease } from '@hashicorp/js-releases';
 export class LanguageServerInstaller {
 	public async install(directory: string): Promise<void> {
 		const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
-		const lsVersionCmd = `${directory}/terraform-ls --version`;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 		let isInstalled = false;
 		let installedVersion: string;
@@ -53,8 +52,8 @@ export class LanguageServerInstaller {
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 	
-		let os = goOs();
-		let arch = goArch();
+		const os = platformOs();
+		const arch = platformArch();
 		const build = release.getBuild(os, arch);
 		if (!build) {
 			throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
@@ -98,29 +97,22 @@ async function getLsVersion(dirPath: string): Promise<string> {
 	fs.accessSync(lsBinPath, fs.constants.X_OK);
 
 	try {
-		let jsonCmd: { stdout: string };
-		jsonCmd = await exec(`${lsBinPath} version -json`);
-		let jsonOutput = JSON.parse(jsonCmd.stdout);
+		const jsonCmd: { stdout: string } = await exec(`${lsBinPath} version -json`);
+		const jsonOutput = JSON.parse(jsonCmd.stdout);
 		return jsonOutput.version
 	} catch (err) {
 		// assume older version of LS which didn't have json flag
 		if (err.status != 0) {
-			try {
-				let plainCmd: { stdout: string, stderr: string };
-				plainCmd = await exec(`${lsBinPath} -version`);
-				let version = plainCmd.stdout || plainCmd.stderr
-				return version
-			} catch (err) {
-				throw err
-			}
+			const plainCmd: { stdout: string, stderr: string } = await exec(`${lsBinPath} -version`);
+			return plainCmd.stdout || plainCmd.stderr;
 		} else {
 			throw err
 		}
 	}
 }
 
-function goOs(): string {
-	let platform = process.platform.toString();
+function platformOs(): string {
+	const platform = process.platform.toString();
 	if (platform === 'win32') {
 		return 'windows';
 	}
@@ -130,8 +122,8 @@ function goOs(): string {
 	return platform;
 }
 
-function goArch(): string {
-	let arch = process.arch;
+function platformArch(): string {
+	const arch = process.arch;
 
 	if (arch === 'ia32') {
 		return '386';
