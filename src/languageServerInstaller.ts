@@ -46,8 +46,8 @@ export class LanguageServerInstaller {
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 	
-		const os = platformOs();
-		const arch = platformArch();
+		const os = goOs();
+		const arch = goArch();
 		const build = release.getBuild(os, arch);
 		if (!build) {
 			throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
@@ -72,8 +72,8 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	removeOldBinary(directory: string, os: string): void {
-		if (os === "windows") {
+	removeOldBinary(directory: string, goOs: string): void {
+		if (goOs === "windows") {
 			fs.unlinkSync(`${directory}/terraform-ls.exe`);
 		} else {
 			fs.unlinkSync(`${directory}/terraform-ls`);
@@ -115,7 +115,7 @@ async function getLsVersion(dirPath: string): Promise<string> {
 	}
 }
 
-function platformOs(): string {
+function goOs(): string {
 	const platform = process.platform.toString();
 	if (platform === 'win32') {
 		return 'windows';
@@ -126,7 +126,7 @@ function platformOs(): string {
 	return platform;
 }
 
-function platformArch(): string {
+function goArch(): string {
 	const arch = process.arch;
 
 	if (arch === 'ia32') {
