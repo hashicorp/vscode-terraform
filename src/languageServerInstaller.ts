@@ -9,7 +9,6 @@ import { Release, getRelease } from '@hashicorp/js-releases';
 export class LanguageServerInstaller {
 	public async install(directory: string): Promise<void> {
 		const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
-		const lsVersionCmd = `${directory}/terraform-ls --version`;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 		let isInstalled = false;
 		let installedVersion: string;
@@ -25,7 +24,7 @@ export class LanguageServerInstaller {
 		if (isInstalled) {
 			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
 				const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
-				if (selected === 'Cancel') {
+				if (selected !== 'Install') { // selected is undefined if the user closes the message
 					return;
 				}
 			} else {
@@ -40,21 +39,15 @@ export class LanguageServerInstaller {
 			throw err;
 		}
 
-		// Do not wait on the showInformationMessage
-		vscode.window.showInformationMessage(`Installed terraform-ls ${currentRelease.version}.`, "View Changelog")
-			.then(selected => {
-				if (selected === "View Changelog") {
-					return vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${currentRelease.version}`));
-				}
-			})
+		this.showChangelog(currentRelease.version);
 	}
 
 	async installPkg(release: Release, installDir: string, userAgent: string): Promise<void> {
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 	
-		let os = goOs();
-		let arch = goArch();
+		const os = goOs();
+		const arch = goArch();
 		const build = release.getBuild(os, arch);
 		if (!build) {
 			throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
@@ -90,6 +83,16 @@ export class LanguageServerInstaller {
 	public async cleanupZips(directory: string): Promise<string[]> {
 		return del(`${directory}/terraform-ls*.zip`, { force: true });
 	}
+
+	showChangelog(version: string): void {
+		vscode.window.showInformationMessage(`Installed terraform-ls ${version}.`, "View Changelog")
+			.then(selected => {
+				if (selected === "View Changelog") {
+					vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${version}`));
+				}
+			});
+		return;
+	}
 }
 
 async function getLsVersion(dirPath: string): Promise<string> {
@@ -98,21 +101,14 @@ async function getLsVersion(dirPath: string): Promise<string> {
 	fs.accessSync(lsBinPath, fs.constants.X_OK);
 
 	try {
-		let jsonCmd: { stdout: string };
-		jsonCmd = await exec(`${lsBinPath} version -json`);
-		let jsonOutput = JSON.parse(jsonCmd.stdout);
+		const jsonCmd: { stdout: string } = await exec(`${lsBinPath} version -json`);
+		const jsonOutput = JSON.parse(jsonCmd.stdout);
 		return jsonOutput.version
 	} catch (err) {
 		// assume older version of LS which didn't have json flag
 		if (err.status != 0) {
-			try {
-				let plainCmd: { stdout: string, stderr: string };
-				plainCmd = await exec(`${lsBinPath} -version`);
-				let version = plainCmd.stdout || plainCmd.stderr
-				return version
-			} catch (err) {
-				throw err
-			}
+			const plainCmd: { stdout: string, stderr: string } = await exec(`${lsBinPath} -version`);
+			return plainCmd.stdout || plainCmd.stderr;
 		} else {
 			throw err
 		}
@@ -120,7 +116,7 @@ async function getLsVersion(dirPath: string): Promise<string> {
 }
 
 function goOs(): string {
-	let platform = process.platform.toString();
+	const platform = process.platform.toString();
 	if (platform === 'win32') {
 		return 'windows';
 	}
@@ -131,7 +127,7 @@ function goOs(): string {
 }
 
 function goArch(): string {
-	let arch = process.arch;
+	const arch = process.arch;
 
 	if (arch === 'ia32') {
 		return '386';
