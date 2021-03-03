@@ -1,3 +1,9 @@
+# 2.8.0 (unreleased)
+
+Bugs:
+
+* Cancel language server install when upgrade message is closed (#570)
+
 # 2.7.0 (2021-02-22)
 
 * Add telemetry for error reporting (#557)
