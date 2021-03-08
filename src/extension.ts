@@ -232,6 +232,7 @@ async function stopClients(folders = prunedFolderNames()) {
 		if (clients.has(folder)) {
 			promises.push(clients.get(folder).client.stop());
 			clients.delete(folder);
+			reporter.sendTelemetryEvent('stopClient');
 		} else {
 			console.log(`Attempted to stop a client for folder: ${folder} but no client exists`);
 		}
