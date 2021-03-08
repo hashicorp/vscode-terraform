@@ -278,6 +278,7 @@ function getDocumentClient(document: vscode.Uri): terraformLanguageClient {
 }
 
 function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
+	reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
 	return client.sendRequest(ExecuteCommandRequest.type, params);
 }
 
