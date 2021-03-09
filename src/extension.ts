@@ -246,7 +246,7 @@ async function pathToBinary(): Promise<string> {
 		let command: string = config('terraform').get('languageServer.pathToBinary');
 		if (!command) { // Skip install/upgrade if user has set custom binary path
 			const installDir = `${extensionPath}/lsp`;
-			const installer = new LanguageServerInstaller();
+			const installer = new LanguageServerInstaller(reporter);
 			try {
 				await installer.install(installDir);
 			} catch (err) {
