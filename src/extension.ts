@@ -257,6 +257,8 @@ async function pathToBinary(): Promise<string> {
 				await installer.cleanupZips(installDir);
 			}
 			command = `${installDir}/terraform-ls`;
+		} else {
+			reporter.sendTelemetryEvent('usePathToBinary');
 		}
 		_pathToBinaryPromise = Promise.resolve(command);
 	}
