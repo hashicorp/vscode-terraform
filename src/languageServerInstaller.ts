@@ -35,7 +35,7 @@ export class LanguageServerInstaller {
 		try {
 			await this.installPkg(currentRelease, directory, userAgent);
 		} catch (err) {
-			vscode.window.showErrorMessage('Unable to install terraform-ls');
+			vscode.window.showErrorMessage(`Unable to install terraform-ls: ${err.message}`);
 			throw err;
 		}
 
