@@ -1,4 +1,4 @@
-# 2.8.0 (unreleased)
+# 2.8.0 (2021-03-09)
 
 * Add stopClient and execWorkspaceCommand telemetry events (#577)
 
