@@ -1,5 +1,7 @@
 # 2.8.0 (unreleased)
 
+* Add stopClient and execWorkspaceCommand telemetry events (#577)
+
 Bugs:
 
 * Cancel language server install when upgrade message is closed (#570)
