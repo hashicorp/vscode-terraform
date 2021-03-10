@@ -147,7 +147,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	);
 
 	if (enabled()) {
-		await vscode.commands.executeCommand('terraform.enableLanguageServer');
+		try {
+			await vscode.commands.executeCommand('terraform.enableLanguageServer');
+		} catch (error) {
+			reporter.sendTelemetryException(error);
+		}
 	}
 
 	// export public API
@@ -250,7 +254,6 @@ async function pathToBinary(): Promise<string> {
 			try {
 				await installer.install(installDir);
 			} catch (err) {
-				vscode.window.showErrorMessage(err);
 				reporter.sendTelemetryException(err);
 				throw err;
 			} finally {
