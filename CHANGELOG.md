@@ -1,6 +1,9 @@
 # 2.8.1 (unreleased)
 
+Bugs:
+
 * Improve error message for failed language server install (#580)
+* Add telemetry for tracking language server installed and upgrade versions (#579)
 
 # 2.8.0 (2021-03-09)
 
