@@ -1,3 +1,7 @@
+# 2.8.1 (unreleased)
+
+* Improve error message for failed language server install (#580)
+
 # 2.8.0 (2021-03-09)
 
 * Add stopClient and execWorkspaceCommand telemetry events (#577)
