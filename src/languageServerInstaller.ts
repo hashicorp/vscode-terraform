@@ -2,11 +2,16 @@ import * as vscode from 'vscode';
 import * as del from 'del';
 import * as fs from 'fs';
 import * as semver from 'semver';
+import TelemetryReporter from 'vscode-extension-telemetry';
 
 import { exec } from './utils';
 import { Release, getRelease } from '@hashicorp/js-releases';
 
 export class LanguageServerInstaller {
+	constructor(
+		private reporter: TelemetryReporter
+	) { }
+
 	public async install(directory: string): Promise<void> {
 		const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
 		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
@@ -17,11 +22,13 @@ export class LanguageServerInstaller {
 			isInstalled = true;
 		} catch (err) {
 			// TODO: verify error was in fact binary not found
+			this.reporter.sendTelemetryException(err);
 			isInstalled = false;
 		}
 
 		const currentRelease = await getRelease("terraform-ls", "latest", userAgent);
 		if (isInstalled) {
+			this.reporter.sendTelemetryEvent('foundLsInstalled', { version: installedVersion });
 			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
 				const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
 				if (selected !== 'Install') { // selected is undefined if the user closes the message
@@ -33,6 +40,7 @@ export class LanguageServerInstaller {
 		}
 
 		try {
+			this.reporter.sendTelemetryEvent('installingLs', { version: currentRelease.version });
 			await this.installPkg(currentRelease, directory, userAgent);
 		} catch (err) {
 			vscode.window.showErrorMessage(`Unable to install terraform-ls: ${err.message}`);
@@ -45,7 +53,7 @@ export class LanguageServerInstaller {
 	async installPkg(release: Release, installDir: string, userAgent: string): Promise<void> {
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
-	
+
 		const os = goOs();
 		const arch = goArch();
 		const build = release.getBuild(os, arch);
@@ -57,7 +65,7 @@ export class LanguageServerInstaller {
 		} catch {
 			// ignore missing binary (new install)
 		}
-	
+
 		return vscode.window.withProgress({
 			cancellable: true,
 			location: vscode.ProgressLocation.Notification,
