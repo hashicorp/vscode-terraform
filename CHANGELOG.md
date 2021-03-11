@@ -2,6 +2,10 @@
 
 * Change telemetry value for the language server version to make it easier to filter (#582)
 
+Bugs:
+
+* Match correct language server binary name per platform – fixes language server upgrade problems on Windows (#583)
+
 # 2.8.1 (2021-03-10)
 
 Bugs:
