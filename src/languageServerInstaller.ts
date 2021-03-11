@@ -21,8 +21,10 @@ export class LanguageServerInstaller {
 			installedVersion = await getLsVersion(directory);
 			isInstalled = true;
 		} catch (err) {
-			// TODO: verify error was in fact binary not found
-			this.reporter.sendTelemetryException(err);
+			if  (err.code !== 'ENOENT') { // error is not due to a missing terraform-ls binary
+				this.reporter.sendTelemetryException(err);
+				throw err;
+			}
 			isInstalled = false;
 		}
 
