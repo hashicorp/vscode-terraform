@@ -5,6 +5,7 @@
 Bugs:
 
 * Match correct language server binary name per platform – fixes language server upgrade problems on Windows (#583)
+* Rescue version check errors on language server install (#584)
 
 # 2.8.1 (2021-03-10)
 
