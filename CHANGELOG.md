@@ -1,3 +1,7 @@
+# 2.8.2 (unreleased)
+
+* Change telemetry value for the language server version to make it easier to filter (#582)
+
 # 2.8.1 (2021-03-10)
 
 Bugs:
