@@ -28,7 +28,7 @@ export class LanguageServerInstaller {
 
 		const currentRelease = await getRelease("terraform-ls", "latest", userAgent);
 		if (isInstalled) {
-			this.reporter.sendTelemetryEvent('foundLsInstalled', { version: installedVersion });
+			this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
 			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
 				const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
 				if (selected !== 'Install') { // selected is undefined if the user closes the message
@@ -40,7 +40,7 @@ export class LanguageServerInstaller {
 		}
 
 		try {
-			this.reporter.sendTelemetryEvent('installingLs', { version: currentRelease.version });
+			this.reporter.sendTelemetryEvent('installingLs', { terraformLsVersion: currentRelease.version });
 			await this.installPkg(currentRelease, directory, userAgent);
 		} catch (err) {
 			vscode.window.showErrorMessage(`Unable to install terraform-ls: ${err.message}`);
