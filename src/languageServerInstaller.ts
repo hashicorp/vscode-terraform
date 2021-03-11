@@ -21,8 +21,9 @@ export class LanguageServerInstaller {
 			installedVersion = await getLsVersion(directory);
 			isInstalled = true;
 		} catch (err) {
-			// If no terraform-ls binary is found, getLsVersion will produce the error "ENOENT: no such file or directory"
-			// In that situation, it's safe to continue. Otherwise we want to stop and log the error.
+			// Most of the time, getLsVersion would produce "ENOENT: no such file or directory"
+			// on a fresh installation (unlike upgrade). It’s also possible that the file or directory
+			// is inaccessible for some other reason, but we catch that separately.
 			if (err.code !== 'ENOENT') {
 				this.reporter.sendTelemetryException(err);
 				throw err;
