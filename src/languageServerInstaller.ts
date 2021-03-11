@@ -21,8 +21,13 @@ export class LanguageServerInstaller {
 			installedVersion = await getLsVersion(directory);
 			isInstalled = true;
 		} catch (err) {
-			// TODO: verify error was in fact binary not found
-			this.reporter.sendTelemetryException(err);
+			// Most of the time, getLsVersion would produce "ENOENT: no such file or directory"
+			// on a fresh installation (unlike upgrade). It’s also possible that the file or directory
+			// is inaccessible for some other reason, but we catch that separately.
+			if (err.code !== 'ENOENT') {
+				this.reporter.sendTelemetryException(err);
+				throw err;
+			}
 			isInstalled = false;
 		}
 
