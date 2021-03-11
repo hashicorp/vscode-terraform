@@ -1,4 +1,4 @@
-# 2.8.2 (unreleased)
+# 2.8.2 (2021-03-11)
 
 * Change telemetry value for the language server version to make it easier to filter (#582)
 
