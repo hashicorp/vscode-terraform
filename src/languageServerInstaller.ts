@@ -100,16 +100,17 @@ export class LanguageServerInstaller {
 }
 
 async function getLsVersion(dirPath: string): Promise<string> {
-	fs.accessSync(lsBinPath(dirPath), fs.constants.X_OK);
+	const binPath = lsBinPath(dirPath);
+	fs.accessSync(binPath, fs.constants.X_OK);
 
 	try {
-		const jsonCmd: { stdout: string } = await exec(`${lsBinPath} version -json`);
+		const jsonCmd: { stdout: string } = await exec(`${binPath} version -json`);
 		const jsonOutput = JSON.parse(jsonCmd.stdout);
 		return jsonOutput.version
 	} catch (err) {
 		// assume older version of LS which didn't have json flag
 		if (err.status != 0) {
-			const plainCmd: { stdout: string, stderr: string } = await exec(`${lsBinPath} -version`);
+			const plainCmd: { stdout: string, stderr: string } = await exec(`${binPath} -version`);
 			return plainCmd.stdout || plainCmd.stderr;
 		} else {
 			throw err
