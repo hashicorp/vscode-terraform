@@ -61,7 +61,7 @@ export class LanguageServerInstaller {
 			throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
 		}
 		try {
-			this.removeOldBinary(installDir, os);
+			this.removeOldBinary(installDir);
 		} catch {
 			// ignore missing binary (new install)
 		}
@@ -80,12 +80,8 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	removeOldBinary(directory: string, goOs: string): void {
-		if (goOs === "windows") {
-			fs.unlinkSync(`${directory}/terraform-ls.exe`);
-		} else {
-			fs.unlinkSync(`${directory}/terraform-ls`);
-		}
+	removeOldBinary(directory: string): void {
+		fs.unlinkSync(lsBinPath(directory));
 	}
 
 	public async cleanupZips(directory: string): Promise<string[]> {
@@ -104,18 +100,17 @@ export class LanguageServerInstaller {
 }
 
 async function getLsVersion(dirPath: string): Promise<string> {
-	const lsBinPath = `${dirPath}/terraform-ls`;
-
-	fs.accessSync(lsBinPath, fs.constants.X_OK);
+	const binPath = lsBinPath(dirPath);
+	fs.accessSync(binPath, fs.constants.X_OK);
 
 	try {
-		const jsonCmd: { stdout: string } = await exec(`${lsBinPath} version -json`);
+		const jsonCmd: { stdout: string } = await exec(`${binPath} version -json`);
 		const jsonOutput = JSON.parse(jsonCmd.stdout);
 		return jsonOutput.version
 	} catch (err) {
 		// assume older version of LS which didn't have json flag
 		if (err.status != 0) {
-			const plainCmd: { stdout: string, stderr: string } = await exec(`${lsBinPath} -version`);
+			const plainCmd: { stdout: string, stderr: string } = await exec(`${binPath} -version`);
 			return plainCmd.stdout || plainCmd.stderr;
 		} else {
 			throw err
@@ -149,4 +144,12 @@ function goArch(): string {
 		return 'amd64';
 	}
 	return arch;
+}
+
+function lsBinPath(directory: string): string {
+	if (goOs() === "windows") {
+		return `${directory}/terraform-ls.exe`;
+	} else {
+		return `${directory}/terraform-ls`;
+	}
 }
