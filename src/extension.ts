@@ -217,6 +217,10 @@ function newClient(cmd: string, location: string, commandPrefix: string) {
 		documentSelector: [{ scheme: 'file', language: 'terraform', pattern: `${f.uri.fsPath}/**/*` }],
 		workspaceFolder: f,
 		initializationOptions: initializationOptions,
+		initializationFailedHandler: (error) => {
+			reporter.sendTelemetryException(error);
+			return false;
+		},
 		outputChannel: setup,
 		revealOutputChannelOn: 4 // hide always
 	};
