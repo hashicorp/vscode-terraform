@@ -8,6 +8,7 @@ import {
 	LanguageClient,
 	ServerOptions,
 	Executable,
+	State as ClientState
 } from 'vscode-languageclient/node';
 import ShortUniqueId from 'short-unique-id';
 import TelemetryReporter from 'vscode-extension-telemetry';
@@ -170,9 +171,17 @@ async function startClients(folders = prunedFolderNames()) {
 		if (!clients.has(folder)) {
 			const commandPrefix = shortUid.seq();
 			const client = newClient(command, folder, commandPrefix);
+			client.onReady().then(() => {
+				reporter.sendTelemetryEvent('startClient');
+			});
+			client.onDidChangeState((event) => {
+				if (event.newState === ClientState.Stopped) {
+					clients.delete(folder);
+					reporter.sendTelemetryEvent('stopClient');
+				}
+			});
 			disposables.push(client.start());
 			clients.set(folder, { commandPrefix, client });
-			reporter.sendTelemetryEvent('startClient');
 		} else {
 			console.log(`Client for folder: ${folder} already started`);
 		}
@@ -239,8 +248,6 @@ async function stopClients(folders = prunedFolderNames()) {
 	for (const folder of folders) {
 		if (clients.has(folder)) {
 			promises.push(clients.get(folder).client.stop());
-			clients.delete(folder);
-			reporter.sendTelemetryEvent('stopClient');
 		} else {
 			console.log(`Attempted to stop a client for folder: ${folder} but no client exists`);
 		}
