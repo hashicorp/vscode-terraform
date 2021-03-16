@@ -1,3 +1,7 @@
+# 2.8.3 (2021-03-16)
+
+* Update client telemetry (#587)
+
 # 2.8.2 (2021-03-11)
 
 * Change telemetry value for the language server version to make it easier to filter (#582)
