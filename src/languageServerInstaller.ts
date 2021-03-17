@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as del from 'del';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as semver from 'semver';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
@@ -153,8 +154,8 @@ function goArch(): string {
 
 function lsBinPath(directory: string): string {
 	if (goOs() === "windows") {
-		return `${directory}/terraform-ls.exe`;
+		return path.join(directory, 'terraform-ls.exe');
 	} else {
-		return `${directory}/terraform-ls`;
+		return path.join(directory, 'terraform-ls');
 	}
 }

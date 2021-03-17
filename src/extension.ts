@@ -10,6 +10,7 @@ import {
 	Executable,
 	State as ClientState
 } from 'vscode-languageclient/node';
+import * as path from 'path';
 import ShortUniqueId from 'short-unique-id';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
@@ -260,7 +261,7 @@ async function pathToBinary(): Promise<string> {
 	if (!_pathToBinaryPromise) {
 		let command: string = config('terraform').get('languageServer.pathToBinary');
 		if (!command) { // Skip install/upgrade if user has set custom binary path
-			const installDir = `${extensionPath}/lsp`;
+			const installDir = path.join(extensionPath, 'lsp');
 			const installer = new LanguageServerInstaller(reporter);
 			try {
 				await installer.install(installDir);
@@ -270,7 +271,7 @@ async function pathToBinary(): Promise<string> {
 			} finally {
 				await installer.cleanupZips(installDir);
 			}
-			command = `${installDir}/terraform-ls`;
+			command = path.join(installDir, 'terraform-ls');
 		} else {
 			reporter.sendTelemetryEvent('usePathToBinary');
 		}
