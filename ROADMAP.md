@@ -7,26 +7,30 @@ Each release will include necessary tasks that lead to the completion of the sta
 
 ### Workflow Improvements
 
+- Expanding integration of terraform commands :white_check_mark:
+- Expanding validation support :white_check_mark:
 - Detecting initialization outside of VS Code
-- Expanding integration of terraform commands
-- Expanding validation support
 
 ### Terraform Workspace Management 
 
-- Add workspace command execution for accessing module details
-- Include the ability to show the current terraform workspace, list available workspaces, and switch between them
+- Add Terraform workspace command execution for accessing module details :white_check_mark:
+- Root modules/ init :white_check_mark:
+- Include the ability to show the current Terraform workspace, list available workspaces, and switch between them
+
 
 ### Expanded Completion and Hover
 
 The [Terraform language server](https://github.com/hashicorp/terraform-ls), used with the VSCode extension supports basic schema-driven completion. We plan to introduce additional completion and hover capabilities:
 
+- Provide nested navigation symbols (i.e. nested blocks and block attributes) :white_check_mark:
 - Modules
-- Provide nested navigation symbols (i.e. nested blocks and block attributes)
+
 
 ## Researching 
 
 - Expression completion
 - Code Lens support for `required_providers` block and resources
+
 ### Terraform Cloud Integration
 
 `terraform login` integration, and information/status about your cloud workspace for the current root modules
