@@ -154,7 +154,7 @@ function goArch(): string {
 
 function lsBinPath(directory: string): string {
 	if (goOs() === "windows") {
-		return path.join(directory, '/terraform-ls.exe');
+		return path.join(directory, 'terraform-ls.exe');
 	} else {
 		return path.join(directory, 'terraform-ls');
 	}
