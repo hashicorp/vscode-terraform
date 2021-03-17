@@ -1,3 +1,9 @@
+# 2.8.4 (unreleased)
+
+Bugs:
+
+* Normalize language server installer file paths (#589)
+
 # 2.8.3 (2021-03-16)
 
 * Update client telemetry (#587)
