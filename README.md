@@ -77,7 +77,7 @@ This will create diagnostics for any elements that fail validation. `terraform v
 
 **v2.0.0**  is the first official release from HashiCorp, prior releases were by [Mikael Olenfalk](https://github.com/mauve).
 
-The 2.0.0 release integrates a new [Language Server package from HashiCorp](https://github.com/hashicorp/terraform-ls). The extension will install and upgrade terraform-ls to continue to add new functionality around code completion and formatting. See the [terraform-ls CHANGELOG](https://github.com/hashicorp/terraform-ls/blob/master/CHANGELOG.md) for details.
+The 2.0.0 release integrates a new [Language Server package from HashiCorp](https://github.com/hashicorp/terraform-ls). The extension will install and upgrade terraform-ls to continue to add new functionality around code completion and formatting. See the [terraform-ls CHANGELOG](https://github.com/hashicorp/terraform-ls/blob/main/CHANGELOG.md) for details.
 
 In addition, this new version brings the syntax highlighting up to date with all HCL2 features, as needed for Terraform 0.12 and above.
 
@@ -94,7 +94,7 @@ In addition, this new version brings the syntax highlighting up to date with all
 }
 ```
 
-See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/master/CHANGELOG.md) for more information.
+See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/main/CHANGELOG.md) for more information.
 
 ## Terraform 0.11
 
