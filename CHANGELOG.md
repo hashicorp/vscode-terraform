@@ -147,7 +147,7 @@ Other updates:
 * Added shortcuts (snippets) for variable and for_each syntax -- `fore`, `vare`, `varm`
 * For contributors, the TypeScript testing and linting frameworks have been brought current with the recommended packages
 * Logos now match the current brand guidelines (pretty snazzy!)
-* Auto-completion, hover, and definition features are now managed by the language server, so see their [changelog](https://github.com/hashicorp/terraform-ls/blob/master/CHANGELOG.md) for the most recent updates
+* Auto-completion, hover, and definition features are now managed by the language server, so see their [changelog](https://github.com/hashicorp/terraform-ls/blob/main/CHANGELOG.md) for the most recent updates
 * External commands such as `terraform validate` and `tflint` are removed from the extension, but we plan to add hooks for these and/or additional integrations via the language server.
 * The outline view and model overview have been removed for now in order to focus on core features
 
