@@ -8,14 +8,15 @@ import TelemetryReporter from 'vscode-extension-telemetry';
 import { exec } from './utils';
 import { Release, getRelease } from '@hashicorp/js-releases';
 
+const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
+
 export class LanguageServerInstaller {
 	constructor(
-		private reporter: TelemetryReporter
+		private reporter: TelemetryReporter,
+		private userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`
 	) { }
 
 	public async install(directory: string): Promise<void> {
-		const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
-		const userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 		let isInstalled = false;
 		let installedVersion: string;
 		try {
@@ -32,7 +33,7 @@ export class LanguageServerInstaller {
 			isInstalled = false;
 		}
 
-		const currentRelease = await getRelease("terraform-ls", "latest", userAgent);
+		const currentRelease = await getRelease("terraform-ls", "latest", this.userAgent);
 		if (isInstalled) {
 			this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
 			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
@@ -47,7 +48,7 @@ export class LanguageServerInstaller {
 
 		try {
 			this.reporter.sendTelemetryEvent('installingLs', { terraformLsVersion: currentRelease.version });
-			await this.installPkg(currentRelease, directory, userAgent);
+			await this.installPkg(currentRelease, directory, this.userAgent);
 		} catch (err) {
 			vscode.window.showErrorMessage(`Unable to install terraform-ls: ${err.message}`);
 			throw err;
