@@ -122,7 +122,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		),
 		vscode.window.onDidChangeActiveTextEditor(
 			async (event: vscode.TextEditor | undefined) => {
-				if (event && vscode.workspace.workspaceFolders[0]) { // make sure there's an open document in a folder
+				// Make sure there's an open document in a folder
+				// Also check whether they're running a different language server
+				if (event && vscode.workspace.workspaceFolders[0] && !config('terraform').get('languageServer.pathToBinary')) {
 					const documentUri = event.document.uri;
 					const client = getDocumentClient(documentUri);
 					if (client) {
