@@ -3,6 +3,7 @@
 Bugs:
 
 * Normalize language server installer file paths (#589)
+* Disable statusbar feature if a custom language server is in use (#593)
 
 # 2.8.3 (2021-03-16)
 
