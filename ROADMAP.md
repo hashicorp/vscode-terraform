@@ -9,7 +9,7 @@ Each release will include necessary tasks that lead to the completion of the sta
 
 - Expanding integration of terraform commands :white_check_mark:
 - Expanding validation support :white_check_mark:
-- Detecting initialization outside of VS Code
+- Detecting initialization outside of VS Code :white_check_mark:
 
 ### Terraform Workspace Management 
 
