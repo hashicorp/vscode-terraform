@@ -12,18 +12,21 @@ const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').p
 
 export class LanguageServerInstaller {
 	constructor(
-		private reporter: TelemetryReporter,
-		private userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`
+		private directory: string,
+		private reporter: TelemetryReporter
 	) { }
 
-	public async install(directory: string): Promise<void> {
+	private userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
+	private release: Release;
+
+	public async needsInstall(): Promise<boolean> {
 		let isInstalled = false;
 		let installedVersion: string;
 		try {
-			installedVersion = await getLsVersion(directory);
+			installedVersion = await getLsVersion(this.directory);
 			isInstalled = true;
 		} catch (err) {
-			// Most of the time, getLsVersion would produce "ENOENT: no such file or directory"
+			// Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
 			// on a fresh installation (unlike upgrade). It’s also possible that the file or directory
 			// is inaccessible for some other reason, but we catch that separately.
 			if (err.code !== 'ENOENT') {
@@ -33,31 +36,45 @@ export class LanguageServerInstaller {
 			isInstalled = false;
 		}
 
-		const currentRelease = await getRelease("terraform-ls", "latest", this.userAgent);
-		if (isInstalled) {
-			this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
-			if (semver.gt(currentRelease.version, installedVersion, { includePrerelease: true })) {
-				const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${currentRelease.version}. Install now?`, 'Install', 'Cancel');
-				if (selected !== 'Install') { // selected is undefined if the user closes the message
-					return;
-				}
-			} else {
-				return;
-			}
+		this.release = await this.latestRelease();
+		if (!isInstalled) {
+			return true;
 		}
 
+		this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
+		const upgrade = semver.gt(this.release.version, installedVersion, { includePrerelease: true });
+		if (upgrade) {
+			const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${this.release.version}. Install now?`, 'Install', 'Cancel');
+			return (selected === "Install");
+		} else {
+			return false; // no upgrade available
+		}
+	}
+
+	public async install(): Promise<void> {
+		this.reporter.sendTelemetryEvent('installingLs', { terraformLsVersion: this.release.version });
 		try {
-			this.reporter.sendTelemetryEvent('installingLs', { terraformLsVersion: currentRelease.version });
-			await this.installPkg(currentRelease, directory, this.userAgent);
+			await this.installPkg(this.release);
 		} catch (err) {
 			vscode.window.showErrorMessage(`Unable to install terraform-ls: ${err.message}`);
 			throw err;
 		}
 
-		this.showChangelog(currentRelease.version);
+		this.showChangelog(this.release.version);
 	}
 
-	async installPkg(release: Release, installDir: string, userAgent: string): Promise<void> {
+	_latestReleasePromise: Promise<Release>;
+	async latestRelease(): Promise<Release> {
+		let release;
+		if (!this._latestReleasePromise) {
+			release = await getRelease("terraform-ls", "latest", this.userAgent);
+			this._latestReleasePromise = Promise.resolve(release);
+		}
+		return this._latestReleasePromise;
+	}
+
+	async installPkg(release: Release): Promise<void> {
+		const installDir = this.directory;
 		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
@@ -68,7 +85,7 @@ export class LanguageServerInstaller {
 			throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
 		}
 		try {
-			this.removeOldBinary(installDir);
+			this.removeOldBinary();
 		} catch {
 			// ignore missing binary (new install)
 		}
@@ -79,7 +96,7 @@ export class LanguageServerInstaller {
 			title: "Installing terraform-ls"
 		}, async (progress) => {
 			progress.report({ increment: 30 });
-			await release.download(build.url, destination, userAgent);
+			await release.download(build.url, destination, this.userAgent);
 			progress.report({ increment: 30 });
 			await release.verify(destination, build.filename)
 			progress.report({ increment: 30 });
@@ -87,12 +104,12 @@ export class LanguageServerInstaller {
 		});
 	}
 
-	removeOldBinary(directory: string): void {
-		fs.unlinkSync(lsBinPath(directory));
+	removeOldBinary(): void {
+		fs.unlinkSync(lsBinPath(this.directory));
 	}
 
-	public async cleanupZips(directory: string): Promise<string[]> {
-		return del(`${directory}/terraform-ls*.zip`, { force: true });
+	public async cleanupZips(): Promise<string[]> {
+		return del(`${this.directory}/terraform-ls*.zip`, { force: true });
 	}
 
 	showChangelog(version: string): void {
