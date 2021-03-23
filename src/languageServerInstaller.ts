@@ -20,11 +20,17 @@ export class LanguageServerInstaller {
 	private release: Release;
 
 	public async needsInstall(): Promise<boolean> {
-		let isInstalled = false;
+		try {
+			this.release = await getRelease("terraform-ls", "latest", this.userAgent);
+		} catch (err) {
+			// if the releases site is inaccessible, report it and skip the install
+			this.reporter.sendTelemetryException(err);
+			return false;
+		}
+
 		let installedVersion: string;
 		try {
 			installedVersion = await getLsVersion(this.directory);
-			isInstalled = true;
 		} catch (err) {
 			// Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
 			// on a fresh installation (unlike upgrade). It’s also possible that the file or directory
@@ -33,12 +39,7 @@ export class LanguageServerInstaller {
 				this.reporter.sendTelemetryException(err);
 				throw err;
 			}
-			isInstalled = false;
-		}
-
-		this.release = await this.latestRelease();
-		if (!isInstalled) {
-			return true;
+			return true; // yes to new install
 		}
 
 		this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
@@ -61,16 +62,6 @@ export class LanguageServerInstaller {
 		}
 
 		this.showChangelog(this.release.version);
-	}
-
-	_latestReleasePromise: Promise<Release>;
-	async latestRelease(): Promise<Release> {
-		let release;
-		if (!this._latestReleasePromise) {
-			release = await getRelease("terraform-ls", "latest", this.userAgent);
-			this._latestReleasePromise = Promise.resolve(release);
-		}
-		return this._latestReleasePromise;
 	}
 
 	async installPkg(release: Release): Promise<void> {

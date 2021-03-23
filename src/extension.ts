@@ -173,7 +173,7 @@ async function updateLanguageServer() {
 		const installer = new LanguageServerInstaller(installPath, reporter);
 		const install = await installer.needsInstall();
 		if (install) {
-			stopClients();
+			await stopClients();
 			try {
 				await installer.install();
 			} catch (err) {
