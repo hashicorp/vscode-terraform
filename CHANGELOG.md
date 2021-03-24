@@ -1,4 +1,6 @@
-# 2.8.4 (unreleased)
+# 2.9.0 (unreleased)
+
+* Check for language server updates every 24 hours (#595)
 
 Bugs:
 
