@@ -1,4 +1,4 @@
-# 2.9.0 (unreleased)
+# 2.9.0 (2020-03-24)
 
 * Check for language server updates every 24 hours (#595)
 
