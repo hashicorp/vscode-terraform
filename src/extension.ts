@@ -39,14 +39,14 @@ const extensionId = 'hashicorp.terraform';
 const appInsightsKey = '885372d2-6f3c-499f-9d25-b8b219983a52';
 let reporter: TelemetryReporter;
 
-let extensionPath: string;
+let installPath: string;
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	const extensionVersion = vscode.extensions.getExtension(extensionId).packageJSON.version;
 	reporter = new TelemetryReporter(extensionId, extensionVersion, appInsightsKey);
 	context.subscriptions.push(reporter);
+	installPath = path.join(context.extensionPath, 'lsp');
 
-	extensionPath = context.extensionPath;
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {
 		try {
@@ -63,7 +63,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				const current = config('terraform').get('languageServer');
 				await config('terraform').update('languageServer', Object.assign(current, { external: true }), vscode.ConfigurationTarget.Global);
 			}
-			return startClients();
+			return updateLanguageServer();
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
 			if (enabled()) {
@@ -166,6 +166,29 @@ export function deactivate(): Promise<void[]> {
 	return stopClients();
 }
 
+async function updateLanguageServer() {
+	const delay = 1000 * 60 * 24;
+	setTimeout(updateLanguageServer, delay); // check for new updates every 24hrs
+
+	// skip install if a language server binary path is set
+	if (!config('terraform').get('languageServer.pathToBinary')) {
+		const installer = new LanguageServerInstaller(installPath, reporter);
+		const install = await installer.needsInstall();
+		if (install) {
+			await stopClients();
+			try {
+				await installer.install();
+			} catch (err) {
+				reporter.sendTelemetryException(err);
+				throw err;
+			} finally {
+				await installer.cleanupZips();
+			}
+		}
+	}
+	return startClients(); // on repeat runs with no install, this will be a no-op
+}
+
 async function startClients(folders = prunedFolderNames()) {
 	console.log('Starting:', folders);
 	const command = await pathToBinary();
@@ -262,20 +285,10 @@ let _pathToBinaryPromise: Promise<string>;
 async function pathToBinary(): Promise<string> {
 	if (!_pathToBinaryPromise) {
 		let command: string = config('terraform').get('languageServer.pathToBinary');
-		if (!command) { // Skip install/upgrade if user has set custom binary path
-			const installDir = path.join(extensionPath, 'lsp');
-			const installer = new LanguageServerInstaller(reporter);
-			try {
-				await installer.install(installDir);
-			} catch (err) {
-				reporter.sendTelemetryException(err);
-				throw err;
-			} finally {
-				await installer.cleanupZips(installDir);
-			}
-			command = path.join(installDir, 'terraform-ls');
-		} else {
+		if (command) { // Skip install/upgrade if user has set custom binary path
 			reporter.sendTelemetryEvent('usePathToBinary');
+		} else {
+			command = path.join(installPath, 'terraform-ls');
 		}
 		_pathToBinaryPromise = Promise.resolve(command);
 	}
@@ -357,8 +370,8 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
 				{ value: `terraform ${command}`, prompt: `Run in ${selectedModule}` }
 			);
 			if (terraformCommand) {
-				const terminal = vscode.window.terminals.find(t => t.name == terminalName ) ||
-				vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
+				const terminal = vscode.window.terminals.find(t => t.name == terminalName) ||
+					vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
 				terminal.sendText(terraformCommand);
 				terminal.show();
 			}
