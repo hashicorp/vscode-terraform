@@ -264,11 +264,11 @@
 			]
 		},
 		"string_interpolation": {
-			"begin": "(\\G|[^%$])[%$]{",
+			"begin": "(\\G|[^%$])([%$]{)",
 			"comment": "String interpolation",
 			"name": "meta.interpolation.terraform",
 			"beginCaptures": {
-				"0": {
+				"2": {
 					"name": "keyword.other.interpolation.begin.terraform"
 				}
 			},
