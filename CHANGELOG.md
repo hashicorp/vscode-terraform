@@ -1,3 +1,7 @@
+# 2.10.0 (2020-04-13)
+
+* Update syntax highlighting for Terraform 0.15 (#604)
+
 # 2.9.1 (2020-03-24)
 
 Bugs:
