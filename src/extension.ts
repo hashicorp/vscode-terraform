@@ -154,6 +154,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		try {
 			await vscode.commands.executeCommand('terraform.enableLanguageServer');
 		} catch (error) {
+			console.log(error);
 			reporter.sendTelemetryException(error);
 		}
 	}
