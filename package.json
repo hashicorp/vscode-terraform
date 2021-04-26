@@ -7,7 +7,7 @@
   "publisher": "hashicorp",
   "license": "MPL-2.0",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.50.1"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
