@@ -338,7 +338,7 @@ async function rootModules(languageClient: terraformLanguageClient, documentUri:
 		doneLoading = response.doneLoading;
 		rootModules = response.rootModules;
 		if (!doneLoading) {
-			await sleep(3000);
+			await sleep(100);
 		}
 	}
 	if (!doneLoading) {
