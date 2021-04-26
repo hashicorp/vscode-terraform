@@ -30,8 +30,6 @@ async function activated() {
 			} else {
 				console.log('hashicorp.terraform is already active');
 			}
-			// make sure language server download is complete
-			await ext.exports.pathToBinary();
 			// TODO: implement proper synchronization/status check in LS
 			// give server(s) some time to startup
 			_activatedPromise = sleep(3000);

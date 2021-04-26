@@ -154,12 +154,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		try {
 			await vscode.commands.executeCommand('terraform.enableLanguageServer');
 		} catch (error) {
+			console.log(error)
 			reporter.sendTelemetryException(error);
 		}
 	}
 
 	// export public API
-	return { getDocumentClient, pathToBinary, rootModules };
+	return { getDocumentClient, rootModules };
 }
 
 export function deactivate(): Promise<void[]> {
@@ -183,6 +184,7 @@ async function updateLanguageServer() {
 				reporter.sendTelemetryException(err);
 				throw err;
 			} finally {
+				console.log("finished install")
 				await installer.cleanupZips();
 			}
 		}
@@ -199,6 +201,7 @@ async function startClients(folders = prunedFolderNames()) {
 			const commandPrefix = shortUid.seq();
 			const client = newClient(command, folder, commandPrefix);
 			client.onReady().then(() => {
+				console.log("Client ready")
 				reporter.sendTelemetryEvent('startClient');
 			});
 			client.onDidChangeState((event) => {
