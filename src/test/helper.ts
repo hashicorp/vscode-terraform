@@ -18,7 +18,7 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 	}
 }
 
-let _activatedPromise: Promise<void>
+let _activatedPromise: Promise<void>;
 async function activated() {
 	if (!_activatedPromise) {
 		try {
