@@ -13,16 +13,15 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, macos-11.0, ubuntu-latest]
-        node-version: [12.x, 14.x, 16.x]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
       - name: Set up Xvfb (Ubuntu)
         run: |
           /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
