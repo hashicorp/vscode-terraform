@@ -7,7 +7,7 @@
   "publisher": "hashicorp",
   "license": "MPL-2.0",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.50.1"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
@@ -203,7 +203,7 @@
     "test": "npm run test-compile && node ./out/test/runTest.js"
   },
   "dependencies": {
-    "@hashicorp/js-releases": "^1.2.0",
+    "@hashicorp/js-releases": "^1.4.0",
     "@types/semver": "^7.3.4",
     "del": "^5.1.0",
     "openpgp": "^4.10.10",

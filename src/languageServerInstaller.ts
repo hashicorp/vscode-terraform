@@ -89,9 +89,9 @@ export class LanguageServerInstaller {
 			progress.report({ increment: 30 });
 			await release.download(build.url, destination, this.userAgent);
 			progress.report({ increment: 30 });
-			await release.verify(destination, build.filename)
+			await release.verify(destination, build.filename);
 			progress.report({ increment: 30 });
-			return release.unpack(installDir, destination)
+			return release.unpack(installDir, destination);
 		});
 	}
 

@@ -159,7 +159,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	}
 
 	// export public API
-	return { getDocumentClient, pathToBinary, rootModules };
+	return { getDocumentClient, rootModules };
 }
 
 export function deactivate(): Promise<void[]> {
@@ -179,6 +179,7 @@ async function updateLanguageServer() {
 			try {
 				await installer.install();
 			} catch (err) {
+				console.log(err); // for test failure reporting
 				reporter.sendTelemetryException(err);
 				throw err;
 			} finally {
@@ -332,7 +333,7 @@ async function rootModulesCommand(languageClient: terraformLanguageClient, docum
 async function rootModules(languageClient: terraformLanguageClient, documentUri: string): Promise<rootModuleResponse> {
 	let doneLoading = false;
 	let rootModules: rootModule[];
-	for (let attempt = 0; attempt < 2 && !doneLoading; attempt++) {
+	for (let attempt = 0; attempt < 5 && !doneLoading; attempt++) {
 		const response = await rootModulesCommand(languageClient, documentUri);
 		doneLoading = response.doneLoading;
 		rootModules = response.rootModules;
