@@ -333,7 +333,7 @@ async function rootModulesCommand(languageClient: terraformLanguageClient, docum
 async function rootModules(languageClient: terraformLanguageClient, documentUri: string): Promise<rootModuleResponse> {
 	let doneLoading = false;
 	let rootModules: rootModule[];
-	for (let attempt = 0; attempt < 2 && !doneLoading; attempt++) {
+	for (let attempt = 0; attempt < 5 && !doneLoading; attempt++) {
 		const response = await rootModulesCommand(languageClient, documentUri);
 		doneLoading = response.doneLoading;
 		rootModules = response.rootModules;
