@@ -1,3 +1,9 @@
+# 2.10.1 (unreleased)
+
+Security:
+
+* Update js-releases dependency to resolve security issue [HCSEC-2021-12](https://discuss.hashicorp.com/t/hcsec-2021-12-codecov-security-event-and-hashicorp-gpg-key-exposure/23512) (#612)
+
 # 2.10.0 (2021-04-13)
 
 * Update syntax highlighting for Terraform 0.15 (#604)
