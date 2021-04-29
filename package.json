@@ -45,7 +45,8 @@
           "terraform"
         ],
         "extensions": [
-          ".tf"
+          ".tf",
+          ".hcl"
         ],
         "configuration": "./language-configuration.json"
       },
