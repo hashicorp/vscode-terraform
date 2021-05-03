@@ -167,7 +167,7 @@ export function deactivate(): Promise<void[]> {
 }
 
 async function updateLanguageServer() {
-	const delay = 1000 * 60 * 24;
+	const delay = 1000 * 60 * 60 * 24;
 	setTimeout(updateLanguageServer, delay); // check for new updates every 24hrs
 
 	// skip install if a language server binary path is set
