@@ -32,7 +32,7 @@ async function activated() {
 			}
 			// TODO: implement proper synchronization/status check in LS
 			// give server(s) some time to startup
-			_activatedPromise = sleep(3000);
+			_activatedPromise = sleep(5000);
 		} catch (err) {
 			_activatedPromise = Promise.reject(err);
 		}
