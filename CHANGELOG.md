@@ -1,3 +1,9 @@
+# 2.10.2 (unreleased)
+
+Bugs:
+
+* Correct delay for language server version check (#620)
+
 # 2.10.1 (2021-04-28)
 
 Security:
