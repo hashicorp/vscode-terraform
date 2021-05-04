@@ -23,7 +23,10 @@ import {
 	prunedFolderNames,
 	sortedWorkspaceFolders
 } from './vscodeUtils';
-import { sleep } from './utils';
+import {
+	SingleInstanceTimeout,
+	sleep
+} from './utils';
 
 interface terraformLanguageClient {
 	commandPrefix: string,
@@ -40,6 +43,7 @@ const appInsightsKey = '885372d2-6f3c-499f-9d25-b8b219983a52';
 let reporter: TelemetryReporter;
 
 let installPath: string;
+let languageServerUpdater = new SingleInstanceTimeout();
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	const extensionVersion = vscode.extensions.getExtension(extensionId).packageJSON.version;
@@ -70,6 +74,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				const current = config('terraform').get('languageServer');
 				await config('terraform').update('languageServer', Object.assign(current, { external: false }), vscode.ConfigurationTarget.Global);
 			}
+			languageServerUpdater.clear();
 			return stopClients();
 		}),
 		vscode.commands.registerCommand('terraform.apply', async () => {
@@ -168,7 +173,7 @@ export function deactivate(): Promise<void[]> {
 
 async function updateLanguageServer() {
 	const delay = 1000 * 60 * 60 * 24;
-	setTimeout(updateLanguageServer, delay); // check for new updates every 24hrs
+	languageServerUpdater.timeout(updateLanguageServer, delay); // check for new updates every 24hrs
 
 	// skip install if a language server binary path is set
 	if (!config('terraform').get('languageServer.pathToBinary')) {
