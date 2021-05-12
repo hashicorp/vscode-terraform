@@ -1,0 +1,41 @@
+name: Draft release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Get version tag
+        run: echo "VERSION_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
+      - name: Store package name
+        id: package-name
+        run: echo "::set-output name=pkg::vscode-terraform-$VERSION_TAG.vsix"
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+      - name: Clean install dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm test
+        env:
+          CI: true
+      - name: Compile and create package
+        run: npm run package -- -o vscode-terraform-${{ env.VERSION_TAG }}.vsix
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: vscode-terraform-${{ env.VERSION_TAG }}.vsix
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

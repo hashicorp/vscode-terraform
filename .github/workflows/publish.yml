@@ -1,0 +1,23 @@
+name: Publish release
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish:
+    name: Publish to Marketplace
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Clean install dependencies
+        run: npm ci
+      - name: vsce publish
+        run: vsce publish
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
