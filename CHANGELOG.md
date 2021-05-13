@@ -1,3 +1,9 @@
+# 2.11.0 (unreleased)
+
+Bugs:
+
+* Reorder functions to prioritize abspath highlight (#630)
+
 # 2.10.2 (2021-05-03)
 
 Bugs:
