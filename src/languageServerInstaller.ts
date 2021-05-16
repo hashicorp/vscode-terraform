@@ -153,11 +153,6 @@ function goArch(): string {
 	if (arch === 'x64') {
 		return 'amd64';
 	}
-	if (arch === 'arm64' && process.platform.toString() === 'darwin') {
-		// On Apple Silicon, install the amd64 version and rely on Rosetta2
-		// until a native build is available.
-		return 'amd64';
-	}
 	return arch;
 }
 
