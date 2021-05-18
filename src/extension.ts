@@ -10,6 +10,7 @@ import {
 	Executable,
 	State as ClientState
 } from 'vscode-languageclient/node';
+import { Utils } from 'vscode-uri'
 import * as path from 'path';
 import ShortUniqueId from 'short-unique-id';
 import TelemetryReporter from 'vscode-extension-telemetry';
@@ -25,7 +26,6 @@ import {
 } from './vscodeUtils';
 import {
 	SingleInstanceTimeout,
-	sleep
 } from './utils';
 
 interface terraformLanguageClient {
@@ -129,14 +129,18 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			async (event: vscode.TextEditor | undefined) => {
 				// Make sure there's an open document in a folder
 				// Also check whether they're running a different language server
+				// TODO: Check initializationOptions for command presence instead of pathToBinary
 				if (event && vscode.workspace.workspaceFolders[0] && !config('terraform').get('languageServer.pathToBinary')) {
 					const documentUri = event.document.uri;
 					const client = getDocumentClient(documentUri);
+					const moduleUri = Utils.dirname(documentUri);
+
 					if (client) {
 						try {
-							const response = await moduleCallers(client, documentUri.toString());
-							if (response.needsInit === false) {
-								terraformStatus.text = `$(refresh) ${response.moduleCallers[0].name}`;
+							const response = await moduleCallers(client, moduleUri.toString());
+							if (response.moduleCallers.length === 0) {
+								const dirName = Utils.basename(moduleUri);
+								terraformStatus.text = `$(refresh) ${dirName}`;
 								terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
 								terraformStatus.tooltip = `Click to run terraform init`;
 								terraformStatus.command = "terraform.initCurrent";
@@ -320,50 +324,44 @@ function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandPara
 	return client.sendRequest(ExecuteCommandRequest.type, params);
 }
 
-interface module {
-	uri: string,
-	name: string
+interface moduleCaller {
+	uri: string
 }
 
 interface moduleCallersResponse {
-	moduleCallers: module[],
-	needsInit: boolean
+	version: number,
+	moduleCallers: moduleCaller[]
 }
 
-async function modulesCommand(languageClient: terraformLanguageClient, documentUri: string): Promise<any> {
-	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.modules.callers`, arguments: [`uri=${documentUri}`] };
+async function modulesCallersCommand(languageClient: terraformLanguageClient, moduleUri: string): Promise<any> {
+	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.module.callers`, arguments: [`uri=${moduleUri}`] };
 	return execWorkspaceCommand(languageClient.client, requestParams);
 }
 
-async function moduleCallers(languageClient: terraformLanguageClient, documentUri: string): Promise<moduleCallersResponse> {
-	let doneLoading = false;
-	let moduleCallers: module[];
-	for (let attempt = 0; attempt < 5 && !doneLoading; attempt++) {
-		const response = await modulesCommand(languageClient, documentUri);
-		doneLoading = response.doneLoading;
-		moduleCallers = response.callers;
-		if (!doneLoading) {
-			await sleep(100);
-		}
-	}
-	if (!doneLoading) {
-		throw new Error(`Unable to load modules for ${documentUri}`);
-	}
-	return { moduleCallers, needsInit: moduleCallers.length === 0 };
+async function moduleCallers(languageClient: terraformLanguageClient, moduleUri: string): Promise<moduleCallersResponse> {
+	let moduleCallers: moduleCaller[];
+	const response = await modulesCallersCommand(languageClient, moduleUri);
+	moduleCallers = response.callers;
+
+	return { version: response.v, moduleCallers };
 }
 
 async function terraformCommand(command: string, languageServerExec = true): Promise<any> {
 	if (vscode.window.activeTextEditor) {
 		const documentUri = vscode.window.activeTextEditor.document.uri;
 		const languageClient = getDocumentClient(documentUri);
-		const callers = await moduleCallers(languageClient, documentUri.toString());
+
+		const moduleUri = Utils.dirname(documentUri)
+		const response = await moduleCallers(languageClient, moduleUri.toString());
 
 		let selectedModule: string;
-		if (callers.moduleCallers.length > 1) {
-			const selected = await vscode.window.showQuickPick(callers.moduleCallers.map(m => m.uri), { canPickMany: false });
+		if (response.moduleCallers.length > 1) {
+			const selected = await vscode.window.showQuickPick(response.moduleCallers.map(m => m.uri), { canPickMany: false });
 			selectedModule = selected[0];
+		} else if (response.moduleCallers.length == 1) {
+			selectedModule = response.moduleCallers[0].uri;
 		} else {
-			selectedModule = callers.moduleCallers[0].uri;
+			selectedModule = moduleUri.toString();
 		}
 
 		if (languageServerExec) {
