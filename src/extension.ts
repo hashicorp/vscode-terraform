@@ -43,7 +43,7 @@ const appInsightsKey = '885372d2-6f3c-499f-9d25-b8b219983a52';
 let reporter: TelemetryReporter;
 
 let installPath: string;
-let languageServerUpdater = new SingleInstanceTimeout();
+const languageServerUpdater = new SingleInstanceTimeout();
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	const extensionVersion = vscode.extensions.getExtension(extensionId).packageJSON.version;
@@ -339,9 +339,8 @@ async function modulesCallersCommand(languageClient: terraformLanguageClient, mo
 }
 
 async function moduleCallers(languageClient: terraformLanguageClient, moduleUri: string): Promise<moduleCallersResponse> {
-	let moduleCallers: moduleCaller[];
 	const response = await modulesCallersCommand(languageClient, moduleUri);
-	moduleCallers = response.callers;
+	const moduleCallers: moduleCaller[] = response.callers;
 
 	return { version: response.v, moduleCallers };
 }
