@@ -107,7 +107,7 @@ export class LanguageServerInstaller {
 		vscode.window.showInformationMessage(`Installed terraform-ls ${version}.`, "View Changelog")
 			.then(selected => {
 				if (selected === "View Changelog") {
-					vscode.env.openExternal(vscode.Uri.parse(`https://github.com/hashicorp/terraform-ls/releases/tag/v${version}`));
+					vscode.env.openExternal(vscode.Uri.parse('https://github.com/hashicorp/terraform-ls/blob/main/CHANGELOG.md'));
 				}
 			});
 		return;
