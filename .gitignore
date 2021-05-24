@@ -1,4 +1,5 @@
 out/
+dist/
 node_modules/
 *.vsix
 .DS_Store

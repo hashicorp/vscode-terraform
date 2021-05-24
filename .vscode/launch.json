@@ -25,7 +25,7 @@
 				"${workspaceFolder}/testFixture"
 			],
 			"outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-			"preLaunchTask": "initAndWatch"
+			"preLaunchTask": "testCompileAndInit"
 		}
 	]
 }

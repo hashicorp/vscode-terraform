@@ -45,20 +45,16 @@
 			},
 		},
 		{
-			"label": "initAndWatch",
+			"label": "testCompileAndInit",
 			"type": "npm",
-			"script": "watch",
-			"isBackground": true,
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"script": "test-compile",
+			"group": "build",
 			"presentation": {
 				"panel": "dedicated",
 				"reveal": "never"
 			},
 			"problemMatcher": [
-				"$tsc-watch"
+				"$tsc"
 			],
 			"dependsOn": [
 				"init"

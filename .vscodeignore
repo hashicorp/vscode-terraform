@@ -4,8 +4,7 @@
 .gitignore
 .hashibot.hcl
 src/
-out/*.test.*
-out/test/
+out/
 .eslintignore
 .eslintrc.js
 tsconfig.json
@@ -13,3 +12,5 @@ lsp/
 testfixture/
 DEVELOPMENT.md
 ROADMAP.md
+webpack.config.js
+node_modules/
