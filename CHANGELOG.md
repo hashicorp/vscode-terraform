@@ -1,3 +1,9 @@
+# 2.12.0 (Unreleased)
+
+INTERNAL:
+
+ - Rename `rootModules` command to `module.callers` (#633)
+
 # 2.11.0 (2021-05-18)
 
 Bugs:
