@@ -10,6 +10,7 @@ import {
 	Executable,
 	State as ClientState
 } from 'vscode-languageclient/node';
+import { Utils } from 'vscode-uri'
 import * as path from 'path';
 import ShortUniqueId from 'short-unique-id';
 import TelemetryReporter from 'vscode-extension-telemetry';
@@ -25,7 +26,6 @@ import {
 } from './vscodeUtils';
 import {
 	SingleInstanceTimeout,
-	sleep
 } from './utils';
 
 interface terraformLanguageClient {
@@ -43,7 +43,7 @@ const appInsightsKey = '885372d2-6f3c-499f-9d25-b8b219983a52';
 let reporter: TelemetryReporter;
 
 let installPath: string;
-let languageServerUpdater = new SingleInstanceTimeout();
+const languageServerUpdater = new SingleInstanceTimeout();
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	const extensionVersion = vscode.extensions.getExtension(extensionId).packageJSON.version;
@@ -129,14 +129,18 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			async (event: vscode.TextEditor | undefined) => {
 				// Make sure there's an open document in a folder
 				// Also check whether they're running a different language server
+				// TODO: Check initializationOptions for command presence instead of pathToBinary
 				if (event && vscode.workspace.workspaceFolders[0] && !config('terraform').get('languageServer.pathToBinary')) {
 					const documentUri = event.document.uri;
 					const client = getDocumentClient(documentUri);
+					const moduleUri = Utils.dirname(documentUri);
+
 					if (client) {
 						try {
-							const response = await rootModules(client, documentUri.toString());
-							if (response.needsInit === false) {
-								terraformStatus.text = `$(refresh) ${response.rootModules[0].name}`;
+							const response = await moduleCallers(client, moduleUri.toString());
+							if (response.moduleCallers.length === 0) {
+								const dirName = Utils.basename(moduleUri);
+								terraformStatus.text = `$(refresh) ${dirName}`;
 								terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
 								terraformStatus.tooltip = `Click to run terraform init`;
 								terraformStatus.command = "terraform.initCurrent";
@@ -164,7 +168,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	}
 
 	// export public API
-	return { getDocumentClient, rootModules };
+	return { getDocumentClient, moduleCallers };
 }
 
 export function deactivate(): Promise<void[]> {
@@ -320,50 +324,43 @@ function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandPara
 	return client.sendRequest(ExecuteCommandRequest.type, params);
 }
 
-interface rootModule {
-	uri: string,
-	name: string
+interface moduleCaller {
+	uri: string
 }
 
-interface rootModuleResponse {
-	rootModules: rootModule[],
-	needsInit: boolean
+interface moduleCallersResponse {
+	version: number,
+	moduleCallers: moduleCaller[]
 }
 
-async function rootModulesCommand(languageClient: terraformLanguageClient, documentUri: string): Promise<any> {
-	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.rootmodules`, arguments: [`uri=${documentUri}`] };
+async function modulesCallersCommand(languageClient: terraformLanguageClient, moduleUri: string): Promise<any> {
+	const requestParams: ExecuteCommandParams = { command: `${languageClient.commandPrefix}.terraform-ls.module.callers`, arguments: [`uri=${moduleUri}`] };
 	return execWorkspaceCommand(languageClient.client, requestParams);
 }
 
-async function rootModules(languageClient: terraformLanguageClient, documentUri: string): Promise<rootModuleResponse> {
-	let doneLoading = false;
-	let rootModules: rootModule[];
-	for (let attempt = 0; attempt < 5 && !doneLoading; attempt++) {
-		const response = await rootModulesCommand(languageClient, documentUri);
-		doneLoading = response.doneLoading;
-		rootModules = response.rootModules;
-		if (!doneLoading) {
-			await sleep(100);
-		}
-	}
-	if (!doneLoading) {
-		throw new Error(`Unable to load root modules for ${documentUri}`);
-	}
-	return { rootModules: rootModules, needsInit: rootModules.length === 0 };
+async function moduleCallers(languageClient: terraformLanguageClient, moduleUri: string): Promise<moduleCallersResponse> {
+	const response = await modulesCallersCommand(languageClient, moduleUri);
+	const moduleCallers: moduleCaller[] = response.callers;
+
+	return { version: response.v, moduleCallers };
 }
 
 async function terraformCommand(command: string, languageServerExec = true): Promise<any> {
 	if (vscode.window.activeTextEditor) {
 		const documentUri = vscode.window.activeTextEditor.document.uri;
 		const languageClient = getDocumentClient(documentUri);
-		const modules = await rootModules(languageClient, documentUri.toString());
+
+		const moduleUri = Utils.dirname(documentUri)
+		const response = await moduleCallers(languageClient, moduleUri.toString());
 
 		let selectedModule: string;
-		if (modules.rootModules.length > 1) {
-			const selected = await vscode.window.showQuickPick(modules.rootModules.map(m => m.uri), { canPickMany: false });
+		if (response.moduleCallers.length > 1) {
+			const selected = await vscode.window.showQuickPick(response.moduleCallers.map(m => m.uri), { canPickMany: false });
 			selectedModule = selected[0];
+		} else if (response.moduleCallers.length == 1) {
+			selectedModule = response.moduleCallers[0].uri;
 		} else {
-			selectedModule = modules.rootModules[0].uri;
+			selectedModule = moduleUri.toString();
 		}
 
 		if (languageServerExec) {

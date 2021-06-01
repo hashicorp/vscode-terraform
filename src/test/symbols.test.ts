@@ -6,7 +6,11 @@ suite('document symbols', () => {
 	const docUri = getDocUri('sample.tf');
 
 	test('returns symbols', async () => {
-		await testSymbols(docUri, ['provider "vault"', 'resource "vault_auth_backend" "b"']);
+		await testSymbols(docUri, [
+			'provider "vault"',
+			'resource "vault_auth_backend" "b"',
+			'module "local"'
+		]);
 	});
 });
 
@@ -15,7 +19,7 @@ async function testSymbols(docUri: vscode.Uri, symbolNames: string[]) {
 	// Executing the command `vscode.executeDocumentSymbolProvider` to simulate requesting doc symbols
 	const symbols = (await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', docUri)) as vscode.SymbolInformation[];
 
-	assert.ok(symbols.length === symbolNames.length);
+	assert.equal(symbols.length, symbolNames.length);
 	symbols.forEach((symbol, i) => {
 		assert.equal(symbol.name, symbolNames[i]);
 	});
