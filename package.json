@@ -124,6 +124,10 @@
               ],
               "default": "off",
               "description": "Traces the communication between VS Code and the language server."
+            },
+            "required_version": {
+              "type": "string",
+              "description": "The required version of the Language Server described as a semantic version string, for example '^2.0.1' or '> 1.0'. Defaults to latest available version."
             }
           },
           "default": {

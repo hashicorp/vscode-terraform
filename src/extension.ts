@@ -6,7 +6,7 @@ import {
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri'
 import TelemetryReporter from 'vscode-extension-telemetry';
-import { LanguageServerInstaller } from './languageServerInstaller';
+import { LanguageServerInstaller, isValidVersionString, defaultVersionString } from './languageServerInstaller';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { config, prunedFolderNames } from './vscodeUtils';
 import { SingleInstanceTimeout } from './utils';
@@ -36,6 +36,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			await config('terraform').update('languageServer', { enabled: undefined, external: true }, vscode.ConfigurationTarget.Global);
 		} catch (err) {
 			console.error(`Error trying to erase pre-2.0.0 settings: ${err.message}`);
+		}
+	}
+
+	if (config('terraform').has('languageServer.required_version')) {
+		const langServerVer = config('terraform').get('languageServer.required_version', defaultVersionString)
+		if (!isValidVersionString(langServerVer)) {
+			vscode.window.showWarningMessage(`The Terraform Language Server Version string '${langServerVer}' is not a valid semantic version and will be ignored.`);
 		}
 	}
 
@@ -165,7 +172,7 @@ async function updateLanguageServer(clientHandler: ClientHandler, lsPath: Server
 		// skip install if a language server binary path is set
 		if (!lsPath.hasCustomBinPath()) {
 			const installer = new LanguageServerInstaller(lsPath, reporter);
-			const install = await installer.needsInstall();
+			const install = await installer.needsInstall(config('terraform').get('languageServer.version', defaultVersionString));
 			if (install) {
 				await clientHandler.stopClients();
 				try {
