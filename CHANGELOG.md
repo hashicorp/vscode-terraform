@@ -1,5 +1,9 @@
 # 2.12.0 (Unreleased)
 
+BUG FIXES:
+
+ - Avoid launching more servers if server supports multiple folders (#654)
+
 INTERNAL:
 
  - Rename `rootModules` command to `module.callers` (#633)
