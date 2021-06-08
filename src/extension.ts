@@ -203,26 +203,48 @@ async function startClients(folders = prunedFolderNames()) {
 	console.log('Starting:', folders);
 	const command = await pathToBinary();
 	const disposables: vscode.Disposable[] = [];
-	for (const folder of folders) {
-		if (!clients.has(folder)) {
-			const commandPrefix = shortUid.seq();
-			const client = newClient(command, folder, commandPrefix);
-			client.onReady().then(() => {
-				reporter.sendTelemetryEvent('startClient');
-			});
-			client.onDidChangeState((event) => {
-				if (event.newState === ClientState.Stopped) {
-					clients.delete(folder);
-					reporter.sendTelemetryEvent('stopClient');
-				}
-			});
-			disposables.push(client.start());
-			clients.set(folder, { commandPrefix, client });
-		} else {
-			console.log(`Client for folder: ${folder} already started`);
+
+	const firstClient = configureClient(command, folders[0])
+	firstClient.client.onReady().then(() => {
+		reporter.sendTelemetryEvent('startClient');
+		const multiFoldersSupported = firstClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
+
+		console.log("Multi-folder support: ", multiFoldersSupported);
+		const remainingFolders = folders.slice(1);
+		for (const folder of remainingFolders) {
+			if (multiFoldersSupported) {
+				// Reuse the same client if server supports multiple workspace folders
+				clients.set(folder, firstClient);
+				continue
+			}
+
+			if (!clients.has(folder)) {
+				const c = configureClient(command, folders[0]);
+				disposables.push(c.client.start());
+				clients.set(folder, c);
+			} else {
+				console.log(`Client for folder: ${folder} already started`);
+			}
 		}
-	}
+	});
+
+	disposables.push(firstClient.client.start());
+	clients.set(folders[0], firstClient);
+	
 	return disposables;
+}
+
+function configureClient(binPath:string, folder: string) {
+	const commandPrefix = shortUid.seq();
+	const client = newClient(binPath, folder, commandPrefix);
+
+	client.onDidChangeState((event) => {
+		if (event.newState === ClientState.Stopped) {
+			clients.delete(folder);
+			reporter.sendTelemetryEvent('stopClient');
+		}
+	});
+	return { commandPrefix, client }
 }
 
 function newClient(cmd: string, location: string, commandPrefix: string) {
