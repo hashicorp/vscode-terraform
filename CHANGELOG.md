@@ -1,3 +1,9 @@
+# 2.12.1 (2021-06-11)
+
+BUG FIXES:
+
+ - Avoid duplicate language clients for non-multi-folder setup (#663)
+
 # 2.12.0 (2021-06-08)
 
 BUG FIXES:
