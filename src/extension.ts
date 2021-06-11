@@ -219,7 +219,7 @@ async function startClients(folders = prunedFolderNames()) {
 			}
 
 			if (!clients.has(folder)) {
-				const c = configureClient(command, folders[0]);
+				const c = configureClient(command, folder);
 				disposables.push(c.client.start());
 				clients.set(folder, c);
 			} else {
