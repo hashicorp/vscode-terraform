@@ -1,3 +1,9 @@
+# 2.13.0 (Unreleased)
+
+FEATURES:
+
+ - Add support for Terraform variable files (`tfvars`) (#661)
+
 # 2.12.1 (2021-06-11)
 
 BUG FIXES:
