@@ -7,6 +7,7 @@
   "publisher": "hashicorp",
   "license": "MPL-2.0",
   "engines": {
+    "npm": "^7.15.1",
     "vscode": "^1.50.1"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
@@ -50,7 +51,7 @@
         "configuration": "./language-configuration.json"
       },
       {
-        "id": "tfvars",
+        "id": "terraform-vars",
         "extensions": [
           ".tfvars"
         ]
@@ -69,7 +70,7 @@
         "path": "./syntaxes/terraform.tmGrammar.json"
       },
       {
-        "language": "tfvars",
+        "language": "terraform-vars",
         "scopeName": "scope.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
       }
