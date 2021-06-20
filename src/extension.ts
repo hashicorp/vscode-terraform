@@ -104,6 +104,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		vscode.commands.registerCommand('terraform.validate', async () => {
 			await terraformCommand('validate');
 		}),
+		vscode.commands.registerCommand('terraform.destroy', async () => {
+			await terraformCommand('destroy', false);
+		}),
 		vscode.workspace.onDidChangeConfiguration(
 			async (event: vscode.ConfigurationChangeEvent) => {
 				if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
