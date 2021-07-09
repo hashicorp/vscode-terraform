@@ -20,6 +20,7 @@ import {
 	sortedWorkspaceFolders
 } from './vscodeUtils';
 import TelemetryReporter from 'vscode-extension-telemetry';
+import { ShowReferencesFeature } from './showReferences';
 import { ServerPath, CUSTOM_BIN_PATH_OPTION_NAME } from './serverPath';
 
 export interface TerraformLanguageClient {
@@ -176,6 +177,8 @@ export class ClientHandler {
 			serverOptions,
 			clientOptions
 		);
+
+		client.registerFeature(new ShowReferencesFeature(client));
 
 		client.onDidChangeState((event) => {
 			if (event.newState === State.Stopped) {
