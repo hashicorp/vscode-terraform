@@ -37,7 +37,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 
 	clientHandler = new ClientHandler(context, reporter);
 
-	let installPath = path.join(context.extensionPath, 'lsp');
+	const installPath = path.join(context.extensionPath, 'lsp');
 
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {

@@ -23,7 +23,7 @@ export interface TerraformLanguageClient {
 	client: LanguageClient
 }
 
-let clients: Map<string, TerraformLanguageClient> = new Map();
+const clients: Map<string, TerraformLanguageClient> = new Map();
 
 /**
  * ClientHandler maintains lifecycles of language clients
@@ -33,7 +33,7 @@ let clients: Map<string, TerraformLanguageClient> = new Map();
 export class ClientHandler {
 	private shortUid: ShortUniqueId;
 	private pathToBinary: string;
-	private supportsMultiFolders: boolean = true;
+	private supportsMultiFolders = true;
 
 	constructor(private context: vscode.ExtensionContext, private reporter: TelemetryReporter ) {
 		this.shortUid = new ShortUniqueId();
@@ -41,13 +41,13 @@ export class ClientHandler {
 		if (this.pathToBinary) {
 			this.reporter.sendTelemetryEvent('usePathToBinary');
 		} else {
-			let installPath = path.join(context.extensionPath, 'lsp');
+			const installPath = path.join(context.extensionPath, 'lsp');
 			this.pathToBinary = path.join(installPath, 'terraform-ls');
 		}
-	};
+	}
 
 	public StartClients(folders?: string[]): vscode.Disposable[] {
-		let disposables: vscode.Disposable[] = [];
+		const disposables: vscode.Disposable[] = [];
 
 		if (this.supportsMultiFolders) {
 			if (this.GetClient()?.client.needsStart()) {
@@ -57,7 +57,7 @@ export class ClientHandler {
 
 			console.log('Starting client');
 
-			let tfClient = this.newTerraformClient();
+			const tfClient = this.newTerraformClient();
 			tfClient.client.onReady().then(async () => {
 				this.reporter.sendTelemetryEvent('startClient');
 				const multiFoldersSupported = tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
@@ -82,7 +82,7 @@ export class ClientHandler {
 			for (const folder of folders) {
 				if (!clients.has(folder)) {
 					console.log(`Starting client for ${folder}`);
-					let folderClient = this.newTerraformClient(folder);
+					const folderClient = this.newTerraformClient(folder);
 					folderClient.client.onReady().then(() => {
 						this.reporter.sendTelemetryEvent('startClient');
 					});
@@ -95,7 +95,7 @@ export class ClientHandler {
 			}
 		}
 		return disposables;
-	};
+	}
 
 	private newTerraformClient(location?: string): TerraformLanguageClient {
 		const cmd = this.pathToBinary;
@@ -170,7 +170,7 @@ export class ClientHandler {
 			revealOutputChannelOn: 4 // hide always
 		};
 
-		let client = new LanguageClient(
+		const client = new LanguageClient(
 			id,
 			name,
 			serverOptions,
@@ -185,10 +185,10 @@ export class ClientHandler {
 		});
 
 		return {commandPrefix, client}
-	};
+	}
 
 	public async StopClients(folders?: string[]): Promise<void[]> {
-		let promises: Promise<void>[] = [];
+		const promises: Promise<void>[] = [];
 
 		if (this.supportsMultiFolders) {
 			promises.push(this.stopClient(""));
@@ -206,7 +206,7 @@ export class ClientHandler {
 			promises.push(this.stopClient(folder));
 		}
 		return Promise.all(promises);
-	};
+	}
 
 	private async stopClient(folder: string): Promise<void> {
 		if (!clients.has(folder)) {
@@ -221,7 +221,7 @@ export class ClientHandler {
 			}
 			console.log(`Client stopped for ${folder}`);
 		}).then(() => {
-			let ok = clients.delete(folder);
+			const ok = clients.delete(folder);
 			if (ok) {
 				if (folder === "") {
 					console.log('Client deleted');
@@ -238,7 +238,7 @@ export class ClientHandler {
 		}
 
 		return clients.get(this.clientName(document.toString()));
-	};
+	}
 
 	private clientName(folderName: string, workspaceFolders: readonly string[] = sortedWorkspaceFolders()): string {
 		folderName = normalizeFolderName(folderName);
@@ -248,5 +248,5 @@ export class ClientHandler {
 			folderName = getFolderName(getWorkspaceFolder(outerFolder));
 		}
 		return folderName;
-	};
+	}
 }
