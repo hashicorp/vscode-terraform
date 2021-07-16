@@ -164,8 +164,10 @@ export function deactivate(): Promise<void[]> {
 }
 
 async function updateLanguageServer(clientHandler: ClientHandler, installPath: string) {
-	const delay = 1000 * 60 * 60 * 24;
-	languageServerUpdater.timeout(updateLanguageServer, delay); // check for new updates every 24hrs
+	const hour = 1000 * 60 * 60;
+	languageServerUpdater.timeout(function() {
+		updateLanguageServer(clientHandler, installPath);
+	}, 24 * hour);
 
 	// skip install if a language server binary path is set
 	if (!config('terraform').get('languageServer.pathToBinary')) {
