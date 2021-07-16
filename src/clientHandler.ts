@@ -52,7 +52,7 @@ export class ClientHandler {
 		const disposables: vscode.Disposable[] = [];
 
 		if (this.supportsMultiFolders) {
-			if (this.getClient()?.client.needsStart()) {
+			if (clients.has(MULTI_FOLDER_CLIENT)) {
 				console.log(`No need to start another client for ${folders}`)
 				return disposables;
 			}

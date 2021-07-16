@@ -164,6 +164,7 @@ export function deactivate(): Promise<void[]> {
 }
 
 async function updateLanguageServer(clientHandler: ClientHandler, installPath: string) {
+	console.log('Checking for language server updates...')
 	const hour = 1000 * 60 * 60;
 	languageServerUpdater.timeout(function() {
 		updateLanguageServer(clientHandler, installPath);
