@@ -214,6 +214,7 @@
     "vscode-extension-telemetry": "^0.1.7",
     "vscode-languageclient": "^7.0.0-next.12",
     "vscode-uri": "^3.0.2",
+    "which": "^2.0.2",
     "yauzl": "^2.10.0"
   },
   "devDependencies": {
