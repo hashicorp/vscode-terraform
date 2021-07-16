@@ -2,13 +2,14 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
 import { getDocUri, open, testFolderPath } from './helper';
+
 const ext = vscode.extensions.getExtension('hashicorp.terraform');
 
 suite('moduleCallers', () => {
 	test('should execute language server command', async () => {
 		const documentUri = getDocUri('modules/sample.tf');
 		await open(documentUri);
-		const client = ext.exports.getDocumentClient(documentUri);
+		const client = ext.exports.clientHandler.getClient(documentUri);
 		const moduleUri = Utils.dirname(documentUri).toString();
 		const response = await ext.exports.moduleCallers(client, moduleUri);
 		assert.strictEqual(response.moduleCallers.length, 1);
