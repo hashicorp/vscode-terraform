@@ -64,6 +64,15 @@ To enable formatting, it is recommended that the following be added to the exten
     }
 ```
 
+It is also recommended to set a default formatter if you have other extensions installed which also claim a capability to format Terraform files:
+
+```
+    "[terraform]": {
+        "editor.defaultFormatter": "hashicorp.terraform",
+        "editor.formatOnSave": true
+    }
+```
+
 ### Validation
 An experimental validate-on-save option can be enabled with the following setting:
 ```
