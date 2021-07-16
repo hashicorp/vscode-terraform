@@ -102,8 +102,8 @@ export class ClientHandler {
 		const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
 
 		let channelName = `${binaryName}`;
-		let id = `languageServer`
-		let name = `Language Server`
+		let id = `terraform-ls`
+		let name = `Terraform LS`
 		let wsFolder: vscode.WorkspaceFolder;
 		let rootModulePaths: string[];
 		let excludeModulePaths: string[];
@@ -111,8 +111,8 @@ export class ClientHandler {
 		let outputChannel: vscode.OutputChannel;
 		if (location) {
 			channelName = `${binaryName}: ${location}`;
-			id = `languageServer/${location}`
-			name = `Language Server: ${location}`
+			id = `terraform-ls/${location}`
+			name = `Terraform LS: ${location}`
 			wsFolder = getWorkspaceFolder(location);
 			documentSelector = [
 				{ scheme: 'file', language: 'terraform', pattern: `${wsFolder.uri.fsPath}/**/*` },
