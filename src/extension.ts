@@ -63,7 +63,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				await config('terraform').update('languageServer', Object.assign(current, { external: false }), vscode.ConfigurationTarget.Global);
 			}
 			languageServerUpdater.clear();
-			return clientHandler.StopClients();
+			return clientHandler.stopClients();
 		}),
 		vscode.commands.registerCommand('terraform.apply', async () => {
 			await terraformCommand('apply', false, clientHandler);
@@ -78,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 			});
 			if (selected) {
 				const moduleUri = selected[0];
-				const client = clientHandler.GetClient(moduleUri);
+				const client = clientHandler.getClient(moduleUri);
 				const requestParams: ExecuteCommandParams = { command: `${client.commandPrefix}.terraform-ls.terraform.init`, arguments: [`uri=${moduleUri}`] };
 				await execWorkspaceCommand(client.client, requestParams);
 			}
@@ -106,10 +106,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		vscode.workspace.onDidChangeWorkspaceFolders(
 			async (event: vscode.WorkspaceFoldersChangeEvent) => {
 				if (event.removed.length > 0) {
-					await clientHandler.StopClients(prunedFolderNames(event.removed));
+					await clientHandler.stopClients(prunedFolderNames(event.removed));
 				}
 				if (event.added.length > 0) {
-					clientHandler.StartClients(prunedFolderNames(event.added));
+					clientHandler.startClients(prunedFolderNames(event.added));
 				}
 			}
 		),
@@ -120,7 +120,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				// TODO: Check initializationOptions for command presence instead of pathToBinary
 				if (event && vscode.workspace.workspaceFolders[0] && !config('terraform').get('languageServer.pathToBinary')) {
 					const documentUri = event.document.uri;
-					const client = clientHandler.GetClient(documentUri);
+					const client = clientHandler.getClient(documentUri);
 					const moduleUri = Utils.dirname(documentUri);
 
 					if (client) {
@@ -160,7 +160,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 }
 
 export function deactivate(): Promise<void[]> {
-	return clientHandler.StopClients();
+	return clientHandler.stopClients();
 }
 
 async function updateLanguageServer(clientHandler: ClientHandler, installPath: string) {
@@ -172,7 +172,7 @@ async function updateLanguageServer(clientHandler: ClientHandler, installPath: s
 		const installer = new LanguageServerInstaller(installPath, reporter);
 		const install = await installer.needsInstall();
 		if (install) {
-			await clientHandler.StopClients();
+			await clientHandler.stopClients();
 			try {
 				await installer.install();
 			} catch (err) {
@@ -184,7 +184,7 @@ async function updateLanguageServer(clientHandler: ClientHandler, installPath: s
 			}
 		}
 	}
-	return clientHandler.StartClients(prunedFolderNames()); // on repeat runs with no install, this will be a no-op
+	return clientHandler.startClients(prunedFolderNames()); // on repeat runs with no install, this will be a no-op
 }
 
 function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
@@ -216,7 +216,7 @@ async function moduleCallers(languageClient: TerraformLanguageClient, moduleUri:
 async function terraformCommand(command: string, languageServerExec = true, clientHandler: ClientHandler): Promise<any> {
 	if (vscode.window.activeTextEditor) {
 		const documentUri = vscode.window.activeTextEditor.document.uri;
-		const languageClient = clientHandler.GetClient(documentUri);
+		const languageClient = clientHandler.getClient(documentUri);
 
 		const moduleUri = Utils.dirname(documentUri)
 		const response = await moduleCallers(languageClient, moduleUri.toString());

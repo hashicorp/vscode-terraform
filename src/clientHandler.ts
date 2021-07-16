@@ -6,7 +6,8 @@ import {
 	LanguageClientOptions,
 	ServerOptions,
 	State,
-	DocumentSelector
+	DocumentSelector,
+	RevealOutputChannelOn
 } from 'vscode-languageclient/node';
 import {
 	config,
@@ -23,6 +24,7 @@ export interface TerraformLanguageClient {
 	client: LanguageClient
 }
 
+const MULTI_FOLDER_CLIENT = "";
 const clients: Map<string, TerraformLanguageClient> = new Map();
 
 /**
@@ -46,18 +48,18 @@ export class ClientHandler {
 		}
 	}
 
-	public StartClients(folders?: string[]): vscode.Disposable[] {
+	public startClients(folders?: string[]): vscode.Disposable[] {
 		const disposables: vscode.Disposable[] = [];
 
 		if (this.supportsMultiFolders) {
-			if (this.GetClient()?.client.needsStart()) {
+			if (this.getClient()?.client.needsStart()) {
 				console.log(`No need to start another client for ${folders}`)
 				return disposables;
 			}
 
 			console.log('Starting client');
 
-			const tfClient = this.newTerraformClient();
+			const tfClient = this.createTerraformClient();
 			tfClient.client.onReady().then(async () => {
 				this.reporter.sendTelemetryEvent('startClient');
 				const multiFoldersSupported = tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
@@ -66,14 +68,14 @@ export class ClientHandler {
 				if (!multiFoldersSupported) {
 					// restart is needed to launch folder-focused instances
 					console.log('Restarting clients as folder-focused');
-					await this.StopClients(folders);
+					await this.stopClients(folders);
 					this.supportsMultiFolders = false;
-					this.StartClients(folders);
+					this.startClients(folders);
 				}
 			});
 
 			disposables.push(tfClient.client.start());
-			clients.set("", tfClient);
+			clients.set(MULTI_FOLDER_CLIENT, tfClient);
 
 			return disposables;
 		}
@@ -82,7 +84,7 @@ export class ClientHandler {
 			for (const folder of folders) {
 				if (!clients.has(folder)) {
 					console.log(`Starting client for ${folder}`);
-					const folderClient = this.newTerraformClient(folder);
+					const folderClient = this.createTerraformClient(folder);
 					folderClient.client.onReady().then(() => {
 						this.reporter.sendTelemetryEvent('startClient');
 					});
@@ -97,7 +99,7 @@ export class ClientHandler {
 		return disposables;
 	}
 
-	private newTerraformClient(location?: string): TerraformLanguageClient {
+	private createTerraformClient(location?: string): TerraformLanguageClient {
 		const cmd = this.pathToBinary;
 		const binaryName = cmd.split('/').pop();
 
@@ -167,7 +169,7 @@ export class ClientHandler {
 				return false;
 			},
 			outputChannel: outputChannel,
-			revealOutputChannelOn: 4 // hide always
+			revealOutputChannelOn: RevealOutputChannelOn.Never,
 		};
 
 		const client = new LanguageClient(
@@ -187,11 +189,11 @@ export class ClientHandler {
 		return {commandPrefix, client}
 	}
 
-	public async StopClients(folders?: string[]): Promise<void[]> {
+	public async stopClients(folders?: string[]): Promise<void[]> {
 		const promises: Promise<void>[] = [];
 
 		if (this.supportsMultiFolders) {
-			promises.push(this.stopClient(""));
+			promises.push(this.stopClient(MULTI_FOLDER_CLIENT));
 			return Promise.all(promises);
 		}
 
@@ -232,9 +234,9 @@ export class ClientHandler {
 		});
 	}
 
-	public GetClient(document?: vscode.Uri): TerraformLanguageClient {
+	public getClient(document?: vscode.Uri): TerraformLanguageClient {
 		if (this.supportsMultiFolders) {
-			return clients.get("");
+			return clients.get(MULTI_FOLDER_CLIENT);
 		}
 
 		return clients.get(this.clientName(document.toString()));
