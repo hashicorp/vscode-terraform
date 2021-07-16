@@ -1,3 +1,9 @@
+# 2.13.2 (Unreleased)
+
+BUG FIXES:
+
+ - Fix language server update logic (#690)
+
 # 2.13.1 (2021-07-16)
 
 BUG FIXES:
