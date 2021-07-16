@@ -1,3 +1,9 @@
+# 2.13.1 (2021-07-16)
+
+BUG FIXES:
+
+ - Fix DocumentSelector for multi-folder workspace (#688)
+
 # 2.13.0 (2021-06-23)
 
 FEATURES:
