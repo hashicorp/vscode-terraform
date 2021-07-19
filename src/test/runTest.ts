@@ -5,7 +5,7 @@ import { exec } from '../utils';
 async function terraformInit() {
   const cwd = process.cwd();
   process.chdir('testFixture');
-  const { stdout } = await exec('terraform init -no-color');
+  const { stdout } = await exec('terraform', ['init', '-no-color']);
   console.log(stdout);
   process.chdir(cwd);
 }
