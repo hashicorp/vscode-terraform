@@ -4,6 +4,10 @@ BUG FIXES:
 
  - fix: launch LS even if path contains escapable characters (#694)
 
+ENHANCEMENTS:
+
+ - Install native LS build for Apple Silicon (darwin/arm64) (#563)
+
 # 2.13.2 (2021-07-19)
 
 BUG FIXES:
