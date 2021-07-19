@@ -1,9 +1,9 @@
 import * as cp from 'child_process';
 import * as https from 'https';
 
-export function exec(cmd: string): Promise<{ stdout: string, stderr: string }> {
+export function exec(cmd: string, args: readonly string[]): Promise<{ stdout: string, stderr: string }> {
 	return new Promise((resolve, reject) => {
-		cp.exec(cmd, (err, stdout, stderr) => {
+		cp.execFile(cmd, args, (err, stdout, stderr) => {
 			if (err) {
 				return reject(err);
 			}
