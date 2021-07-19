@@ -1,3 +1,9 @@
+# 2.14.0 (Unreleased)
+
+BUG FIXES:
+
+ - fix: launch LS even if path contains escapable characters (#694)
+
 # 2.13.2 (2021-07-19)
 
 BUG FIXES:
