@@ -16,12 +16,17 @@ import {
 	normalizeFolderName,
 	sortedWorkspaceFolders
 } from './vscodeUtils';
-import * as path from 'path';
 import TelemetryReporter from 'vscode-extension-telemetry';
 
 export interface TerraformLanguageClient {
 	commandPrefix: string,
 	client: LanguageClient
+}
+
+interface pathGetter {
+	binPath(): string
+	binName(): string
+	hasCustomBinPath(): boolean
 }
 
 const MULTI_FOLDER_CLIENT = "";
@@ -34,17 +39,12 @@ const clients: Map<string, TerraformLanguageClient> = new Map();
  */
 export class ClientHandler {
 	private shortUid: ShortUniqueId;
-	private pathToBinary: string;
 	private supportsMultiFolders = true;
 
-	constructor(private context: vscode.ExtensionContext, private reporter: TelemetryReporter ) {
+	constructor(private lsPath: pathGetter, private reporter: TelemetryReporter ) {
 		this.shortUid = new ShortUniqueId();
-		this.pathToBinary = config('terraform').get('languageServer.pathToBinary');
-		if (this.pathToBinary) {
+		if (lsPath.hasCustomBinPath()) {
 			this.reporter.sendTelemetryEvent('usePathToBinary');
-		} else {
-			const installPath = path.join(context.extensionPath, 'lsp');
-			this.pathToBinary = path.join(installPath, 'terraform-ls');
 		}
 	}
 
@@ -100,8 +100,8 @@ export class ClientHandler {
 	}
 
 	private createTerraformClient(location?: string): TerraformLanguageClient {
-		const cmd = this.pathToBinary;
-		const binaryName = cmd.split('/').pop();
+		const cmd = this.lsPath.binPath();
+		const binaryName = this.lsPath.binName();
 
 		const serverArgs: string[] = config('terraform').get('languageServer.args');
 		const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');

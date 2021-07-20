@@ -1,4 +1,42 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
+
+export class ServerPath {
+	private folderName = 'lsp';
+	private customBinPath: string;
+	public customBinPathOptionName = 'languageServer.pathToBinary';
+
+	constructor(private context: vscode.ExtensionContext ) {
+		this.customBinPath = config('terraform').get(this.customBinPathOptionName);
+	}
+
+	public installPath(): string {
+		return this.context.asAbsolutePath(this.folderName);
+	}
+
+	public hasCustomBinPath(): boolean {
+		return !!this.customBinPath;
+	}
+
+	public binPath(): string {
+		if (this.hasCustomBinPath()) {
+			return this.customBinPath;
+		}
+
+		return path.resolve(this.installPath(), this.binName());
+	}
+
+	public binName(): string {
+		if (this.hasCustomBinPath()) {
+			return path.basename(this.customBinPath);
+		}
+
+		if (process.platform === 'win32') {
+			return 'terraform-ls.exe'
+		}
+		return 'terraform-ls';
+	}
+}
 
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
 	return vscode.workspace.getConfiguration(section, scope);
