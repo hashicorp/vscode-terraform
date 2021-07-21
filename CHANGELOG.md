@@ -4,6 +4,10 @@ BUG FIXES:
 
  - fix: launch LS even if path contains escapable characters (#694)
 
+FEATURES:
+
+ - Register command to show references (#686)
+
 ENHANCEMENTS:
 
  - Install native LS build for Apple Silicon (darwin/arm64) (#563)
