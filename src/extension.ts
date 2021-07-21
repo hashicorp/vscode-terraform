@@ -3,22 +3,14 @@ import {
 	ExecuteCommandParams,
 	ExecuteCommandRequest
 } from 'vscode-languageclient';
-import {
-	LanguageClient
-} from 'vscode-languageclient/node';
+import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri'
-import * as path from 'path';
 import TelemetryReporter from 'vscode-extension-telemetry';
-
 import { LanguageServerInstaller } from './languageServerInstaller';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
-import {
-	config,
-	prunedFolderNames,
-} from './vscodeUtils';
-import {
-	SingleInstanceTimeout,
-} from './utils';
+import { config, prunedFolderNames } from './vscodeUtils';
+import { SingleInstanceTimeout } from './utils';
+import { ServerPath } from './serverPath';
 
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
@@ -35,9 +27,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 	reporter = new TelemetryReporter(extensionId, extensionVersion, appInsightsKey);
 	context.subscriptions.push(reporter);
 
-	clientHandler = new ClientHandler(context, reporter);
-
-	const installPath = path.join(context.extensionPath, 'lsp');
+	const lsPath = new ServerPath(context);
+	clientHandler = new ClientHandler(lsPath, reporter);
 
 	// get rid of pre-2.0.0 settings
 	if (config('terraform').has('languageServer.enabled')) {
@@ -55,7 +46,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				const current = config('terraform').get('languageServer');
 				await config('terraform').update('languageServer', Object.assign(current, { external: true }), vscode.ConfigurationTarget.Global);
 			}
-			return updateLanguageServer(clientHandler, installPath);
+			return updateLanguageServer(clientHandler, lsPath);
 		}),
 		vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
 			if (enabled()) {
@@ -118,7 +109,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 				// Make sure there's an open document in a folder
 				// Also check whether they're running a different language server
 				// TODO: Check initializationOptions for command presence instead of pathToBinary
-				if (event && vscode.workspace.workspaceFolders[0] && !config('terraform').get('languageServer.pathToBinary')) {
+				if (event && vscode.workspace.workspaceFolders[0] && !lsPath.hasCustomBinPath()) {
 					const documentUri = event.document.uri;
 					const client = clientHandler.getClient(documentUri);
 					const moduleUri = Utils.dirname(documentUri);
@@ -163,16 +154,16 @@ export function deactivate(): Promise<void[]> {
 	return clientHandler.stopClients();
 }
 
-async function updateLanguageServer(clientHandler: ClientHandler, installPath: string) {
+async function updateLanguageServer(clientHandler: ClientHandler, lsPath: ServerPath) {
 	console.log('Checking for language server updates...')
 	const hour = 1000 * 60 * 60;
 	languageServerUpdater.timeout(function() {
-		updateLanguageServer(clientHandler, installPath);
+		updateLanguageServer(clientHandler, lsPath);
 	}, 24 * hour);
 
 	// skip install if a language server binary path is set
-	if (!config('terraform').get('languageServer.pathToBinary')) {
-		const installer = new LanguageServerInstaller(installPath, reporter);
+	if (!lsPath.hasCustomBinPath()) {
+		const installer = new LanguageServerInstaller(lsPath, reporter);
 		const install = await installer.needsInstall();
 		if (install) {
 			await clientHandler.stopClients();

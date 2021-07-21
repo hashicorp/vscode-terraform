@@ -4,15 +4,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import TelemetryReporter from 'vscode-extension-telemetry';
-
 import { exec } from './utils';
+import { ServerPath } from './serverPath';
 import { Release, getRelease } from '@hashicorp/js-releases';
 
 const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
 
 export class LanguageServerInstaller {
 	constructor(
-		private directory: string,
+		private lsPath: ServerPath,
 		private reporter: TelemetryReporter
 	) { }
 
@@ -30,7 +30,7 @@ export class LanguageServerInstaller {
 
 		let installedVersion: string;
 		try {
-			installedVersion = await getLsVersion(this.directory);
+			installedVersion = await getLsVersion(this.lsPath);
 		} catch (err) {
 			// Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
 			// on a fresh installation (unlike upgrade). It’s also possible that the file or directory
@@ -65,8 +65,8 @@ export class LanguageServerInstaller {
 	}
 
 	async installPkg(release: Release): Promise<void> {
-		const installDir = this.directory;
-		const destination = `${installDir}/terraform-ls_v${release.version}.zip`;
+		const installDir = this.lsPath.installPath();
+		const destination = path.resolve(installDir, `terraform-ls_v${release.version}.zip`);
 		fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
 
 		const os = goOs();
@@ -96,11 +96,12 @@ export class LanguageServerInstaller {
 	}
 
 	removeOldBinary(): void {
-		fs.unlinkSync(lsBinPath(this.directory));
+		fs.unlinkSync(this.lsPath.binPath());
 	}
 
 	public async cleanupZips(): Promise<string[]> {
-		return del(`${this.directory}/terraform-ls*.zip`, { force: true });
+		const pattern = path.resolve(this.lsPath.installPath(), 'terraform-ls*.zip');
+		return del(pattern, { force: true });
 	}
 
 	showChangelog(version: string): void {
@@ -114,8 +115,8 @@ export class LanguageServerInstaller {
 	}
 }
 
-async function getLsVersion(dirPath: string): Promise<string> {
-	const binPath = lsBinPath(dirPath);
+async function getLsVersion(lsPath: ServerPath): Promise<string> {
+	const binPath = lsPath.binPath();
 	fs.accessSync(binPath, fs.constants.X_OK);
 
 	try {
@@ -155,12 +156,4 @@ function goArch(): string {
 	}
 
 	return arch;
-}
-
-function lsBinPath(directory: string): string {
-	if (goOs() === "windows") {
-		return path.join(directory, 'terraform-ls.exe');
-	} else {
-		return path.join(directory, 'terraform-ls');
-	}
 }
