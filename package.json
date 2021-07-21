@@ -192,6 +192,10 @@
       {
         "command": "terraform.plan",
         "title": "Terraform: plan"
+      },
+      {
+        "command": "terraform.destroy",
+        "title": "Terraform: destroy"
       }
     ]
   },
