@@ -7,6 +7,7 @@ BUG FIXES:
 ENHANCEMENTS:
 
  - Install native LS build for Apple Silicon (darwin/arm64) (#563)
+ - Improve error handling (#691)
 
 # 2.13.2 (2021-07-19)
 
