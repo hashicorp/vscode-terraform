@@ -38,6 +38,27 @@
   ],
   "main": "./out/extension",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "terraform",
+          "title": "Terraform",
+          "icon": "resources/terraform-vertical-monochrome.png"
+        }
+      ]
+    },
+    "views": {
+      "terraform": [
+        {
+          "id": "terraform-module-calls",
+          "name": "Module Calls"
+        },
+        {
+          "id": "terraform-providers",
+          "name": "Providers"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "terraform",
