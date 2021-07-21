@@ -17,16 +17,11 @@ import {
 	sortedWorkspaceFolders
 } from './vscodeUtils';
 import TelemetryReporter from 'vscode-extension-telemetry';
+import { ServerPath } from './serverPath';
 
 export interface TerraformLanguageClient {
 	commandPrefix: string,
 	client: LanguageClient
-}
-
-interface pathGetter {
-	binPath(): string
-	binName(): string
-	hasCustomBinPath(): boolean
 }
 
 const MULTI_FOLDER_CLIENT = "";
@@ -41,7 +36,7 @@ export class ClientHandler {
 	private shortUid: ShortUniqueId;
 	private supportsMultiFolders = true;
 
-	constructor(private lsPath: pathGetter, private reporter: TelemetryReporter ) {
+	constructor(private lsPath: ServerPath, private reporter: TelemetryReporter ) {
 		this.shortUid = new ShortUniqueId();
 		if (lsPath.hasCustomBinPath()) {
 			this.reporter.sendTelemetryEvent('usePathToBinary');

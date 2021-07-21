@@ -3,22 +3,14 @@ import {
 	ExecuteCommandParams,
 	ExecuteCommandRequest
 } from 'vscode-languageclient';
-import {
-	LanguageClient
-} from 'vscode-languageclient/node';
+import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri'
 import TelemetryReporter from 'vscode-extension-telemetry';
-
 import { LanguageServerInstaller } from './languageServerInstaller';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
-import {
-	config,
-	prunedFolderNames,
-	ServerPath
-} from './vscodeUtils';
-import {
-	SingleInstanceTimeout,
-} from './utils';
+import { config, prunedFolderNames } from './vscodeUtils';
+import { SingleInstanceTimeout } from './utils';
+import { ServerPath } from './serverPath';
 
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 

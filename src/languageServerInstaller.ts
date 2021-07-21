@@ -4,20 +4,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import TelemetryReporter from 'vscode-extension-telemetry';
-
 import { exec } from './utils';
+import { ServerPath } from './serverPath';
 import { Release, getRelease } from '@hashicorp/js-releases';
 
 const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
 
-interface pathGetter {
-	installPath(): string;
-	binPath(): string
-}
-
 export class LanguageServerInstaller {
 	constructor(
-		private lsPath: pathGetter,
+		private lsPath: ServerPath,
 		private reporter: TelemetryReporter
 	) { }
 
@@ -120,7 +115,7 @@ export class LanguageServerInstaller {
 	}
 }
 
-async function getLsVersion(lsPath: pathGetter): Promise<string> {
+async function getLsVersion(lsPath: ServerPath): Promise<string> {
 	const binPath = lsPath.binPath();
 	fs.accessSync(binPath, fs.constants.X_OK);
 
