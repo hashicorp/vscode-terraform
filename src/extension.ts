@@ -138,6 +138,69 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		)
 	);
 
+	vscode.window.createTreeView('terraform-module-calls', {
+		treeDataProvider: {
+			getChildren: function(element?: string): vscode.ProviderResult<string[]> {
+				if (element === 'eks') {
+					return [
+						'fargate',
+						'node_groups'
+					]
+				}
+				return [
+					'network',
+					'eks',
+					'cloudtrail',
+				];
+			},
+			getTreeItem: function(element?: string): vscode.TreeItem {
+				switch(element) {
+					case 'network': {
+						return {
+							label: /**vscode.TreeItemLabel**/<any>{ label: 'network', highlights: false },
+							iconPath: new vscode.ThemeIcon('symbol-folder'),
+							tooltip: new vscode.MarkdownString(`$(zap) Tooltip for network`, true),
+							// resourceUri: vscode.Uri.parse(`/tmp/network`),
+						}
+					}
+					case 'eks': {
+						return {
+							label: /**vscode.TreeItemLabel**/<any>{ label: 'eks-cluster (terraform-aws-modules/eks@17.1.0)', highlights: false },
+							iconPath: '/Users/radeksimko/gopath/src/github.com/hashicorp/vscode-terraform/resources/terraform-vertical-black.png',
+							tooltip: new vscode.MarkdownString(`$(zap) Tooltip for eks`, true),
+							collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
+							// resourceUri: vscode.Uri.parse(`/tmp/eks`),
+						}
+					}
+					case 'fargate': {
+						return {
+							label: /**vscode.TreeItemLabel**/<any>{ label: 'fargate', highlights: false },
+							iconPath: '/Users/radeksimko/gopath/src/github.com/hashicorp/vscode-terraform/resources/terraform-vertical-black.png',
+							tooltip: new vscode.MarkdownString(`$(zap) Tooltip for fargate`, true),
+							// resourceUri: vscode.Uri.parse(`/tmp/fargate`),
+						}
+					}
+					case 'node_groups': {
+						return {
+							label: /**vscode.TreeItemLabel**/<any>{ label: 'node_groups', highlights: false },
+							iconPath: '/Users/radeksimko/gopath/src/github.com/hashicorp/vscode-terraform/resources/terraform-vertical-black.png',
+							tooltip: new vscode.MarkdownString(`$(zap) Tooltip for node_groups`, true),
+							// resourceUri: vscode.Uri.parse(`/tmp/node_groups`),
+						}
+					}
+					case 'cloudtrail': {
+						return {
+							label: /**vscode.TreeItemLabel**/<any>{ label: 'cloudtrail (acmeltd/tf-cloudtrail@v1.0.0)', highlights: false },
+							iconPath: new vscode.ThemeIcon('github-inverted'),
+							tooltip: new vscode.MarkdownString(`$(zap) Tooltip for cloudtrail`, true),
+							// resourceUri: vscode.Uri.parse(`/tmp/cloudtrail`),
+						}
+					}
+				}
+			}
+		}
+	})
+
 	if (enabled()) {
 		try {
 			await vscode.commands.executeCommand('terraform.enableLanguageServer');
