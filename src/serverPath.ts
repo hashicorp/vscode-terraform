@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 
 const INSTALL_FOLDER_NAME = 'lsp';
-const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
+export const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
 
 export class ServerPath {
 	private customBinPath: string;

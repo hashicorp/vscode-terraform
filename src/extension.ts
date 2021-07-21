@@ -161,24 +161,30 @@ async function updateLanguageServer(clientHandler: ClientHandler, lsPath: Server
 		updateLanguageServer(clientHandler, lsPath);
 	}, 24 * hour);
 
-	// skip install if a language server binary path is set
-	if (!lsPath.hasCustomBinPath()) {
-		const installer = new LanguageServerInstaller(lsPath, reporter);
-		const install = await installer.needsInstall();
-		if (install) {
-			await clientHandler.stopClients();
-			try {
-				await installer.install();
-			} catch (err) {
-				console.log(err); // for test failure reporting
-				reporter.sendTelemetryException(err);
-				throw err;
-			} finally {
-				await installer.cleanupZips();
+	try {
+		// skip install if a language server binary path is set
+		if (!lsPath.hasCustomBinPath()) {
+			const installer = new LanguageServerInstaller(lsPath, reporter);
+			const install = await installer.needsInstall();
+			if (install) {
+				await clientHandler.stopClients();
+				try {
+					await installer.install();
+				} catch (err) {
+					console.log(err); // for test failure reporting
+					reporter.sendTelemetryException(err);
+					throw err;
+				} finally {
+					await installer.cleanupZips();
+				}
 			}
 		}
+		// on repeat runs with no install, this will be a no-op
+		return clientHandler.startClients(prunedFolderNames());
+	} catch (error) {
+		console.log(error); // for test failure reporting
+		vscode.window.showErrorMessage(error.message);
 	}
-	return clientHandler.startClients(prunedFolderNames()); // on repeat runs with no install, this will be a no-op
 }
 
 function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {

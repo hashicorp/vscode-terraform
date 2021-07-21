@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
 import ShortUniqueId from 'short-unique-id';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as which from 'which';
 import {
 	Executable,
 	LanguageClient,
@@ -17,7 +20,7 @@ import {
 	sortedWorkspaceFolders
 } from './vscodeUtils';
 import TelemetryReporter from 'vscode-extension-telemetry';
-import { ServerPath } from './serverPath';
+import { ServerPath, CUSTOM_BIN_PATH_OPTION_NAME } from './serverPath';
 
 export interface TerraformLanguageClient {
 	commandPrefix: string,
@@ -95,15 +98,15 @@ export class ClientHandler {
 	}
 
 	private createTerraformClient(location?: string): TerraformLanguageClient {
-		const cmd = this.lsPath.binPath();
+		const cmd = this.resolvedPathToBinary();
 		const binaryName = this.lsPath.binName();
 
 		const serverArgs: string[] = config('terraform').get('languageServer.args');
 		const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
 
 		let channelName = `${binaryName}`;
-		let id = `languageServer`
-		let name = `Language Server`
+		let id = `terraform-ls`
+		let name = `Terraform LS`
 		let wsFolder: vscode.WorkspaceFolder;
 		let rootModulePaths: string[];
 		let excludeModulePaths: string[];
@@ -111,8 +114,8 @@ export class ClientHandler {
 		let outputChannel: vscode.OutputChannel;
 		if (location) {
 			channelName = `${binaryName}: ${location}`;
-			id = `languageServer/${location}`
-			name = `Language Server: ${location}`
+			id = `terraform-ls/${location}`
+			name = `Terraform LS: ${location}`
 			wsFolder = getWorkspaceFolder(location);
 			documentSelector = [
 				{ scheme: 'file', language: 'terraform', pattern: `${wsFolder.uri.fsPath}/**/*` },
@@ -227,6 +230,28 @@ export class ClientHandler {
 				console.log(`Client deleted for ${folder}`);
 			}
 		});
+	}
+
+	private resolvedPathToBinary(): string {
+		const pathToBinary = this.lsPath.binPath()
+		let cmd: string
+		try {
+			if (path.isAbsolute(pathToBinary)) {
+				fs.accessSync(pathToBinary, fs.constants.X_OK);
+				cmd = pathToBinary;
+			} else {
+				cmd = which.sync(pathToBinary);
+			}
+			console.log(`Found server at ${cmd}`);
+		} catch (err) {
+			let extraHint: string;
+			if (this.lsPath.hasCustomBinPath()) {
+				extraHint = `. Check "${CUSTOM_BIN_PATH_OPTION_NAME}" in your settings.`
+			}
+			throw new Error(`Unable to launch language server: ${err.message}${extraHint}`);
+		}
+
+		return cmd;
 	}
 
 	public getClient(document?: vscode.Uri): TerraformLanguageClient {
