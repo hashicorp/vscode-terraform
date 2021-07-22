@@ -194,6 +194,10 @@
         "title": "Terraform: validate"
       },
       {
+        "command": "terraform.apply",
+        "title": "Terraform: Apply"
+      },
+      {
         "command": "terraform.plan",
         "title": "Terraform: plan"
       }
