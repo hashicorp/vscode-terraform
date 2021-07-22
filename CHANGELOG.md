@@ -11,6 +11,7 @@ FEATURES:
 ENHANCEMENTS:
 
  - Install native LS build for Apple Silicon (darwin/arm64) (#563)
+ - Add semver based version pin for Language Server via `requiredVersion` config option (#656)
  - Improve error handling (#691)
 
 # 2.13.2 (2021-07-19)
