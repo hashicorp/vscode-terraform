@@ -9,6 +9,11 @@ import { ServerPath } from './serverPath';
 import { Release, getRelease } from '@hashicorp/js-releases';
 
 const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
+export const defaultVersionString = "latest";
+
+export function isValidVersionString(value: string): boolean {
+	return semver.validRange(value,  { includePrerelease: true, loose: true }) !== null;
+}
 
 export class LanguageServerInstaller {
 	constructor(
@@ -19,10 +24,31 @@ export class LanguageServerInstaller {
 	private userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
 	private release: Release;
 
-	public async needsInstall(): Promise<boolean> {
+	private async getRequiredVersionRelease(versionString: string): Promise<Release> {
 		try {
-			this.release = await getRelease("terraform-ls", "latest", this.userAgent);
+			const release = await getRelease("terraform-ls", versionString, this.userAgent);
+			console.log(`Found Terraform language server version ${release.version} which satisfies range '${versionString}'`);
+			return release;
 		} catch (err) {
+			if (versionString == defaultVersionString) { throw err; }
+			console.log(`Error while finding Terraform language server release which satisfies range '${versionString}' and will reattempt with '${defaultVersionString}': ${err}`)
+			vscode.window.showWarningMessage(`No version matching ${versionString} found, searching for ${defaultVersionString} instead`);
+		}
+
+		// Attempt to find the latest release
+		const release = await getRelease("terraform-ls", defaultVersionString, this.userAgent);
+		console.log(`Found Default Terraform language server version ${release.version} which satisfies range '${defaultVersionString}'`);
+		return release;
+	}
+
+	public async needsInstall(requiredVersion: string): Promise<boolean> {
+		// Silently default to latest if an invalid version string is passed.
+		// Actually telling the user about a bad string is left to the main extension code instead of here
+		const versionString = isValidVersionString(requiredVersion) ? requiredVersion : defaultVersionString;
+		try {
+			this.release = await this.getRequiredVersionRelease(versionString);
+		} catch (err) {
+			console.log(`Error while finding Terraform language server release which satisfies range '${versionString}': ${err}`)
 			// if the releases site is inaccessible, report it and skip the install
 			this.reporter.sendTelemetryException(err);
 			return false;
@@ -31,6 +57,7 @@ export class LanguageServerInstaller {
 		let installedVersion: string;
 		try {
 			installedVersion = await getLsVersion(this.lsPath);
+			console.log(`Currently installed Terraform language server is version '${installedVersion}`)
 		} catch (err) {
 			// Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
 			// on a fresh installation (unlike upgrade). It’s also possible that the file or directory
@@ -43,12 +70,18 @@ export class LanguageServerInstaller {
 		}
 
 		this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
-		const upgrade = semver.gt(this.release.version, installedVersion, { includePrerelease: true });
-		if (upgrade) {
+
+		if (semver.eq(this.release.version, installedVersion, { includePrerelease: true })) {
+			// Already at the specified version
+			return false;
+		} else if (semver.gt(this.release.version, installedVersion, { includePrerelease: true })) {
+			// Upgrade
 			const selected = await vscode.window.showInformationMessage(`A new language server release is available: ${this.release.version}. Install now?`, 'Install', 'Cancel');
 			return (selected === "Install");
 		} else {
-			return false; // no upgrade available
+			// Downgrade
+			const selected = await vscode.window.showInformationMessage(`An older language server release is available: ${this.release.version}. Install now?`, 'Install', 'Cancel');
+			return (selected === "Install");
 		}
 	}
 
