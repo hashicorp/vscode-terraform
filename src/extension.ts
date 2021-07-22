@@ -172,7 +172,7 @@ async function updateLanguageServer(clientHandler: ClientHandler, lsPath: Server
 		// skip install if a language server binary path is set
 		if (!lsPath.hasCustomBinPath()) {
 			const installer = new LanguageServerInstaller(lsPath, reporter);
-			const install = await installer.needsInstall(config('terraform').get('languageServer.version', defaultVersionString));
+			const install = await installer.needsInstall(config('terraform').get('languageServer.requiredVersion', defaultVersionString));
 			if (install) {
 				await clientHandler.stopClients();
 				try {
