@@ -32,6 +32,7 @@ export class LanguageServerInstaller {
 		} catch (err) {
 			if (versionString == defaultVersionString) { throw err; }
 			console.log(`Error while finding Terraform language server release which satisfies range '${versionString}' and will reattempt with '${defaultVersionString}': ${err}`)
+			vscode.window.showWarningMessage(`No version matching ${versionString} found, searching for ${defaultVersionString} instead`);
 		}
 
 		// Attempt to find the latest release
