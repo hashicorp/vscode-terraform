@@ -71,7 +71,7 @@ export class LanguageServerInstaller {
 		this.reporter.sendTelemetryEvent('foundLsInstalled', { terraformLsVersion: installedVersion });
 
 		if (semver.eq(this.release.version, installedVersion, { includePrerelease: true })) {
-			// Already at the specified versoin
+			// Already at the specified version
 			return false;
 		} else if (semver.gt(this.release.version, installedVersion, { includePrerelease: true })) {
 			// Upgrade
