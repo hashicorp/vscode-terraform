@@ -39,8 +39,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 		}
 	}
 
-	if (config('terraform').has('languageServer.required_version')) {
-		const langServerVer = config('terraform').get('languageServer.required_version', defaultVersionString)
+	if (config('terraform').has('languageServer.requiredVersion')) {
+		const langServerVer = config('terraform').get('languageServer.requiredVersion', defaultVersionString)
 		if (!isValidVersionString(langServerVer)) {
 			vscode.window.showWarningMessage(`The Terraform Language Server Version string '${langServerVer}' is not a valid semantic version and will be ignored.`);
 		}
