@@ -61,16 +61,16 @@
 	"For Expression (List)": {
 		"prefix": "for_list",
 		"body": [
-			"for ${3:item} in ${2:list} :",
-			"${4:item}"
+			"for ${1:item} in ${2:list} :",
+			"${3}"
 		],
 		"description": "Construct a list or map by transforming and filtering elements in another list."
 	},
 	"For Expression (Map)": {
 		"prefix": "for_map",
 		"body": [
-			"for ${2:key}, ${3:value} in ${1:map} :",
-			"${4:key} => ${5:value}"
+			"for ${1:key}, ${2:value} in ${3:map} :",
+			"${4}"
 		],
 		"description": "Construct a list or map by transforming and filtering elements in another map."
 	}
