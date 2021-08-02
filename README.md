@@ -111,7 +111,7 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 
 ## Known Issues
 
-* Multi-folder workspaces are not yet supported. ([info](https://github.com/hashicorp/vscode-terraform/issues/329#issuecomment-639378948))
+* Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
 * A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
 ## User Group
