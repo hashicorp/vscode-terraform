@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Terraform Language Features / Bugs
+    url: https://github.com/hashicorp/terraform-ls/issues
+    about: >-
+      Most of the language features of the VS Code extension are supplied by the Terraform
+      Language Server. Issues with language features in many cases may need to be filed on
+      that repository.
+  - name: Discussion and Questions
+    url: https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46
+    about: Please use the Terraform Community forum for questions and discussions.
