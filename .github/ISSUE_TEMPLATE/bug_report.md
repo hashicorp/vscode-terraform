@@ -23,6 +23,7 @@ resource "github_repository" "test" {
 
 # etc...
 ```
+You can use `tree` to output ASCII-based hierarchy of your project.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
