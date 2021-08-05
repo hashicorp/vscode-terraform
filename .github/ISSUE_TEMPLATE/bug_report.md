@@ -4,26 +4,48 @@ about: Let us know about an unexpected error, a crash, or an incorrect behavior.
 labels: bug
 ---
 
-### VS Code Version
+## Versions
+
+This bug is reproducible in:
+ - [ ] the **latest** version of the extension (below)
+ - [ ] the **latest** version of the language server (below)
+
+### Extension
 <!--
-Copy this from VS Code (Help -> About -> Copy):
+Find this in the VS Code UI: Extensions Pane -> Installed -> HashiCorp Terraform
 -->
 ```
 
 ```
- 
-### Extension Version
+
+### Language Server
 <!--
-Copy this from the extension (Extensions Pane -> Terraform -> Manage / Settings -> Copy):
+Find this from the first few lines of relevant Output pane:
+View -> Output -> terraform-ls
 -->
 ```
 
 ```
 
-### Language Server Version
+### VS Code
 <!--
-Copy this from the *first* few lines of Output pane called "terraform-ls"
-(View -> Output -> terraform-ls)
+Copy this from VS Code
+ - Windows/Linux: Help -> About
+ - macOS: Code -> About Visual Studio Code
+-->
+```
+
+```
+
+### Operating System
+<!--
+Find version and build (32-bit or 64-bit) of your OS
+ - macOS: Apple logo -> About This Mac
+ - Windows: right-click on Windows logo -> Settings -> Device and Windows specifications
+ - Linux: `uname -a`
+   - Ubuntu: `cat /etc/issue`
+
+Also note whether you use WSL (Windows Subsystem for Linux) when on Windows.
 -->
 ```
 
