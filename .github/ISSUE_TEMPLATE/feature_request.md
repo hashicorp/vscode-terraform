@@ -43,7 +43,7 @@ Ideally, this would include real configuration snippets that you tried, actions 
 Please remove any sensitive information such as passwords before sharing configuration snippets.
 --->
 
-(User can today does ... but ...)
+(User today can do ... but ...)
 
 When user does ... they ...
 It would be helpful if ...
