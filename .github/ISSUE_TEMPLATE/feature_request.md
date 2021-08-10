@@ -43,9 +43,9 @@ Ideally, this would include real configuration snippets that you tried, actions 
 Please remove any sensitive information such as passwords before sharing configuration snippets.
 --->
 
-(User today can do ... but ...)
+(I can do ... today but ...)
 
-When user does ... they ...
+When I do ... then ...
 It would be helpful if ...
 
 
@@ -55,7 +55,7 @@ If you already have an idea of what this feature might look like in the editor
 and can produce screenshots, drawings or ASCII art - please attach it here.
 -->
 
-User would be able to see ... when ...
+I would be able to see ... when I click/type ...
 
 ## Proposal
 <!--
