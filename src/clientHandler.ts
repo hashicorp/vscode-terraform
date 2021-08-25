@@ -110,6 +110,9 @@ export class ClientHandler {
 		let name = `Terraform LS`
 		let wsFolder: vscode.WorkspaceFolder;
 		let rootModulePaths: string[];
+		let terraformExecPath: string;
+		let terraformExecTimeout: string;
+		let terraformLogFilePath: string;
 		let excludeModulePaths: string[];
 		let documentSelector: DocumentSelector;
 		let outputChannel: vscode.OutputChannel;
@@ -122,6 +125,9 @@ export class ClientHandler {
 				{ scheme: 'file', language: 'terraform', pattern: `${wsFolder.uri.fsPath}/**/*` },
 				{ scheme: 'file', language: 'terraform-vars', pattern: `${wsFolder.uri.fsPath}/**/*` }
 			]
+			terraformExecPath = config('terraform-ls', wsFolder).get('terraformExecPath');
+			terraformExecTimeout = config('terraform-ls', wsFolder).get('terraformExecTimeout');
+			terraformLogFilePath = config('terraform-ls', wsFolder).get('terraformLogFilePath');
 			rootModulePaths = config('terraform-ls', wsFolder).get('rootModules');
 			excludeModulePaths = config('terraform-ls', wsFolder).get('excludeRootModules');
 			outputChannel = vscode.window.createOutputChannel(channelName);
@@ -131,6 +137,9 @@ export class ClientHandler {
 				{ scheme: 'file', language: 'terraform' },
 				{ scheme: 'file', language: 'terraform-vars' }
 			]
+			terraformExecPath = config('terraform-ls').get('terraformExecPath');
+			terraformExecTimeout = config('terraform-ls').get('terraformExecTimeout');
+			terraformLogFilePath = config('terraform-ls').get('terraformLogFilePath');
 			rootModulePaths = config('terraform-ls').get('rootModules');
 			excludeModulePaths = config('terraform-ls').get('excludeRootModules');
 			outputChannel = vscode.window.createOutputChannel(channelName);
@@ -143,6 +152,15 @@ export class ClientHandler {
 
 		const commandPrefix = this.shortUid.seq();
 		let initializationOptions = { commandPrefix, experimentalFeatures };
+		if (terraformExecPath.length > 0) {
+			initializationOptions = Object.assign(initializationOptions, { terraformExecPath });
+		}
+		if (terraformExecTimeout.length > 0) {
+			initializationOptions = Object.assign(initializationOptions, { terraformExecTimeout });
+		}
+		if (terraformLogFilePath.length > 0) {
+			initializationOptions = Object.assign(initializationOptions, { terraformLogFilePath });
+		}
 		if (rootModulePaths.length > 0) {
 			initializationOptions = Object.assign(initializationOptions, { rootModulePaths });
 		}

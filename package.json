@@ -149,6 +149,21 @@
           "default": [],
           "description": "Per-workspace list of module directories for the language server to read"
         },
+        "terraform-ls.terraformExecPath": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Path to the Terraform binary"
+        },
+        "terraform-ls.terraformExecTimeout": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Overrides Terraform execution timeout (e.g. 30s)"
+        },
+        "terraform-ls.terraformLogFilePath": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. Timestamp, Pid, Ppid) via Go template syntax {{.VarName}}"
+        },
         "terraform-ls.excludeRootModules": {
           "scope": "resource",
           "type": "array",
