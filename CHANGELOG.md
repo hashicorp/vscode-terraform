@@ -4,7 +4,7 @@ ENHANCEMENTS:
 
  - Add support for language server side config option `terraformExecPath` (#741)
  - Add support for language server side config option `terraformExecTimeout` (#741)
- - Add support for language server side config option `terraformExecLogFilePath` (#741)
+ - Add support for language server side config option `terraformLogFilePath` (#741)
 
 # 2.14.0 (2021-07-22)
 
