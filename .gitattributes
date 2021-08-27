@@ -1,4 +1,4 @@
-* text=auto
+* text eol=lf
 # special shasum test can't have linefeeds change
 # https://github.com/actions/checkout/issues/226
 shasumtest.txt text eol=lf

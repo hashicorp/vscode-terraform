@@ -1,5 +1,45 @@
 {
-    "editor.insertSpaces": false,
-    "typescript.preferences.quoteStyle": "single",
-    "typescript.tsc.autoDetect": "off"
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+
+  "files.exclude": {
+    "node_modules": true,
+    "out": true
+  },
+  "search.exclude": {
+    "node_modules": true,
+    "out": true
+  },
+
+  "typescript.format.enable": false,
+  "typescript.tsc.autoDetect": "off",
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.wordWrapColumn": 80,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.quickSuggestions": false,
+    "files.trimTrailingWhitespace": false
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
