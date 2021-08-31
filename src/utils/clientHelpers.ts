@@ -1,18 +1,53 @@
-import { Executable, InitializeResult } from 'vscode-languageclient/node';
+import * as net from 'net';
+import * as vscode from 'vscode';
+import { Executable, InitializeResult, ServerOptions, StreamInfo } from 'vscode-languageclient/node';
 import { config } from './vscode';
 import { ServerPath } from './serverPath';
 
-export async function getServerExecutable(lsPath: ServerPath): Promise<Executable> {
+export async function getServerOptions(lsPath: ServerPath): Promise<ServerOptions> {
+  let serverOptions: ServerOptions;
+
+  const port: number | undefined = config('terraform').get('experimentalFeatures.languageServer.tcp.port');
+  if (port) {
+    const inspect = vscode.workspace.getConfiguration('terraform').inspect('languageServer.path');
+    if (inspect !== undefined) {
+      ///
+      if (inspect.globalValue || inspect.workspaceFolderValue || inspect.workspaceValue) {
+        vscode.window.showWarningMessage(
+          'You cannot use experimentalFeatures.languageServer.tcp.port with terraform.languageServer.path. Ignoring terraform.languageServer.path and proceeding to connect via TCP',
+        );
+      }
+    }
+
+    serverOptions = () => {
+      const socket = new net.Socket();
+      socket.connect({
+        port: port,
+        host: 'localhost',
+      });
+      const result: StreamInfo = {
+        writer: socket,
+        reader: socket,
+      };
+      return Promise.resolve(result);
+    };
+    return serverOptions;
+  }
+
   const cmd = await lsPath.resolvedPathToBinary();
   const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
-
+  // this.outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
   const executable: Executable = {
     command: cmd,
     args: serverArgs,
     options: {},
   };
+  serverOptions = {
+    run: executable,
+    debug: executable,
+  };
 
-  return executable;
+  return serverOptions;
 }
 
 export function getInitializationOptions() {

@@ -12,7 +12,7 @@ import {
   ServerOptions,
 } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { clientSupportsCommand, getInitializationOptions, getServerExecutable } from './utils/clientHelpers';
+import { clientSupportsCommand, getInitializationOptions, getServerOptions } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
@@ -111,12 +111,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   if (lsPath.hasCustomBinPath()) {
     reporter.sendTelemetryEvent('usePathToBinary');
   }
-  const executable = await getServerExecutable(lsPath);
-  const serverOptions: ServerOptions = {
-    run: executable,
-    debug: executable,
-  };
-  outputChannel.appendLine(`Launching language server: ${executable.command} ${executable.args?.join(' ')}`);
+  const serverOptions: ServerOptions = await getServerOptions(lsPath);
+  // outputChannel.appendLine(`Launching language server: ${executable.command} ${executable.args?.join(' ')}`);
 
   const initializationOptions = getInitializationOptions();
   const clientOptions: LanguageClientOptions = {
