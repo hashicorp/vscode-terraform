@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
@@ -156,6 +158,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
   if (enabled()) {
     try {
       await vscode.commands.executeCommand('terraform.enableLanguageServer');
+
+      checkIfFirstUse(context);
     } catch (error) {
       reporter.sendTelemetryException(error);
     }
@@ -291,4 +295,47 @@ async function terraformCommand(
 
 function enabled(): boolean {
   return config('terraform').get('languageServer.external');
+}
+
+async function checkIfFirstUse(ctx: vscode.ExtensionContext) {
+  const doNotInit = ctx.globalState.get<boolean>('doNotInitCurrentFolder', false);
+  if (doNotInit === true) {
+    return;
+  }
+
+  try {
+    const workspace = vscode.workspace.workspaceFolders[0];
+    const terraDir = path.join(workspace.uri.fsPath, '.terraform');
+    fs.accessSync(terraDir, fs.constants.X_OK);
+  } catch (err) {
+    const message = `Your working directory is not initialized or does not contain Terraform configuration files. You
+    must perform a "terraform init" to provide this extension with up-to-date provider schemas. The extension will
+    not work correctly without first completing this step! You should run "Terraform: init" from the Command Pallete now.`;
+    const donotcheck = "Don't check again";
+    const moreinfo = 'More Infomration';
+    const runinitcmd = 'Run teraform init';
+    const response = await vscode.window.showWarningMessage(
+      message,
+      { modal: false },
+      { title: donotcheck },
+      { title: moreinfo },
+      { title: runinitcmd },
+    );
+
+    if (response.title == donotcheck) {
+      ctx.globalState.update('doNotInitCurrentFolder', true);
+      return;
+    }
+
+    if (response.title == moreinfo) {
+      await vscode.commands.executeCommand(
+        'vscode.open',
+        vscode.Uri.parse('https://www.terraform.io/docs/cli/commands/init.html'),
+      );
+    }
+
+    if (response.title == runinitcmd) {
+      await vscode.commands.executeCommand('workbench.action.quickOpen', '> Terraform: init current folder');
+    }
+  }
 }
