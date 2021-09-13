@@ -5,6 +5,7 @@ import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
+import { ModuleProvider } from './providers/moduleProvider';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
 import { config, getActiveTextEditor, prunedFolderNames } from './vscodeUtils';
@@ -134,6 +135,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
       reporter.sendTelemetryException(error);
     }
   }
+
+  vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
+  context.subscriptions.push(
+    vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
+  );
 
   // export public API
   return { clientHandler, moduleCallers };
