@@ -123,7 +123,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
     }),
     vscode.window.onDidChangeVisibleTextEditors(async () => {
       const textEditor = getActiveTextEditor();
-      await updateTerraformStatusBar(textEditor.document.uri, lsPath);
+      await updateTerraformStatusBar(textEditor.document.uri);
     }),
   );
 
@@ -143,11 +143,9 @@ export function deactivate(): Promise<void[]> {
   return clientHandler.stopClients();
 }
 
-async function updateTerraformStatusBar(documentUri: vscode.Uri, lsPath: ServerPath) {
-  // Make sure there's an open document in a folder
-  // Also check whether they're running a different language server
-  // TODO: Check initializationOptions for command presence instead of pathToBinary
-  if (!lsPath.hasCustomBinPath()) {
+async function updateTerraformStatusBar(documentUri: vscode.Uri) {
+  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init', documentUri);
+  if (initSupported) {
     const client = clientHandler.getClient(documentUri);
     const moduleUri = Utils.dirname(documentUri);
 

@@ -281,6 +281,11 @@ export class ClientHandler {
     return clients.get(this.clientName(document.toString()));
   }
 
+  public clientSupportsCommand(cmdName: string, document?: vscode.Uri): boolean {
+    const commands = this.getClient(document).client.initializeResult.capabilities.executeCommandProvider?.commands;
+    return commands.includes(cmdName);
+  }
+
   private clientName(folderName: string, workspaceFolders: readonly string[] = sortedWorkspaceFolders()): string {
     folderName = normalizeFolderName(folderName);
     const outerFolder = workspaceFolders.find((element) => folderName.startsWith(element));
