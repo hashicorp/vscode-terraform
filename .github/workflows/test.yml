@@ -47,6 +47,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
+          terraform_version: "~1.0"
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests
