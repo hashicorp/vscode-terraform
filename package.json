@@ -6,6 +6,7 @@
   "version": "2.14.0",
   "publisher": "hashicorp",
   "license": "MPL-2.0",
+  "private": true,
   "engines": {
     "npm": "^7.17.0",
     "vscode": "^1.50.1"
