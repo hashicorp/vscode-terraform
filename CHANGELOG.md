@@ -9,6 +9,7 @@ ENHANCEMENTS:
 BUG FIXES:
 
  - fix: avoid tracking client which is not ready yet (#778)
+ - fix: avoid considering output panes as editors (#771)
 
 # 2.14.0 (2021-07-22)
 
