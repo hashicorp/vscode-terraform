@@ -6,6 +6,10 @@ ENHANCEMENTS:
  - Add support for language server side config option `terraformExecTimeout` (#741)
  - Add support for language server side config option `terraformLogFilePath` (#741)
 
+BUG FIXES:
+
+ - fix: avoid tracking client which is not ready yet (#778)
+
 # 2.14.0 (2021-07-22)
 
 BUG FIXES:
