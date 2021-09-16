@@ -7,7 +7,7 @@ import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
-import { config, prunedFolderNames } from './vscodeUtils';
+import { config, getActiveTextEditor, prunedFolderNames } from './vscodeUtils';
 
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
@@ -121,35 +121,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
         await clientHandler.startClients(prunedFolderNames(event.added));
       }
     }),
-    vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
-      // Make sure there's an open document in a folder
-      // Also check whether they're running a different language server
-      // TODO: Check initializationOptions for command presence instead of pathToBinary
-      if (event && vscode.workspace.workspaceFolders[0] && !lsPath.hasCustomBinPath()) {
-        const documentUri = event.document.uri;
-        const client = clientHandler.getClient(documentUri);
-        const moduleUri = Utils.dirname(documentUri);
-
-        if (client) {
-          try {
-            const response = await moduleCallers(client, moduleUri.toString());
-            if (response.moduleCallers.length === 0) {
-              const dirName = Utils.basename(moduleUri);
-              terraformStatus.text = `$(refresh) ${dirName}`;
-              terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
-              terraformStatus.tooltip = `Click to run terraform init`;
-              terraformStatus.command = 'terraform.initCurrent';
-              terraformStatus.show();
-            } else {
-              terraformStatus.hide();
-            }
-          } catch (err) {
-            vscode.window.showErrorMessage(err);
-            reporter.sendTelemetryException(err);
-            terraformStatus.hide();
-          }
-        }
-      }
+    vscode.window.onDidChangeVisibleTextEditors(async () => {
+      const textEditor = getActiveTextEditor();
+      await updateTerraformStatusBar(textEditor.document.uri);
     }),
   );
 
@@ -167,6 +141,34 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 
 export function deactivate(): Promise<void[]> {
   return clientHandler.stopClients();
+}
+
+async function updateTerraformStatusBar(documentUri: vscode.Uri) {
+  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init', documentUri);
+  if (initSupported) {
+    const client = clientHandler.getClient(documentUri);
+    const moduleUri = Utils.dirname(documentUri);
+
+    if (client) {
+      try {
+        const response = await moduleCallers(client, moduleUri.toString());
+        if (response.moduleCallers.length === 0) {
+          const dirName = Utils.basename(moduleUri);
+          terraformStatus.text = `$(refresh) ${dirName}`;
+          terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
+          terraformStatus.tooltip = `Click to run terraform init`;
+          terraformStatus.command = 'terraform.initCurrent';
+          terraformStatus.show();
+        } else {
+          terraformStatus.hide();
+        }
+      } catch (err) {
+        vscode.window.showErrorMessage(err);
+        reporter.sendTelemetryException(err);
+        terraformStatus.hide();
+      }
+    }
+  }
 }
 
 async function updateLanguageServer(clientHandler: ClientHandler, lsPath: ServerPath) {
@@ -241,11 +243,11 @@ async function terraformCommand(
   languageServerExec = true,
   clientHandler: ClientHandler,
 ): Promise<any> {
-  if (vscode.window.activeTextEditor) {
-    const documentUri = vscode.window.activeTextEditor.document.uri;
-    const languageClient = clientHandler.getClient(documentUri);
+  const textEditor = getActiveTextEditor();
+  if (textEditor) {
+    const languageClient = clientHandler.getClient(textEditor.document.uri);
 
-    const moduleUri = Utils.dirname(documentUri);
+    const moduleUri = Utils.dirname(textEditor.document.uri);
     const response = await moduleCallers(languageClient, moduleUri.toString());
 
     let selectedModule: string;
