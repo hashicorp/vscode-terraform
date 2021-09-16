@@ -118,7 +118,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
         await clientHandler.stopClients(prunedFolderNames(event.removed));
       }
       if (event.added.length > 0) {
-        clientHandler.startClients(prunedFolderNames(event.added));
+        await clientHandler.startClients(prunedFolderNames(event.added));
       }
     }),
     vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
@@ -197,7 +197,7 @@ async function updateLanguageServer(clientHandler: ClientHandler, lsPath: Server
       }
     }
     // on repeat runs with no install, this will be a no-op
-    return clientHandler.startClients(prunedFolderNames());
+    return await clientHandler.startClients(prunedFolderNames());
   } catch (error) {
     console.log(error); // for test failure reporting
     vscode.window.showErrorMessage(error.message);

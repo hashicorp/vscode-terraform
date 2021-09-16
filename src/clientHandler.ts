@@ -41,7 +41,7 @@ export class ClientHandler {
     }
   }
 
-  public startClients(folders?: string[]): vscode.Disposable[] {
+  public async startClients(folders?: string[]): Promise<vscode.Disposable[]> {
     const disposables: vscode.Disposable[] = [];
 
     if (this.supportsMultiFolders) {
@@ -53,7 +53,7 @@ export class ClientHandler {
       console.log('Starting client');
 
       const tfClient = this.createTerraformClient();
-      tfClient.client.onReady().then(async () => {
+      const readyClient = tfClient.client.onReady().then(async () => {
         this.reporter.sendTelemetryEvent('startClient');
         const multiFoldersSupported =
           tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
@@ -64,11 +64,12 @@ export class ClientHandler {
           console.log('Restarting clients as folder-focused');
           await this.stopClients(folders);
           this.supportsMultiFolders = false;
-          this.startClients(folders);
+          await this.startClients(folders);
         }
       });
 
       disposables.push(tfClient.client.start());
+      await readyClient;
       clients.set(MULTI_FOLDER_CLIENT, tfClient);
 
       return disposables;
@@ -79,11 +80,12 @@ export class ClientHandler {
         if (!clients.has(folder)) {
           console.log(`Starting client for ${folder}`);
           const folderClient = this.createTerraformClient(folder);
-          folderClient.client.onReady().then(() => {
+          const readyClient = folderClient.client.onReady().then(() => {
             this.reporter.sendTelemetryEvent('startClient');
           });
 
           disposables.push(folderClient.client.start());
+          await readyClient;
           clients.set(folder, folderClient);
         } else {
           console.log(`Client for folder: ${folder} already started`);
