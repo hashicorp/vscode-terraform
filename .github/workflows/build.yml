@@ -34,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: vscode-terraform-${{github.sha}}.vsix
-          path: ${{github.workspace}}\extension.vsix
+          path: ${{github.workspace}}/extension.vsix
