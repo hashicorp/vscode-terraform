@@ -7,15 +7,22 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
 
+      - name: Read NodeJS version
+        id: nodejs-version
+        run: |
+          content=`cat ./.nvmrc`
+          echo "::set-output name=content::$content"
+
       - name: setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          # See https://github.com/actions/setup-node/issues/32
+          node-version: ${{ steps.nodejs-version.outputs.content }}
 
       - name: clean install dependencies
         run: npm ci    
