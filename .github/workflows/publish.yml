@@ -1,0 +1,53 @@
+name: Publish release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  publish:
+    name: Publish to VS Code Marketplace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Read extension version
+        id: ext-version
+        run: |
+          content=`cat ./package.json | jq -r .version`
+          echo "::set-output name=content::$content"
+      - name: Ensure version matches with tag
+        if: ${{ github.ref != format('refs/tags/v{0}', steps.ext-version.outputs.content) }}
+        run: |
+          echo "Version mismatch!"
+          echo "Received ref: ${{ github.ref }}"
+          echo "Expected ref: refs/tags/v${{ steps.ext-version.outputs.content }}"
+          exit 1
+      - name: Read Node.js version
+        id: nodejs-version
+        run: |
+          content=`cat ./.nvmrc`
+          echo "::set-output name=content::$content"
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          # See https://github.com/actions/setup-node/issues/32
+          node-version: ${{ steps.nodejs-version.outputs.content }}
+      - name: Install dependencies
+        run: npm ci
+      - name: vsce package
+        run: npx -- vsce package --out=${{ runner.temp }}/terraform-${{ steps.ext-version.outputs.content }}.vsix
+      - name: Upload vsix as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: terraform-${{ steps.ext-version.outputs.content }}
+          path: ${{ runner.temp }}/terraform-${{ steps.ext-version.outputs.content }}.vsix
+      - name: Check latest published version
+        run: |
+          export EXTENSION_ID=`cat package.json | jq -r '.publisher + "." + .name'`
+          npx -- vsce show --json $EXTENSION_ID | jq '.versions[0]'
+      - name: vsce publish
+        run: npx -- vsce publish --no-git-tag-version --packagePath=${{ runner.temp }}/terraform-${{ steps.ext-version.outputs.content }}.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
