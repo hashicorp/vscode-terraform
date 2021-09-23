@@ -264,7 +264,7 @@
     "viewsWelcome": [
       {
         "view": "terraform.modules",
-        "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get'"
+        "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get' or update your language server version."
       }
     ]
   },
