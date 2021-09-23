@@ -1,3 +1,9 @@
+# 2.16.0 (Unreleased)
+
+ENHANCEMENTS:
+
+ - Add module calls view to Explorer pane (#746)
+
 # 2.15.0 (2021-09-22)
 
 ENHANCEMENTS:
