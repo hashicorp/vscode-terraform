@@ -1,68 +1,32 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "npm",
-			"script": "compile",
-			"group": "build",
-			"presentation": {
-				"panel": "dedicated",
-				"reveal": "never"
-			},
-			"problemMatcher": [
-				"$tsc"
-			]
-		},
-		{
-			"type": "npm",
-			"script": "watch",
-			"isBackground": true,
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"presentation": {
-				"panel": "dedicated",
-				"reveal": "never"
-			},
-			"problemMatcher": [
-				"$tsc-watch"
-			]
-		},
-		{
-			"label": "init",
-			"type": "process",
-			"command": "terraform",
-			"args": [
-				"init"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/testFixture"
-			},
-			"presentation": {
-				"panel": "dedicated",
-				"reveal": "never"
-			},
-		},
-		{
-			"label": "initAndWatch",
-			"type": "npm",
-			"script": "watch",
-			"isBackground": true,
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"presentation": {
-				"panel": "dedicated",
-				"reveal": "never"
-			},
-			"problemMatcher": [
-				"$tsc-watch"
-			],
-			"dependsOn": [
-				"init"
-			]
-		},
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "watch",
+      "problemMatcher": "$tsc-watch",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "terraformInitAndWatch",
+      "type": "process",
+      "command": "terraform",
+      "args": ["init"],
+      "options": {
+        "cwd": "${workspaceFolder}/testFixture"
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
+      "dependsOn":"npm: watch"
+    },
+  ]
 }
