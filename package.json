@@ -213,6 +213,58 @@
       {
         "command": "terraform.plan",
         "title": "Terraform: plan"
+      },
+      {
+        "command": "terraform.modules.refreshList",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.modules.openDocumentation",
+        "title": "Open Documentation",
+        "icon": "$(book)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "terraform.modules.refreshList",
+          "when": "false"
+        },
+        {
+          "command": "terraform.modules.openDocumentation",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "terraform.modules.refreshList",
+          "when": "view == terraform.modules",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "terraform.modules.openDocumentation",
+          "when": "view == terraform.modules"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "terraform.modules",
+          "name": "Terraform Module Calls",
+          "icon": "assets/icons/terraform.svg",
+          "visibility": "collapsed",
+          "when": "terraform.showModuleView"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "terraform.modules",
+        "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get'"
       }
     ]
   },
