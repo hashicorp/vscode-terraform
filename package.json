@@ -270,12 +270,12 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "package": "vsce package",
-    "compile": "tsc -b",
-    "watch": "tsc -b -w",
-    "lint": "eslint src/**/*.ts",
-    "test-compile": "tsc -p ./",
-    "test": "npm run test-compile && node ./out/test/runTest.js"
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
   },
   "dependencies": {
     "@hashicorp/js-releases": "^1.4.0",
