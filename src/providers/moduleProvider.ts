@@ -106,6 +106,14 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     const handler = this.handler.getClient(editor);
 
     return await handler.client.onReady().then(async () => {
+      const moduleCallsSupported = this.handler.clientSupportsCommand(
+        `${handler.commandPrefix}.terraform-ls.module.calls`,
+        editor,
+      );
+      if (!moduleCallsSupported) {
+        return Promise.resolve([]);
+      }
+
       const params: ExecuteCommandParams = {
         command: `${handler.commandPrefix}.terraform-ls.module.calls`,
         arguments: [`uri=${documentURI}`],
