@@ -184,6 +184,11 @@
               "scope": "resource",
               "type": "boolean",
               "default": false
+            },
+            "prefillRequiredFields": {
+              "scope": "resource",
+              "type": "boolean",
+              "default": false
             }
           }
         }
