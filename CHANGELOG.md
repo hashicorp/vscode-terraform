@@ -3,6 +3,11 @@
 ENHANCEMENTS:
 
  - Add module calls view to Explorer pane (#746)
+ - Add experimental `prefillRequiredFields` feature (#799)
+
+INTERNAL:
+
+ - deps: bump vscode-extension-telemetry to 0.4.2 (#790)
 
 # 2.15.0 (2021-09-22)
 
