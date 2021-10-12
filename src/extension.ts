@@ -12,17 +12,13 @@ import { config, getActiveTextEditor, prunedFolderNames } from './vscodeUtils';
 
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
-// Telemetry config
-const extensionId = 'hashicorp.terraform';
-const appInsightsKey = '885372d2-6f3c-499f-9d25-b8b219983a52';
 let reporter: TelemetryReporter;
-
 let clientHandler: ClientHandler;
 const languageServerUpdater = new SingleInstanceTimeout();
 
 export async function activate(context: vscode.ExtensionContext): Promise<any> {
-  const extensionVersion = vscode.extensions.getExtension(extensionId).packageJSON.version;
-  reporter = new TelemetryReporter(extensionId, extensionVersion, appInsightsKey);
+  const manifest = context.extension.packageJSON;
+  reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
 
   const lsPath = new ServerPath(context);
@@ -61,7 +57,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
           vscode.ConfigurationTarget.Global,
         );
       }
-      return updateLanguageServer(clientHandler, lsPath);
+      return updateLanguageServer(manifest.version, clientHandler, lsPath);
     }),
     vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
       if (enabled()) {
@@ -177,17 +173,17 @@ async function updateTerraformStatusBar(documentUri: vscode.Uri) {
   }
 }
 
-async function updateLanguageServer(clientHandler: ClientHandler, lsPath: ServerPath) {
+async function updateLanguageServer(extVersion: string, clientHandler: ClientHandler, lsPath: ServerPath) {
   console.log('Checking for language server updates...');
   const hour = 1000 * 60 * 60;
   languageServerUpdater.timeout(function () {
-    updateLanguageServer(clientHandler, lsPath);
+    updateLanguageServer(extVersion, clientHandler, lsPath);
   }, 24 * hour);
 
   try {
     // skip install if a language server binary path is set
     if (!lsPath.hasCustomBinPath()) {
-      const installer = new LanguageServerInstaller(lsPath, reporter);
+      const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
       const install = await installer.needsInstall(
         config('terraform').get('languageServer.requiredVersion', defaultVersionString),
       );

@@ -8,51 +8,54 @@ export let documentEol: string;
 export let platformEol: string;
 
 export async function open(docUri: vscode.Uri): Promise<void> {
-	try {
-		await activated();
-		doc = await vscode.workspace.openTextDocument(docUri);
-		editor = await vscode.window.showTextDocument(doc);
-	} catch (e) {
-		console.error(e);
-		throw e;
-	}
+  try {
+    await activated();
+    doc = await vscode.workspace.openTextDocument(docUri);
+    editor = await vscode.window.showTextDocument(doc);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export function getExtensionId(): string {
+  var pjson = require('../../package.json');
+  return `${pjson.publisher}.${pjson.name}`;
 }
 
 let _activatedPromise: Promise<void>;
 async function activated() {
-	if (!_activatedPromise) {
-		try {
-			// The extensionId is `publisher.name` from package.json
-			const ext = vscode.extensions.getExtension('hashicorp.terraform');
-			if (!ext.isActive) {
-				console.log('Activating hashicorp.terraform extension');
-				await ext.activate();
-			} else {
-				console.log('hashicorp.terraform is already active');
-			}
-			// TODO: implement proper synchronization/status check in LS
-			// give server(s) some time to startup
-			_activatedPromise = sleep(8000);
-		} catch (err) {
-			_activatedPromise = Promise.reject(err);
-		}
-	}
-	return _activatedPromise;
+  if (!_activatedPromise) {
+    try {
+      // The extensionId is `publisher.name` from package.json
+			const extId = getExtensionId()
+      const ext = vscode.extensions.getExtension(extId);
+      if (!ext.isActive) {
+        console.log('Activating hashicorp.terraform extension');
+        await ext.activate();
+      } else {
+        console.log('hashicorp.terraform is already active');
+      }
+      // TODO: implement proper synchronization/status check in LS
+      // give server(s) some time to startup
+      _activatedPromise = sleep(8000);
+    } catch (err) {
+      _activatedPromise = Promise.reject(err);
+    }
+  }
+  return _activatedPromise;
 }
 
 export const testFolderPath = path.resolve(__dirname, '..', '..', 'testFixture');
 
 export const getDocPath = (p: string): string => {
-	return path.resolve(__dirname, '../../testFixture', p);
+  return path.resolve(__dirname, '../../testFixture', p);
 };
 export const getDocUri = (p: string): vscode.Uri => {
-	return vscode.Uri.file(getDocPath(p));
+  return vscode.Uri.file(getDocPath(p));
 };
 
 export async function setTestContent(content: string): Promise<boolean> {
-	const all = new vscode.Range(
-		doc.positionAt(0),
-		doc.positionAt(doc.getText().length)
-	);
-	return editor.edit(eb => eb.replace(all, content));
+  const all = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
+  return editor.edit((eb) => eb.replace(all, content));
 }
