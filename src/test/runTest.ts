@@ -42,7 +42,7 @@ async function main(): Promise<void> {
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
-      version: '1.52.0',
+      version: '1.55.0',
       launchArgs: ['testFixture', '--disable-extensions'],
     });
   } catch (err) {

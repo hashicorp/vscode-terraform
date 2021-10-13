@@ -1,9 +1,11 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
-import { getDocUri, open, testFolderPath } from './helper';
+import { getDocUri, getExtensionId, open, testFolderPath } from './helper';
 
-const ext = vscode.extensions.getExtension('hashicorp.terraform');
+
+const extId = getExtensionId()
+const ext = vscode.extensions.getExtension(extId);
 
 suite('moduleCallers', () => {
 	test('should execute language server command', async () => {

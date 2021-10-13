@@ -8,7 +8,6 @@ import TelemetryReporter from 'vscode-extension-telemetry';
 import { ServerPath } from './serverPath';
 import { exec } from './utils';
 
-const extensionVersion = vscode.extensions.getExtension('hashicorp.terraform').packageJSON.version;
 export const defaultVersionString = 'latest';
 
 export function isValidVersionString(value: string): boolean {
@@ -16,9 +15,9 @@ export function isValidVersionString(value: string): boolean {
 }
 
 export class LanguageServerInstaller {
-  constructor(private lsPath: ServerPath, private reporter: TelemetryReporter) {}
+  constructor(private extensionVersion: string, private lsPath: ServerPath, private reporter: TelemetryReporter) {}
 
-  private userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`;
+  private userAgent = `Terraform-VSCode/${this.extensionVersion} VSCode/${vscode.version}`;
   private release: Release;
 
   private async getRequiredVersionRelease(versionString: string): Promise<Release> {
