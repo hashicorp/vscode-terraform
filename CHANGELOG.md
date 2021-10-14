@@ -4,6 +4,7 @@ ENHANCEMENTS:
 
  - Add module calls view to Explorer pane (#746)
  - Add experimental `prefillRequiredFields` feature (#799)
+ - Install LS into dedicated persistent global storage (to avoid the need for LS reinstallation upon extension upgrade) (#811)
 
 INTERNAL:
 
