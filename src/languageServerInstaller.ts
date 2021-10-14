@@ -125,9 +125,16 @@ export class LanguageServerInstaller {
       throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
     }
     try {
-      this.removeOldBinary();
+      fs.unlinkSync(this.lsPath.binPath());
     } catch {
       // ignore missing binary (new install)
+    }
+
+    try {
+      fs.unlinkSync(this.lsPath.legacyBinPath());
+    } catch {
+      // clean up may fail for new installation
+      // or in new versions where this path is no longer in use
     }
 
     return vscode.window.withProgress(
@@ -145,10 +152,6 @@ export class LanguageServerInstaller {
         return release.unpack(installDir, destination);
       },
     );
-  }
-
-  removeOldBinary(): void {
-    fs.unlinkSync(this.lsPath.binPath());
   }
 
   public async cleanupZips(): Promise<string[]> {
