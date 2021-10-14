@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-const INSTALL_FOLDER_NAME = 'lsp';
+const INSTALL_FOLDER_NAME = 'bin';
 export const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
 
 export class ServerPath {
@@ -12,7 +12,14 @@ export class ServerPath {
   }
 
   public installPath(): string {
-    return this.context.asAbsolutePath(INSTALL_FOLDER_NAME);
+    return path.join(this.context.globalStorageUri.fsPath, INSTALL_FOLDER_NAME);
+  }
+
+  // legacyBinPath represents old location where LS was installed.
+  // We only use it to ensure that old installations are removed
+  // from there after LS is installed into the new path.
+  public legacyBinPath(): string {
+    return path.resolve(this.context.asAbsolutePath('lsp'), this.binName());
   }
 
   public hasCustomBinPath(): boolean {
