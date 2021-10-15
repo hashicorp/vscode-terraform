@@ -1,0 +1,54 @@
+name: Publish Preview release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Publish Preview to VS Code Marketplace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set preview in package.json
+        id: set-preview
+        run: |
+          ./build/preview
+
+      - name: Read extension version
+        id: ext-version
+        run: |
+          content=`cat ./package.json | jq -r .version`
+          echo "::set-output name=content::$content"
+
+      - name: Read Node.js version
+        id: nodejs-version
+        run: |
+          content=`cat ./.nvmrc`
+          echo "::set-output name=content::$content"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          # See https://github.com/actions/setup-node/issues/32
+          node-version: ${{ steps.nodejs-version.outputs.content }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: vsce package
+        run: npx -- vsce package --out=${{ runner.temp }}/terraform-${{ steps.ext-version.outputs.content }}.vsix
+
+      - name: Check latest published version
+        run: |
+          export EXTENSION_ID=`cat package.json | jq -r '.publisher + "." + .name'`
+          npx -- vsce show --json $EXTENSION_ID | jq '.versions[0]'
+
+      - name: vsce publish
+        run: npx -- vsce publish --no-git-tag-version --packagePath=${{ runner.temp }}/terraform-${{ steps.ext-version.outputs.content }}.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
