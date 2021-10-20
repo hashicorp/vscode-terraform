@@ -12,6 +12,7 @@ import {
 } from 'vscode-languageclient/node';
 import { ServerPath } from './serverPath';
 import { ShowReferencesFeature } from './showReferences';
+import { TelemetryFeature } from './telemetry';
 import { config } from './vscodeUtils';
 
 export interface TerraformLanguageClient {
@@ -87,6 +88,10 @@ export class ClientHandler {
     const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount');
     if (codeLensReferenceCount) {
       client.registerFeature(new ShowReferencesFeature(client));
+    }
+
+    if (vscode.env.isTelemetryEnabled) {
+      client.registerFeature(new TelemetryFeature(client, this.reporter));
     }
 
     client.onDidChangeState((event) => {
