@@ -174,32 +174,38 @@ async function updateTerraformStatusBar(documentUri: vscode.Uri) {
 }
 
 async function updateLanguageServer(extVersion: string, clientHandler: ClientHandler, lsPath: ServerPath) {
-  console.log('Checking for language server updates...');
-  const hour = 1000 * 60 * 60;
-  languageServerUpdater.timeout(function () {
-    updateLanguageServer(extVersion, clientHandler, lsPath);
-  }, 24 * hour);
+  if (config('extensions').get<boolean>('autoCheckUpdates', true) === true) {
+    console.log('Scheduling automatic check for language server updates...');
+    const hour = 1000 * 60 * 60;
+    languageServerUpdater.timeout(function () {
+      updateLanguageServer(extVersion, clientHandler, lsPath);
+    }, 24 * hour);
+  }
 
   try {
     // skip install if a language server binary path is set
-    if (!lsPath.hasCustomBinPath()) {
-      const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
-      const install = await installer.needsInstall(
-        config('terraform').get('languageServer.requiredVersion', defaultVersionString),
-      );
-      if (install) {
-        await clientHandler.stopClients();
-        try {
-          await installer.install();
-        } catch (err) {
-          console.log(err); // for test failure reporting
-          reporter.sendTelemetryException(err);
-          throw err;
-        } finally {
-          await installer.cleanupZips();
-        }
+    if (lsPath.hasCustomBinPath()) {
+      // on repeat runs with no install, this will be a no-op
+      return await clientHandler.startClients(prunedFolderNames());
+    }
+
+    const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
+    const install = await installer.needsInstall(
+      config('terraform').get('languageServer.requiredVersion', defaultVersionString),
+    );
+    if (install) {
+      await clientHandler.stopClients();
+      try {
+        await installer.install();
+      } catch (err) {
+        console.log(err); // for test failure reporting
+        reporter.sendTelemetryException(err);
+        throw err;
+      } finally {
+        await installer.cleanupZips();
       }
     }
+
     // on repeat runs with no install, this will be a no-op
     return await clientHandler.startClients(prunedFolderNames());
   } catch (error) {

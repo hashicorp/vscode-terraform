@@ -7,6 +7,7 @@ import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 import { ServerPath } from './serverPath';
 import { exec } from './utils';
+import { config } from './vscodeUtils';
 
 export const defaultVersionString = 'latest';
 
@@ -62,6 +63,16 @@ export class LanguageServerInstaller {
       return false;
     }
 
+    if (vscode.env.isNewAppInstall) {
+      // we are a brand new install and haven't downloaded the LS yet!
+      // don't check any settings, we need to download LS to continue
+      return true;
+    }
+
+    if (config('extensions').get<boolean>('autoCheckUpdates') === false) {
+      return false;
+    }
+
     let installedVersion: string;
     try {
       installedVersion = await getLsVersion(this.lsPath);
@@ -83,21 +94,13 @@ export class LanguageServerInstaller {
       // Already at the specified version
       return false;
     } else if (semver.gt(this.release.version, installedVersion, { includePrerelease: true })) {
-      // Upgrade
-      const selected = await vscode.window.showInformationMessage(
-        `A new language server release is available: ${this.release.version}. Install now?`,
-        'Install',
-        'Cancel',
-      );
-      return selected === 'Install';
+      // Upgrade: A new language server release is available.
+      // if autoUpdate is true, upgrade, otherwise return false
+      return config('extensions').get<boolean>('autoUpdate');
     } else {
-      // Downgrade
-      const selected = await vscode.window.showInformationMessage(
-        `An older language server release is available: ${this.release.version}. Install now?`,
-        'Install',
-        'Cancel',
-      );
-      return selected === 'Install';
+      // Downgrade: An older language server release is available
+      // if autoUpdate is true, downgrade, otherwise return false
+      return config('extensions').get<boolean>('autoUpdate');
     }
   }
 
@@ -109,8 +112,6 @@ export class LanguageServerInstaller {
       vscode.window.showErrorMessage(`Unable to install terraform-ls: ${err.message}`);
       throw err;
     }
-
-    this.showChangelog(this.release.version);
   }
 
   async installPkg(release: Release): Promise<void> {
@@ -140,7 +141,7 @@ export class LanguageServerInstaller {
     return vscode.window.withProgress(
       {
         cancellable: true,
-        location: vscode.ProgressLocation.Notification,
+        location: vscode.ProgressLocation.Window,
         title: 'Installing terraform-ls',
       },
       async (progress) => {
