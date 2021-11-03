@@ -6,4 +6,5 @@ node_modules/
 npm-debug.log
 lsp/
 testFixture/.terraform.lock.hcl
+testFixture/.vscode
 .terraform/
