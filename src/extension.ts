@@ -8,7 +8,7 @@ import { defaultVersionString, isValidVersionString, LanguageServerInstaller } f
 import { ModuleProvider } from './providers/moduleProvider';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
-import { config, getActiveTextEditor, prunedFolderNames } from './vscodeUtils';
+import { config, getActiveTextEditor } from './vscodeUtils';
 
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
@@ -84,9 +84,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
       });
       if (selected) {
         const moduleUri = selected[0];
-        const client = clientHandler.getClient(moduleUri);
+        const client = clientHandler.getClient();
         const requestParams: ExecuteCommandParams = {
-          command: `${client.commandPrefix}.terraform-ls.terraform.init`,
+          command: `terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
         };
         await execWorkspaceCommand(client.client, requestParams);
@@ -112,10 +112,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
     }),
     vscode.workspace.onDidChangeWorkspaceFolders(async (event: vscode.WorkspaceFoldersChangeEvent) => {
       if (event.removed.length > 0) {
-        await clientHandler.stopClients(prunedFolderNames(event.removed));
+        await clientHandler.stopClients();
       }
       if (event.added.length > 0) {
-        await clientHandler.startClients(prunedFolderNames(event.added));
+        await clientHandler.startClients();
       }
     }),
     vscode.window.onDidChangeVisibleTextEditors(async () => {
@@ -141,14 +141,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
   return { clientHandler, moduleCallers };
 }
 
-export function deactivate(): Promise<void[]> {
+export function deactivate(): Promise<void> {
   return clientHandler.stopClients();
 }
 
 async function updateTerraformStatusBar(documentUri: vscode.Uri) {
-  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init', documentUri);
+  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init');
   if (initSupported) {
-    const client = clientHandler.getClient(documentUri);
+    const client = clientHandler.getClient();
     const moduleUri = Utils.dirname(documentUri);
 
     if (client) {
@@ -201,7 +201,7 @@ async function updateLanguageServer(extVersion: string, clientHandler: ClientHan
       }
     }
     // on repeat runs with no install, this will be a no-op
-    return await clientHandler.startClients(prunedFolderNames());
+    return await clientHandler.startClients();
   } catch (error) {
     console.log(error); // for test failure reporting
     vscode.window.showErrorMessage(error.message);
@@ -224,7 +224,7 @@ interface moduleCallersResponse {
 
 async function modulesCallersCommand(languageClient: TerraformLanguageClient, moduleUri: string): Promise<any> {
   const requestParams: ExecuteCommandParams = {
-    command: `${languageClient.commandPrefix}.terraform-ls.module.callers`,
+    command: `terraform-ls.module.callers`,
     arguments: [`uri=${moduleUri}`],
   };
   return execWorkspaceCommand(languageClient.client, requestParams);
@@ -247,7 +247,7 @@ async function terraformCommand(
 ): Promise<any> {
   const textEditor = getActiveTextEditor();
   if (textEditor) {
-    const languageClient = clientHandler.getClient(textEditor.document.uri);
+    const languageClient = clientHandler.getClient();
 
     const moduleUri = Utils.dirname(textEditor.document.uri);
     const response = await moduleCallers(languageClient, moduleUri.toString());
@@ -267,7 +267,7 @@ async function terraformCommand(
 
     if (languageServerExec) {
       const requestParams: ExecuteCommandParams = {
-        command: `${languageClient.commandPrefix}.terraform-ls.terraform.${command}`,
+        command: `terraform-ls.terraform.${command}`,
         arguments: [`uri=${selectedModule}`],
       };
       return execWorkspaceCommand(languageClient.client, requestParams);
