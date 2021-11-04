@@ -122,20 +122,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
       const textEditor = getActiveTextEditor();
       await updateTerraformStatusBar(textEditor.document.uri);
     }),
+    vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
   );
 
   if (enabled()) {
     try {
       await vscode.commands.executeCommand('terraform.enableLanguageServer');
+      vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
     } catch (error) {
       reporter.sendTelemetryException(error);
     }
   }
-
-  vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
-  context.subscriptions.push(
-    vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
-  );
 
   // export public API
   return { clientHandler, moduleCallers };
