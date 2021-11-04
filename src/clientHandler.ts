@@ -14,7 +14,7 @@ import {
 import * as which from 'which';
 import { CUSTOM_BIN_PATH_OPTION_NAME, ServerPath } from './serverPath';
 import { ShowReferencesFeature } from './showReferences';
-import { config, getWorkspaceFolder } from './vscodeUtils';
+import { config } from './vscodeUtils';
 
 export interface TerraformLanguageClient {
   client: LanguageClient;
@@ -67,53 +67,20 @@ export class ClientHandler {
       });
   }
 
-  private createTerraformClient(location?: string): TerraformLanguageClient {
-    const cmd = this.resolvedPathToBinary();
+  private createTerraformClient(): TerraformLanguageClient {
     const binaryName = this.lsPath.binName();
+    const channelName = `${binaryName}`;
+    const outputChannel: vscode.OutputChannel = vscode.window.createOutputChannel(channelName);
+    const documentSelector: DocumentSelector = [
+      { scheme: 'file', language: 'terraform' },
+      { scheme: 'file', language: 'terraform-vars' },
+    ];
 
-    const serverArgs: string[] = config('terraform').get('languageServer.args');
-    const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
-
-    let channelName = `${binaryName}`;
-    let id = `terraform-ls`;
-    let name = `Terraform LS`;
-    let wsFolder: vscode.WorkspaceFolder;
-    let rootModulePaths: string[];
-    let terraformExecPath: string;
-    let terraformExecTimeout: string;
-    let terraformLogFilePath: string;
-    let excludeModulePaths: string[];
-    let documentSelector: DocumentSelector;
-    let outputChannel: vscode.OutputChannel;
-    if (location) {
-      channelName = `${binaryName}: ${location}`;
-      id = `terraform-ls/${location}`;
-      name = `Terraform LS: ${location}`;
-      wsFolder = getWorkspaceFolder(location);
-      documentSelector = [
-        { scheme: 'file', language: 'terraform', pattern: `${wsFolder.uri.fsPath}/**/*` },
-        { scheme: 'file', language: 'terraform-vars', pattern: `${wsFolder.uri.fsPath}/**/*` },
-      ];
-      terraformExecPath = config('terraform-ls', wsFolder).get('terraformExecPath');
-      terraformExecTimeout = config('terraform-ls', wsFolder).get('terraformExecTimeout');
-      terraformLogFilePath = config('terraform-ls', wsFolder).get('terraformLogFilePath');
-      rootModulePaths = config('terraform-ls', wsFolder).get('rootModules');
-      excludeModulePaths = config('terraform-ls', wsFolder).get('excludeRootModules');
-      outputChannel = vscode.window.createOutputChannel(channelName);
-      outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
-    } else {
-      documentSelector = [
-        { scheme: 'file', language: 'terraform' },
-        { scheme: 'file', language: 'terraform-vars' },
-      ];
-      terraformExecPath = config('terraform-ls').get('terraformExecPath');
-      terraformExecTimeout = config('terraform-ls').get('terraformExecTimeout');
-      terraformLogFilePath = config('terraform-ls').get('terraformLogFilePath');
-      rootModulePaths = config('terraform-ls').get('rootModules');
-      excludeModulePaths = config('terraform-ls').get('excludeRootModules');
-      outputChannel = vscode.window.createOutputChannel(channelName);
-      outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
-    }
+    const rootModulePaths: string[] = config('terraform-ls').get('terraformExecPath');
+    const terraformExecPath: string = config('terraform-ls').get('terraformExecTimeout');
+    const terraformExecTimeout: string = config('terraform-ls').get('terraformLogFilePath');
+    const terraformLogFilePath: string = config('terraform-ls').get('rootModules');
+    const excludeModulePaths: string[] = config('terraform-ls').get('excludeRootModules');
 
     if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
       throw new Error(
@@ -121,23 +88,18 @@ export class ClientHandler {
       );
     }
 
-    let initializationOptions = { experimentalFeatures };
-    if (terraformExecPath.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { terraformExecPath });
-    }
-    if (terraformExecTimeout.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { terraformExecTimeout });
-    }
-    if (terraformLogFilePath.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { terraformLogFilePath });
-    }
-    if (rootModulePaths.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { rootModulePaths });
-    }
-    if (excludeModulePaths.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { excludeModulePaths });
-    }
+    const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
+    const initializationOptions = Object.assign(
+      { experimentalFeatures },
+      terraformExecPath.length > 0 ? { terraformExecPath } : null,
+      terraformExecTimeout.length > 0 ? { terraformExecTimeout } : null,
+      terraformLogFilePath.length > 0 ? { terraformLogFilePath } : null,
+      rootModulePaths.length > 0 ? { rootModulePaths } : null,
+      excludeModulePaths.length > 0 ? { excludeModulePaths } : null,
+    );
 
+    const cmd = this.resolvedPathToBinary();
+    const serverArgs: string[] = config('terraform').get('languageServer.args');
     const executable: Executable = {
       command: cmd,
       args: serverArgs,
@@ -147,9 +109,10 @@ export class ClientHandler {
       run: executable,
       debug: executable,
     };
+    outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
+
     const clientOptions: LanguageClientOptions = {
       documentSelector: documentSelector,
-      workspaceFolder: wsFolder,
       initializationOptions: initializationOptions,
       initializationFailedHandler: (error) => {
         this.reporter.sendTelemetryException(error);
@@ -159,6 +122,8 @@ export class ClientHandler {
       revealOutputChannelOn: RevealOutputChannelOn.Never,
     };
 
+    const id = `terraform-ls`;
+    const name = `Terraform LS`;
     const client = new LanguageClient(id, name, serverOptions, clientOptions);
 
     client.registerFeature(new ShowReferencesFeature(client));
