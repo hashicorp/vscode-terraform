@@ -112,6 +112,7 @@ export class ClientHandler {
     let terraformLogFilePath: string;
     let excludeModulePaths: string[];
     let enableReferenceCountCodeLens: boolean;
+    let ignoreDirectoryNames: string[];
     let documentSelector: DocumentSelector;
     let outputChannel: vscode.OutputChannel;
     if (location) {
@@ -129,6 +130,7 @@ export class ClientHandler {
       rootModulePaths = config('terraform-ls', wsFolder).get('rootModules');
       excludeModulePaths = config('terraform-ls', wsFolder).get('excludeRootModules');
       enableReferenceCountCodeLens = config('terraform', wsFolder).get('enableReferenceCountCodeLens');
+      ignoreDirectoryNames = config('terraform-ls', wsFolder).get('ignoreDirectoryNames');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
     } else {
@@ -142,6 +144,7 @@ export class ClientHandler {
       rootModulePaths = config('terraform-ls').get('rootModules');
       excludeModulePaths = config('terraform-ls').get('excludeRootModules');
       enableReferenceCountCodeLens = config('terraform').get('enableReferenceCountCodeLens');
+      ignoreDirectoryNames = config('terraform-ls').get('ignoreDirectoryNames');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
     }
@@ -168,6 +171,9 @@ export class ClientHandler {
     }
     if (excludeModulePaths.length > 0) {
       initializationOptions = Object.assign(initializationOptions, { excludeModulePaths });
+    }
+    if (ignoreDirectoryNames.length > 0) {
+      initializationOptions = Object.assign(initializationOptions, { ignoreDirectoryNames });
     }
 
     const executable: Executable = {
