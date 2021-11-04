@@ -26,11 +26,13 @@ export interface TerraformLanguageClient {
  */
 export class ClientHandler {
   private tfClient: TerraformLanguageClient;
+  private supportedCommands: string[];
 
   constructor(private lsPath: ServerPath, private reporter: TelemetryReporter) {
     if (lsPath.hasCustomBinPath()) {
       this.reporter.sendTelemetryEvent('usePathToBinary');
     }
+    this.supportedCommands = [];
   }
 
   public async startClients(): Promise<vscode.Disposable[]> {
@@ -47,6 +49,8 @@ export class ClientHandler {
       const multiFoldersSupported =
         this.tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
+
+      this.supportedCommands = this.tfClient.client.initializeResult.capabilities.executeCommandProvider?.commands;
     });
 
     return disposables;
@@ -195,7 +199,6 @@ export class ClientHandler {
   }
 
   public clientSupportsCommand(cmdName: string): boolean {
-    const commands = this.tfClient.client.initializeResult.capabilities.executeCommandProvider?.commands;
-    return commands.includes(cmdName);
+    return this.supportedCommands.includes(cmdName);
   }
 }
