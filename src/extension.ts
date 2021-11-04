@@ -17,7 +17,12 @@ let reporter: TelemetryReporter;
 let clientHandler: ClientHandler;
 const languageServerUpdater = new SingleInstanceTimeout();
 
-export async function activate(context: vscode.ExtensionContext): Promise<any> {
+export interface TerraformExtension {
+  handler: ClientHandler;
+  moduleCallers;
+}
+
+export async function activate(context: vscode.ExtensionContext): Promise<TerraformExtension> {
   const manifest = context.extension.packageJSON;
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
@@ -122,6 +127,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
     }),
     vscode.window.onDidChangeVisibleTextEditors(async () => {
       const textEditor = getActiveTextEditor();
+      if (textEditor === undefined) {
+        return;
+      }
+      if (textEditor.document === undefined) {
+        return;
+      }
       await updateTerraformStatusBar(textEditor.document.uri);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
@@ -137,7 +148,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
   }
 
   // export public API
-  return { clientHandler, moduleCallers };
+  return { handler: clientHandler, moduleCallers };
 }
 
 export function deactivate(): Promise<void> {
