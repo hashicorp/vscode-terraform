@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as vscode from 'vscode';
 import TelemetryReporter from 'vscode-extension-telemetry';
 import {
@@ -11,8 +9,8 @@ import {
   ServerOptions,
   State,
 } from 'vscode-languageclient/node';
-import * as which from 'which';
-import { CUSTOM_BIN_PATH_OPTION_NAME, ServerPath } from './serverPath';
+
+import { ServerPath } from './serverPath';
 import { ShowReferencesFeature } from './showReferences';
 import { config } from './vscodeUtils';
 
@@ -98,7 +96,7 @@ export class ClientHandler {
       excludeModulePaths.length > 0 ? { excludeModulePaths } : null,
     );
 
-    const cmd = this.resolvedPathToBinary();
+    const cmd = this.lsPath.resolvedPathToBinary();
     const serverArgs: string[] = config('terraform').get('languageServer.args');
     const executable: Executable = {
       command: cmd,
@@ -135,28 +133,6 @@ export class ClientHandler {
     });
 
     return { client };
-  }
-
-  private resolvedPathToBinary(): string {
-    const pathToBinary = this.lsPath.binPath();
-    let cmd: string;
-    try {
-      if (path.isAbsolute(pathToBinary)) {
-        fs.accessSync(pathToBinary, fs.constants.X_OK);
-        cmd = pathToBinary;
-      } else {
-        cmd = which.sync(pathToBinary);
-      }
-      console.log(`Found server at ${cmd}`);
-    } catch (err) {
-      let extraHint: string;
-      if (this.lsPath.hasCustomBinPath()) {
-        extraHint = `. Check "${CUSTOM_BIN_PATH_OPTION_NAME}" in your settings.`;
-      }
-      throw new Error(`Unable to launch language server: ${err.message}${extraHint}`);
-    }
-
-    return cmd;
   }
 
   public getClient(): TerraformLanguageClient {

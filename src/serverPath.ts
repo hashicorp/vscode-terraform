@@ -1,5 +1,7 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import * as which from 'which';
 
 const INSTALL_FOLDER_NAME = 'bin';
 export const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
@@ -43,5 +45,27 @@ export class ServerPath {
       return 'terraform-ls.exe';
     }
     return 'terraform-ls';
+  }
+
+  public resolvedPathToBinary(): string {
+    const pathToBinary = this.binPath();
+    let cmd: string;
+    try {
+      if (path.isAbsolute(pathToBinary)) {
+        fs.accessSync(pathToBinary, fs.constants.X_OK);
+        cmd = pathToBinary;
+      } else {
+        cmd = which.sync(pathToBinary);
+      }
+      console.log(`Found server at ${cmd}`);
+    } catch (err) {
+      let extraHint: string;
+      if (this.hasCustomBinPath()) {
+        extraHint = `. Check "${CUSTOM_BIN_PATH_OPTION_NAME}" in your settings.`;
+      }
+      throw new Error(`Unable to launch language server: ${err.message}${extraHint}`);
+    }
+
+    return cmd;
   }
 }
