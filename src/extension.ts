@@ -146,29 +146,32 @@ export function deactivate(): Promise<void> {
 
 async function updateTerraformStatusBar(documentUri: vscode.Uri) {
   const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init');
-  if (initSupported) {
-    const client = clientHandler.getClient();
-    const moduleUri = Utils.dirname(documentUri);
+  if (!initSupported) {
+    return;
+  }
 
-    if (client) {
-      try {
-        const response = await moduleCallers(client, moduleUri.toString());
-        if (response.moduleCallers.length === 0) {
-          const dirName = Utils.basename(moduleUri);
-          terraformStatus.text = `$(refresh) ${dirName}`;
-          terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
-          terraformStatus.tooltip = `Click to run terraform init`;
-          terraformStatus.command = 'terraform.initCurrent';
-          terraformStatus.show();
-        } else {
-          terraformStatus.hide();
-        }
-      } catch (err) {
-        vscode.window.showErrorMessage(err);
-        reporter.sendTelemetryException(err);
-        terraformStatus.hide();
-      }
+  const client = clientHandler.getClient();
+  if (!client) {
+    return;
+  }
+
+  try {
+    const moduleUri = Utils.dirname(documentUri);
+    const response = await moduleCallers(client, moduleUri.toString());
+    if (response.moduleCallers.length === 0) {
+      const dirName = Utils.basename(moduleUri);
+      terraformStatus.text = `$(refresh) ${dirName}`;
+      terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
+      terraformStatus.tooltip = `Click to run terraform init`;
+      terraformStatus.command = 'terraform.initCurrent';
+      terraformStatus.show();
+    } else {
+      terraformStatus.hide();
     }
+  } catch (err) {
+    vscode.window.showErrorMessage(err);
+    reporter.sendTelemetryException(err);
+    terraformStatus.hide();
   }
 }
 
