@@ -112,6 +112,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
       }
     }),
     vscode.workspace.onDidChangeWorkspaceFolders(async (event: vscode.WorkspaceFoldersChangeEvent) => {
+      // TODO: figure out if this is still necessary
       if (event.removed.length > 0) {
         await clientHandler.stopClients();
       }
