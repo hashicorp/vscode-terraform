@@ -26,7 +26,11 @@ export class ClientHandler {
   private tfClient: TerraformLanguageClient;
   private supportedCommands: string[];
 
-  constructor(private lsPath: ServerPath, private reporter: TelemetryReporter) {
+  constructor(
+    private lsPath: ServerPath,
+    private outputChannel: vscode.OutputChannel,
+    private reporter: TelemetryReporter,
+  ) {
     if (lsPath.hasCustomBinPath()) {
       this.reporter.sendTelemetryEvent('usePathToBinary');
     }
@@ -36,7 +40,7 @@ export class ClientHandler {
   public async startClients(): Promise<vscode.Disposable[]> {
     const disposables: vscode.Disposable[] = [];
 
-    console.log('Starting client');
+    this.outputChannel.appendLine('Starting client');
 
     this.tfClient = this.createTerraformClient();
 
@@ -46,7 +50,7 @@ export class ClientHandler {
       this.reporter.sendTelemetryEvent('startClient');
       const multiFoldersSupported =
         this.tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-      console.log(`Multi-folder support: ${multiFoldersSupported}`);
+      this.outputChannel.appendLine(`Multi-folder support: ${multiFoldersSupported}`);
 
       this.supportedCommands = this.tfClient.client.initializeResult.capabilities.executeCommandProvider?.commands;
     });
@@ -58,10 +62,10 @@ export class ClientHandler {
     return this.tfClient.client
       .stop()
       .then(() => {
-        console.log('Client stopped');
+        this.outputChannel.appendLine('Client stopped');
       })
       .then(() => {
-        console.log('Client deleted');
+        this.outputChannel.appendLine('Client deleted');
       });
   }
 

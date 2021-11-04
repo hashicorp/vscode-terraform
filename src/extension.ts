@@ -11,6 +11,7 @@ import { SingleInstanceTimeout } from './utils';
 import { config, getActiveTextEditor } from './vscodeUtils';
 
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+const outputChannel: vscode.OutputChannel = vscode.window.createOutputChannel('HashiCorp Terraform');
 
 let reporter: TelemetryReporter;
 let clientHandler: ClientHandler;
@@ -22,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
   context.subscriptions.push(reporter);
 
   const lsPath = new ServerPath(context);
-  clientHandler = new ClientHandler(lsPath, reporter);
+  clientHandler = new ClientHandler(lsPath, outputChannel, reporter);
 
   // get rid of pre-2.0.0 settings
   if (config('terraform').has('languageServer.enabled')) {
@@ -171,7 +172,7 @@ async function updateTerraformStatusBar(documentUri: vscode.Uri) {
 }
 
 async function updateLanguageServer(extVersion: string, clientHandler: ClientHandler, lsPath: ServerPath) {
-  console.log('Checking for language server updates...');
+  outputChannel.appendLine('Checking for language server updates...');
   const hour = 1000 * 60 * 60;
   languageServerUpdater.timeout(function () {
     updateLanguageServer(extVersion, clientHandler, lsPath);
@@ -180,7 +181,7 @@ async function updateLanguageServer(extVersion: string, clientHandler: ClientHan
   try {
     // skip install if a language server binary path is set
     if (!lsPath.hasCustomBinPath()) {
-      const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
+      const installer = new LanguageServerInstaller(extVersion, lsPath, outputChannel, reporter);
       const install = await installer.needsInstall(
         config('terraform').get('languageServer.requiredVersion', defaultVersionString),
       );
@@ -189,7 +190,7 @@ async function updateLanguageServer(extVersion: string, clientHandler: ClientHan
         try {
           await installer.install();
         } catch (err) {
-          console.log(err); // for test failure reporting
+          outputChannel.appendLine(err); // for test failure reporting
           reporter.sendTelemetryException(err);
           throw err;
         } finally {
@@ -200,7 +201,7 @@ async function updateLanguageServer(extVersion: string, clientHandler: ClientHan
     // on repeat runs with no install, this will be a no-op
     return await clientHandler.startClients();
   } catch (error) {
-    console.log(error); // for test failure reporting
+    outputChannel.appendLine(error); // for test failure reporting
     vscode.window.showErrorMessage(error.message);
   }
 }

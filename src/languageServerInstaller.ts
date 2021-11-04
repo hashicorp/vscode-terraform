@@ -15,7 +15,12 @@ export function isValidVersionString(value: string): boolean {
 }
 
 export class LanguageServerInstaller {
-  constructor(private extensionVersion: string, private lsPath: ServerPath, private reporter: TelemetryReporter) {}
+  constructor(
+    private extensionVersion: string,
+    private lsPath: ServerPath,
+    private outputChannel: vscode.OutputChannel,
+    private reporter: TelemetryReporter,
+  ) {}
 
   private userAgent = `Terraform-VSCode/${this.extensionVersion} VSCode/${vscode.version}`;
   private release: Release;
@@ -23,7 +28,7 @@ export class LanguageServerInstaller {
   private async getRequiredVersionRelease(versionString: string): Promise<Release> {
     try {
       const release = await getRelease('terraform-ls', versionString, this.userAgent);
-      console.log(
+      this.outputChannel.appendLine(
         `Found Terraform language server version ${release.version} which satisfies range '${versionString}'`,
       );
       return release;
@@ -31,7 +36,7 @@ export class LanguageServerInstaller {
       if (versionString == defaultVersionString) {
         throw err;
       }
-      console.log(
+      this.outputChannel.appendLine(
         `Error while finding Terraform language server release which satisfies range '${versionString}' and will reattempt with '${defaultVersionString}': ${err}`,
       );
       vscode.window.showWarningMessage(
@@ -41,7 +46,7 @@ export class LanguageServerInstaller {
 
     // Attempt to find the latest release
     const release = await getRelease('terraform-ls', defaultVersionString, this.userAgent);
-    console.log(
+    this.outputChannel.appendLine(
       `Found Default Terraform language server version ${release.version} which satisfies range '${defaultVersionString}'`,
     );
     return release;
@@ -54,7 +59,7 @@ export class LanguageServerInstaller {
     try {
       this.release = await this.getRequiredVersionRelease(versionString);
     } catch (err) {
-      console.log(
+      this.outputChannel.appendLine(
         `Error while finding Terraform language server release which satisfies range '${versionString}': ${err}`,
       );
       // if the releases site is inaccessible, report it and skip the install
@@ -65,7 +70,7 @@ export class LanguageServerInstaller {
     let installedVersion: string;
     try {
       installedVersion = await getLsVersion(this.lsPath);
-      console.log(`Currently installed Terraform language server is version '${installedVersion}`);
+      this.outputChannel.appendLine(`Currently installed Terraform language server is version '${installedVersion}`);
     } catch (err) {
       // Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
       // on a fresh installation (unlike upgrade). It’s also possible that the file or directory
