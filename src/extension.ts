@@ -127,7 +127,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<any> {
 
   if (enabled()) {
     try {
-      await vscode.commands.executeCommand('terraform.enableLanguageServer');
+      await updateLanguageServer(manifest.version, clientHandler, lsPath);
       vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
     } catch (error) {
       reporter.sendTelemetryException(error);
