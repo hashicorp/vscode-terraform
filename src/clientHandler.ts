@@ -111,6 +111,7 @@ export class ClientHandler {
     let terraformExecTimeout: string;
     let terraformLogFilePath: string;
     let excludeModulePaths: string[];
+    let enableReferenceCountCodeLens: boolean;
     let documentSelector: DocumentSelector;
     let outputChannel: vscode.OutputChannel;
     if (location) {
@@ -127,6 +128,7 @@ export class ClientHandler {
       terraformLogFilePath = config('terraform-ls', wsFolder).get('terraformLogFilePath');
       rootModulePaths = config('terraform-ls', wsFolder).get('rootModules');
       excludeModulePaths = config('terraform-ls', wsFolder).get('excludeRootModules');
+      enableReferenceCountCodeLens = config('terraform', wsFolder).get('enableReferenceCountCodeLens');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
     } else {
@@ -139,6 +141,7 @@ export class ClientHandler {
       terraformLogFilePath = config('terraform-ls').get('terraformLogFilePath');
       rootModulePaths = config('terraform-ls').get('rootModules');
       excludeModulePaths = config('terraform-ls').get('excludeRootModules');
+      enableReferenceCountCodeLens = config('terraform').get('enableReferenceCountCodeLens');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
     }
@@ -190,7 +193,9 @@ export class ClientHandler {
 
     const client = new LanguageClient(id, name, serverOptions, clientOptions);
 
-    client.registerFeature(new ShowReferencesFeature(client));
+    if (enableReferenceCountCodeLens) {
+      client.registerFeature(new ShowReferencesFeature(client));
+    }
 
     client.onDidChangeState((event) => {
       if (event.newState === State.Stopped) {
