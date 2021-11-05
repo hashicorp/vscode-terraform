@@ -279,6 +279,13 @@
     "views": {
       "explorer": [
         {
+          "id": "terraform.providers",
+          "name": "Terraform Provides",
+          "icon": "assets/icons/terraform.svg",
+          "visibility": "collapsed",
+          "when": "terraform.showProviderView"
+        },
+        {
           "id": "terraform.modules",
           "name": "Terraform Module Calls",
           "icon": "assets/icons/terraform.svg",
@@ -288,6 +295,10 @@
       ]
     },
     "viewsWelcome": [
+      {
+        "view": "terraform.providers",
+        "contents": "The active editor cannot provide information about installed providers."
+      },
       {
         "view": "terraform.modules",
         "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get' or update your language server version."
