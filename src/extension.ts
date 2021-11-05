@@ -125,52 +125,37 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
         await clientHandler.startClients();
       }
     }),
-    // vscode.window.onDidChangeVisibleTextEditors(async () => {
-    //   const textEditor = getActiveTextEditor();
-    //   if (textEditor === undefined) {
-    //     return;
-    //   }
-    //   if (textEditor.document === undefined) {
-    //     return;
-    //   }
-    //   await updateTerraformStatusBar(textEditor.document.uri);
-    // }),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
   );
 
-  // if (enabled()) {
-  //   try {
-  //     vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
-  //     const ds = await updateLanguageServer(manifest.version, clientHandler, lsPath);
-  //     context.subscriptions.push(...ds);
-  //   } catch (error) {
-  //     reporter.sendTelemetryException(error);
-  //   }
-  // }
+  if (config('terraform').get<boolean>('languageServer.external') === false) {
+    return;
+  }
 
-  if (config('terraform').get<boolean>('languageServer.external')) {
-    try {
-      vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
-      await updateLanguageServer(manifest.version, clientHandler, lsPath);
-      vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
+  try {
+    await updateLanguageServer(manifest.version, clientHandler, lsPath);
 
-      (await clientHandler.getClient()).client.onReady().then(() => {
-        context.subscriptions.push(
-          vscode.window.onDidChangeVisibleTextEditors(async () => {
-            // can't register this until client is ready, otherwise we can't
-            // know if command is supported
-            const textEditor = getActiveTextEditor();
-            if (textEditor === undefined) {
-              return;
-            }
+    // await clientHandler.startClients();
 
-            await updateTerraformStatusBar(textEditor.document.uri);
-          }),
-        );
-      });
-    } catch (error) {
-      reporter.sendTelemetryException(error);
-    }
+    vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
+
+    context.subscriptions.push(
+      vscode.window.onDidChangeVisibleTextEditors(async () => {
+        // can't register this until client is ready, otherwise we can't
+        // know if command is supported
+        const textEditor = getActiveTextEditor();
+        if (textEditor === undefined) {
+          return;
+        }
+        if (textEditor.document === undefined) {
+          return;
+        }
+
+        await updateTerraformStatusBar(textEditor.document.uri);
+      }),
+    );
+  } catch (error) {
+    reporter.sendTelemetryException(error);
   }
 
   // export public API
@@ -240,7 +225,7 @@ async function updateLanguageServer(extVersion: string, clientHandler: ClientHan
       }
     }
     // on repeat runs with no install, this will be a no-op
-    return await clientHandler.startClients();
+    await clientHandler.startClients();
   } catch (error) {
     outputChannel.appendLine(error); // for test failure reporting
     vscode.window.showErrorMessage(error.message);
