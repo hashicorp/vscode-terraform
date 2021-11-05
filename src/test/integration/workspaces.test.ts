@@ -20,7 +20,7 @@ suite('moduleCallers', () => {
 
     assert.ok(ext.isActive);
 
-		const client = ext.exports.handler.getClient();
+		const client = await ext.exports.handler.getClient();
 
 		const moduleUri = Utils.dirname(documentUri).toString();
 		const response = await ext.exports.moduleCallers(client, moduleUri);

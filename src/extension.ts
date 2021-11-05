@@ -90,7 +90,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       });
       if (selected) {
         const moduleUri = selected[0];
-        const client = clientHandler.getClient();
+        const client = await clientHandler.getClient();
         const requestParams: ExecuteCommandParams = {
           command: `terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
@@ -161,7 +161,7 @@ async function updateTerraformStatusBar(documentUri: vscode.Uri) {
     return;
   }
 
-  const client = clientHandler.getClient();
+  const client = await clientHandler.getClient();
   if (!client) {
     return;
   }
@@ -260,7 +260,7 @@ async function terraformCommand(
 ): Promise<any> {
   const textEditor = getActiveTextEditor();
   if (textEditor) {
-    const languageClient = clientHandler.getClient();
+    const languageClient = await clientHandler.getClient();
 
     const moduleUri = Utils.dirname(textEditor.document.uri);
     const response = await moduleCallers(languageClient, moduleUri.toString());

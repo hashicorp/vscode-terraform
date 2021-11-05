@@ -139,7 +139,8 @@ export class ClientHandler {
     return { client };
   }
 
-  public getClient(): TerraformLanguageClient {
+  public async getClient(): Promise<TerraformLanguageClient> {
+    await this.tfClient.client.onReady();
     return this.tfClient;
   }
 
