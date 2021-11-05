@@ -20,10 +20,17 @@ suite('moduleCallers', () => {
 
     assert.ok(ext.isActive);
 
-		const client = await ext.exports.handler.getClient();
+		const api = ext.exports;
+    assert.ok(api.handler);
+    assert.ok(api.moduleCallers);
+
+		const client = await api.handler.getClient();
+    assert.ok(client);
 
 		const moduleUri = Utils.dirname(documentUri).toString();
-		const response = await ext.exports.moduleCallers(client, moduleUri);
+		const response = await api.moduleCallers(client, moduleUri);
+    assert.ok(response);
+
 		assert.strictEqual(response.moduleCallers.length, 1);
 		assert.strictEqual(response.moduleCallers[0].uri, vscode.Uri.file(testFolderPath).toString(true));
 	})

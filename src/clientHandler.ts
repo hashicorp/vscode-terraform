@@ -59,6 +59,10 @@ export class ClientHandler {
   }
 
   public async stopClients(): Promise<void> {
+    if (this.tfClient === undefined || this.tfClient.client === undefined) {
+      return;
+    }
+
     return this.tfClient.client
       .stop()
       .then(() => {
@@ -144,7 +148,8 @@ export class ClientHandler {
     return this.tfClient;
   }
 
-  public clientSupportsCommand(cmdName: string): boolean {
+  public async clientSupportsCommand(cmdName: string): Promise<boolean> {
+    await this.tfClient.client.onReady();
     return this.supportedCommands.includes(cmdName);
   }
 }
