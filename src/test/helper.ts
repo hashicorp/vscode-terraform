@@ -9,7 +9,6 @@ export let platformEol: string;
 
 export async function open(docUri: vscode.Uri): Promise<void> {
   try {
-    await activated();
     doc = await vscode.workspace.openTextDocument(docUri);
     editor = await vscode.window.showTextDocument(doc);
   } catch (e) {
@@ -21,29 +20,6 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 export function getExtensionId(): string {
   var pjson = require('../../package.json');
   return `${pjson.publisher}.${pjson.name}`;
-}
-
-let _activatedPromise: Promise<void>;
-async function activated() {
-  if (!_activatedPromise) {
-    try {
-      // The extensionId is `publisher.name` from package.json
-			const extId = getExtensionId()
-      const ext = vscode.extensions.getExtension(extId);
-      if (!ext.isActive) {
-        console.log('Activating hashicorp.terraform extension');
-        await ext.activate();
-      } else {
-        console.log('hashicorp.terraform is already active');
-      }
-      // TODO: implement proper synchronization/status check in LS
-      // give server(s) some time to startup
-      _activatedPromise = sleep(8000);
-    } catch (err) {
-      _activatedPromise = Promise.reject(err);
-    }
-  }
-  return _activatedPromise;
 }
 
 export const testFolderPath = path.resolve(__dirname, '..', '..', 'testFixture');

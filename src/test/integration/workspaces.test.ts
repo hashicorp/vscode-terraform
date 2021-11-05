@@ -1,17 +1,26 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
-import { getDocUri, getExtensionId, open, testFolderPath } from './helper';
+import { getDocUri, getExtensionId, open, testFolderPath } from '../helper';
 
 
-const extId = getExtensionId()
-const ext = vscode.extensions.getExtension(extId);
 
 suite('moduleCallers', () => {
+  teardown(async () => {
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+  });
+
 	test('should execute language server command', async () => {
+		const extId = getExtensionId()
+		const ext = vscode.extensions.getExtension(extId);
+
 		const documentUri = getDocUri('modules/sample.tf');
 		await open(documentUri);
+
+    assert.ok(ext.isActive);
+
 		const client = ext.exports.clientHandler.getClient(documentUri);
+
 		const moduleUri = Utils.dirname(documentUri).toString();
 		const response = await ext.exports.moduleCallers(client, moduleUri);
 		assert.strictEqual(response.moduleCallers.length, 1);

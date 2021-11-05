@@ -1,8 +1,13 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { getDocUri, open } from './helper';
+import { expect } from 'chai';
+import { getDocUri, open } from '../helper';
 
 suite('document symbols', () => {
+  teardown(async () => {
+    return await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+  });
+
 	const docUri = getDocUri('sample.tf');
 
 	test('returns symbols', async () => {
@@ -19,8 +24,11 @@ async function testSymbols(docUri: vscode.Uri, symbolNames: string[]) {
 	// Executing the command `vscode.executeDocumentSymbolProvider` to simulate requesting doc symbols
 	const symbols = (await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', docUri)) as vscode.SymbolInformation[];
 
-	assert.equal(symbols.length, symbolNames.length);
+	assert.ok(symbols);
+	expect(symbols).not.to.be.undefined;
+
+	assert.strictEqual(symbols.length, symbolNames.length);
 	symbols.forEach((symbol, i) => {
-		assert.equal(symbol.name, symbolNames[i]);
+		assert.strictEqual(symbol.name, symbolNames[i]);
 	});
 }
