@@ -1,3 +1,10 @@
+# 2.17.0 (Unreleased)
+
+ENHANCEMENTS:
+
+ - Add new setting which toggles displaying reference counts above top level blocks and attributes ([#837](https://github.com/hashicorp/vscode-terraform/pull/837))
+ - Add support for language server side config option `ignoreDirectoryNames` ([#833](https://github.com/hashicorp/vscode-terraform/pull/833))
+
 # 2.16.0 (2021-10-14)
 
 ENHANCEMENTS:
