@@ -129,7 +129,7 @@ export class ClientHandler {
       terraformLogFilePath = config('terraform-ls', wsFolder).get('terraformLogFilePath');
       rootModulePaths = config('terraform-ls', wsFolder).get('rootModules');
       excludeModulePaths = config('terraform-ls', wsFolder).get('excludeRootModules');
-      enableReferenceCountCodeLens = config('terraform', wsFolder).get('enableReferenceCountCodeLens');
+      enableReferenceCountCodeLens = config('terraform', wsFolder).get('codelens.referenceCount');
       ignoreDirectoryNames = config('terraform-ls', wsFolder).get('ignoreDirectoryNames');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
@@ -143,7 +143,7 @@ export class ClientHandler {
       terraformLogFilePath = config('terraform-ls').get('terraformLogFilePath');
       rootModulePaths = config('terraform-ls').get('rootModules');
       excludeModulePaths = config('terraform-ls').get('excludeRootModules');
-      enableReferenceCountCodeLens = config('terraform').get('enableReferenceCountCodeLens');
+      enableReferenceCountCodeLens = config('terraform').get('codelens.referenceCount');
       ignoreDirectoryNames = config('terraform-ls').get('ignoreDirectoryNames');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
