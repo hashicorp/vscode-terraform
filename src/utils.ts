@@ -21,6 +21,7 @@ export class SingleInstanceTimeout {
   private timerLock = false;
   private timerId: NodeJS.Timeout;
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public timeout(fn, delay, ...args) {
     if (!this.timerLock) {
       this.timerLock = true;
@@ -35,7 +36,7 @@ export class SingleInstanceTimeout {
     }
   }
 
-  public clear() {
+  public clear(): void {
     if (this.timerId) {
       clearTimeout(this.timerId);
     }

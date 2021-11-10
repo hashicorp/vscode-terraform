@@ -139,6 +139,7 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     sourceType: string,
     docsLink: string,
     terraformIcon: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     dependents: any,
   ): ModuleCall {
     let deps: ModuleCall[] = [];

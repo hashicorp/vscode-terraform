@@ -16,7 +16,12 @@ let reporter: TelemetryReporter;
 let clientHandler: ClientHandler;
 const languageServerUpdater = new SingleInstanceTimeout();
 
-export async function activate(context: vscode.ExtensionContext): Promise<any> {
+export interface TerraformExtension {
+  clientHandler: ClientHandler;
+  moduleCallers(languageClient: TerraformLanguageClient, moduleUri: string): Promise<moduleCallersResponse>;
+}
+
+export async function activate(context: vscode.ExtensionContext): Promise<TerraformExtension> {
   const manifest = context.extension.packageJSON;
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
@@ -205,6 +210,7 @@ async function updateLanguageServer(extVersion: string, clientHandler: ClientHan
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
   reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
   return client.sendRequest(ExecuteCommandRequest.type, params);
@@ -219,6 +225,7 @@ interface moduleCallersResponse {
   moduleCallers: moduleCaller[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function modulesCallersCommand(languageClient: TerraformLanguageClient, moduleUri: string): Promise<any> {
   const requestParams: ExecuteCommandParams = {
     command: `${languageClient.commandPrefix}.terraform-ls.module.callers`,
@@ -241,6 +248,7 @@ async function terraformCommand(
   command: string,
   languageServerExec = true,
   clientHandler: ClientHandler,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const textEditor = getActiveTextEditor();
   if (textEditor) {
