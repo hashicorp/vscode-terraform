@@ -111,7 +111,7 @@ export class ClientHandler {
     let terraformExecTimeout: string;
     let terraformLogFilePath: string;
     let excludeModulePaths: string[];
-    let enableReferenceCountCodeLens: boolean;
+    let codeLensReferenceCount: boolean;
     let ignoreDirectoryNames: string[];
     let documentSelector: DocumentSelector;
     let outputChannel: vscode.OutputChannel;
@@ -129,7 +129,7 @@ export class ClientHandler {
       terraformLogFilePath = config('terraform-ls', wsFolder).get('terraformLogFilePath');
       rootModulePaths = config('terraform-ls', wsFolder).get('rootModules');
       excludeModulePaths = config('terraform-ls', wsFolder).get('excludeRootModules');
-      enableReferenceCountCodeLens = config('terraform', wsFolder).get('codelens.referenceCount');
+      codeLensReferenceCount = config('terraform', wsFolder).get('codelens.referenceCount');
       ignoreDirectoryNames = config('terraform-ls', wsFolder).get('ignoreDirectoryNames');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')} for folder: ${location}`);
@@ -143,7 +143,7 @@ export class ClientHandler {
       terraformLogFilePath = config('terraform-ls').get('terraformLogFilePath');
       rootModulePaths = config('terraform-ls').get('rootModules');
       excludeModulePaths = config('terraform-ls').get('excludeRootModules');
-      enableReferenceCountCodeLens = config('terraform').get('codelens.referenceCount');
+      codeLensReferenceCount = config('terraform').get('codelens.referenceCount');
       ignoreDirectoryNames = config('terraform-ls').get('ignoreDirectoryNames');
       outputChannel = vscode.window.createOutputChannel(channelName);
       outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
@@ -199,7 +199,7 @@ export class ClientHandler {
 
     const client = new LanguageClient(id, name, serverOptions, clientOptions);
 
-    if (enableReferenceCountCodeLens) {
+    if (codeLensReferenceCount) {
       client.registerFeature(new ShowReferencesFeature(client));
     }
 
