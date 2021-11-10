@@ -28,27 +28,6 @@ export function getActiveTextEditor(): vscode.TextEditor {
   return vscode.window.visibleTextEditors.find((textEditor) => !!textEditor.viewColumn);
 }
 
-export function prunedFolderNames(
-  folders: readonly vscode.WorkspaceFolder[] = vscode.workspace.workspaceFolders,
-): string[] {
-  const result = [];
-  // Sort workspace folders so that outer folders (shorter path) go before inner ones
-  const workspaceFolders = sortedWorkspaceFolders();
-  if (folders && workspaceFolders) {
-    const folderNames = folders.map((f) => getFolderName(f));
-    for (let name of folderNames) {
-      const outerFolder = workspaceFolders.find((element) => name.startsWith(element));
-      // If this folder isn't nested, the found item will be itself
-      if (outerFolder && outerFolder !== name) {
-        name = getFolderName(getWorkspaceFolder(outerFolder));
-      }
-      result.push(name);
-    }
-  }
-
-  return result;
-}
-
 export function sortedWorkspaceFolders(): string[] {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (workspaceFolders) {
