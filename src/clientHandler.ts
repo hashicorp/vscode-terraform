@@ -26,7 +26,7 @@ export interface TerraformLanguageClient {
 export class ClientHandler {
   private shortUid: ShortUniqueId;
   private tfClient: TerraformLanguageClient;
-  private commands: string[];
+  private commands: string[] = [];
 
   constructor(
     private lsPath: ServerPath,
@@ -66,7 +66,7 @@ export class ClientHandler {
 
     const initializationOptions = this.getInitializationOptions(commandPrefix);
 
-    const serverOptions: ServerOptions = this.getServerOptions();
+    const serverOptions = this.getServerOptions();
     this.outputChannel.appendLine(
       `Launching language server: ${serverOptions.run.command} ${serverOptions.run.args.join(' ')}`,
     );
@@ -107,7 +107,7 @@ export class ClientHandler {
 
   private getServerOptions() {
     const cmd = this.lsPath.resolvedPathToBinary();
-    const serverArgs: string[] = config('terraform').get('languageServer.args');
+    const serverArgs = config('terraform').get<string[]>('languageServer.args');
     const executable: Executable = {
       command: cmd,
       args: serverArgs,
@@ -121,7 +121,7 @@ export class ClientHandler {
   }
 
   private getInitializationOptions(commandPrefix: string) {
-    const rootModulePaths: string[] = config('terraform-ls').get('rootModules');
+    const rootModulePaths = config('terraform-ls').get<string[]>('rootModules', []);
     const terraformExecPath: string = config('terraform-ls').get('terraformExecPath');
     const terraformExecTimeout: string = config('terraform-ls').get('terraformExecTimeout');
     const terraformLogFilePath: string = config('terraform-ls').get('terraformLogFilePath');
@@ -162,7 +162,7 @@ export class ClientHandler {
       return Promise.resolve();
     }
 
-    if (this.tfClient.client === undefined) {
+    if (this.tfClient?.client === undefined) {
       return Promise.resolve();
     }
 
