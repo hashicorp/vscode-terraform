@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -eEuo pipefail
+
+SCRIPT_RELATIVE_DIR=$(dirname "${BASH_SOURCE[0]}")
+ROOT_RELATIVE_DIR=$(dirname "${SCRIPT_RELATIVE_DIR}")
+
+cd $ROOT_RELATIVE_DIR
+
+# get current version info
+VERSION=`git log -1 --format=%cd --date="format:%Y.%-m.%-d%H"`
+
+# Get existing name & description
+DISPLAY_NAME="$(jq -r .displayName package.json) (Preview)"
+DESCRIPTION="$(jq -r .description package.json) (Preview)"
+
+# set preview info in package.json
+(cat package.json | jq --arg VER $VERSION --arg NAME "$DISPLAY_NAME" --arg DESC "$DESCRIPTION" '
+.version=$VER |
+.preview=true |
+.name="terraform-preview" |
+.displayName=$NAME |
+.description=$DESC
+') > /tmp/package.json && mv /tmp/package.json package.json
+
+# prepend preview info to README.md
+sed '/^# Terraform Visual Studio Code Extension$/d' README.md | cat build/nightly.md - > /tmp/rdme && mv /tmp/rdme README.md

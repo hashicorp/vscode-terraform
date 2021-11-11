@@ -7,6 +7,7 @@
   "publisher": "hashicorp",
   "appInsightsKey": "885372d2-6f3c-499f-9d25-b8b219983a52",
   "license": "MPL-2.0",
+  "preview": false,
   "private": true,
   "engines": {
     "npm": "~6.X",
