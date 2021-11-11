@@ -65,7 +65,7 @@ export class ClientHandler {
 
     const initializationOptions = this.getInitializationOptions(commandPrefix);
 
-    const serverOptions = this.getServerOptions();
+    const serverOptions: ServerOptions = this.getServerOptions();
     this.outputChannel.appendLine(
       `Launching language server: ${serverOptions.run.command} ${serverOptions.run.args.join(' ')}`,
     );
@@ -104,7 +104,7 @@ export class ClientHandler {
     return { commandPrefix, client };
   }
 
-  private getServerOptions(): ServerOptions {
+  private getServerOptions() {
     const cmd = this.lsPath.resolvedPathToBinary();
     const serverArgs = config('terraform').get<string[]>('languageServer.args');
     const executable: Executable = {
