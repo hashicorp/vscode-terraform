@@ -80,7 +80,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       return clientHandler.stopClient();
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply', false, clientHandler);
+      await terraformCommand('apply', false);
     }),
     vscode.commands.registerCommand('terraform.init', async () => {
       const selected = await vscode.window.showOpenDialog({
@@ -101,13 +101,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', true, clientHandler);
+      await terraformCommand('init', true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', false, clientHandler);
+      await terraformCommand('plan', false);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', true, clientHandler);
+      await terraformCommand('validate', true);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
@@ -245,11 +245,8 @@ interface moduleCallersResponse {
   moduleCallers: moduleCaller[];
 }
 
-async function modulesCallersCommand(
-  languageClient: TerraformLanguageClient,
-  moduleUri: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function modulesCallersCommand(languageClient: TerraformLanguageClient, moduleUri: string): Promise<any> {
   const requestParams: ExecuteCommandParams = {
     command: `${languageClient.commandPrefix}.terraform-ls.module.callers`,
     arguments: [`uri=${moduleUri}`],
@@ -267,12 +264,8 @@ async function moduleCallers(
   return { version: response.v, moduleCallers };
 }
 
-async function terraformCommand(
-  command: string,
-  languageServerExec = true,
-  clientHandler: ClientHandler,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function terraformCommand(command: string, languageServerExec = true): Promise<any> {
   const textEditor = getActiveTextEditor();
   if (textEditor) {
     const languageClient = clientHandler.getClient();
