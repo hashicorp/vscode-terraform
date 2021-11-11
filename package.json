@@ -143,7 +143,7 @@
             "trace.server": "off"
           }
         },
-        "terraform.enableReferenceCountCodeLens": {
+        "terraform.codelens.referenceCount": {
           "scope": "resource",
           "type": "boolean",
           "default": true,
