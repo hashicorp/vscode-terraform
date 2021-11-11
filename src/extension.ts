@@ -20,7 +20,11 @@ const languageServerUpdater = new SingleInstanceTimeout();
 
 export interface TerraformExtension {
   clientHandler: ClientHandler;
-  moduleCallers(languageClient: TerraformLanguageClient, moduleUri: string): Promise<moduleCallersResponse>;
+  moduleCallers(
+    languageClient: TerraformLanguageClient,
+    moduleUri: string,
+    reporter: TelemetryReporter,
+  ): Promise<moduleCallersResponse>;
 }
 
 export async function activate(context: vscode.ExtensionContext): Promise<TerraformExtension> {
