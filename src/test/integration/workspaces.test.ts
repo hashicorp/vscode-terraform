@@ -1,9 +1,8 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
+import { TerraformExtension } from '../../extension';
 import { getDocUri, getExtensionId, open, testFolderPath } from '../helper';
-
-
 
 suite('moduleCallers', () => {
   teardown(async () => {
@@ -12,17 +11,24 @@ suite('moduleCallers', () => {
 
 	test('should execute language server command', async () => {
 		const extId = getExtensionId()
-		const ext = vscode.extensions.getExtension(extId);
+		const ext = vscode.extensions.getExtension<TerraformExtension>(extId);
 
 		const documentUri = getDocUri('modules/sample.tf');
 		await open(documentUri);
 
     assert.ok(ext.isActive);
 
-		const client = ext.exports.clientHandler.getClient(documentUri);
+		const api = ext.exports;
+    assert.ok(api.clientHandler);
+    assert.ok(api.moduleCallers);
+
+		const client = await api.clientHandler.getClient();
+    assert.ok(client);
 
 		const moduleUri = Utils.dirname(documentUri).toString();
-		const response = await ext.exports.moduleCallers(client, moduleUri);
+		const response = await api.moduleCallers(client, moduleUri);
+    assert.ok(response);
+
 		assert.strictEqual(response.moduleCallers.length, 1);
 		assert.strictEqual(response.moduleCallers[0].uri, vscode.Uri.file(testFolderPath).toString(true));
 	})
