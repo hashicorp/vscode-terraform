@@ -24,8 +24,8 @@ export interface TerraformLanguageClient {
  * based on the server's capabilities
  */
 export class ClientHandler {
-  private shortUid: ShortUniqueId;
-  private tfClient: TerraformLanguageClient;
+  private shortUid: ShortUniqueId = undefined;
+  private tfClient: TerraformLanguageClient = undefined;
   private commands: string[] = [];
 
   constructor(
@@ -34,7 +34,6 @@ export class ClientHandler {
     private reporter: TelemetryReporter,
   ) {
     this.shortUid = new ShortUniqueId();
-    this.commands = [];
     if (lsPath.hasCustomBinPath()) {
       this.reporter.sendTelemetryEvent('usePathToBinary');
     }
@@ -90,7 +89,7 @@ export class ClientHandler {
     const id = `terraform`;
     const client = new LanguageClient(id, serverOptions, clientOptions);
 
-    const codeLensReferenceCount = config('terraform').get('codelens.referenceCount');
+    const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount');
     if (codeLensReferenceCount) {
       client.registerFeature(new ShowReferencesFeature(client));
     }
@@ -105,7 +104,7 @@ export class ClientHandler {
     return { commandPrefix, client };
   }
 
-  private getServerOptions() {
+  private getServerOptions(): ServerOptions {
     const cmd = this.lsPath.resolvedPathToBinary();
     const serverArgs = config('terraform').get<string[]>('languageServer.args');
     const executable: Executable = {
@@ -122,11 +121,11 @@ export class ClientHandler {
 
   private getInitializationOptions(commandPrefix: string) {
     const rootModulePaths = config('terraform-ls').get<string[]>('rootModules', []);
-    const terraformExecPath: string = config('terraform-ls').get('terraformExecPath');
-    const terraformExecTimeout: string = config('terraform-ls').get('terraformExecTimeout');
-    const terraformLogFilePath: string = config('terraform-ls').get('terraformLogFilePath');
-    const excludeModulePaths: string[] = config('terraform-ls').get('excludeRootModules');
-    const ignoreDirectoryNames: string[] = config('terraform-ls').get('ignoreDirectoryNames');
+    const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath');
+    const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout');
+    const terraformLogFilePath = config('terraform-ls').get<string>('terraformLogFilePath');
+    const excludeModulePaths = config('terraform-ls').get<string[]>('excludeRootModules');
+    const ignoreDirectoryNames = config('terraform-ls').get<string[]>('ignoreDirectoryNames');
 
     if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
       throw new Error(
@@ -158,22 +157,12 @@ export class ClientHandler {
   }
 
   public async stopClient(): Promise<void> {
-    if (this.tfClient === undefined) {
-      return Promise.resolve();
-    }
-
     if (this.tfClient?.client === undefined) {
       return Promise.resolve();
     }
 
-    return this.tfClient.client
-      .stop()
-      .then(() => {
-        console.log('Client stopped');
-      })
-      .then(() => {
-        console.log('Client deleted');
-      });
+    await this.tfClient.client.stop();
+    console.log('Client stopped');
   }
 
   public getClient(): TerraformLanguageClient {
