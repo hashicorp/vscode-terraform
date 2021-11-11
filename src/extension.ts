@@ -11,7 +11,7 @@ import { SingleInstanceTimeout } from './utils';
 import { config, getActiveTextEditor } from './vscodeUtils';
 
 const brand = `HashiCorp Terraform`;
-const outputChannel: vscode.OutputChannel = vscode.window.createOutputChannel(brand);
+const outputChannel = vscode.window.createOutputChannel(brand);
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 let reporter: TelemetryReporter;
@@ -127,7 +127,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       if (textEditor === undefined) {
         return;
       }
-      if (textEditor.document === undefined) {
+      if (textEditor?.document === undefined) {
         return;
       }
       await updateTerraformStatusBar(terraformStatus, clientHandler, reporter, textEditor.document.uri);
