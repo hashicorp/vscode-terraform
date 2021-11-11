@@ -227,11 +227,8 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
   }
 }
 
-function execWorkspaceCommand(
-  client: LanguageClient,
-  params: ExecuteCommandParams,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
   reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
   return client.sendRequest(ExecuteCommandRequest.type, params);
 }
