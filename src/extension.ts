@@ -8,8 +8,10 @@ import { defaultVersionString, isValidVersionString, LanguageServerInstaller } f
 import { ModuleProvider } from './providers/moduleProvider';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
-import { config, getActiveTextEditor, prunedFolderNames } from './vscodeUtils';
+import { config, getActiveTextEditor } from './vscodeUtils';
 
+const brand = `HashiCorp Terraform`;
+const outputChannel = vscode.window.createOutputChannel(brand);
 const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 let reporter: TelemetryReporter;
@@ -27,7 +29,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
   context.subscriptions.push(reporter);
 
   const lsPath = new ServerPath(context);
-  clientHandler = new ClientHandler(lsPath, reporter);
+  clientHandler = new ClientHandler(lsPath, outputChannel, reporter);
 
   // get rid of pre-2.0.0 settings
   if (config('terraform').has('languageServer.enabled')) {
@@ -62,7 +64,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
           vscode.ConfigurationTarget.Global,
         );
       }
-      return updateLanguageServer(manifest.version, clientHandler, lsPath);
+      await updateLanguageServer(manifest.version, lsPath);
+      return clientHandler.startClient();
     }),
     vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
       if (enabled()) {
@@ -74,10 +77,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
         );
       }
       languageServerUpdater.clear();
-      return clientHandler.stopClients();
+      return clientHandler.stopClient();
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply', false, clientHandler);
+      await terraformCommand('apply', false);
     }),
     vscode.commands.registerCommand('terraform.init', async () => {
       const selected = await vscode.window.showOpenDialog({
@@ -89,7 +92,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       });
       if (selected) {
         const moduleUri = selected[0];
-        const client = clientHandler.getClient(moduleUri);
+        const client = clientHandler.getClient();
         const requestParams: ExecuteCommandParams = {
           command: `${client.commandPrefix}.terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
@@ -98,13 +101,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', true, clientHandler);
+      await terraformCommand('init', true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', false, clientHandler);
+      await terraformCommand('plan', false);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', true, clientHandler);
+      await terraformCommand('validate', true);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
@@ -116,23 +119,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
         }
       }
     }),
-    vscode.workspace.onDidChangeWorkspaceFolders(async (event: vscode.WorkspaceFoldersChangeEvent) => {
-      if (event.removed.length > 0) {
-        await clientHandler.stopClients(prunedFolderNames(event.removed));
+    vscode.window.onDidChangeVisibleTextEditors(async (editors: vscode.TextEditor[]) => {
+      const textEditor = editors.find((ed) => !!ed.viewColumn);
+      if (textEditor.document === undefined) {
+        return;
       }
-      if (event.added.length > 0) {
-        await clientHandler.startClients(prunedFolderNames(event.added));
-      }
-    }),
-    vscode.window.onDidChangeVisibleTextEditors(async () => {
-      const textEditor = getActiveTextEditor();
       await updateTerraformStatusBar(textEditor.document.uri);
     }),
   );
 
   if (enabled()) {
     try {
-      await vscode.commands.executeCommand('terraform.enableLanguageServer');
+      await updateLanguageServer(manifest.version, lsPath);
+      await clientHandler.startClient();
       vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
     } catch (error) {
       reporter.sendTelemetryException(error);
@@ -143,14 +142,18 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
   return { clientHandler, moduleCallers };
 }
 
-export function deactivate(): Promise<void[]> {
-  return clientHandler.stopClients();
+export async function deactivate(): Promise<void> {
+  if (clientHandler === undefined) {
+    return;
+  }
+
+  return clientHandler.stopClient();
 }
 
-async function updateTerraformStatusBar(documentUri: vscode.Uri) {
-  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init', documentUri);
+async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> {
+  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init');
   if (initSupported) {
-    const client = clientHandler.getClient(documentUri);
+    const client = clientHandler.getClient();
     const moduleUri = Utils.dirname(documentUri);
 
     if (client) {
@@ -175,35 +178,49 @@ async function updateTerraformStatusBar(documentUri: vscode.Uri) {
   }
 }
 
-async function updateLanguageServer(extVersion: string, clientHandler: ClientHandler, lsPath: ServerPath) {
+async function updateLanguageServer(extVersion: string, lsPath: ServerPath, scheduled = false) {
   console.log('Checking for language server updates...');
   const hour = 1000 * 60 * 60;
   languageServerUpdater.timeout(function () {
-    updateLanguageServer(extVersion, clientHandler, lsPath);
+    updateLanguageServer(extVersion, lsPath, true);
   }, 24 * hour);
 
   try {
-    // skip install if a language server binary path is set
-    if (!lsPath.hasCustomBinPath()) {
-      const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
-      const install = await installer.needsInstall(
-        config('terraform').get('languageServer.requiredVersion', defaultVersionString),
-      );
-      if (install) {
-        await clientHandler.stopClients();
-        try {
-          await installer.install();
-        } catch (err) {
-          console.log(err); // for test failure reporting
-          reporter.sendTelemetryException(err);
-          throw err;
-        } finally {
-          await installer.cleanupZips();
-        }
-      }
+    if (lsPath.hasCustomBinPath()) {
+      // skip install if a language server binary path is set
+      return;
     }
-    // on repeat runs with no install, this will be a no-op
-    return await clientHandler.startClients(prunedFolderNames());
+
+    const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
+    const install = await installer.needsInstall(
+      config('terraform').get('languageServer.requiredVersion', defaultVersionString),
+    );
+
+    if (install === false) {
+      // no install required
+      return;
+    }
+
+    // an install is needed, either as an update or fresh install
+
+    // stop current client, if it exists
+    await clientHandler.stopClient();
+    try {
+      // install ls from configured source
+      await installer.install();
+    } catch (err) {
+      console.log(err); // for test failure reporting
+      reporter.sendTelemetryException(err);
+      throw err;
+    } finally {
+      // clean up after ourselves and remove zip files
+      await installer.cleanupZips();
+    }
+
+    if (scheduled) {
+      // scheduled updates still need to start client
+      await clientHandler.startClient();
+    }
   } catch (error) {
     console.log(error); // for test failure reporting
     vscode.window.showErrorMessage(error.message);
@@ -244,15 +261,11 @@ async function moduleCallers(
   return { version: response.v, moduleCallers };
 }
 
-async function terraformCommand(
-  command: string,
-  languageServerExec = true,
-  clientHandler: ClientHandler,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function terraformCommand(command: string, languageServerExec = true): Promise<any> {
   const textEditor = getActiveTextEditor();
   if (textEditor) {
-    const languageClient = clientHandler.getClient(textEditor.document.uri);
+    const languageClient = clientHandler.getClient();
 
     const moduleUri = Utils.dirname(textEditor.document.uri);
     const response = await moduleCallers(languageClient, moduleUri.toString());
