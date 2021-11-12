@@ -134,25 +134,16 @@ export class ClientHandler {
     }
 
     const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
-    let initializationOptions = { commandPrefix, experimentalFeatures };
-    if (terraformExecPath.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { terraformExecPath });
-    }
-    if (terraformExecTimeout.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { terraformExecTimeout });
-    }
-    if (terraformLogFilePath.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { terraformLogFilePath });
-    }
-    if (rootModulePaths.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { rootModulePaths });
-    }
-    if (excludeModulePaths.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { excludeModulePaths });
-    }
-    if (ignoreDirectoryNames.length > 0) {
-      initializationOptions = Object.assign(initializationOptions, { ignoreDirectoryNames });
-    }
+    const initializationOptions = {
+      commandPrefix,
+      experimentalFeatures,
+      ...(terraformExecPath.length > 0 && { terraformExecPath }),
+      ...(terraformExecTimeout.length > 0 && { terraformExecTimeout }),
+      ...(terraformLogFilePath.length > 0 && { terraformLogFilePath }),
+      ...(rootModulePaths.length > 0 && { rootModulePaths }),
+      ...(excludeModulePaths.length > 0 && { excludeModulePaths }),
+      ...(ignoreDirectoryNames.length > 0 && { ignoreDirectoryNames }),
+    };
     return initializationOptions;
   }
 
