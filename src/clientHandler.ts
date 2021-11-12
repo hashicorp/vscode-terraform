@@ -120,8 +120,8 @@ export class ClientHandler {
     const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath');
     const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout');
     const terraformLogFilePath = config('terraform-ls').get<string>('terraformLogFilePath');
-    const excludeModulePaths = config('terraform-ls').get<string[]>('excludeRootModules');
-    const ignoreDirectoryNames = config('terraform-ls').get<string[]>('ignoreDirectoryNames');
+    const excludeModulePaths = config('terraform-ls').get<string[]>('excludeRootModules', []);
+    const ignoreDirectoryNames = config('terraform-ls').get<string[]>('ignoreDirectoryNames', []);
 
     if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
       throw new Error(
