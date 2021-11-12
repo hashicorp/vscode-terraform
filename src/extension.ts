@@ -7,7 +7,7 @@ import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
 import { ModuleProvider } from './providers/moduleProvider';
-import { ProviderProvider } from './providers/providerProvider';
+import { ModuleProviderProvider } from './providers/providerProvider';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
 import { config, getActiveTextEditor } from './vscodeUtils';
@@ -113,7 +113,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
     }),
     new GenerateBugReportCommand(context),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
-    vscode.window.registerTreeDataProvider('terraform.providers', new ProviderProvider(context, clientHandler)),
+    vscode.window.registerTreeDataProvider('terraform.providers', new ModuleProviderProvider(context, clientHandler)),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
       if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
         const reloadMsg = 'Reload VSCode window to apply language server changes';
