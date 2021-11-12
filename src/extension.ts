@@ -213,7 +213,7 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
       reporter.sendTelemetryException(err);
       throw err;
     } finally {
-      // clean upa fter ourselves and remove zip files
+      // clean up after ourselves and remove zip files
       await installer.cleanupZips();
     }
 
