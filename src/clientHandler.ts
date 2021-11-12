@@ -147,7 +147,7 @@ export class ClientHandler {
 
   public async stopClient(): Promise<void> {
     if (this.tfClient?.client === undefined) {
-      return Promise.resolve();
+      return;
     }
 
     await this.tfClient.client.stop();
