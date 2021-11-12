@@ -105,7 +105,7 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     const documentURI = Utils.dirname(editor);
     const handler = this.handler.getClient();
     if (handler === undefined) {
-      return Promise.resolve([]);
+      return [];
     }
 
     return await handler.client.onReady().then(async () => {

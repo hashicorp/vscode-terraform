@@ -59,7 +59,7 @@ export class ServerPath {
       }
       console.log(`Found server at ${cmd}`);
     } catch (err) {
-      let extraHint: string;
+      let extraHint = '';
       if (this.hasCustomBinPath()) {
         extraHint = `. Check "${CUSTOM_BIN_PATH_OPTION_NAME}" in your settings.`;
       }
