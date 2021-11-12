@@ -39,25 +39,23 @@ export class ClientHandler {
     }
   }
 
-  public async startClient(): Promise<vscode.Disposable[]> {
-    const disposables: vscode.Disposable[] = [];
-
+  public async startClient(): Promise<vscode.Disposable> {
     console.log('Starting client');
 
     this.tfClient = this.createTerraformClient();
-    const readyClient = this.tfClient.client.onReady().then(async () => {
-      this.reporter.sendTelemetryEvent('startClient');
-      const multiFoldersSupported =
-        this.tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-      console.log(`Multi-folder support: ${multiFoldersSupported}`);
+    const disposable = this.tfClient.client.start();
 
-      this.commands = this.tfClient.client.initializeResult.capabilities.executeCommandProvider?.commands;
-    });
+    await this.tfClient.client.onReady();
 
-    disposables.push(this.tfClient.client.start());
-    await readyClient;
+    this.reporter.sendTelemetryEvent('startClient');
 
-    return disposables;
+    const multiFoldersSupported =
+      this.tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
+    console.log(`Multi-folder support: ${multiFoldersSupported}`);
+
+    this.commands = this.tfClient.client.initializeResult.capabilities.executeCommandProvider?.commands;
+
+    return disposable;
   }
 
   private createTerraformClient(): TerraformLanguageClient {
