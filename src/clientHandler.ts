@@ -63,10 +63,7 @@ export class ClientHandler {
 
     const initializationOptions = this.getInitializationOptions(commandPrefix);
 
-    const serverOptions: ServerOptions = this.getServerOptions();
-    this.outputChannel.appendLine(
-      `Launching language server: ${serverOptions.run.command} ${serverOptions.run.args.join(' ')}`,
-    );
+    const serverOptions = this.getServerOptions();
 
     const documentSelector: DocumentSelector = [
       { scheme: 'file', language: 'terraform' },
@@ -102,7 +99,7 @@ export class ClientHandler {
     return { commandPrefix, client };
   }
 
-  private getServerOptions() {
+  private getServerOptions(): ServerOptions {
     const cmd = this.lsPath.resolvedPathToBinary();
     const serverArgs = config('terraform').get<string[]>('languageServer.args');
     const executable: Executable = {
@@ -114,6 +111,7 @@ export class ClientHandler {
       run: executable,
       debug: executable,
     };
+    this.outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
     return serverOptions;
   }
 
