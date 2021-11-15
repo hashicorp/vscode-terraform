@@ -25,7 +25,7 @@ export class GenerateBugReportCommand implements vscode.Disposable {
         });
 
         const extensions = this.getExtensions();
-        const body = this.generateBody(extensions, problemText);
+        const body = await this.generateBody(extensions, problemText);
         const encodedBody = encodeURIComponent(body);
         const fullUrl = `https://github.com/hashicorp/vscode-terraform/issues/new?body=${encodedBody}`;
         vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(fullUrl));
@@ -37,7 +37,7 @@ export class GenerateBugReportCommand implements vscode.Disposable {
     // throw new Error('Method not implemented.');
   }
 
-  generateBody(extensions: VSCodeExtension[], problemText?: string): string {
+  async generateBody(extensions: VSCodeExtension[], problemText?: string): Promise<string> {
     if (!problemText) {
       problemText = `Steps To Reproduce
 =====
@@ -92,7 +92,7 @@ Environment Information
 Terraform Information
 -----
 
-${this.generateRuntimeMarkdown(this.getRuntimeInfo())}
+${this.generateRuntimeMarkdown(await this.getRuntimeInfo())}
 
 Visual Studio Code
 -----
@@ -167,18 +167,52 @@ Outdated:\t${info.outdated}
     return extensions;
   }
 
-  getRuntimeInfo(): TerraformInfo {
+  async getRuntimeInfo(): Promise<TerraformInfo> {
     const terraformExe = 'terraform';
-    const cmdargs = ['version', '-json'];
 
     const spawn = child_process.spawnSync;
-    const child = spawn(terraformExe, cmdargs);
-    const response = child.stdout.toString();
-    const j = JSON.parse(response);
-    return {
-      version: j.terraform_version,
-      platform: j.platform,
-      outdated: j.terraform_outdated,
-    };
+
+    try {
+      const child = spawn(terraformExe, ['version', '-json']);
+      const response = child.stdout.toString();
+      const j = JSON.parse(response);
+
+      return {
+        version: j.terraform_version,
+        platform: j.platform,
+        outdated: j.terraform_outdated,
+      };
+    } catch (err) {
+      if (err.status === 0) {
+        return {
+          version: 'Not found',
+          platform: 'Not found',
+          outdated: false,
+        };
+      }
+    }
+
+    try {
+      // assume older version of terraform which didn't have json flag
+      const child = spawn(terraformExe, ['version']);
+      const response = child.stdout.toString() || child.stderr.toString();
+      const regex = new RegExp('v?(?<version>[0-9]+(?:.[0-9]+)*(?:-[A-Za-z0-9.]+)?)');
+      const matches = regex.exec(response);
+
+      const version = matches[1];
+      const platform = response.split('\n')[1].replace('on ', '');
+
+      return {
+        version: version,
+        platform: platform,
+        outdated: false, //TODO: is it worth scraping if it's out of date here?
+      };
+    } catch {
+      return {
+        version: 'Not found',
+        platform: 'Not found',
+        outdated: false,
+      };
+    }
   }
 }
