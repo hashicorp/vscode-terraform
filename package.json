@@ -213,6 +213,10 @@
     },
     "commands": [
       {
+        "command": "terraform.generateBugReport",
+        "title": "Terraform: Generate Bug Report"
+      },
+      {
         "command": "terraform.enableLanguageServer",
         "title": "Terraform: Enable Language Server"
       },

@@ -4,6 +4,7 @@ import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclie
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
+import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
 import { ModuleProvider } from './providers/moduleProvider';
 import { ServerPath } from './serverPath';
@@ -109,6 +110,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
     vscode.commands.registerCommand('terraform.validate', async () => {
       await terraformCommand('validate', true);
     }),
+    new GenerateBugReportCommand(context),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
       if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
