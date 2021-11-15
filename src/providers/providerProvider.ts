@@ -10,7 +10,8 @@ interface ModuleProvidersResponse {
   provider_requirements: {
     [provider: string]: {
       display_name: string;
-      version_constraint: string;
+      version_constraint?: string;
+      docs_link?: string;
     };
   };
   installed_providers: {
@@ -24,6 +25,7 @@ class ModuleProvider extends vscode.TreeItem {
     public displayName: string,
     public requiredVersion: string,
     public installedVersion: string | undefined,
+    public docsLink: string | undefined,
   ) {
     super(`${displayName} ${requiredVersion}`, vscode.TreeItemCollapsibleState.None);
 
@@ -42,6 +44,11 @@ export class ModuleProviderProvider implements vscode.TreeDataProvider<ModulePro
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor) => {
         if (event && getActiveTextEditor()) {
           this.refresh();
+        }
+      }),
+      vscode.commands.registerCommand('terraform.providers.openDocumentation', (module: ModuleProvider) => {
+        if (module.docsLink) {
+          vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }
       }),
     );
@@ -107,6 +114,7 @@ export class ModuleProviderProvider implements vscode.TreeDataProvider<ModulePro
             details.display_name,
             details.version_constraint,
             response.installed_providers[provider],
+            details.docs_link,
           ),
       )
       .filter((m) => Boolean(m.requiredVersion));

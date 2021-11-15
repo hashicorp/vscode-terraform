@@ -249,6 +249,11 @@
         "command": "terraform.modules.openDocumentation",
         "title": "Open Documentation",
         "icon": "$(book)"
+      },
+      {
+        "command": "terraform.providers.openDocumentation",
+        "title": "Open Documentation",
+        "icon": "$(book)"
       }
     ],
     "menus": {
@@ -259,6 +264,10 @@
         },
         {
           "command": "terraform.modules.openDocumentation",
+          "when": "false"
+        },
+        {
+          "command": "terraform.providers.openDocumentation",
           "when": "false"
         }
       ],
@@ -273,6 +282,10 @@
         {
           "command": "terraform.modules.openDocumentation",
           "when": "view == terraform.modules"
+        },
+        {
+          "command": "terraform.providers.openDocumentation",
+          "when": "view == terraform.providers"
         }
       ]
     },
