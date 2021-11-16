@@ -310,7 +310,7 @@
     "viewsWelcome": [
       {
         "view": "terraform.providers",
-        "contents": "The active editor cannot provide information about installed providers."
+        "contents": "The active editor cannot provide information about installed providers. [Learn more about providers](https://www.terraform.io/docs/language/providers/index.html). You may need to update your language server version."
       },
       {
         "view": "terraform.modules",
