@@ -32,6 +32,10 @@ class ModuleProvider extends vscode.TreeItem {
     this.description = installedVersion ?? 'n.a.';
     this.iconPath = new vscode.ThemeIcon('package');
     this.tooltip = fullName;
+
+    if (docsLink) {
+      this.contextValue = 'moduleProviderHasDocs';
+    }
   }
 }
 

@@ -285,7 +285,7 @@
         },
         {
           "command": "terraform.providers.openDocumentation",
-          "when": "view == terraform.providers"
+          "when": "view == terraform.providers && viewItem == moduleProviderHasDocs"
         }
       ]
     },
