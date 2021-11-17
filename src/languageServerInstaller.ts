@@ -73,10 +73,10 @@ export class LanguageServerInstaller {
         this.reporter.sendTelemetryException(err);
         throw err;
       }
-      if (err.code !== 'ENOENT') {
-        this.reporter.sendTelemetryException(err);
-        throw err;
-      }
+      // if (err.code !== 'ENOENT') {
+      //   this.reporter.sendTelemetryException(err);
+      //   throw err;
+      // }
       return true; // yes to new install
     }
 
