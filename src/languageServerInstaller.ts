@@ -119,7 +119,7 @@ export class LanguageServerInstaller {
   async installPkg(release: Release): Promise<void> {
     const installDir = this.lsPath.installPath();
     const destination = path.resolve(installDir, `terraform-ls_v${release.version}.zip`);
-    vscode.workspace.fs.createDirectory(vscode.Uri.file(installDir)); // create install directory if missing
+    await vscode.workspace.fs.createDirectory(vscode.Uri.file(installDir)); // create install directory if missing
 
     const os = goOs();
     const arch = goArch();
@@ -129,13 +129,13 @@ export class LanguageServerInstaller {
     }
 
     try {
-      vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.binPath()));
+      await vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.binPath()));
     } catch {
       // ignore missing binary (new install)
     }
 
     try {
-      vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.legacyBinPath()));
+      await vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.legacyBinPath()));
     } catch {
       // clean up may fail for new installation
       // or in new versions where this path is no longer in use

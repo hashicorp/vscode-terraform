@@ -46,12 +46,12 @@ export class ServerPath {
     return 'terraform-ls';
   }
 
-  public resolvedPathToBinary(): string {
+  public async resolvedPathToBinary(): Promise<string> {
     const pathToBinary = this.binPath();
     let cmd: string;
     try {
       if (path.isAbsolute(pathToBinary)) {
-        vscode.workspace.fs.stat(vscode.Uri.file(pathToBinary));
+        await vscode.workspace.fs.stat(vscode.Uri.file(pathToBinary));
         cmd = pathToBinary;
       } else {
         cmd = which.sync(pathToBinary);

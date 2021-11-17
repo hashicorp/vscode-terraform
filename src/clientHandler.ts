@@ -42,7 +42,7 @@ export class ClientHandler {
   public async startClient(): Promise<vscode.Disposable> {
     console.log('Starting client');
 
-    this.tfClient = this.createTerraformClient();
+    this.tfClient = await this.createTerraformClient();
     const disposable = this.tfClient.client.start();
 
     await this.tfClient.client.onReady();
@@ -58,12 +58,12 @@ export class ClientHandler {
     return disposable;
   }
 
-  private createTerraformClient(): TerraformLanguageClient {
+  private async createTerraformClient(): Promise<TerraformLanguageClient> {
     const commandPrefix = this.shortUid.seq();
 
     const initializationOptions = this.getInitializationOptions(commandPrefix);
 
-    const serverOptions = this.getServerOptions();
+    const serverOptions = await this.getServerOptions();
 
     const documentSelector: DocumentSelector = [
       { scheme: 'file', language: 'terraform' },
@@ -99,8 +99,8 @@ export class ClientHandler {
     return { commandPrefix, client };
   }
 
-  private getServerOptions(): ServerOptions {
-    const cmd = this.lsPath.resolvedPathToBinary();
+  private async getServerOptions(): Promise<ServerOptions> {
+    const cmd = await this.lsPath.resolvedPathToBinary();
     const serverArgs = config('terraform').get<string[]>('languageServer.args');
     const executable: Executable = {
       command: cmd,
