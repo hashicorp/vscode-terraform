@@ -19,7 +19,7 @@ interface ModuleProvidersResponse {
   };
 }
 
-class ModuleProvider extends vscode.TreeItem {
+class ModuleProviderItem extends vscode.TreeItem {
   constructor(
     public fullName: string,
     public displayName: string,
@@ -39,18 +39,18 @@ class ModuleProvider extends vscode.TreeItem {
   }
 }
 
-export class ModuleProviderProvider implements vscode.TreeDataProvider<ModuleProvider> {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProvider>();
+export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<ModuleProviderItem> {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
   constructor(ctx: vscode.ExtensionContext, private handler: ClientHandler) {
     ctx.subscriptions.push(
-      vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor) => {
+      vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
         if (event && getActiveTextEditor()) {
           this.refresh();
         }
       }),
-      vscode.commands.registerCommand('terraform.providers.openDocumentation', (module: ModuleProvider) => {
+      vscode.commands.registerCommand('terraform.providers.openDocumentation', (module: ModuleProviderItem) => {
         if (module.docsLink) {
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }
@@ -62,11 +62,11 @@ export class ModuleProviderProvider implements vscode.TreeDataProvider<ModulePro
     this.didChangeTreeData.fire();
   }
 
-  getTreeItem(element: ModuleProvider): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: ModuleProviderItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
-  getChildren(element?: ModuleProvider): vscode.ProviderResult<ModuleProvider[]> {
+  getChildren(element?: ModuleProviderItem): vscode.ProviderResult<ModuleProviderItem[]> {
     if (element) {
       return [];
     } else {
@@ -74,7 +74,7 @@ export class ModuleProviderProvider implements vscode.TreeDataProvider<ModulePro
     }
   }
 
-  async getProvider(): Promise<ModuleProvider[]> {
+  async getProvider(): Promise<ModuleProviderItem[]> {
     const activeEditor = getActiveTextEditor();
 
     const document = activeEditor?.document;
@@ -113,7 +113,7 @@ export class ModuleProviderProvider implements vscode.TreeDataProvider<ModulePro
     return Object.entries(response.provider_requirements)
       .map(
         ([provider, details]) =>
-          new ModuleProvider(
+          new ModuleProviderItem(
             provider,
             details.display_name,
             details.version_constraint,

@@ -5,7 +5,7 @@ import { Utils } from 'vscode-uri';
 import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor } from '../vscodeUtils';
 
-class ModuleCall extends vscode.TreeItem {
+class ModuleCallItem extends vscode.TreeItem {
   constructor(
     public label: string,
     public sourceAddr: string,
@@ -13,7 +13,7 @@ class ModuleCall extends vscode.TreeItem {
     public sourceType: string,
     public docsLink: string,
     public terraformIcon: string,
-    public readonly children: ModuleCall[],
+    public readonly children: ModuleCallItem[],
   ) {
     super(
       label,
@@ -50,11 +50,12 @@ class ModuleCall extends vscode.TreeItem {
   }
 }
 
-export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
-  private _onDidChangeTreeData: vscode.EventEmitter<ModuleCall | undefined | null | void> = new vscode.EventEmitter<
-    ModuleCall | undefined | null | void
+export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCallItem> {
+  private _onDidChangeTreeData: vscode.EventEmitter<ModuleCallItem | undefined | null | void> = new vscode.EventEmitter<
+    ModuleCallItem | undefined | null | void
   >();
-  readonly onDidChangeTreeData: vscode.Event<ModuleCall | undefined | null | void> = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: vscode.Event<ModuleCallItem | undefined | null | void> =
+    this._onDidChangeTreeData.event;
 
   private svg = '';
 
@@ -62,7 +63,7 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
-      vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCall) => {
+      vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
         vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
       }),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
@@ -77,11 +78,11 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: ModuleCall): ModuleCall | Thenable<ModuleCall> {
+  getTreeItem(element: ModuleCallItem): ModuleCallItem | Thenable<ModuleCallItem> {
     return element;
   }
 
-  getChildren(element?: ModuleCall): vscode.ProviderResult<ModuleCall[]> {
+  getChildren(element?: ModuleCallItem): vscode.ProviderResult<ModuleCallItem[]> {
     if (element) {
       return Promise.resolve(element.children);
     } else {
@@ -90,7 +91,7 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     }
   }
 
-  async getModules(): Promise<ModuleCall[]> {
+  async getModules(): Promise<ModuleCallItem[]> {
     const activeEditor = getActiveTextEditor();
     if (activeEditor === undefined) {
       return Promise.resolve([]);
@@ -143,8 +144,8 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
     terraformIcon: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     dependents: any,
-  ): ModuleCall {
-    let deps: ModuleCall[] = [];
+  ): ModuleCallItem {
+    let deps: ModuleCallItem[] = [];
     if (dependents.length != 0) {
       deps = dependents.map((dp) =>
         this.toModuleCall(
@@ -159,6 +160,6 @@ export class ModuleProvider implements vscode.TreeDataProvider<ModuleCall> {
       );
     }
 
-    return new ModuleCall(name, sourceAddr, version, sourceType, docsLink, terraformIcon, deps);
+    return new ModuleCallItem(name, sourceAddr, version, sourceType, docsLink, terraformIcon, deps);
   }
 }
