@@ -23,15 +23,15 @@ class ModuleProvider extends vscode.TreeItem {
   constructor(
     public fullName: string,
     public displayName: string,
-    public requiredVersion: string,
+    public requiredVersion: string | undefined,
     public installedVersion: string | undefined,
     public docsLink: string | undefined,
   ) {
-    super(`${displayName} ${requiredVersion}`, vscode.TreeItemCollapsibleState.None);
+    super(displayName, vscode.TreeItemCollapsibleState.None);
 
-    this.description = installedVersion ?? 'n.a.';
+    this.description = installedVersion ?? '';
     this.iconPath = new vscode.ThemeIcon('package');
-    this.tooltip = fullName;
+    this.tooltip = `${fullName} ${requiredVersion ?? ''}`;
 
     if (docsLink) {
       this.contextValue = 'moduleProviderHasDocs';
