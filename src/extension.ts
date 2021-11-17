@@ -6,7 +6,8 @@ import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
-import { ModuleProvider } from './providers/moduleProvider';
+import { ModuleCallsDataProvider } from './providers/moduleCalls';
+import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
 import { config, getActiveTextEditor } from './vscodeUtils';
@@ -111,7 +112,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       await terraformCommand('validate', true);
     }),
     new GenerateBugReportCommand(context),
-    vscode.window.registerTreeDataProvider('terraform.modules', new ModuleProvider(context, clientHandler)),
+    vscode.window.registerTreeDataProvider('terraform.modules', new ModuleCallsDataProvider(context, clientHandler)),
+    vscode.window.registerTreeDataProvider(
+      'terraform.providers',
+      new ModuleProvidersDataProvider(context, clientHandler),
+    ),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
       if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
         const reloadMsg = 'Reload VSCode window to apply language server changes';
@@ -123,7 +128,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
     }),
     vscode.window.onDidChangeVisibleTextEditors(async (editors: vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
-      if (textEditor.document === undefined) {
+      if (textEditor?.document === undefined) {
         return;
       }
       await updateTerraformStatusBar(textEditor.document.uri);
@@ -134,7 +139,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
     try {
       await updateLanguageServer(manifest.version, lsPath);
       await clientHandler.startClient();
-      vscode.commands.executeCommand('setContext', 'terraform.showModuleView', true);
+      vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', true);
     } catch (error) {
       reporter.sendTelemetryException(error);
     }
