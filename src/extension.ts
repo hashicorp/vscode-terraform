@@ -128,7 +128,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
     }),
     vscode.window.onDidChangeVisibleTextEditors(async (editors: vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
-      if (textEditor.document === undefined) {
+      if (textEditor?.document === undefined) {
         return;
       }
       await updateTerraformStatusBar(textEditor.document.uri);
