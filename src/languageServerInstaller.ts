@@ -1,5 +1,4 @@
 import { getRelease, Release } from '@hashicorp/js-releases';
-import * as del from 'del';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as vscode from 'vscode';
@@ -158,9 +157,10 @@ export class LanguageServerInstaller {
     );
   }
 
-  public async cleanupZips(): Promise<string[]> {
-    const pattern = path.resolve(this.lsPath.installPath(), 'terraform-ls*.zip');
-    return del(pattern, { force: true });
+  public async cleanupZips(): Promise<void> {
+    const installDir = this.lsPath.installPath();
+    const destination = path.resolve(installDir, `terraform-ls_v${this.release.version}.zip`);
+    return await vscode.workspace.fs.delete(vscode.Uri.file(destination));
   }
 
   showChangelog(version: string): void {
