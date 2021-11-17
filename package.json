@@ -293,17 +293,17 @@
       "explorer": [
         {
           "id": "terraform.providers",
-          "name": "Terraform Provides",
+          "name": "Terraform Providers",
           "icon": "assets/icons/terraform.svg",
           "visibility": "collapsed",
-          "when": "terraform.showProviderView"
+          "when": "terraform.showTreeViews"
         },
         {
           "id": "terraform.modules",
           "name": "Terraform Module Calls",
           "icon": "assets/icons/terraform.svg",
           "visibility": "collapsed",
-          "when": "terraform.showModuleView"
+          "when": "terraform.showTreeViews"
         }
       ]
     },
