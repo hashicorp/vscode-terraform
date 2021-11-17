@@ -1,6 +1,5 @@
 import { getRelease, Release } from '@hashicorp/js-releases';
 import * as del from 'del';
-import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as vscode from 'vscode';
@@ -70,6 +69,10 @@ export class LanguageServerInstaller {
       // Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
       // on a fresh installation (unlike upgrade). It’s also possible that the file or directory
       // is inaccessible for some other reason, but we catch that separately.
+      if (err.code !== 'FileNotFound') {
+        this.reporter.sendTelemetryException(err);
+        throw err;
+      }
       if (err.code !== 'ENOENT') {
         this.reporter.sendTelemetryException(err);
         throw err;
@@ -116,7 +119,7 @@ export class LanguageServerInstaller {
   async installPkg(release: Release): Promise<void> {
     const installDir = this.lsPath.installPath();
     const destination = path.resolve(installDir, `terraform-ls_v${release.version}.zip`);
-    fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
+    vscode.workspace.fs.createDirectory(vscode.Uri.file(installDir)); // create install directory if missing
 
     const os = goOs();
     const arch = goArch();
@@ -124,14 +127,15 @@ export class LanguageServerInstaller {
     if (!build) {
       throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
     }
+
     try {
-      fs.unlinkSync(this.lsPath.binPath());
+      vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.binPath()));
     } catch {
       // ignore missing binary (new install)
     }
 
     try {
-      fs.unlinkSync(this.lsPath.legacyBinPath());
+      vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.legacyBinPath()));
     } catch {
       // clean up may fail for new installation
       // or in new versions where this path is no longer in use
@@ -171,7 +175,10 @@ export class LanguageServerInstaller {
 
 async function getLsVersion(lsPath: ServerPath): Promise<string> {
   const binPath = lsPath.binPath();
-  fs.accessSync(binPath, fs.constants.X_OK);
+
+  const p = vscode.Uri.file(binPath);
+  const e = await vscode.workspace.fs.stat(p);
+  console.log(`Found: ${binPath} ${vscode.FileType[e.type]}`);
 
   try {
     const jsonCmd: { stdout: string } = await exec(binPath, ['version', '-json']);

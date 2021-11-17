@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as which from 'which';
@@ -52,7 +51,7 @@ export class ServerPath {
     let cmd: string;
     try {
       if (path.isAbsolute(pathToBinary)) {
-        fs.accessSync(pathToBinary, fs.constants.X_OK);
+        vscode.workspace.fs.stat(vscode.Uri.file(pathToBinary));
         cmd = pathToBinary;
       } else {
         cmd = which.sync(pathToBinary);
