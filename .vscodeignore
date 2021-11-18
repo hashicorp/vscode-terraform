@@ -10,6 +10,6 @@ out/test/
 .eslintrc.js
 tsconfig.json
 lsp/
-testfixture/
+testFixture/
 DEVELOPMENT.md
 ROADMAP.md
