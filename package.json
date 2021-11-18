@@ -302,7 +302,6 @@
   "dependencies": {
     "@hashicorp/js-releases": "^1.4.0",
     "@types/semver": "^7.3.4",
-    "del": "^5.1.0",
     "openpgp": "^4.10.10",
     "semver": "^7.3.5",
     "short-unique-id": "^3.2.3",
