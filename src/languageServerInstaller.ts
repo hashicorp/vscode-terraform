@@ -1,6 +1,4 @@
 import { getRelease, Release } from '@hashicorp/js-releases';
-import * as del from 'del';
-import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as vscode from 'vscode';
@@ -67,10 +65,10 @@ export class LanguageServerInstaller {
       installedVersion = await getLsVersion(this.lsPath);
       console.log(`Currently installed Terraform language server is version '${installedVersion}`);
     } catch (err) {
-      // Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
+      // Most of the time, getLsVersion will produce "FileSystemError: FileNotFound"
       // on a fresh installation (unlike upgrade). It’s also possible that the file or directory
       // is inaccessible for some other reason, but we catch that separately.
-      if (err.code !== 'ENOENT') {
+      if (err.code !== 'FileNotFound') {
         this.reporter.sendTelemetryException(err);
         throw err;
       }
@@ -116,7 +114,7 @@ export class LanguageServerInstaller {
   async installPkg(release: Release): Promise<void> {
     const installDir = this.lsPath.installPath();
     const destination = path.resolve(installDir, `terraform-ls_v${release.version}.zip`);
-    fs.mkdirSync(installDir, { recursive: true }); // create install directory if missing
+    await vscode.workspace.fs.createDirectory(vscode.Uri.file(installDir)); // create install directory if missing
 
     const os = goOs();
     const arch = goArch();
@@ -124,14 +122,15 @@ export class LanguageServerInstaller {
     if (!build) {
       throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
     }
+
     try {
-      fs.unlinkSync(this.lsPath.binPath());
+      await vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.binPath()));
     } catch {
       // ignore missing binary (new install)
     }
 
     try {
-      fs.unlinkSync(this.lsPath.legacyBinPath());
+      await vscode.workspace.fs.delete(vscode.Uri.file(this.lsPath.legacyBinPath()));
     } catch {
       // clean up may fail for new installation
       // or in new versions where this path is no longer in use
@@ -154,9 +153,10 @@ export class LanguageServerInstaller {
     );
   }
 
-  public async cleanupZips(): Promise<string[]> {
-    const pattern = path.resolve(this.lsPath.installPath(), 'terraform-ls*.zip');
-    return del(pattern, { force: true });
+  public async cleanupZips(): Promise<void> {
+    const installDir = this.lsPath.installPath();
+    const destination = path.resolve(installDir, `terraform-ls_v${this.release.version}.zip`);
+    return await vscode.workspace.fs.delete(vscode.Uri.file(destination));
   }
 
   showChangelog(version: string): void {
@@ -171,7 +171,10 @@ export class LanguageServerInstaller {
 
 async function getLsVersion(lsPath: ServerPath): Promise<string> {
   const binPath = lsPath.binPath();
-  fs.accessSync(binPath, fs.constants.X_OK);
+
+  const p = vscode.Uri.file(binPath);
+  const e = await vscode.workspace.fs.stat(p);
+  console.log(`Found: ${binPath} ${vscode.FileType[e.type]}`);
 
   try {
     const jsonCmd: { stdout: string } = await exec(binPath, ['version', '-json']);

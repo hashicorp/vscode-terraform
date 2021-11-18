@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as which from 'which';
@@ -47,12 +46,12 @@ export class ServerPath {
     return 'terraform-ls';
   }
 
-  public resolvedPathToBinary(): string {
+  public async resolvedPathToBinary(): Promise<string> {
     const pathToBinary = this.binPath();
     let cmd: string;
     try {
       if (path.isAbsolute(pathToBinary)) {
-        fs.accessSync(pathToBinary, fs.constants.X_OK);
+        await vscode.workspace.fs.stat(vscode.Uri.file(pathToBinary));
         cmd = pathToBinary;
       } else {
         cmd = which.sync(pathToBinary);
