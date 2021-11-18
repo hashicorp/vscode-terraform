@@ -65,7 +65,7 @@ export class LanguageServerInstaller {
       installedVersion = await getLsVersion(this.lsPath);
       console.log(`Currently installed Terraform language server is version '${installedVersion}`);
     } catch (err) {
-      // Most of the time, getLsVersion will produce "ENOENT: no such file or directory"
+      // Most of the time, getLsVersion will produce "FileSystemError: FileNotFound"
       // on a fresh installation (unlike upgrade). It’s also possible that the file or directory
       // is inaccessible for some other reason, but we catch that separately.
       if (err.code !== 'FileNotFound') {
