@@ -14,7 +14,7 @@ import { config, getActiveTextEditor } from './vscodeUtils';
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);
-const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+export const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 let reporter: TelemetryReporter;
 let clientHandler: ClientHandler;
@@ -158,7 +158,8 @@ export async function deactivate(): Promise<void> {
 }
 
 async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> {
-  const initSupported = clientHandler.clientSupportsCommand('terraform-ls.terraform.init');
+  const client = clientHandler.getClient();
+  const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
   if (initSupported) {
     const client = clientHandler.getClient();
     const moduleUri = Utils.dirname(documentUri);
@@ -175,6 +176,7 @@ async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> 
           terraformStatus.show();
         } else {
           terraformStatus.hide();
+          terraformStatus.text = '';
         }
       } catch (err) {
         vscode.window.showErrorMessage(err);
