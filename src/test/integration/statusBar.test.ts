@@ -1,31 +1,28 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { expect } from 'chai';
-import { terraformStatus } from '../../extension';
-import { getDocUri, open } from '../helper';
-import { sleep } from '../../utils';
+import { terraformStatus, updateTerraformStatusBar } from '../../extension';
+import { getDocUri } from '../helper';
 
 suite('statusBar', () => {
   teardown(async () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
   });
 
-  test('should create a status bar item', () => {
+  test('should create a status bar item on activate', () => {
     assert.notStrictEqual(terraformStatus, undefined);
   });
 
   test('should create a status bar with the root module label', async () => {
     const documentUri = getDocUri('sample.tf');
-    await open(documentUri);
-    await sleep(500);
+    await updateTerraformStatusBar(documentUri);
 
     expect(terraformStatus.text).to.equal('$(refresh) testFixture');
   });
 
   test('should create an empty status bar inside a child module', async () => {
     const documentUri = getDocUri('modules/sample.tf');
-    await open(documentUri);
-    await sleep(500);
+    await updateTerraformStatusBar(documentUri);
 
     expect(terraformStatus.text).to.equal('');
   });
