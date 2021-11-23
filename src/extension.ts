@@ -152,30 +152,33 @@ export async function deactivate(): Promise<void> {
 
 export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> {
   const client = clientHandler.getClient();
-  const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
 
-  if (initSupported) {
-    const moduleUri = Utils.dirname(documentUri);
+  if (client) {
+    const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
 
-    try {
-      const response = await moduleCallers(moduleUri.toString());
+    if (initSupported) {
+      const moduleUri = Utils.dirname(documentUri);
 
-      if (response.moduleCallers.length === 0) {
-        const dirName = Utils.basename(moduleUri);
+      try {
+        const response = await moduleCallers(moduleUri.toString());
 
-        terraformStatus.text = `$(refresh) ${dirName}`;
-        terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
-        terraformStatus.tooltip = `Click to run terraform init`;
-        terraformStatus.command = 'terraform.initCurrent';
-        terraformStatus.show();
-      } else {
+        if (response.moduleCallers.length === 0) {
+          const dirName = Utils.basename(moduleUri);
+
+          terraformStatus.text = `$(refresh) ${dirName}`;
+          terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
+          terraformStatus.tooltip = `Click to run terraform init`;
+          terraformStatus.command = 'terraform.initCurrent';
+          terraformStatus.show();
+        } else {
+          terraformStatus.hide();
+          terraformStatus.text = '';
+        }
+      } catch (err) {
+        vscode.window.showErrorMessage(err);
+        reporter.sendTelemetryException(err);
         terraformStatus.hide();
-        terraformStatus.text = '';
       }
-    } catch (err) {
-      vscode.window.showErrorMessage(err);
-      reporter.sendTelemetryException(err);
-      terraformStatus.hide();
     }
   }
 }
