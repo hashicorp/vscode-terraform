@@ -5,7 +5,8 @@ import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
-import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
+import { downloadLS, lsNeedsInstall, pathExists } from './installer/checker';
+import { defaultVersionString, isValidVersionString } from './languageServerInstaller';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
@@ -188,11 +189,11 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
   }
 }
 
-async function updateLanguageServer(extVersion: string, lsPath: ServerPath, scheduled = false) {
+async function updateLanguageServer(extVersion: string, lsPath: ServerPath) {
   console.log('Checking for language server updates...');
   const hour = 1000 * 60 * 60;
   languageServerUpdater.timeout(function () {
-    updateLanguageServer(extVersion, lsPath, true);
+    updateLanguageServer(extVersion, lsPath);
   }, 24 * hour);
 
   try {
@@ -201,35 +202,22 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
       return;
     }
 
-    const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
-    const install = await installer.needsInstall(
-      config('terraform').get('languageServer.requiredVersion', defaultVersionString),
-    );
+    const requiredVersion = config('terraform').get('languageServer.requiredVersion', defaultVersionString);
+    const version = isValidVersionString(requiredVersion) ? requiredVersion : defaultVersionString;
 
+    const install = await lsNeedsInstall(lsPath.binPath(), lsPath.stgBinPath(), extVersion, version);
     if (install === false) {
       // no install required
       return;
     }
 
-    // an install is needed, either as an update or fresh install
+    await downloadLS(lsPath.stageInstallPath(), version, extVersion); //stg
 
-    // stop current client, if it exists
-    await clientHandler.stopClient();
-    try {
-      // install ls from configured source
-      await installer.install();
-    } catch (err) {
-      console.log(err); // for test failure reporting
-      reporter.sendTelemetryException(err);
-      throw err;
-    } finally {
-      // clean up after ourselves and remove zip files
-      await installer.cleanupZips();
-    }
-
-    if (scheduled) {
-      // scheduled updates still need to start client
-      await clientHandler.startClient();
+    if (vscode.env.isNewAppInstall || (await pathExists(lsPath.binPath())) === false) {
+      // no prod, stg is present, move to prod path
+      await vscode.workspace.fs.rename(vscode.Uri.file(lsPath.stgBinPath()), vscode.Uri.file(lsPath.binPath()), {
+        overwrite: true,
+      });
     }
   } catch (error) {
     console.log(error); // for test failure reporting
