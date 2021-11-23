@@ -5,6 +5,7 @@ ENHANCEMENTS:
  - Add new setting which toggles displaying reference counts above top level blocks and attributes ([#837](https://github.com/hashicorp/vscode-terraform/pull/837))
  - Add support for language server side config option `ignoreDirectoryNames` ([#833](https://github.com/hashicorp/vscode-terraform/pull/833))
  - Add module providers view to Explorer pane ([#850](https://github.com/hashicorp/vscode-terraform/pull/850))
+ - Process telemetry from the language server ([#823](https://github.com/hashicorp/vscode-terraform/pull/823))
 
  INTERNAL:
 
