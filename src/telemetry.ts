@@ -6,7 +6,7 @@ const TELEMETRY_VERSION = 1;
 type TelemetryEvent = {
   v: number;
   name: string;
-  properties: { string };
+  properties: { [key: string]: unknown };
 };
 
 export class TelemetryFeature implements StaticFeature {
