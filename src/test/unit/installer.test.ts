@@ -34,7 +34,7 @@ suite('ls installer', () => {
         .update('autoCheckUpdates', true, vscode.ConfigurationTarget.Global);
     });
 
-    test('if staging bin path exists', async () => {
+    test('if staging bin path exists and ls up to date', async () => {
       const temp = require('temp').track();
 
       const version = 'latest';
@@ -44,9 +44,7 @@ suite('ls installer', () => {
       const stgbinPath = temp.mkdirSync('foobar');
       const stgbinbin = path.resolve(stgbinPath, 'terraform-ls.exe');
 
-      // fs.writeFileSync(binbin, '');
       await downloadLS(stgbinPath, '0.24.0', '2.14.0');
-
 
       const extVersion = '2.16.0';
       const install = await lsNeedsInstall(binbin, stgbinbin, extVersion, version);

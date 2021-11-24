@@ -25,8 +25,10 @@ export async function lsNeedsInstall(
     console.log('Stage path present, moving to prod bin path');
     // stg is present, move to prod path
     await vscode.workspace.fs.rename(vscode.Uri.file(stgBinPath), vscode.Uri.file(binPath), { overwrite: true });
+    console.log('Stage path moved to prod bin path');
+    // return false;
   } catch (error) {
-    console.log('No stage path present, not moving to prod bin path');
+    console.log(`No stage path present, not moving to prod bin path: ${error.message}`);
     // failure to find exe means we need to download ls
     // return true;
   }
@@ -111,7 +113,7 @@ export async function downloadLS(
       await requested.unpack(installDir, destination);
 
       progress.report({ increment: 10 });
-      // await vscode.workspace.fs.delete(vscode.Uri.file(destination));
+      await vscode.workspace.fs.delete(vscode.Uri.file(destination));
     },
   );
 }
