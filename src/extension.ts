@@ -205,7 +205,13 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath) {
     const requiredVersion = config('terraform').get('languageServer.requiredVersion', defaultVersionString);
     const version = isValidVersionString(requiredVersion) ? requiredVersion : defaultVersionString;
 
-    const install = await lsNeedsInstall(lsPath.binPath(), lsPath.stgBinPath(), extVersion, version);
+    const install = await lsNeedsInstall(
+      lsPath.binPath(),
+      lsPath.stgBinPath(),
+      extVersion,
+      version,
+      vscode.env.isNewAppInstall,
+    );
     if (install === false) {
       // no install required
       return;

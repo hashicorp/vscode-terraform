@@ -10,9 +10,11 @@ export async function lsNeedsInstall(
   stgBinPath: string,
   extensionVersion: string,
   requestedVersion = 'latest',
+  vscodeNewInstall = false,
 ): Promise<boolean> {
-  if (vscode.env.isNewAppInstall) {
+  if (vscodeNewInstall) {
     // vscode thinks this is a new install, we need to download ls
+    console.log('VS Code new app install');
     return true;
   }
 
@@ -20,35 +22,43 @@ export async function lsNeedsInstall(
     // attempt to find if there is a staged ls present
     await vscode.workspace.fs.stat(vscode.Uri.file(stgBinPath));
 
+    console.log('Stage path present, moving to prod bin path');
     // stg is present, move to prod path
     await vscode.workspace.fs.rename(vscode.Uri.file(stgBinPath), vscode.Uri.file(binPath), { overwrite: true });
   } catch (error) {
+    console.log('No stage path present, not moving to prod bin path');
     // failure to find exe means we need to download ls
     // return true;
   }
 
   // attempt to find is there is an ls already present
   if ((await pathExists(binPath)) === false) {
+    console.log('Prod bin path does not exist');
     // failure to find exe means we need to download ls
     return true;
   }
 
   if (config('extensions').get<boolean>('autoCheckUpdates') === false) {
     // we know a LS is present, but user does not want to check for updates
+    console.log('check for updates disabled');
     return false;
   }
 
   // this should not throw, we know there is a ls present at this point
   const installedReleaseVersion = await getLsVersion(binPath);
 
+  console.log(`LS version: ${installedReleaseVersion}`);
   const requestedRelease = await getRelease(
     'terraform-ls',
     requestedVersion,
     `Terraform-VSCode/${extensionVersion} VSCode/${vscode.version}`,
   );
 
+  console.log(`Release ${requestedRelease.name}:${requestedRelease.version} resolved`);
+
   if (semver.eq(requestedRelease.version, installedReleaseVersion, { includePrerelease: true })) {
     // current ls version is already at the specified version
+    console.log(`Current version ${installedReleaseVersion} == ${requestedRelease.version}`);
     return false;
   } else if (semver.gt(requestedRelease.version, installedReleaseVersion, { includePrerelease: true })) {
     // upgrade: new version available
