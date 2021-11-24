@@ -47,7 +47,7 @@ suite('ls installer', () => {
       await downloadLS(stgbinPath, '0.24.0', '2.14.0');
 
       const extVersion = '2.16.0';
-      const install = await lsNeedsInstall(binbin, stgbinbin, extVersion, version);
+      const install = await lsNeedsInstall(binbin, stgbinPath, extVersion, version);
 
       expect(install).not.to.be.undefined;
       assert.strictEqual(install, false);
