@@ -25,8 +25,8 @@ export interface TerraformLanguageClient {
  * based on the server's capabilities
  */
 export class ClientHandler {
-  private shortUid: ShortUniqueId = undefined;
-  private tfClient: TerraformLanguageClient = undefined;
+  private shortUid: ShortUniqueId = new ShortUniqueId();
+  private tfClient: TerraformLanguageClient | undefined;
   private commands: string[] = [];
 
   constructor(
@@ -34,7 +34,6 @@ export class ClientHandler {
     private outputChannel: vscode.OutputChannel,
     private reporter: TelemetryReporter,
   ) {
-    this.shortUid = new ShortUniqueId();
     if (lsPath.hasCustomBinPath()) {
       this.reporter.sendTelemetryEvent('usePathToBinary');
     }
@@ -50,11 +49,13 @@ export class ClientHandler {
 
     this.reporter.sendTelemetryEvent('startClient');
 
-    const multiFoldersSupported =
-      this.tfClient.client.initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-    console.log(`Multi-folder support: ${multiFoldersSupported}`);
+    const initializeResult = this.tfClient.client.initializeResult;
+    if (initializeResult !== undefined) {
+      const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
+      console.log(`Multi-folder support: ${multiFoldersSupported}`);
 
-    this.commands = this.tfClient.client.initializeResult.capabilities.executeCommandProvider?.commands;
+      this.commands = initializeResult.capabilities.executeCommandProvider?.commands ?? [];
+    }
 
     return disposable;
   }
@@ -106,7 +107,7 @@ export class ClientHandler {
 
   private async getServerOptions(): Promise<ServerOptions> {
     const cmd = await this.lsPath.resolvedPathToBinary();
-    const serverArgs = config('terraform').get<string[]>('languageServer.args');
+    const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
     const executable: Executable = {
       command: cmd,
       args: serverArgs,
@@ -122,9 +123,9 @@ export class ClientHandler {
 
   private getInitializationOptions(commandPrefix: string) {
     const rootModulePaths = config('terraform-ls').get<string[]>('rootModules', []);
-    const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath');
-    const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout');
-    const terraformLogFilePath = config('terraform-ls').get<string>('terraformLogFilePath');
+    const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath', '');
+    const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout', '');
+    const terraformLogFilePath = config('terraform-ls').get<string>('terraformLogFilePath', '');
     const excludeModulePaths = config('terraform-ls').get<string[]>('excludeRootModules', []);
     const ignoreDirectoryNames = config('terraform-ls').get<string[]>('ignoreDirectoryNames', []);
 
@@ -157,7 +158,7 @@ export class ClientHandler {
     console.log('Client stopped');
   }
 
-  public getClient(): TerraformLanguageClient {
+  public getClient(): TerraformLanguageClient | undefined {
     return this.tfClient;
   }
 
