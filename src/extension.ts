@@ -20,12 +20,7 @@ let reporter: TelemetryReporter;
 let clientHandler: ClientHandler;
 const languageServerUpdater = new SingleInstanceTimeout();
 
-export interface TerraformExtension {
-  clientHandler: ClientHandler;
-  moduleCallers(languageClient: TerraformLanguageClient, moduleUri: string): Promise<moduleCallersResponse>;
-}
-
-export async function activate(context: vscode.ExtensionContext): Promise<TerraformExtension> {
+export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;
   terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
@@ -145,9 +140,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<Terraf
       reporter.sendTelemetryException(error);
     }
   }
-
-  // export public API
-  return { clientHandler, moduleCallers };
 }
 
 export async function deactivate(): Promise<void> {
@@ -160,31 +152,35 @@ export async function deactivate(): Promise<void> {
 
 export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> {
   const client = clientHandler.getClient();
-  const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
-  if (initSupported) {
-    const client = clientHandler.getClient();
-    const moduleUri = Utils.dirname(documentUri);
+  if (client === undefined) {
+    return;
+  }
 
-    if (client) {
-      try {
-        const response = await moduleCallers(client, moduleUri.toString());
-        if (response.moduleCallers.length === 0) {
-          const dirName = Utils.basename(moduleUri);
-          terraformStatus.text = `$(refresh) ${dirName}`;
-          terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
-          terraformStatus.tooltip = `Click to run terraform init`;
-          terraformStatus.command = 'terraform.initCurrent';
-          terraformStatus.show();
-        } else {
-          terraformStatus.hide();
-          terraformStatus.text = '';
-        }
-      } catch (err) {
-        vscode.window.showErrorMessage(err);
-        reporter.sendTelemetryException(err);
-        terraformStatus.hide();
-      }
+  const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
+  if (!initSupported) {
+    return;
+  }
+
+  try {
+    const moduleUri = Utils.dirname(documentUri);
+    const response = await moduleCallers(moduleUri.toString());
+
+    if (response.moduleCallers.length === 0) {
+      const dirName = Utils.basename(moduleUri);
+
+      terraformStatus.text = `$(refresh) ${dirName}`;
+      terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
+      terraformStatus.tooltip = `Click to run terraform init`;
+      terraformStatus.command = 'terraform.initCurrent';
+      terraformStatus.show();
+    } else {
+      terraformStatus.hide();
+      terraformStatus.text = '';
     }
+  } catch (err) {
+    vscode.window.showErrorMessage(err);
+    reporter.sendTelemetryException(err);
+    terraformStatus.hide();
   }
 }
 
@@ -261,11 +257,16 @@ async function modulesCallersCommand(languageClient: TerraformLanguageClient, mo
   return execWorkspaceCommand(languageClient.client, requestParams);
 }
 
-async function moduleCallers(
-  languageClient: TerraformLanguageClient,
-  moduleUri: string,
-): Promise<moduleCallersResponse> {
-  const response = await modulesCallersCommand(languageClient, moduleUri);
+export async function moduleCallers(moduleUri: string): Promise<moduleCallersResponse> {
+  const client = clientHandler.getClient();
+  if (client === undefined) {
+    return {
+      version: 0,
+      moduleCallers: [],
+    };
+  }
+
+  const response = await modulesCallersCommand(client, moduleUri);
   const moduleCallers: moduleCaller[] = response.callers;
 
   return { version: response.v, moduleCallers };
@@ -278,7 +279,7 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
     const languageClient = clientHandler.getClient();
 
     const moduleUri = Utils.dirname(textEditor.document.uri);
-    const response = await moduleCallers(languageClient, moduleUri.toString());
+    const response = await moduleCallers(moduleUri.toString());
 
     let selectedModule: string;
     if (response.moduleCallers.length > 1) {
