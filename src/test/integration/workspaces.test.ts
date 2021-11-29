@@ -9,30 +9,30 @@ suite('moduleCallers', () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
   });
 
-	test('should execute language server command', async () => {
-		const extId = getExtensionId()
-		const ext = vscode.extensions.getExtension<TerraformExtension>(extId);
+  test('should execute language server command', async () => {
+    const extId = getExtensionId();
+    const ext = vscode.extensions.getExtension<TerraformExtension>(extId);
 
-		const documentUri = getDocUri('modules/sample.tf');
-		await open(documentUri);
+    const documentUri = getDocUri('modules/sample.tf');
+    await open(documentUri);
 
     assert.ok(ext.isActive);
 
-		const api = ext.exports;
+    const api = ext.exports;
     assert.ok(api.clientHandler);
     assert.ok(api.moduleCallers);
 
-		const client = await api.clientHandler.getClient();
+    const client = await api.clientHandler.getClient();
     assert.ok(client);
 
-		const moduleUri = Utils.dirname(documentUri).toString();
-		const response = await api.moduleCallers(client, moduleUri);
+    const moduleUri = Utils.dirname(documentUri).toString();
+    const response = await api.moduleCallers(client, moduleUri);
     assert.ok(response);
 
-		assert.strictEqual(response.moduleCallers.length, 1);
-		assert.strictEqual(response.moduleCallers[0].uri, vscode.Uri.file(testFolderPath).toString(true));
-	})
-})
+    assert.strictEqual(response.moduleCallers.length, 1);
+    assert.strictEqual(response.moduleCallers[0].uri, vscode.Uri.file(testFolderPath).toString(true));
+  });
+});
 
 // Disabling test due to VSCode limitations - "Entering a new workspace is not possible in tests"
 // suite('workspace folders', () => {

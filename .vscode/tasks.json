@@ -26,7 +26,7 @@
         "panel": "dedicated",
         "reveal": "never"
       },
-      "dependsOn":"npm: watch"
-    },
+      "dependsOn": "npm: watch"
+    }
   ]
 }

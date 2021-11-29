@@ -325,7 +325,10 @@
     "lint": "eslint src --ext ts",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "package": "vsce package"
+    "package": "vsce package",
+    "prettier": "prettier \"**/*.+(js|json|ts)\"",
+    "format": "npm run prettier -- --write",
+    "check-format": "npm run prettier -- --check"
   },
   "dependencies": {
     "@hashicorp/js-releases": "^1.4.0",

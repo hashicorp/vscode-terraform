@@ -14,7 +14,7 @@ suite('code actions', () => {
       .update('languageServer', { external: true }, vscode.ConfigurationTarget.Workspace);
     await vscode.workspace
       .getConfiguration('editor')
-      .update('codeActionsOnSave', { "source.formatAll.terraform": true }, vscode.ConfigurationTarget.Workspace);
+      .update('codeActionsOnSave', { 'source.formatAll.terraform': true }, vscode.ConfigurationTarget.Workspace);
 
     const docUri = getDocUri('actions.tf');
     await open(docUri);

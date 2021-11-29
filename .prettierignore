@@ -1,4 +1,7 @@
-snippets
-syntaxes
-out
+snippets/
+syntaxes/
+out/
 package-lock.json
+node_modules/
+.vscode-test/
+language-configuration.json
