@@ -259,6 +259,13 @@ async function modulesCallersCommand(languageClient: TerraformLanguageClient, mo
 
 export async function moduleCallers(moduleUri: string): Promise<moduleCallersResponse> {
   const client = clientHandler.getClient();
+  if (client === undefined) {
+    return {
+      version: 0,
+      moduleCallers: [],
+    };
+  }
+
   const response = await modulesCallersCommand(client, moduleUri);
   const moduleCallers: moduleCaller[] = response.callers;
 
