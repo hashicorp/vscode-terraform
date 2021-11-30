@@ -5,13 +5,27 @@ import { Utils } from 'vscode-uri';
 import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor } from '../vscodeUtils';
 
+interface ModuleCall {
+  name: string;
+  source_addr: string;
+  version?: string;
+  source_type?: string;
+  docs_link?: string;
+  dependent_modules: ModuleCall[];
+}
+
+interface ModuleCallsResponse {
+  v: number;
+  module_calls: ModuleCall[];
+}
+
 class ModuleCallItem extends vscode.TreeItem {
   constructor(
     public label: string,
     public sourceAddr: string,
-    public version: string,
-    public sourceType: string,
-    public docsLink: string,
+    public version: string | undefined,
+    public sourceType: string | undefined,
+    public docsLink: string | undefined,
     public terraformIcon: string,
     public readonly children: ModuleCallItem[],
   ) {
@@ -31,7 +45,7 @@ class ModuleCallItem extends vscode.TreeItem {
 
   iconPath = this.getIcon(this.sourceType);
 
-  getIcon(type: string) {
+  getIcon(type: string | undefined) {
     switch (type) {
       case 'tfregistry':
         return {
@@ -64,7 +78,9 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
       vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
-        vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
+        if (module.docsLink) {
+          vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
+        }
       }),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
         if (event && getActiveTextEditor()) {
@@ -122,7 +138,10 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
         arguments: [`uri=${documentURI}`],
       };
 
-      const response = await handler.client.sendRequest(ExecuteCommandRequest.type, params);
+      const response = await handler.client.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
+        ExecuteCommandRequest.type,
+        params,
+      );
       if (response == null) {
         return Promise.resolve([]);
       }
@@ -138,12 +157,11 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
   toModuleCall(
     name: string,
     sourceAddr: string,
-    version: string,
-    sourceType: string,
-    docsLink: string,
+    version: string | undefined,
+    sourceType: string | undefined,
+    docsLink: string | undefined,
     terraformIcon: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-    dependents: any,
+    dependents: ModuleCall[],
   ): ModuleCallItem {
     let deps: ModuleCallItem[] = [];
     if (dependents.length != 0) {
