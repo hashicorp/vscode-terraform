@@ -38,7 +38,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.ConfigurationTarget.Global,
       );
     } catch (err) {
-      console.error(`Error trying to erase pre-2.0.0 settings: ${err.message}`);
+      const error = err instanceof Error ? err.message : err;
+      console.error(`Error trying to erase pre-2.0.0 settings: ${error}`);
     }
   }
 
@@ -81,16 +82,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       await terraformCommand('apply', false);
     }),
     vscode.commands.registerCommand('terraform.init', async () => {
+      const workspaceFolders = vscode.workspace.workspaceFolders;
       const selected = await vscode.window.showOpenDialog({
         canSelectFiles: false,
         canSelectFolders: true,
         canSelectMany: false,
-        defaultUri: vscode.workspace.workspaceFolders[0].uri,
+        defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
         openLabel: 'Initialize',
       });
-      if (selected) {
+      const client = clientHandler.getClient();
+      if (selected && client) {
         const moduleUri = selected[0];
-        const client = clientHandler.getClient();
         const requestParams: ExecuteCommandParams = {
           command: `${client.commandPrefix}.terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
@@ -137,7 +139,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       await clientHandler.startClient();
       vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', true);
     } catch (error) {
-      reporter.sendTelemetryException(error);
+      if (error instanceof Error) {
+        reporter.sendTelemetryException(error);
+      }
     }
   }
 }
@@ -178,8 +182,10 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
       terraformStatus.text = '';
     }
   } catch (err) {
-    vscode.window.showErrorMessage(err);
-    reporter.sendTelemetryException(err);
+    if (err instanceof Error) {
+      vscode.window.showErrorMessage(err.message);
+      reporter.sendTelemetryException(err);
+    }
     terraformStatus.hide();
   }
 }
@@ -216,7 +222,9 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
       await installer.install();
     } catch (err) {
       console.log(err); // for test failure reporting
-      reporter.sendTelemetryException(err);
+      if (err instanceof Error) {
+        reporter.sendTelemetryException(err);
+      }
       throw err;
     } finally {
       // clean up after ourselves and remove zip files
@@ -229,7 +237,11 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
     }
   } catch (error) {
     console.log(error); // for test failure reporting
-    vscode.window.showErrorMessage(error.message);
+    if (error instanceof Error) {
+      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+    } else if (typeof error === 'string') {
+      vscode.window.showErrorMessage(error);
+    }
   }
 }
 
@@ -272,8 +284,7 @@ export async function moduleCallers(moduleUri: string): Promise<moduleCallersRes
   return { version: response.v, moduleCallers };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function terraformCommand(command: string, languageServerExec = true): Promise<any> {
+async function terraformCommand(command: string, languageServerExec = true): Promise<void> {
   const textEditor = getActiveTextEditor();
   if (textEditor) {
     const languageClient = clientHandler.getClient();
@@ -287,14 +298,14 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
         response.moduleCallers.map((m) => m.uri),
         { canPickMany: false },
       );
-      selectedModule = selected[0];
+      selectedModule = selected ?? moduleUri.toString();
     } else if (response.moduleCallers.length == 1) {
       selectedModule = response.moduleCallers[0].uri;
     } else {
       selectedModule = moduleUri.toString();
     }
 
-    if (languageServerExec) {
+    if (languageServerExec && languageClient) {
       const requestParams: ExecuteCommandParams = {
         command: `${languageClient.commandPrefix}.terraform-ls.terraform.${command}`,
         arguments: [`uri=${selectedModule}`],
@@ -323,5 +334,5 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
 }
 
 function enabled(): boolean {
-  return config('terraform').get('languageServer.external');
+  return config('terraform').get('languageServer.external', false);
 }
