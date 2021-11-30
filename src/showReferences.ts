@@ -8,6 +8,8 @@ import {
   StaticFeature,
 } from 'vscode-languageclient';
 
+import { ExperimentalClientCapabilities } from './types';
+
 type Position = {
   line: number;
   character: number;
@@ -25,7 +27,7 @@ export class ShowReferencesFeature implements StaticFeature {
 
   constructor(private _client: BaseLanguageClient) {}
 
-  public fillClientCapabilities(capabilities: ClientCapabilities): void {
+  public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {
       capabilities['experimental'] = {};
     }
@@ -39,19 +41,25 @@ export class ShowReferencesFeature implements StaticFeature {
 
     const showRefs = vscode.commands.registerCommand(CLIENT_CMD_ID, async (pos: Position, refCtx: RefContext) => {
       const client = this._client;
-
-      const doc = vscode.window.activeTextEditor.document;
+      const doc = vscode.window?.activeTextEditor?.document;
+      if (!doc) {
+        return;
+      }
 
       const position = new vscode.Position(pos.line, pos.character);
       const context: ReferenceContext = { includeDeclaration: refCtx.includeDeclaration };
 
-      const provider: vscode.ReferenceProvider = client.getFeature(ReferencesRequest.method).getProvider(doc);
-      const tokenSource: vscode.CancellationTokenSource = new vscode.CancellationTokenSource();
+      const provider = client.getFeature(ReferencesRequest.method).getProvider(doc);
+      if (!provider) {
+        return;
+      }
 
+      const tokenSource = new vscode.CancellationTokenSource();
       const locations = await provider.provideReferences(doc, position, context, tokenSource.token);
 
       await vscode.commands.executeCommand(VSCODE_SHOW_REFERENCES, doc.uri, position, locations);
     });
+
     this.registeredCommands.push(showRefs);
   }
 

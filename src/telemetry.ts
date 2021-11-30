@@ -1,6 +1,8 @@
 import TelemetryReporter from 'vscode-extension-telemetry';
 import { BaseLanguageClient, ClientCapabilities, StaticFeature } from 'vscode-languageclient';
 
+import { ExperimentalClientCapabilities } from './types';
+
 const TELEMETRY_VERSION = 1;
 
 type TelemetryEvent = {
@@ -21,7 +23,7 @@ export class TelemetryFeature implements StaticFeature {
     });
   }
 
-  public fillClientCapabilities(capabilities: ClientCapabilities): void {
+  public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {
       capabilities['experimental'] = {};
     }
