@@ -19,14 +19,13 @@ export async function sleep(ms: number): Promise<void> {
 // timer can be running at a time. Attempts to add a new timeout silently fail.
 export class SingleInstanceTimeout {
   private timerLock = false;
-  private timerId: NodeJS.Timeout;
+  private timerId: NodeJS.Timeout | null = null;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public timeout(fn, delay, ...args) {
+  public timeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): void {
     if (!this.timerLock) {
       this.timerLock = true;
       this.timerId = setTimeout(
-        function () {
+        () => {
           this.timerLock = false;
           fn();
         },
