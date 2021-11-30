@@ -16,7 +16,7 @@ export function normalizeFolderName(folderName: string): string {
   return folderName;
 }
 
-export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder {
+export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder | undefined {
   return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folderName));
 }
 
@@ -24,14 +24,14 @@ export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder {
 // We intentionally do *not* use vscode.window.activeTextEditor here
 // because it also contains Output panes which are considered editors
 // see also https://github.com/microsoft/vscode/issues/58869
-export function getActiveTextEditor(): vscode.TextEditor {
+export function getActiveTextEditor(): vscode.TextEditor | undefined {
   return vscode.window.visibleTextEditors.find((textEditor) => !!textEditor.viewColumn);
 }
 
 export function sortedWorkspaceFolders(): string[] {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (workspaceFolders) {
-    return vscode.workspace.workspaceFolders
+    return workspaceFolders
       .map((f) => getFolderName(f))
       .sort((a, b) => {
         return a.length - b.length;
