@@ -9,7 +9,7 @@ ENHANCEMENTS:
 
  INTERNAL:
 
- - Refactor extension to only use one LanguageClient per workspace (#845)
+ - Refactor extension to only use one LanguageClient per workspace ([#845](https://github.com/hashicorp/vscode-terraform/pull/845))
 
 # 2.16.0 (2021-10-14)
 
