@@ -6,10 +6,17 @@ ENHANCEMENTS:
  - Add support for language server side config option `ignoreDirectoryNames` ([#833](https://github.com/hashicorp/vscode-terraform/pull/833))
  - Add module providers view to Explorer pane ([#850](https://github.com/hashicorp/vscode-terraform/pull/850))
  - Process telemetry from the language server ([#823](https://github.com/hashicorp/vscode-terraform/pull/823))
+ - Add a new command for generating bug reports ([#851](https://github.com/hashicorp/vscode-terraform/pull/851))
 
- INTERNAL:
+BUG FIXES:
+
+ - Fix Terraform status bar not being displayed ([#857](https://github.com/hashicorp/vscode-terraform/pull/857))
+
+INTERNAL:
 
  - Refactor extension to only use one LanguageClient per workspace ([#845](https://github.com/hashicorp/vscode-terraform/pull/845))
+ - Stop exposing a public extension API ([#858](https://github.com/hashicorp/vscode-terraform/pull/858))
+ - deps: bump vscode-extension-telemetry to 0.4.3 ([#846](https://github.com/hashicorp/vscode-terraform/pull/846))
 
 # 2.16.0 (2021-10-14)
 
