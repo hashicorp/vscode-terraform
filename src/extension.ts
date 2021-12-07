@@ -298,7 +298,11 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
         response.moduleCallers.map((m) => m.uri),
         { canPickMany: false },
       );
-      selectedModule = selected ?? moduleUri.toString();
+      if (!selected) {
+        return;
+      }
+
+      selectedModule = selected;
     } else if (response.moduleCallers.length == 1) {
       selectedModule = response.moduleCallers[0].uri;
     } else {
