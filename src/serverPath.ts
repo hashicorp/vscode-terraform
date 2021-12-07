@@ -6,7 +6,7 @@ const INSTALL_FOLDER_NAME = 'bin';
 export const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
 
 export class ServerPath {
-  private customBinPath: string;
+  private customBinPath: string | undefined;
 
   constructor(private context: vscode.ExtensionContext) {
     this.customBinPath = vscode.workspace.getConfiguration('terraform').get(CUSTOM_BIN_PATH_OPTION_NAME);
@@ -28,7 +28,7 @@ export class ServerPath {
   }
 
   public binPath(): string {
-    if (this.hasCustomBinPath()) {
+    if (this.customBinPath) {
       return this.customBinPath;
     }
 
@@ -36,7 +36,7 @@ export class ServerPath {
   }
 
   public binName(): string {
-    if (this.hasCustomBinPath()) {
+    if (this.customBinPath) {
       return path.basename(this.customBinPath);
     }
 
@@ -59,10 +59,10 @@ export class ServerPath {
       console.log(`Found server at ${cmd}`);
     } catch (err) {
       let extraHint = '';
-      if (this.hasCustomBinPath()) {
+      if (this.customBinPath) {
         extraHint = `. Check "${CUSTOM_BIN_PATH_OPTION_NAME}" in your settings.`;
       }
-      throw new Error(`Unable to launch language server: ${err.message}${extraHint}`);
+      throw new Error(`Unable to launch language server: ${err instanceof Error ? err.message : err}${extraHint}`);
     }
 
     return cmd;

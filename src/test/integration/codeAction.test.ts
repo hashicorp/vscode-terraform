@@ -25,9 +25,9 @@ suite('code actions', () => {
 
     for (let index = 0; index < supported.length; index++) {
       const wanted = supported[index];
-      const requested = wanted.kind.value.toString();
+      const requested = wanted.kind?.value.toString();
 
-      const actions: vscode.CodeAction[] = await vscode.commands.executeCommand<vscode.CodeAction[]>(
+      const actions = await vscode.commands.executeCommand<vscode.CodeAction[]>(
         'vscode.executeCodeActionProvider',
         docUri,
         new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
@@ -36,10 +36,11 @@ suite('code actions', () => {
 
       assert.ok(actions);
       expect(actions).not.to.be.undefined;
+      expect(wanted.kind?.value).not.to.be.undefined;
 
       assert.strictEqual(actions.length, 1);
       assert.strictEqual(actions[0].title, wanted.title);
-      assert.strictEqual(actions[0].kind.value, wanted.kind.value);
+      assert.strictEqual(actions[0].kind?.value, wanted.kind?.value);
     }
   });
 });

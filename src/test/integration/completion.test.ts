@@ -32,7 +32,7 @@ suite('completion', () => {
     const docUri = getDocUri('actions.tf');
     await open(docUri);
 
-    const list: vscode.CompletionList = await vscode.commands.executeCommand<vscode.CompletionList>(
+    const list = await vscode.commands.executeCommand<vscode.CompletionList>(
       'vscode.executeCompletionItemProvider',
       docUri,
       new vscode.Position(0, 0),
@@ -44,7 +44,7 @@ suite('completion', () => {
     expect(list.items.length).to.be.greaterThanOrEqual(1);
 
     for (let index = 0; index < list.items.length; index++) {
-      const element = list.items[index];
+      const element: vscode.CompletionItem = list.items[index];
       assert.ok(element);
       expect(element).not.to.be.undefined;
 

@@ -169,50 +169,50 @@ Outdated:\t${info.outdated}
 
   async getRuntimeInfo(): Promise<TerraformInfo> {
     const terraformExe = 'terraform';
-
     const spawn = child_process.spawnSync;
 
-    try {
-      const child = spawn(terraformExe, ['version', '-json']);
-      const response = child.stdout.toString();
-      const j = JSON.parse(response);
+    // try to get version from a newer terraform binary
+    const resultJson = spawn(terraformExe, ['version', '-json']);
+    if (resultJson.error === undefined) {
+      try {
+        const response = resultJson.stdout.toString();
+        const j = JSON.parse(response);
 
-      return {
-        version: j.terraform_version,
-        platform: j.platform,
-        outdated: j.terraform_outdated,
-      };
-    } catch (err) {
-      if (err.status === 0) {
         return {
-          version: 'Not found',
-          platform: 'Not found',
-          outdated: false,
+          version: j.terraform_version,
+          platform: j.platform,
+          outdated: j.terraform_outdated,
         };
+      } catch {
+        // fall through
       }
     }
 
-    try {
-      // assume older version of terraform which didn't have json flag
-      const child = spawn(terraformExe, ['version']);
-      const response = child.stdout.toString() || child.stderr.toString();
-      const regex = new RegExp('v?(?<version>[0-9]+(?:.[0-9]+)*(?:-[A-Za-z0-9.]+)?)');
-      const matches = regex.exec(response);
+    // try an older binary without the json flag
+    const result = spawn(terraformExe, ['version']);
+    if (result.error === undefined) {
+      try {
+        const response = result.stdout.toString() || result.stderr.toString();
+        const regex = new RegExp('v?(?<version>[0-9]+(?:.[0-9]+)*(?:-[A-Za-z0-9.]+)?)');
+        const matches = regex.exec(response);
 
-      const version = matches[1];
-      const platform = response.split('\n')[1].replace('on ', '');
+        const version = matches && matches.length > 1 ? matches[1] : 'Not found';
+        const platform = response.split('\n')[1].replace('on ', '');
 
-      return {
-        version: version,
-        platform: platform,
-        outdated: false, //TODO: is it worth scraping if it's out of date here?
-      };
-    } catch {
-      return {
-        version: 'Not found',
-        platform: 'Not found',
-        outdated: false,
-      };
+        return {
+          version: version,
+          platform: platform,
+          outdated: true,
+        };
+      } catch {
+        // fall through
+      }
     }
+
+    return {
+      version: 'Not found',
+      platform: 'Not found',
+      outdated: false,
+    };
   }
 }

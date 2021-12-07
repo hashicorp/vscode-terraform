@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck will be refactored by the silent installer
 import { getRelease, Release } from '@hashicorp/js-releases';
 import * as path from 'path';
 import * as semver from 'semver';
