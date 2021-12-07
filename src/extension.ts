@@ -5,7 +5,7 @@ import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
-import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
+import { DEFAULT_LS_VERSION, isValidVersionString, updateOrInstall } from './installer/lsinstall';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
@@ -44,7 +44,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   if (config('terraform').has('languageServer.requiredVersion')) {
-    const langServerVer = config('terraform').get('languageServer.requiredVersion', defaultVersionString);
+    const langServerVer = config('terraform').get('languageServer.requiredVersion', DEFAULT_LS_VERSION);
     if (!isValidVersionString(langServerVer)) {
       vscode.window.showWarningMessage(
         `The Terraform Language Server Version string '${langServerVer}' is not a valid semantic version and will be ignored.`,
@@ -136,7 +136,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   if (enabled()) {
     try {
       await updateLanguageServer(manifest.version, lsPath);
-      await clientHandler.startClient();
+      // await clientHandler.startClient();
       vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', true);
     } catch (error) {
       if (error instanceof Error) {
@@ -191,48 +191,29 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
 }
 
 async function updateLanguageServer(extVersion: string, lsPath: ServerPath, scheduled = false) {
-  console.log('Checking for language server updates...');
-  const hour = 1000 * 60 * 60;
-  languageServerUpdater.timeout(function () {
-    updateLanguageServer(extVersion, lsPath, true);
-  }, 24 * hour);
+  if (config('extensions').get<boolean>('autocheck', true) === true) {
+    console.log('Checking for language server updates...');
+    const hour = 1000 * 60 * 60;
+    languageServerUpdater.timeout(function () {
+      updateLanguageServer(extVersion, lsPath, true);
+    }, 24 * hour);
+  }
+
+  if (lsPath.hasCustomBinPath()) {
+    // skip install if a language server binary path is set
+    return;
+  }
 
   try {
-    if (lsPath.hasCustomBinPath()) {
-      // skip install if a language server binary path is set
-      return;
-    }
-
-    const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
-    const install = await installer.needsInstall(
-      config('terraform').get('languageServer.requiredVersion', defaultVersionString),
+    await updateOrInstall(
+      config('terraform').get('languageServer.requiredVersion', DEFAULT_LS_VERSION),
+      extVersion,
+      vscode.version,
+      lsPath,
+      reporter,
     );
 
-    if (install === false) {
-      // no install required
-      return;
-    }
-
-    // an install is needed, either as an update or fresh install
-
-    // stop current client, if it exists
-    await clientHandler.stopClient();
-    try {
-      // install ls from configured source
-      await installer.install();
-    } catch (err) {
-      console.log(err); // for test failure reporting
-      if (err instanceof Error) {
-        reporter.sendTelemetryException(err);
-      }
-      throw err;
-    } finally {
-      // clean up after ourselves and remove zip files
-      await installer.cleanupZips();
-    }
-
-    if (scheduled) {
-      // scheduled updates still need to start client
+    if (scheduled === false) {
       await clientHandler.startClient();
     }
   } catch (error) {
