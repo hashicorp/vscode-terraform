@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+// @ts-nocheck ignore type checking in test files
 export const languages = {
   createDiagnosticCollection: jest.fn(),
 };
@@ -11,6 +15,7 @@ export const window = {
   showErrorMessage: jest.fn(),
   showWarningMessage: jest.fn(),
   createTextEditorDecorationType: jest.fn(),
+  withProgress: jest.fn(),
 };
 
 export const workspace = {
@@ -19,6 +24,11 @@ export const workspace = {
   })),
   workspaceFolders: [],
   onDidSaveTextDocument: jest.fn(),
+  fs: {
+    createDirectory: jest.fn(),
+    rename: jest.fn(),
+    stat: jest.fn(),
+  },
 };
 
 export const OverviewRulerLane = {
@@ -40,6 +50,12 @@ export const debug = {
 
 export const commands = {
   executeCommand: jest.fn(),
+};
+
+export const ProgressLocation = {
+  SourceControl: 1,
+  Window: 10,
+  Notification: 15,
 };
 
 export const vscode = {

@@ -5,7 +5,8 @@ import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
-import { DEFAULT_LS_VERSION, isValidVersionString, updateOrInstall } from './installer/lsinstall';
+import { DEFAULT_LS_VERSION, isValidVersionString } from './installer/detector';
+import { updateOrInstall } from './installer/updater';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
@@ -191,7 +192,7 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
 }
 
 async function updateLanguageServer(extVersion: string, lsPath: ServerPath, scheduled = false) {
-  if (config('extensions').get<boolean>('autocheck', true) === true) {
+  if (config('extensions').get<boolean>('autoCheckUpdates', true) === true) {
     console.log('Checking for language server updates...');
     const hour = 1000 * 60 * 60;
     languageServerUpdater.timeout(function () {
@@ -200,7 +201,7 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
   }
 
   if (lsPath.hasCustomBinPath()) {
-    // skip install if a language server binary path is set
+    // skip install check if user has specified a custom path to the LS
     return;
   }
 
@@ -213,9 +214,14 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
       reporter,
     );
 
-    if (scheduled === false) {
-      await clientHandler.startClient();
+    // On scheduled checks, we download to stg and do not replace prod path
+    // So we *do not* need to stop or start the LS
+    if (scheduled) {
+      return;
     }
+
+    // On fresh starts we *need* to start the lang client always
+    await clientHandler.startClient();
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {

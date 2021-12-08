@@ -5,4 +5,7 @@ module.exports = {
   testMatch: ['**/src/test/unit/?(*.)+(spec|test).[jt]s?(x)'],
   resetMocks: true,
   clearMocks: true,
+  verbose: true,
+  silent: true,
+  // automock: true,
 };
