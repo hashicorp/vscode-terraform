@@ -125,7 +125,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         }
       }
     }),
-    vscode.window.onDidChangeVisibleTextEditors(async (editors: vscode.TextEditor[]) => {
+    vscode.window.onDidChangeVisibleTextEditors(async (editors: readonly vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
       if (textEditor?.document === undefined) {
         return;
