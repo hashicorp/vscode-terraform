@@ -137,7 +137,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   if (enabled()) {
     try {
       await updateLanguageServer(manifest.version, lsPath);
-      // await clientHandler.startClient();
       vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', true);
     } catch (error) {
       if (error instanceof Error) {
@@ -193,7 +192,7 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
 
 async function updateLanguageServer(extVersion: string, lsPath: ServerPath, scheduled = false) {
   if (config('extensions').get<boolean>('autoCheckUpdates', true) === true) {
-    console.log('Checking for language server updates...');
+    console.log('Scheduling check for language server updates...');
     const hour = 1000 * 60 * 60;
     languageServerUpdater.timeout(function () {
       updateLanguageServer(extVersion, lsPath, true);
@@ -202,6 +201,8 @@ async function updateLanguageServer(extVersion: string, lsPath: ServerPath, sche
 
   if (lsPath.hasCustomBinPath()) {
     // skip install check if user has specified a custom path to the LS
+    // with custom paths we *need* to start the lang client always
+    await clientHandler.startClient();
     return;
   }
 
