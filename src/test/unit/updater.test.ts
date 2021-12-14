@@ -3,7 +3,7 @@
 import { updateOrInstall } from '../../installer/updater';
 import { workspace } from '../../__mocks__/vscode';
 import { lsPath } from '../../__mocks__/serverPath';
-import { reporter } from '../../__mocks__/reporter';
+import { reporter } from './mocks/reporter';
 import { installTerraformLS } from '../../installer/installer';
 import { getRequiredVersionRelease, isValidVersionString, pathExists,getLsVersion } from '../../installer/detector';
 

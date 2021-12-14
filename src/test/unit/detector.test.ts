@@ -1,123 +1,142 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck ignore type checking in test files
+import { mocked } from 'ts-jest/utils';
+import { exec as execOrg } from '../../utils';
+import { getRelease as getReleaseOrg, Release } from '@hashicorp/js-releases';
 import { getLsVersion, isValidVersionString, getRequiredVersionRelease } from '../../installer/detector';
-import { exec } from '../../utils';
-import { getRelease } from '@hashicorp/js-releases';
 
 jest.mock('../../utils');
 jest.mock('@hashicorp/js-releases');
 
+const exec = mocked(execOrg);
+const getRelease = mocked(getReleaseOrg);
+
 describe('ls detector', () => {
   describe('terraform release detector', () => {
     test('returns valid release', async () => {
-      getRelease.mockImplementationOnce(() => {
+      const name = 'terraform-ls';
+      const shasums = 'terraform-ls_0.24.0_SHA256SUMS';
+      const shasums_signature = 'terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig';
+      const version = '0.24.0';
+      const buildInfo = {
+        arch: 'amd64',
+        filename: 'terraform-ls_0.24.0_windows_amd64.zip',
+        name: 'terraform-ls',
+        os: 'windows',
+        url: 'https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip',
+        version: '0.24.0',
+      };
+
+      getRelease.mockImplementationOnce(async () => {
         return {
-          builds: [
-            {
-              "arch": "amd64",
-              "filename": "terraform-ls_0.24.0_windows_amd64.zip",
-              "name": "terraform-ls",
-              "os": "windows",
-              "url": "https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip",
-              "version": "0.24.0"
-            }
-          ],
-          name: "terraform-ls",
-          shasums: "terraform-ls_0.24.0_SHA256SUMS",
-          shasums_signature: "terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig",
-          version: "0.24.0"
+          builds: [buildInfo],
+          name: name,
+          shasums: shasums,
+          shasums_signature: shasums_signature,
+          version: version,
+          getBuild: jest.fn(),
+          download: jest.fn(),
+          verify: jest.fn(),
+          unpack: jest.fn(),
+          calculateFileSha256Sum: jest.fn(),
+          downloadSha256Sum: jest.fn(),
         };
       });
 
-      const expected = {
-        builds: [
-          {
-            "arch": "amd64",
-            "filename": "terraform-ls_0.24.0_windows_amd64.zip",
-            "name": "terraform-ls",
-            "os": "windows",
-            "url": "https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip",
-            "version": "0.24.0"
-          }
-        ],
-        name: "terraform-ls",
-        shasums: "terraform-ls_0.24.0_SHA256SUMS",
-        shasums_signature: "terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig",
-        version: "0.24.0"
+      const expected: Release = {
+        builds: [buildInfo],
+        name: name,
+        shasums: shasums,
+        shasums_signature: shasums_signature,
+        version: version,
+        getBuild: jest.fn(),
+        download: jest.fn(),
+        verify: jest.fn(),
+        unpack: jest.fn(),
+        calculateFileSha256Sum: jest.fn(),
+        downloadSha256Sum: jest.fn(),
       };
 
-      const result = await getRequiredVersionRelease('0.24.0', '2.16.0',  '1.66.0');
+      const result = await getRequiredVersionRelease('0.24.0', '2.16.0', '1.66.0');
 
-      expect(result).toStrictEqual(expected);
+      // expect(result).toContainEqual(expected);
+      expect(result.builds).toStrictEqual(expected.builds);
+      expect(result.name).toBe(expected.name);
+      expect(result.shasums).toBe(expected.shasums);
+      expect(result.shasums_signature).toBe(expected.shasums_signature);
+      expect(result.version).toBe(expected.version);
     });
 
     test('returns latest if invalid version', async () => {
-      getRelease.mockImplementationOnce(() => {
-        throw new Error("invalid version");
-      }).mockImplementationOnce(() => {
-        return {
-          builds: [
-            {
-              "arch": "amd64",
-              "filename": "terraform-ls_0.24.0_windows_amd64.zip",
-              "name": "terraform-ls",
-              "os": "windows",
-              "url": "https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip",
-              "version": "0.24.0"
-            }
-          ],
-          name: "terraform-ls",
-          shasums: "terraform-ls_0.24.0_SHA256SUMS",
-          shasums_signature: "terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig",
-          version: "0.24.0"
-        }
-      });
-
-      const expected = {
-        builds: [
-          {
-            "arch": "amd64",
-            "filename": "terraform-ls_0.24.0_windows_amd64.zip",
-            "name": "terraform-ls",
-            "os": "windows",
-            "url": "https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip",
-            "version": "0.24.0"
-          }
-        ],
-        name: "terraform-ls",
-        shasums: "terraform-ls_0.24.0_SHA256SUMS",
-        shasums_signature: "terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig",
-        version: "0.24.0"
+      const name = 'terraform-ls';
+      const shasums = 'terraform-ls_0.24.0_SHA256SUMS';
+      const shasums_signature = 'terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig';
+      const version = '0.24.0';
+      const buildInfo = {
+        arch: 'amd64',
+        filename: 'terraform-ls_0.24.0_windows_amd64.zip',
+        name: 'terraform-ls',
+        os: 'windows',
+        url: 'https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip',
+        version: '0.24.0',
       };
 
-      const result = await getRequiredVersionRelease('10000.24.0', '2.16.0',  '1.66.0');
+      getRelease
+        .mockImplementationOnce(() => {
+          throw new Error('invalid version');
+        })
+        .mockImplementationOnce(async () => {
+          return {
+            builds: [buildInfo],
+            name: name,
+            shasums: shasums,
+            shasums_signature: shasums_signature,
+            version: version,
+            getBuild: jest.fn(),
+            download: jest.fn(),
+            verify: jest.fn(),
+            unpack: jest.fn(),
+            calculateFileSha256Sum: jest.fn(),
+            downloadSha256Sum: jest.fn(),
+          };
+        });
 
-      expect(result).toStrictEqual(expected);
-      expect(getRelease).toBeCalledTimes(2);
+      const expected = {
+        builds: [buildInfo],
+        name: name,
+        shasums: shasums,
+        shasums_signature: shasums_signature,
+        version: version,
+        getBuild: jest.fn(),
+        download: jest.fn(),
+        verify: jest.fn(),
+        unpack: jest.fn(),
+        calculateFileSha256Sum: jest.fn(),
+        downloadSha256Sum: jest.fn(),
+      };
+
+      const result = await getRequiredVersionRelease('10000.24.0', '2.16.0', '1.66.0');
+
+      expect(result.builds).toStrictEqual(expected.builds);
+      expect(result.name).toBe(expected.name);
+      expect(result.shasums).toBe(expected.shasums);
+      expect(result.shasums_signature).toBe(expected.shasums_signature);
+      expect(result.version).toBe(expected.version);
     });
   });
 
   describe('terraform detector', () => {
-    let temp;
-
-    beforeEach(() => {
-      temp = require('temp').track();
-    });
-
     test('returns valid version with valid path', async () => {
-      const installPath = temp.path('foo');
-      exec.mockImplementationOnce(() => {
+      exec.mockImplementationOnce(async () => {
         return {
           stdout: '{"version": "1.2.3"}',
+          stderr: '',
         };
       });
-      const result = await getLsVersion(installPath);
+      const result = await getLsVersion('installPath');
       expect(result).toBe('1.2.3');
     });
 
     test('returns undefined with invalid path', async () => {
-      const installPath = temp.path('foo');
-      const result = await getLsVersion(installPath);
+      const result = await getLsVersion('installPath');
       expect(result).toBe(undefined);
     });
   });

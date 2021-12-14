@@ -4,6 +4,7 @@
 build/
 lsp/
 src/
+**/__mocks__
 out/*.test.*
 out/test/
 testFixture/
@@ -20,3 +21,8 @@ testFixture/
 DEVELOPMENT.md
 ROADMAP.md
 tsconfig.json
+
+
+**/*.ts
+**/tsconfig.json
+!file.ts

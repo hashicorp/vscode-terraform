@@ -24,6 +24,7 @@ export const workspace = {
     createDirectory: jest.fn(),
     rename: jest.fn(),
     stat: jest.fn(),
+    delete: jest.fn(),
   },
 };
 
@@ -66,4 +67,5 @@ export const vscode = {
   DiagnosticSeverity,
   debug,
   commands,
+  ProgressLocation,
 };
