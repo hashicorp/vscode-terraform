@@ -35,7 +35,7 @@ export async function updateOrInstall(
   // Actually telling the user about a bad string is left to the main extension code instead of here
   const versionString = isValidVersionString(lsVersion) ? lsVersion : DEFAULT_LS_VERSION;
 
-  const lsPresent: boolean = await pathExists(lsPath.binPath());
+  const lsPresent = await pathExists(lsPath.binPath());
   const autoUpdate = config('extensions').get<boolean>('autoUpdate', true);
   if (lsPresent === true && autoUpdate === false) {
     // LS is present in prod path, but user does not want automatic updates
@@ -66,7 +66,7 @@ export async function updateOrInstall(
   }
 
   // We know there is an LS Present at this point, find out version if possible
-  const installedVersion: string | undefined = await getLsVersion(lsPath.binPath());
+  const installedVersion = await getLsVersion(lsPath.binPath());
   if (installedVersion === undefined) {
     console.log(`Currently installed Terraform language server is version '${installedVersion}`);
     // ls is present but too old to tell us the version, so need to update now

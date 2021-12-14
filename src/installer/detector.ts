@@ -35,7 +35,7 @@ export async function getRequiredVersionRelease(
     console.log(`Found Terraform language server version ${release.version} which satisfies range '${versionString}'`);
     return release;
   } catch (err) {
-    if (versionString == DEFAULT_LS_VERSION) {
+    if (versionString === DEFAULT_LS_VERSION) {
       throw err;
     }
 
