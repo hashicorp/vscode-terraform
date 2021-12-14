@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-nocheck ignore type checking in test files
 export const languages = {
   createDiagnosticCollection: jest.fn(),
 };
@@ -36,7 +32,7 @@ export const OverviewRulerLane = {
 };
 
 export const Uri = {
-  file: (f: any) => f,
+  file: (f: string): string => f,
   parse: jest.fn(),
 };
 export const Range = jest.fn();
