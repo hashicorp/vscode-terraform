@@ -10,7 +10,7 @@ import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
 import { SingleInstanceTimeout } from './utils';
-import { config, getActiveTextEditor } from './vscodeUtils';
+import { config, getActiveTextEditor, isTerraformFile } from './vscodeUtils';
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);
@@ -129,6 +129,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       if (textEditor?.document === undefined) {
         return;
       }
+
+      if (!isTerraformFile(textEditor?.document)) {
+        return;
+      }
+
       await updateTerraformStatusBar(textEditor.document.uri);
     }),
   );

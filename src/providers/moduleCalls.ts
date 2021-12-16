@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 import { Utils } from 'vscode-uri';
 import { ClientHandler } from '../clientHandler';
-import { getActiveTextEditor } from '../vscodeUtils';
+import { getActiveTextEditor, isTerraformFile } from '../vscodeUtils';
 
 interface ModuleCall {
   name: string;
@@ -83,7 +83,18 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
         }
       }),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
-        if (event && getActiveTextEditor()) {
+        const activeEditor = getActiveTextEditor();
+
+        const document = activeEditor?.document;
+        if (document === undefined) {
+          return;
+        }
+
+        if (!isTerraformFile(document)) {
+          return;
+        }
+
+        if (event && activeEditor) {
           this.refresh();
         }
       }),
@@ -109,13 +120,14 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   async getModules(): Promise<ModuleCallItem[]> {
     const activeEditor = getActiveTextEditor();
-    if (activeEditor === undefined) {
-      return Promise.resolve([]);
+
+    const document = activeEditor?.document;
+    if (document === undefined) {
+      return [];
     }
 
-    const document = activeEditor.document;
-    if (document === undefined) {
-      return Promise.resolve([]);
+    if (!isTerraformFile(document)) {
+      return [];
     }
 
     const editor = document.uri;
