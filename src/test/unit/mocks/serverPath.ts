@@ -1,4 +1,4 @@
-export const lsPath = {
+export const lsPathMock = {
   installPath: jest.fn(),
   stgInstallPath: jest.fn(),
   legacyBinPath: jest.fn(),

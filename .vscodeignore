@@ -21,8 +21,3 @@ testFixture/
 DEVELOPMENT.md
 ROADMAP.md
 tsconfig.json
-
-
-**/*.ts
-**/tsconfig.json
-!file.ts

@@ -10,9 +10,9 @@ const pathExists = mocked(pathExistsOrig);
 const withProgress = mocked(vscode.window.withProgress);
 
 jest.mock('../../installer/detector');
-describe('ls installer', () => {
+describe('terraform-ls installer', () => {
   describe('should install', () => {
-    test('when valid', async () => {
+    test('when valid version is passed', async () => {
       const expectedBuild = {
         url: 'https://releases.hashicorp.com/terraform-ls/0.24.0/terraform-ls_0.24.0_windows_amd64.zip',
         filename: 'terraform-ls_0.24.0_windows_amd64.zip',
