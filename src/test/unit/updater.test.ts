@@ -33,7 +33,6 @@ describe('terraform-ls updater', () => {
         }),
         has: jest.fn(),
         inspect: jest.fn(),
-        then: jest.fn(),
         update: jest.fn(),
       }));
 
@@ -63,9 +62,9 @@ describe('terraform-ls updater', () => {
 
       expect(pathExists).toBeCalledTimes(2);
       expect(installTerraformLS).toBeCalledTimes(1);
-      // expect(workspace.getConfiguration).toBeCalledTimes(1);
-      // expect(lsPath.stgBinPath).toBeCalledTimes(1);
-      // expect(lsPath.installPath).toBeCalledTimes(1);
+      expect(vscode.workspace.getConfiguration).toBeCalledTimes(1);
+      expect(lsPath.stgBinPath).toBeCalledTimes(1);
+      expect(lsPath.installPath).toBeCalledTimes(1);
     });
 
     test('ls version not found', async () => {
