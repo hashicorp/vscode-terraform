@@ -25,14 +25,13 @@ export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder |
 // because it also contains Output panes which are considered editors
 // see also https://github.com/microsoft/vscode/issues/58869
 export function getActiveTextEditor(): vscode.TextEditor | undefined {
-  const activeEditor = vscode.window.visibleTextEditors.find((textEditor) => !!textEditor.viewColumn);
-  return activeEditor;
+  return vscode.window.visibleTextEditors.find((textEditor) => !!textEditor.viewColumn);
 }
 
 /*
   Detects whether this is a Terraform file we can perform operations on
  */
-export function isTerraformFile(document: vscode.TextDocument): boolean {
+export function isTerraformFile(document?: vscode.TextDocument): boolean {
   if (document === undefined) {
     return false;
   }

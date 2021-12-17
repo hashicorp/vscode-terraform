@@ -85,12 +85,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
         const activeEditor = getActiveTextEditor();
 
-        const document = activeEditor?.document;
-        if (document === undefined) {
-          return;
-        }
-
-        if (!isTerraformFile(document)) {
+        if (!isTerraformFile(activeEditor?.document)) {
           return;
         }
 

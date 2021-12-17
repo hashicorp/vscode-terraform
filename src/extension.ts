@@ -126,15 +126,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }),
     vscode.window.onDidChangeVisibleTextEditors(async (editors: vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
-      if (textEditor?.document === undefined) {
-        return;
-      }
 
       if (!isTerraformFile(textEditor?.document)) {
         return;
       }
 
-      await updateTerraformStatusBar(textEditor.document.uri);
+      await updateTerraformStatusBar(textEditor?.document.uri);
     }),
   );
 
@@ -159,7 +156,11 @@ export async function deactivate(): Promise<void> {
   return clientHandler.stopClient();
 }
 
-export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> {
+export async function updateTerraformStatusBar(documentUri?: vscode.Uri): Promise<void> {
+  if (documentUri === undefined) {
+    return;
+  }
+
   const client = clientHandler.getClient();
   if (client === undefined) {
     return;
