@@ -28,6 +28,30 @@ export function getActiveTextEditor(): vscode.TextEditor | undefined {
   return vscode.window.visibleTextEditors.find((textEditor) => !!textEditor.viewColumn);
 }
 
+/*
+  Detects whether this is a Terraform file we can perform operations on
+ */
+export function isTerraformFile(document?: vscode.TextDocument): boolean {
+  if (document === undefined) {
+    return false;
+  }
+
+  if (document.isUntitled) {
+    // Untitled files are files which haven't been saved yet, so we don't know if they
+    // are terraform so we return false
+    return false;
+  }
+
+  if (document.fileName.endsWith('tf')) {
+    // For the purposes of this extension, anything with the tf file
+    // extension is a Terraform file
+    return true;
+  }
+
+  // be safe and default to false
+  return false;
+}
+
 export function sortedWorkspaceFolders(): string[] {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (workspaceFolders) {

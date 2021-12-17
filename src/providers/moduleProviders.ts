@@ -3,7 +3,7 @@ import { Utils } from 'vscode-uri';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 
 import { ClientHandler } from '../clientHandler';
-import { getActiveTextEditor } from '../vscodeUtils';
+import { getActiveTextEditor, isTerraformFile } from '../vscodeUtils';
 
 interface ModuleProvidersResponse {
   v: number;
@@ -46,7 +46,13 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   constructor(ctx: vscode.ExtensionContext, private handler: ClientHandler) {
     ctx.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
-        if (event && getActiveTextEditor()) {
+        const activeEditor = getActiveTextEditor();
+
+        if (!isTerraformFile(activeEditor?.document)) {
+          return;
+        }
+
+        if (event && activeEditor) {
           this.refresh();
         }
       }),
@@ -77,12 +83,15 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   async getProvider(): Promise<ModuleProviderItem[]> {
     const activeEditor = getActiveTextEditor();
 
-    const document = activeEditor?.document;
-    if (document === undefined) {
+    if (activeEditor?.document === undefined) {
       return [];
     }
 
-    const editor = document.uri;
+    if (!isTerraformFile(activeEditor.document)) {
+      return [];
+    }
+
+    const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
     const handler = this.handler.getClient();
     if (handler === undefined) {
