@@ -21,9 +21,7 @@ describe('terraform-ls installer', () => {
       const expectedRelease: Release = {
         name: 'terraform-ls',
         version: '0.24.0',
-        getBuild: jest.fn(() => {
-          return expectedBuild;
-        }),
+        getBuild: jest.fn(() => expectedBuild),
         download: jest.fn(),
         verify: jest.fn(),
         unpack: jest.fn(),
@@ -58,21 +56,11 @@ describe('terraform-ls installer', () => {
       );
 
       expect(expectedRelease.download).toBeCalledTimes(1);
-      expect(expectedRelease.download).toHaveBeenCalledWith(
-        expectedBuild.url,
-        expectedPath,
-        expect.any(String),
-      );
+      expect(expectedRelease.download).toHaveBeenCalledWith(expectedBuild.url, expectedPath, expect.any(String));
       expect(expectedRelease.verify).toBeCalledTimes(1);
-      expect(expectedRelease.verify).toHaveBeenCalledWith(
-        expectedPath,
-        expectedBuild.filename,
-      );
+      expect(expectedRelease.verify).toHaveBeenCalledWith(expectedPath, expectedBuild.filename);
       expect(expectedRelease.unpack).toBeCalledTimes(1);
-      expect(expectedRelease.unpack).toHaveBeenCalledWith(
-        'installPath',
-        expectedPath,
-      );
+      expect(expectedRelease.unpack).toHaveBeenCalledWith('installPath', expectedPath);
       expect(vscode.workspace.fs.delete).toBeCalledTimes(1);
       expect(report).toHaveBeenCalledTimes(4);
     });

@@ -40,28 +40,17 @@ describe('terraform release detector', () => {
       };
     });
 
-    const expected: Release = {
+    const expected = {
       builds: [buildInfo],
       name: name,
       shasums: shasums,
       shasums_signature: shasums_signature,
       version: version,
-      getBuild: jest.fn(),
-      download: jest.fn(),
-      verify: jest.fn(),
-      unpack: jest.fn(),
-      calculateFileSha256Sum: jest.fn(),
-      downloadSha256Sum: jest.fn(),
     };
 
     const result = await getRequiredVersionRelease('0.24.0', '2.16.0', '1.66.0');
 
-    // expect(result).toContainEqual(expected);
-    expect(result.builds).toStrictEqual(expected.builds);
-    expect(result.name).toBe(expected.name);
-    expect(result.shasums).toBe(expected.shasums);
-    expect(result.shasums_signature).toBe(expected.shasums_signature);
-    expect(result.version).toBe(expected.version);
+    expect(result).toMatchObject(expected);
   });
 
   test('returns latest if invalid version', async () => {
@@ -104,21 +93,12 @@ describe('terraform release detector', () => {
       shasums: shasums,
       shasums_signature: shasums_signature,
       version: version,
-      getBuild: jest.fn(),
-      download: jest.fn(),
-      verify: jest.fn(),
-      unpack: jest.fn(),
-      calculateFileSha256Sum: jest.fn(),
-      downloadSha256Sum: jest.fn(),
     };
 
     const result = await getRequiredVersionRelease('10000.24.0', '2.16.0', '1.66.0');
 
-    expect(result.builds).toStrictEqual(expected.builds);
-    expect(result.name).toBe(expected.name);
-    expect(result.shasums).toBe(expected.shasums);
-    expect(result.shasums_signature).toBe(expected.shasums_signature);
-    expect(result.version).toBe(expected.version);
+    expect(result).toMatchObject(expected);
+    expect(getRelease).toBeCalledTimes(2);
   });
 });
 
@@ -141,8 +121,6 @@ describe('terraform detector', () => {
 });
 
 describe('version detector', () => {
-  beforeEach(() => {});
-
   test('detect valid version', async () => {
     const result = isValidVersionString('1.2.3');
     expect(result).toBeTruthy();
