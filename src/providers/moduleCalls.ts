@@ -116,16 +116,15 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
   async getModules(): Promise<ModuleCallItem[]> {
     const activeEditor = getActiveTextEditor();
 
-    const document = activeEditor?.document;
-    if (document === undefined) {
+    if (activeEditor?.document === undefined) {
       return [];
     }
 
-    if (!isTerraformFile(document)) {
+    if (!isTerraformFile(activeEditor.document)) {
       return [];
     }
 
-    const editor = document.uri;
+    const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
     const handler = this.handler.getClient();
     if (handler === undefined) {

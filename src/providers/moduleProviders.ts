@@ -48,12 +48,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
         const activeEditor = getActiveTextEditor();
 
-        const document = activeEditor?.document;
-        if (document === undefined) {
-          return;
-        }
-
-        if (!isTerraformFile(document)) {
+        if (!isTerraformFile(activeEditor?.document)) {
           return;
         }
 
@@ -88,16 +83,15 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   async getProvider(): Promise<ModuleProviderItem[]> {
     const activeEditor = getActiveTextEditor();
 
-    const document = activeEditor?.document;
-    if (document === undefined) {
+    if (activeEditor?.document === undefined) {
       return [];
     }
 
-    if (!isTerraformFile(document)) {
+    if (!isTerraformFile(activeEditor.document)) {
       return [];
     }
 
-    const editor = document.uri;
+    const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
     const handler = this.handler.getClient();
     if (handler === undefined) {
