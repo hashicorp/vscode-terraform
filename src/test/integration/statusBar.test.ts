@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { expect } from 'chai';
 import { terraformStatus, updateTerraformStatusBar } from '../../extension';
-import { getDocUri } from '../helper';
+import { getDocUri, open } from '../helper';
 
 suite('statusBar', () => {
   teardown(async () => {
@@ -15,6 +15,7 @@ suite('statusBar', () => {
 
   test('should create a status bar with the root module label', async () => {
     const documentUri = getDocUri('sample.tf');
+    await open(documentUri);
     await updateTerraformStatusBar(documentUri);
 
     expect(terraformStatus.text).to.equal('$(refresh) testFixture');
@@ -22,6 +23,7 @@ suite('statusBar', () => {
 
   test('should create an empty status bar inside a child module', async () => {
     const documentUri = getDocUri('modules/sample.tf');
+    await open(documentUri);
     await updateTerraformStatusBar(documentUri);
 
     expect(terraformStatus.text).to.equal('');

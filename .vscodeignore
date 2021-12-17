@@ -4,6 +4,7 @@
 build/
 lsp/
 src/
+**/__mocks__
 out/*.test.*
 out/test/
 testFixture/

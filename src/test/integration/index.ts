@@ -11,7 +11,8 @@ export async function run(): Promise<void> {
   // integration tests require long activation time
   mocha.timeout(100000);
 
-  const testsRoot = path.resolve(__dirname, '..');
+  // const testsRoot = path.resolve(__dirname, '..');
+  const testsRoot = path.resolve(__dirname);
 
   return new Promise((resolve, reject) => {
     glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {

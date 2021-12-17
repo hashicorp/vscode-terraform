@@ -5,7 +5,8 @@ import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
-import { defaultVersionString, isValidVersionString, LanguageServerInstaller } from './languageServerInstaller';
+import { DEFAULT_LS_VERSION, isValidVersionString } from './installer/detector';
+import { updateOrInstall } from './installer/updater';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
@@ -44,7 +45,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   if (config('terraform').has('languageServer.requiredVersion')) {
-    const langServerVer = config('terraform').get('languageServer.requiredVersion', defaultVersionString);
+    const langServerVer = config('terraform').get('languageServer.requiredVersion', DEFAULT_LS_VERSION);
     if (!isValidVersionString(langServerVer)) {
       vscode.window.showWarningMessage(
         `The Terraform Language Server Version string '${langServerVer}' is not a valid semantic version and will be ignored.`,
@@ -124,7 +125,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         }
       }
     }),
-    vscode.window.onDidChangeVisibleTextEditors(async (editors: vscode.TextEditor[]) => {
+    vscode.window.onDidChangeVisibleTextEditors(async (editors: readonly vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
       if (textEditor?.document === undefined) {
         return;
@@ -136,7 +137,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   if (enabled()) {
     try {
       await updateLanguageServer(manifest.version, lsPath);
-      await clientHandler.startClient();
       vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', true);
     } catch (error) {
       if (error instanceof Error) {
@@ -191,50 +191,38 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
 }
 
 async function updateLanguageServer(extVersion: string, lsPath: ServerPath, scheduled = false) {
-  console.log('Checking for language server updates...');
-  const hour = 1000 * 60 * 60;
-  languageServerUpdater.timeout(function () {
-    updateLanguageServer(extVersion, lsPath, true);
-  }, 24 * hour);
+  if (config('extensions').get<boolean>('autoCheckUpdates', true) === true) {
+    console.log('Scheduling check for language server updates...');
+    const hour = 1000 * 60 * 60;
+    languageServerUpdater.timeout(function () {
+      updateLanguageServer(extVersion, lsPath, true);
+    }, 24 * hour);
+  }
+
+  if (lsPath.hasCustomBinPath()) {
+    // skip install check if user has specified a custom path to the LS
+    // with custom paths we *need* to start the lang client always
+    await clientHandler.startClient();
+    return;
+  }
 
   try {
-    if (lsPath.hasCustomBinPath()) {
-      // skip install if a language server binary path is set
-      return;
-    }
-
-    const installer = new LanguageServerInstaller(extVersion, lsPath, reporter);
-    const install = await installer.needsInstall(
-      config('terraform').get('languageServer.requiredVersion', defaultVersionString),
+    await updateOrInstall(
+      config('terraform').get('languageServer.requiredVersion', DEFAULT_LS_VERSION),
+      extVersion,
+      vscode.version,
+      lsPath,
+      reporter,
     );
 
-    if (install === false) {
-      // no install required
+    // On scheduled checks, we download to stg and do not replace prod path
+    // So we *do not* need to stop or start the LS
+    if (scheduled) {
       return;
     }
 
-    // an install is needed, either as an update or fresh install
-
-    // stop current client, if it exists
-    await clientHandler.stopClient();
-    try {
-      // install ls from configured source
-      await installer.install();
-    } catch (err) {
-      console.log(err); // for test failure reporting
-      if (err instanceof Error) {
-        reporter.sendTelemetryException(err);
-      }
-      throw err;
-    } finally {
-      // clean up after ourselves and remove zip files
-      await installer.cleanupZips();
-    }
-
-    if (scheduled) {
-      // scheduled updates still need to start client
-      await clientHandler.startClient();
-    }
+    // On fresh starts we *need* to start the lang client always
+    await clientHandler.startClient();
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {

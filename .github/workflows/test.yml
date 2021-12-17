@@ -31,6 +31,44 @@ jobs:
       - name: lint
         run: npm run lint
 
+  unit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      -
+        name: Read Node.js version (Unix)
+        if: ${{ runner.os != 'Windows' }}
+        id: nodejs-version-unix
+        run: |
+          content=`cat ./.nvmrc`
+          echo "::set-output name=content::$content"
+      -
+        name: Read Node.js version (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        id: nodejs-version-win
+        run: |
+          $content = Get-Content .\.nvmrc -Raw
+          echo "::set-output name=content::$content"
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          # See https://github.com/actions/setup-node/issues/32
+          node-version: ${{ steps.nodejs-version-unix.outputs.content || steps.nodejs-version-win.outputs.content }}
+      - name: npm install
+        run: npm ci
+      - name: unit test
+        run: npm run test:unit
+
   test:
     strategy:
       matrix:
