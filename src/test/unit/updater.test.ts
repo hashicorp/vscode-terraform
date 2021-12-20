@@ -20,6 +20,7 @@ const pathExists = mocked(pathExistsOrig);
 const isValidVersionString = mocked(isValidVersionStringOrig);
 const getRequiredVersionRelease = mocked(getRequiredVersionReleaseOrig);
 const getLsVersion = mocked(getLsVersionOrig);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const lsPath: ServerPath & typeof lsPathMock = lsPathMock;
 
