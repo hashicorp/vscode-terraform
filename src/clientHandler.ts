@@ -108,17 +108,62 @@ export class ClientHandler {
   private async getServerOptions(): Promise<ServerOptions> {
     const cmd = await this.lsPath.resolvedPathToBinary();
     const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
+    const procEnv = this.getProcessEnvironment();
+
     const executable: Executable = {
       command: cmd,
       args: serverArgs,
-      options: {},
+      options: {
+        env: procEnv,
+      },
     };
+
     const serverOptions: ServerOptions = {
       run: executable,
       debug: executable,
     };
+
     this.outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
     return serverOptions;
+  }
+
+  private getProcessEnvironment() {
+    // deep object clone without the bother of custom traversal
+    const procEnv = JSON.parse(JSON.stringify(process.env));
+
+    // It's unlilely but possible that there is no PATH set. Object property
+    // names can be case sensitive depending on the OS, so we cannot rely on
+    // process.env.PATH working everywhere. It could be called PATH or Path or path
+    // and indexing would fail to find it.
+    if (procEnv.PATH === undefined) {
+      let envPath = '';
+      // Look through all of the environment names looking for PATH in a case
+      // insensitive way and remove the conflicting env var.
+      Object.keys(procEnv).forEach(function (keyname) {
+        if (keyname.match(/^PATH$/i)) {
+          envPath = procEnv[keyname] ?? '';
+          procEnv[keyname] = undefined;
+        }
+      });
+      procEnv.PATH = envPath;
+    }
+
+    // Child spawn environment variables can have undefined or null value
+    // In our case we can remove these elements from the Object directly and not
+    // worry about them
+    try {
+      const propNames = Object.getOwnPropertyNames(procEnv);
+      for (let i = 0; i < propNames.length; i++) {
+        const propName = propNames[i];
+        if (procEnv[propName] === null || procEnv[propName] === undefined) {
+          delete procEnv[propName];
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    return procEnv;
   }
 
   private getInitializationOptions(commandPrefix: string) {
