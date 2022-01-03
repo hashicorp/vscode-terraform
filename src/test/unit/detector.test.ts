@@ -1,6 +1,6 @@
 import { mocked } from 'ts-jest/utils';
 import { exec as execOrg } from '../../utils';
-import { getRelease as getReleaseOrg, Release } from '@hashicorp/js-releases';
+import { getRelease as getReleaseOrg } from '@hashicorp/js-releases';
 import { getLsVersion, isValidVersionString, getRequiredVersionRelease } from '../../installer/detector';
 
 jest.mock('../../utils');

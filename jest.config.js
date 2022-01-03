@@ -8,5 +8,4 @@ module.exports = {
   clearMocks: true,
   verbose: true,
   silent: true,
-  // automock: true,
 };
