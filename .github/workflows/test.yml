@@ -71,7 +71,12 @@ jobs:
 
   test:
     strategy:
+      fail-fast: false
       matrix:
+        vscode:
+          - '1.55.0'
+          - 'insiders'
+          - 'stable'
         os:
           - windows-latest
           - macos-latest
@@ -119,3 +124,4 @@ jobs:
         env:
           CI: true
           DISPLAY: ':99.0'
+          VSCODE_VERSION: ${{ matrix.vscode }}

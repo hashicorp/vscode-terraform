@@ -41,15 +41,24 @@ async function main(): Promise<void> {
     // Download VS Code, unzip it and run the integration test
     // start in the fixtures folder to prevent the language server from walking all the
     // project root folders, like node_modules
-    console.log('_______________LATEST_____________________');
-    await runTests(options);
+    const vscodeVersion = process.env['VSCODE_VERSION'];
+    switch (vscodeVersion) {
+      case undefined:
+        console.log('_______________LATEST_____________________');
+        break;
+      case 'stable':
+        console.log('_______________LATEST_____________________');
+        break;
+      case 'insiders':
+        console.log('_______________INSIDERS_____________________');
+        options.version = vscodeVersion;
+        break;
+      default:
+        console.log(`_______________${vscodeVersion}_____________________`);
+        options.version = vscodeVersion;
+        break;
+    }
 
-    console.log('_______________INSIDERS___________________');
-    options.version = 'insiders';
-    await runTests(options);
-
-    console.log('________________1.55.0____________________');
-    options.version = '1.55.0';
     await runTests(options);
   } catch (err) {
     console.error(err);
