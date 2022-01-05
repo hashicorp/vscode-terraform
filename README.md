@@ -59,19 +59,33 @@ If you want to automatically search root modules in your workspace and exclude s
 ### Formatting
 To enable formatting, it is recommended that the following be added to the extension settings for the Terraform extension:
 ```
-    "[terraform]": {
-        "editor.formatOnSave": true
-    }
+"[terraform]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+}
 ```
 
-It is also recommended to set a default formatter if you have other extensions installed which also claim a capability to format Terraform files:
+It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows which extension to use to format your files. It is possible to have more than one extension installed which claim a capability to format Terraform files.
+
+When using the `editor.formatOnSaveMode` setting, only `file` is currently supported. The `modifications` or `modificationsIfAvailable` settings [use the currently configured SCM](https://code.visualstudio.com/updates/v1_49#_only-format-modified-text) to detect file line ranges that have changed and send those ranges to the formatter. The `file` setting works because `terraform fmt` was written to format an entire file, not ranges. If you don't have a SCM enabled for the files you are editing, `modifications` won't work at all. The `modificationsIfAvailable` setting will fall back to `file` if there is no SCM and will appear to work sometimes.
+
+If you want to use `editor.codeActionsOnSave` with `editor.FormatOnSave` to automatically format Terraform files, use the following configuration:
 
 ```
-    "[terraform]": {
-        "editor.defaultFormatter": "hashicorp.terraform",
-        "editor.formatOnSave": true
-    }
+"editor.formatOnSave": true,
+"[terraform]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
+},
 ```
+
+This will keep the global `editor.formatOnSave` for other languages you use, and configure the Terraform extension to only format during a `codeAction` sweep.
+
+> **Note**: Ensure that the terraform binary is present in the environment PATH variable. If the terraform binary cannot be found, formatting will silently fail.
 
 ### Validation
 An experimental validate-on-save option can be enabled with the following setting:
