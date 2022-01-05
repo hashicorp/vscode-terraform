@@ -70,7 +70,7 @@ It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows 
 
 When using the `editor.formatOnSaveMode` setting, only `file` is currently supported. The `modifications` or `modificationsIfAvailable` settings [use the currently configured SCM](https://code.visualstudio.com/updates/v1_49#_only-format-modified-text) to detect file line ranges that have changed and send those ranges to the formatter. The `file` setting works because `terraform fmt` was written to format an entire file, not ranges. If you don't have a SCM enabled for the files you are editing, `modifications` won't work at all. The `modificationsIfAvailable` setting will fall back to `file` if there is no SCM and will appear to work sometimes.
 
-If you want to use `editor.codeActionsOnSave` with `editor.FormatOnSave` to automatically format Terraform files, use the following configuration:
+If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to automatically format Terraform files, use the following configuration:
 
 ```
 "editor.formatOnSave": true,
@@ -85,7 +85,7 @@ If you want to use `editor.codeActionsOnSave` with `editor.FormatOnSave` to auto
 
 This will keep the global `editor.formatOnSave` for other languages you use, and configure the Terraform extension to only format during a `codeAction` sweep.
 
-> **Note**: Ensure that the terraform binary is present in the environment PATH variable. If the terraform binary cannot be found, formatting will silently fail.
+> **Note**: Ensure that the terraform binary is present in the environment `PATH` variable. If the terraform binary cannot be found, formatting will silently fail.
 
 ### Validation
 An experimental validate-on-save option can be enabled with the following setting:
