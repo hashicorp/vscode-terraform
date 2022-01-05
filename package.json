@@ -85,6 +85,11 @@
         "path": "./snippets/terraform.json"
       }
     ],
+    "configurationDefaults": {
+      "files.watcherExclude": {
+        "**/.terraform/*/**": true
+      }
+    },
     "configuration": {
       "type": "object",
       "title": "Terraform",
