@@ -128,8 +128,8 @@ export class ClientHandler {
   }
 
   private getProcessEnvironment() {
-    // deep object clone without the bother of custom traversal
-    const procEnv = JSON.parse(JSON.stringify(process.env));
+    // shallow copy environment variables
+    const procEnv = { ...process.env };
 
     // It's unlilely but possible that there is no PATH set. Object property
     // names can be case sensitive depending on the OS, so we cannot rely on
@@ -148,7 +148,7 @@ export class ClientHandler {
       procEnv.PATH = envPath;
     }
 
-    // Child spawn environment variables can have undefined or null value
+    // Environment variables can have undefined or null values
     // In our case we can remove these elements from the Object directly and not
     // worry about them
     try {
