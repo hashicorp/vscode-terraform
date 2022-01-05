@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils';
 import { pathExists as pathExistsOrig } from '../../installer/detector';
 import { installTerraformLS } from '../../installer/installer';
 import { reporter } from './mocks/reporter';
@@ -6,8 +5,8 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { Release } from '@hashicorp/js-releases';
 
-const pathExists = mocked(pathExistsOrig);
-const withProgress = mocked(vscode.window.withProgress);
+const pathExists = jest.mocked(pathExistsOrig);
+const withProgress = jest.mocked(vscode.window.withProgress);
 
 jest.mock('../../installer/detector');
 describe('terraform-ls installer', () => {
