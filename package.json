@@ -147,7 +147,7 @@
         "terraform.codelens.referenceCount": {
           "scope": "resource",
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Display reference counts above top level blocks and attributes."
         },
         "terraform-ls.rootModules": {
