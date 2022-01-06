@@ -1,3 +1,17 @@
+# 2.18.0 (unreleased)
+
+ENHANCEMENTS:
+
+ - Improve language server installation ([#868](https://github.com/hashicorp/vscode-terraform/pull/868))
+
+BUG FIXES:
+
+ - Fix Terraform file detection ([#870](https://github.com/hashicorp/vscode-terraform/pull/870))
+
+INTERNAL:
+
+ - deps: bump vscode-extension-telemetry to 0.4.4 ([#884](https://github.com/hashicorp/vscode-terraform/pull/884))
+
 # 2.17.0 (2021-12-02)
 
 ENHANCEMENTS:
