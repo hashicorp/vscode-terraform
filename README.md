@@ -64,6 +64,11 @@ To enable formatting, it is recommended that the following be added to the exten
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file"
 }
+"[terraform-vars]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+}
 ```
 
 It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows which extension to use to format your files. It is possible to have more than one extension installed which claim a capability to format Terraform files.
@@ -81,6 +86,13 @@ If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to auto
     "source.formatAll.terraform": true
   },
 },
+"[terraform-vars]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
+}
 ```
 
 This will keep the global `editor.formatOnSave` for other languages you use, and configure the Terraform extension to only format during a `codeAction` sweep.
