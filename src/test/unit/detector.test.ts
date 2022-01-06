@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils';
 import { exec as execOrg } from '../../utils';
 import { getRelease as getReleaseOrg } from '@hashicorp/js-releases';
 import { getLsVersion, isValidVersionString, getRequiredVersionRelease } from '../../installer/detector';
@@ -6,8 +5,8 @@ import { getLsVersion, isValidVersionString, getRequiredVersionRelease } from '.
 jest.mock('../../utils');
 jest.mock('@hashicorp/js-releases');
 
-const exec = mocked(execOrg);
-const getRelease = mocked(getReleaseOrg);
+const exec = jest.mocked(execOrg);
+const getRelease = jest.mocked(getReleaseOrg);
 
 describe('terraform release detector', () => {
   test('returns valid release', async () => {

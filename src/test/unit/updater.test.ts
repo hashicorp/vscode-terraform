@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { mocked } from 'ts-jest/utils';
 import { updateOrInstall } from '../../installer/updater';
 import { reporter } from './mocks/reporter';
 import { installTerraformLS } from '../../installer/installer';
@@ -15,11 +14,11 @@ import { lsPathMock } from './mocks/serverPath';
 jest.mock('../../installer/detector');
 jest.mock('../../installer/installer');
 
-const getConfiguration = mocked(vscode.workspace.getConfiguration);
-const pathExists = mocked(pathExistsOrig);
-const isValidVersionString = mocked(isValidVersionStringOrig);
-const getRequiredVersionRelease = mocked(getRequiredVersionReleaseOrig);
-const getLsVersion = mocked(getLsVersionOrig);
+const getConfiguration = jest.mocked(vscode.workspace.getConfiguration);
+const pathExists = jest.mocked(pathExistsOrig);
+const isValidVersionString = jest.mocked(isValidVersionStringOrig);
+const getRequiredVersionRelease = jest.mocked(getRequiredVersionReleaseOrig);
+const getLsVersion = jest.mocked(getLsVersionOrig);
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const lsPath: ServerPath & typeof lsPathMock = lsPathMock;
