@@ -1,7 +1,10 @@
 {
-  "env": { "browser": true, "es6": true, "node": true },
   "root": true,
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
   "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "eslint:recommended",
@@ -11,6 +14,12 @@
     "prettier"
   ],
   "rules": {
-    "@typescript-eslint/no-explicit-any": ["warn", { "ignoreRestArgs": true }]
+    "@typescript-eslint/no-explicit-any": ["warn", { "ignoreRestArgs": true }],
+    "@typescript-eslint/naming-convention": "warn",
+    "@typescript-eslint/semi": "warn",
+    "curly": "warn",
+    "eqeqeq": "warn",
+    "no-throw-literal": "warn",
+    "semi": "off"
   }
 }

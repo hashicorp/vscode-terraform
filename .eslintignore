@@ -1,3 +1,5 @@
 node_modules
 out
 testFixture
+**/*/__mocks__
+**/*.d.ts

@@ -5,6 +5,7 @@ import { Utils } from 'vscode-uri';
 import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor, isTerraformFile } from '../vscodeUtils';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleCall {
   name: string;
   source_addr: string;
@@ -13,11 +14,14 @@ interface ModuleCall {
   docs_link?: string;
   dependent_modules: ModuleCall[];
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
+/* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleCallsResponse {
   v: number;
   module_calls: ModuleCall[];
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 class ModuleCallItem extends vscode.TreeItem {
   constructor(
@@ -148,7 +152,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
         ExecuteCommandRequest.type,
         params,
       );
-      if (response == null) {
+      if (response === null) {
         return Promise.resolve([]);
       }
 
@@ -170,7 +174,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     dependents: ModuleCall[],
   ): ModuleCallItem {
     let deps: ModuleCallItem[] = [];
-    if (dependents.length != 0) {
+    if (dependents.length !== 0) {
       deps = dependents.map((dp) =>
         this.toModuleCall(
           dp.name,

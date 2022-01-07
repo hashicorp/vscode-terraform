@@ -244,13 +244,13 @@ function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandPara
   return client.sendRequest(ExecuteCommandRequest.type, params);
 }
 
-interface moduleCaller {
+interface ModuleCaller {
   uri: string;
 }
 
-interface moduleCallersResponse {
+interface ModuleCallersResponse {
   version: number;
-  moduleCallers: moduleCaller[];
+  moduleCallers: ModuleCaller[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -262,7 +262,7 @@ async function modulesCallersCommand(languageClient: TerraformLanguageClient, mo
   return execWorkspaceCommand(languageClient.client, requestParams);
 }
 
-export async function moduleCallers(moduleUri: string): Promise<moduleCallersResponse> {
+export async function moduleCallers(moduleUri: string): Promise<ModuleCallersResponse> {
   const client = clientHandler.getClient();
   if (client === undefined) {
     return {
@@ -272,7 +272,7 @@ export async function moduleCallers(moduleUri: string): Promise<moduleCallersRes
   }
 
   const response = await modulesCallersCommand(client, moduleUri);
-  const moduleCallers: moduleCaller[] = response.callers;
+  const moduleCallers: ModuleCaller[] = response.callers;
 
   return { version: response.v, moduleCallers };
 }
@@ -296,7 +296,7 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
       }
 
       selectedModule = selected;
-    } else if (response.moduleCallers.length == 1) {
+    } else if (response.moduleCallers.length === 1) {
       selectedModule = response.moduleCallers[0].uri;
     } else {
       selectedModule = moduleUri.toString();
@@ -317,7 +317,7 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
       });
       if (terraformCommand) {
         const terminal =
-          vscode.window.terminals.find((t) => t.name == terminalName) ||
+          vscode.window.terminals.find((t) => t.name === terminalName) ||
           vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
         terminal.sendText(terraformCommand);
         terminal.show();
