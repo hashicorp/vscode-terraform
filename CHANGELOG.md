@@ -1,4 +1,4 @@
-# 2.18.0 (unreleased)
+# 2.18.0 (2022-01-07)
 
 ENHANCEMENTS:
 
