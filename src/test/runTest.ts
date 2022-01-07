@@ -32,6 +32,7 @@ async function main(): Promise<void> {
 
   // common options for all runners
   const options: TestOptions = {
+    version: process.env['VSCODE_VERSION'] ?? 'stable',
     extensionDevelopmentPath,
     extensionTestsPath,
     launchArgs: ['testFixture', '--disable-extensions', '--disable-workspace-trust'],
@@ -41,24 +42,7 @@ async function main(): Promise<void> {
     // Download VS Code, unzip it and run the integration test
     // start in the fixtures folder to prevent the language server from walking all the
     // project root folders, like node_modules
-    const vscodeVersion = process.env['VSCODE_VERSION'];
-    switch (vscodeVersion) {
-      case undefined:
-        console.log('_______________LATEST_____________________');
-        break;
-      case 'stable':
-        console.log('_______________LATEST_____________________');
-        break;
-      case 'insiders':
-        console.log('_______________INSIDERS_____________________');
-        options.version = vscodeVersion;
-        break;
-      default:
-        console.log(`_______________${vscodeVersion}_____________________`);
-        options.version = vscodeVersion;
-        break;
-    }
-
+    console.log(`_______________${options.version}_____________________`);
     await runTests(options);
   } catch (err) {
     console.error(err);
