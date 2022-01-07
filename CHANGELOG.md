@@ -3,6 +3,7 @@
 ENHANCEMENTS:
 
  - Improve language server installation ([#868](https://github.com/hashicorp/vscode-terraform/pull/868))
+ - Make reference count code lens opt-in (disabled by default) ([#893](https://github.com/hashicorp/vscode-terraform/pull/893))
 
 BUG FIXES:
 
