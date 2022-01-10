@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { runTests } from 'vscode-test';
-import { TestOptions } from 'vscode-test/out/runTest';
+import { runTests } from '@vscode/test-electron';
+import { TestOptions } from '@vscode/test-electron/out/runTest';
 import { exec } from '../utils';
 
 async function terraformInit() {
@@ -32,6 +32,7 @@ async function main(): Promise<void> {
 
   // common options for all runners
   const options: TestOptions = {
+    version: process.env['VSCODE_VERSION'] ?? 'stable',
     extensionDevelopmentPath,
     extensionTestsPath,
     launchArgs: ['testFixture', '--disable-extensions', '--disable-workspace-trust'],
@@ -41,15 +42,7 @@ async function main(): Promise<void> {
     // Download VS Code, unzip it and run the integration test
     // start in the fixtures folder to prevent the language server from walking all the
     // project root folders, like node_modules
-    console.log('_______________LATEST_____________________');
-    await runTests(options);
-
-    console.log('_______________INSIDERS___________________');
-    options.version = 'insiders';
-    await runTests(options);
-
-    console.log('________________1.55.0____________________');
-    options.version = '1.55.0';
+    console.log(`_______________${options.version}_____________________`);
     await runTests(options);
   } catch (err) {
     console.error(err);
