@@ -20,4 +20,5 @@ testFixture/
 .vscodeignore
 DEVELOPMENT.md
 ROADMAP.md
+jest.config.js
 tsconfig.json
