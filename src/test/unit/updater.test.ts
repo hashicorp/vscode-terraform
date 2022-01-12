@@ -46,6 +46,7 @@ describe('terraform-ls updater', () => {
         return {
           name: 'foo',
           shasums: '',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           shasums_signature: '',
           version: '',
           builds: [],
@@ -88,6 +89,7 @@ describe('terraform-ls updater', () => {
         return {
           name: 'terraform-ls',
           version: '0.24.0',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           shasums_signature: '',
           builds: [],
           getBuild: jest.fn(),
@@ -130,6 +132,7 @@ describe('terraform-ls updater', () => {
         return {
           name: 'terraform-ls',
           version: '0.24.0',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           shasums_signature: '',
           builds: [],
           getBuild: jest.fn(),
@@ -249,6 +252,7 @@ describe('terraform-ls updater', () => {
         return {
           name: 'terraform-ls',
           version: '0.24.0',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           shasums_signature: '',
           builds: [],
           getBuild: jest.fn(),

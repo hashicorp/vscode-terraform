@@ -12,7 +12,7 @@ describe('terraform release detector', () => {
   test('returns valid release', async () => {
     const name = 'terraform-ls';
     const shasums = 'terraform-ls_0.24.0_SHA256SUMS';
-    const shasums_signature = 'terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig';
+    const shasumsSignature = 'terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig';
     const version = '0.24.0';
     const buildInfo = {
       arch: 'amd64',
@@ -28,7 +28,8 @@ describe('terraform release detector', () => {
         builds: [buildInfo],
         name: name,
         shasums: shasums,
-        shasums_signature: shasums_signature,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        shasums_signature: shasumsSignature,
         version: version,
         getBuild: jest.fn(),
         download: jest.fn(),
@@ -43,7 +44,8 @@ describe('terraform release detector', () => {
       builds: [buildInfo],
       name: name,
       shasums: shasums,
-      shasums_signature: shasums_signature,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      shasums_signature: shasumsSignature,
       version: version,
     };
 
@@ -55,7 +57,7 @@ describe('terraform release detector', () => {
   test('returns latest if invalid version', async () => {
     const name = 'terraform-ls';
     const shasums = 'terraform-ls_0.24.0_SHA256SUMS';
-    const shasums_signature = 'terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig';
+    const shasumsSignature = 'terraform-ls_0.24.0_SHA256SUMS.72D7468F.sig';
     const version = '0.24.0';
     const buildInfo = {
       arch: 'amd64',
@@ -75,7 +77,8 @@ describe('terraform release detector', () => {
           builds: [buildInfo],
           name: name,
           shasums: shasums,
-          shasums_signature: shasums_signature,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          shasums_signature: shasumsSignature,
           version: version,
           getBuild: jest.fn(),
           download: jest.fn(),
@@ -90,7 +93,8 @@ describe('terraform release detector', () => {
       builds: [buildInfo],
       name: name,
       shasums: shasums,
-      shasums_signature: shasums_signature,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      shasums_signature: shasumsSignature,
       version: version,
     };
 

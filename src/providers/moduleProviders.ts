@@ -5,6 +5,7 @@ import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclie
 import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor, isTerraformFile } from '../vscodeUtils';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleProvidersResponse {
   v: number;
   provider_requirements: {
@@ -18,6 +19,7 @@ interface ModuleProvidersResponse {
     [provider: string]: string;
   };
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 class ModuleProviderItem extends vscode.TreeItem {
   constructor(
