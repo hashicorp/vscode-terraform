@@ -323,15 +323,15 @@
     ]
   },
   "scripts": {
-    "download:ls": "ts-node ./build/downloader.ts",
-    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "lint": "eslint src --ext ts",
-    "pretest": "npm run compile && npm run lint",
+    "watch": "npm run download:ls && tsc -watch -p ./",
+    "download:ls": "ts-node ./build/downloader.ts",
+    "vscode:prepublish": "npm run download:ls && npm run compile",
+    "package": "vsce package",
+    "pretest": "npm run download:ls && npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "test:unit": "jest",
-    "package": "vsce package",
+    "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
     "check-format": "npm run prettier -- --check"
