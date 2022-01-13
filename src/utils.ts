@@ -24,7 +24,9 @@ export class SingleInstanceTimeout {
   public timeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): void {
     if (!this.timerLock) {
       this.timerLock = true;
-      this.timerId = setTimeout(
+      // temporary fix until we use platform specific extensions and can remove this class
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.timerId = setTimeout<any[]>(
         () => {
           this.timerLock = false;
           fn();
