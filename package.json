@@ -131,7 +131,8 @@
             },
             "requiredVersion": {
               "type": "string",
-              "description": "The required version of the Language Server described as a semantic version string, for example '^2.0.1' or '> 1.0'. Defaults to latest available version."
+              "description": "The required version of the Language Server described as a semantic version string, for example '^2.0.1' or '> 1.0'. Defaults to latest available version.",
+              "deprecationMessage": "Deprecated: A platform specific Language Server binary will be bundled with the extension in a future release. If you wish to use a different version than the one shipped with the extension, use terraform.languageServer.pathToBinary"
             }
           },
           "default": {
