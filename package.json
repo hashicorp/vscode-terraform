@@ -14,6 +14,9 @@
     "node": "~16.X",
     "vscode": "^1.61.0"
   },
+  "langServer": {
+    "version": "0.25.2"
+  },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
     "url": "https://github.com/hashicorp/vscode-terraform/issues",
@@ -320,6 +323,7 @@
     ]
   },
   "scripts": {
+    "download:ls": "ts-node ./build/downloader.ts",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -367,6 +371,7 @@
     "prettier": "^2.3.2",
     "temp": "^0.9.4",
     "ts-jest": "^27.1.0",
+    "ts-node": "^10.4.0",
     "typescript": "^4.5.4",
     "vsce": "^2.6.3"
   }
