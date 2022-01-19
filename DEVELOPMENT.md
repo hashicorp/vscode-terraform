@@ -4,7 +4,7 @@ We are an open source project on GitHub and would enjoy your contributions! Plea
 
 ## Building
 
-The extension makes use of the [VSCode Language Server](https://github.com/Microsoft/vscode-languageserver-node) client package to integrate with [terraform-ls](https://github.com/hashicorp/terraform-ls) for [language features](https://code.visualstudio.com/api/language-extensions/programmatic-language-features). The directions below cover how to build and package the extension; please see the `terraform-ls` documentation for how to build the language server executable.
+The extension makes use of the [VSCode Language Server](https://github.com/Microsoft/vscode-languageserver-node) client package to integrate with [terraform-ls](https://github.com/hashicorp/terraform-ls) for [language features](https://code.visualstudio.com/api/language-extensions/programmatic-language-features). The directions below cover how to build and package the extension; please see the [`terraform-ls`](https://github.com/hashicorp/terraform-ls) documentation for how to build the language server executable.
 
 ### Requirements:
 
@@ -27,9 +27,13 @@ After cloning the repo, run `npm install` to install dependencies. There's an in
 > npm run compile
 ```
 
+> In order to use an independently built or installed version of terraform-ls, you will need to set `terraform.languageServer.pathToBinary` to the correct executable path.
+
 ## Running the Extension
 
-The extension can be run in a development mode via the debug task called `Launch Client`. This will open a new VS Code window with the extension loaded, and from there you can open any files or folders you want to check against. This extension development window can also be used to run commands or any other feature the extension provides.
+The extension can be run in a development mode via the launch task called `Launch Client`. This will open a new VS Code window with the extension loaded, and from there you can open any files or folders you want to check against. This extension development window can also be used to run commands or any other feature the extension provides.
+
+> New to VS Code development? You can get started [here](https://code.visualstudio.com/api/get-started/your-first-extension)
 
 ## Tests
 
@@ -80,13 +84,24 @@ Sample files for tests should be added to the [`./testFixture`](testFixture/) fo
 
 ## Packaging
 
-To package the extension into a `platform specific VSIX` ready for testing run the following command:
+To package the extension into a [`platform specific extension`](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#platformspecific-extensions) VSIX ready for testing run the following command:
 
 ```
 npm run package -- --target=win32-x64
 ```
 
 Replace `target` with the platform/architecture combination that is on the supported matrix list.
+
+platform | terraform-ls  | extension     | vs code
+   --    |           --  |         --    | --
+macOS    | darwin_amd64  | darwin_x64    | ✅
+macOS    | darwin_arm64  | darwin_arm64  | ✅
+Linux    | linux_amd64   | linux_x64     | ✅
+Linux    | linux_arm     | linux_armhf   | ✅
+Linux    | linux_arm64   | linux_arm64   | ✅
+Windows  | windows_386   | win32_ia32    | ✅
+Windows  | windows_amd64 | win32_x64     | ✅
+Windows  | windows_arm64 | win32_arm64   | ✅
 
 This will run several chained commands which will download the specified version of terraform-ls, minify the extension using esbuild, and package the extension using vsce into a VSIX.
 
