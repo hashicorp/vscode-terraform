@@ -2,21 +2,21 @@
 
 NOTES:
 
- - Deprecate terraform.languageServer.requiredVersion [903](https://github.com/hashicorp/vscode-terraform/pull/903)
+ - Deprecate terraform.languageServer.requiredVersion [#903](https://github.com/hashicorp/vscode-terraform/pull/903)
 
 ENHANCEMENTS:
 
- - Update telemetry configuration documentation [894](https://github.com/hashicorp/vscode-terraform/pull/894)
+ - Update telemetry configuration documentation [#894](https://github.com/hashicorp/vscode-terraform/pull/894)
 
 INTERNAL:
 
- - deps: Update to Node 16 and VS Code 1.61 [904](https://github.com/hashicorp/vscode-terraform/pull/904)
- - deps: Bump @vscode/test-electron from 2.0.1 to 2.0.3 [899](https://github.com/hashicorp/vscode-terraform/pull/899)
- - deps: Bump jest from 27.4.6 to 27.4.7 [892](https://github.com/hashicorp/vscode-terraform/pull/892)
- - deps: Update actions/setup-node to v2 [897](https://github.com/hashicorp/vscode-terraform/pull/897)
- - deps: Update eslint and minimal ruleset [896](https://github.com/hashicorp/vscode-terraform/pull/896)
- - Test VS Code Version Matrix [886](https://github.com/hashicorp/vscode-terraform/pull/886)
- - Ignore jest config when packaging [895](https://github.com/hashicorp/vscode-terraform/pull/895)
+ - deps: Update to Node 16 and VS Code 1.61 [#904](https://github.com/hashicorp/vscode-terraform/pull/904)
+ - deps: Bump @vscode/test-electron from 2.0.1 to 2.0.3 [#899](https://github.com/hashicorp/vscode-terraform/pull/899)
+ - deps: Bump jest from 27.4.6 to 27.4.7 [#892](https://github.com/hashicorp/vscode-terraform/pull/892)
+ - deps: Update actions/setup-node to v2 [#897](https://github.com/hashicorp/vscode-terraform/pull/897)
+ - deps: Update eslint and minimal ruleset [#896](https://github.com/hashicorp/vscode-terraform/pull/896)
+ - Test VS Code Version Matrix [#886](https://github.com/hashicorp/vscode-terraform/pull/886)
+ - Ignore jest config when packaging [#895](https://github.com/hashicorp/vscode-terraform/pull/895)
 
 # 2.18.0 (2022-01-07)
 
