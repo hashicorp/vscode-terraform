@@ -6,7 +6,7 @@ We are an open source project on GitHub and would enjoy your contributions! Plea
 
 The extension makes use of the [VSCode Language Server](https://github.com/Microsoft/vscode-languageserver-node) client package to integrate with [terraform-ls](https://github.com/hashicorp/terraform-ls) for [language features](https://code.visualstudio.com/api/language-extensions/programmatic-language-features). The directions below cover how to build and package the extension; please see the [`terraform-ls`](https://github.com/hashicorp/terraform-ls) documentation for how to build the language server executable.
 
-### Requirements:
+### Requirements
 
 - VSCode >= 1.61
 - Node >= 16.13.2
@@ -18,7 +18,7 @@ The extension makes use of the [VSCode Language Server](https://github.com/Micro
 git clone https://github.com/hashicorp/vscode-terraform
 ```
 
-### Dependencies:
+### Dependencies
 
 After cloning the repo, run `npm install` to install dependencies. There's an included build task to compile the TypeScript files to JavaScript; you can run it directly with `npm run compile`.
 
@@ -39,7 +39,7 @@ The extension can be run in a development mode via the launch task called `Launc
 
 Automated `unit` and `integration` tests can be written using [mocha](https://mochajs.org) and live inside `./src/test` with file pattern `*.test.ts`.
 
->It is *required* that `terraform` is available on `$PATH` to run the tests.
+> It is *required* that `terraform` is available on `$PATH` to run the tests.
 
 To run the `unit tests` from the command-line run:
 
