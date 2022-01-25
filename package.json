@@ -334,7 +334,8 @@
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
-    "check-format": "npm run prettier -- --check"
+    "check-format": "npm run prettier -- --check",
+    "preview": "ts-node ./build/preview.ts"
   },
   "dependencies": {
     "short-unique-id": "^3.2.3",
