@@ -47,7 +47,7 @@ To run the `unit tests` from the command-line run:
 > `npm test:unit`
 ```
 
-To run the `integration tests` from the command-line without any configuration, close any open VSCode windows and run `npm test`. By default, `npm test` will test against VS Code Stable. If you want to test against a different VS Code version, or if you want to have VS Code remain open, use an environment variable to indicate which version of VS Code to test against:
+To run the `integration tests` from the command-line without any configuration, run `npm test`. By default, `npm test` will test against VS Code Stable. If you want to test against a different VS Code version, or if you want to have VS Code remain open, use an environment variable to indicate which version of VS Code to test against:
 
 ```bash
 # VS Code Stable is open, use Insiders:
