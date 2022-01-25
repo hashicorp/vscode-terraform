@@ -11,53 +11,52 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-latest
+          - vsce_target: win32-x64
+            ls_target: windows_amd64
             platform: win32
             arch: x64
             npm_config_arch: x64
-            target: win32-x64
-          - os: windows-latest
+          - vsce_target: win32-ia32
+            ls_target: windows_386
             platform: win32
             arch: ia32
             npm_config_arch: ia32
-            target: win32-ia32
-          # - os: windows-latest
-          #   platform: win32
-          #   arch: arm64
-          #   npm_config_arch: arm
-          #   target: win32-arm64
-          - os: ubuntu-latest
+          - vsce_target: win32-arm64
+            ls_target: windows_arm64
+            platform: win32
+            arch: arm64
+            npm_config_arch: arm
+          - vsce_target: linux-x64
+            ls_target: linux_amd64
             platform: linux
             arch: x64
             npm_config_arch: x64
-            target: linux-x64
-          - os: ubuntu-latest
+          - vsce_target: linux-arm64
+            ls_target: linux_arm64
             platform: linux
             arch: arm64
             npm_config_arch: arm64
-            target: linux-arm64
-          - os: ubuntu-latest
+          - vsce_target: linux-armhf
+            ls_target: linux_arm
             platform: linux
             arch: armhf
             npm_config_arch: arm
-            target: linux-armhf
-          - os: macos-latest
+          - vsce_target: darwin-x64
+            ls_target: darwin_amd64
             platform: darwin
             arch: x64
             npm_config_arch: x64
-            target: darwin-x64
-          - os: macos-latest
+          - vsce_target: darwin-arm64
+            ls_target: darwin_arm64
             platform: darwin
             arch: arm64
             npm_config_arch: arm64
-            target: darwin-arm64
-    runs-on: ${{ matrix.os }}
+    runs-on: "ubuntu-latest"
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
       - name: Read extension version
         id: ext-version
-        shell: bash
         run: |
           content=`cat ./package.json | jq -r .version`
           echo "::set-output name=content::$content"
@@ -76,13 +75,13 @@ jobs:
         env:
           npm_config_arch: ${{ matrix.npm_config_arch }}
       - name: Package VSIX
-        run: npm run package -- --target=${{ matrix.target }}
+        run: npm run package -- --target=${{ matrix.vsce_target }}
         env:
-          target: ${{ matrix.target }}
+          ls_target: ${{ matrix.ls_target }}
       - name: Upload vsix as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.target }}
+          name: ${{ matrix.vsce_target }}
           path: "*.vsix"
 
   publish:

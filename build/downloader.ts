@@ -73,7 +73,7 @@ async function run(platform: string, architecture: string) {
 
   const build = release.getBuild(os, arch);
   if (!build) {
-    throw new Error(`Install error: no matching terraform-ls binary for ${os}/${arch}`);
+    throw new Error(`Install error: no matching terraform-ls binary for  ${os}/${arch}`);
   }
 
   console.log(build);
@@ -91,8 +91,8 @@ async function run(platform: string, architecture: string) {
 let os = process.platform.toString();
 let arch = process.arch;
 
-// ls_target=linux-x64 npm run package -- --target=linux-x64
-const lsTarget = process.env.target;
+// ls_target=linux_amd64 npm run package -- --target=linux-x64
+const lsTarget = process.env.ls_target;
 if (lsTarget !== undefined) {
   const tgt = lsTarget.split('-');
   os = tgt[0];
