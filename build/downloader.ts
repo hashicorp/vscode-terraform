@@ -98,7 +98,7 @@ let arch = process.arch;
 // ls_target=linux_amd64 npm run package -- --target=linux-x64
 const lsTarget = process.env.ls_target;
 if (lsTarget !== undefined) {
-  const tgt = lsTarget.split('-');
+  const tgt = lsTarget.split('_');
   os = tgt[0];
   arch = tgt[1];
 }

@@ -71,9 +71,6 @@ jobs:
         run: npm ci
         env:
           npm_config_arch: ${{ matrix.npm_config_arch }}
-      - name: Set preview in package.json
-        id: set-preview
-        run: npm run preview
       - name: Package VSIX
         run: npm run package -- --target=${{ matrix.vsce_target }}
         env:
