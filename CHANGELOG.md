@@ -80,10 +80,6 @@ BUG FIXES:
 
 # 2.14.0 (2021-07-22)
 
-BUG FIXES:
-
- - fix: launch LS even if path contains escapable characters ([#694](https://github.com/hashicorp/vscode-terraform/pulls/694))
-
 FEATURES:
 
  - Register command to show references ([#686](https://github.com/hashicorp/vscode-terraform/pulls/686))
@@ -93,6 +89,10 @@ ENHANCEMENTS:
  - Install native LS build for Apple Silicon (darwin/arm64) ([#563](https://github.com/hashicorp/vscode-terraform/pulls/563))
  - Add semver based version pin for Language Server via `requiredVersion` config option ([#656](https://github.com/hashicorp/vscode-terraform/pulls/656))
  - Improve error handling ([#691](https://github.com/hashicorp/vscode-terraform/pulls/691))
+
+BUG FIXES:
+
+ - fix: launch LS even if path contains escapable characters ([#694](https://github.com/hashicorp/vscode-terraform/pulls/694))
 
 # 2.13.2 (2021-07-19)
 
