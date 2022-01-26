@@ -143,11 +143,13 @@ BUG FIXES:
 
 # 2.10.1 (2021-04-28)
 
-Security:
+BUG FIXES:
 
 * Update js-releases dependency to resolve security issue [HCSEC-2021-12](https://discuss.hashicorp.com/t/hcsec-2021-12-codecov-security-event-and-hashicorp-gpg-key-exposure/23512) ([#612](https://github.com/hashicorp/vscode-terraform/pulls/612))
 
 # 2.10.0 (2021-04-13)
+
+ENHANCEMENTS:
 
 * Update syntax highlighting for Terraform 0.15 ([#604](https://github.com/hashicorp/vscode-terraform/pulls/604))
 
@@ -159,6 +161,8 @@ BUG FIXES:
 
 # 2.9.0 (2021-03-24)
 
+ENHANCEMENTS:
+
 * Check for language server updates every 24 hours ([#595](https://github.com/hashicorp/vscode-terraform/pulls/595))
 
 BUG FIXES:
@@ -168,9 +172,13 @@ BUG FIXES:
 
 # 2.8.3 (2021-03-16)
 
+ENHANCEMENTS:
+
 * Update client telemetry ([#587](https://github.com/hashicorp/vscode-terraform/pulls/587))
 
 # 2.8.2 (2021-03-11)
+
+ENHANCEMENTS:
 
 * Change telemetry value for the language server version to make it easier to filter ([#582](https://github.com/hashicorp/vscode-terraform/pulls/582))
 
@@ -188,6 +196,8 @@ BUG FIXES:
 
 # 2.8.0 (2021-03-09)
 
+ENHANCEMENTS:
+
 * Add stopClient and execWorkspaceCommand telemetry events ([#577](https://github.com/hashicorp/vscode-terraform/pulls/577))
 
 BUG FIXES:
@@ -196,10 +206,9 @@ BUG FIXES:
 
 # 2.7.0 (2021-02-22)
 
+ENHANCEMENTS:
+
 * Add telemetry for error reporting ([#557](https://github.com/hashicorp/vscode-terraform/pulls/557))
-
-Language server integration:
-
 * Use version JSON output of LS during installation ([#560](https://github.com/hashicorp/vscode-terraform/pulls/560))
 
 # 2.6.0 (2021-02-09)
@@ -222,7 +231,7 @@ FEATURES:
 * Use amd64 binary to support Apple Silicon Macs ([#527](https://github.com/hashicorp/vscode-terraform/pulls/527))
 * Add command and statusbar interface for running terraform init ([#495](https://github.com/hashicorp/vscode-terraform/pulls/495))
 
-Language Server integration:
+ENHANCEMENTS:
 
 * Read LS version from stdout ([#512](https://github.com/hashicorp/vscode-terraform/pulls/512))
 * Prepare for semantic token based highlighting ([#523](https://github.com/hashicorp/vscode-terraform/pulls/523))
@@ -259,6 +268,8 @@ BUG FIXES:
 
 # 2.2.0 (2020-08-20)
 
+ENHANCEMENTS:
+
 * Perform PGP verification of zip/shasums ([#450](https://github.com/hashicorp/vscode-terraform/pulls/450))
 * Upgrade LS client library to major version 6 ([#454](https://github.com/hashicorp/vscode-terraform/pulls/454))
 * Add multi-folder workspace support ([#448](https://github.com/hashicorp/vscode-terraform/pulls/448))
@@ -274,9 +285,13 @@ BUG FIXES:
 
 # 2.1.1 (2020-07-15)
 
+BUG FIXES:
+
 * Fix race in shasum verification ([#438](https://github.com/hashicorp/vscode-terraform/pulls/438))
 
 # 2.1.0 (2020-07-14)
+
+ENHANCEMENTS:
 
 * Verify shasum of language server binary on install ([#414](https://github.com/hashicorp/vscode-terraform/pulls/414))
 * Add link to language server changelog on completed install ([#424](https://github.com/hashicorp/vscode-terraform/pulls/424))
@@ -290,6 +305,8 @@ BUG FIXES:
 * Hide language server output window to prevent stealing focus ([#408](https://github.com/hashicorp/vscode-terraform/pulls/408))
 
 # 2.0.1 (2020-06-10)
+
+BUG FIXES:
 
 Fix for Marketplace listing issue
 
