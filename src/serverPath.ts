@@ -13,11 +13,7 @@ export class ServerPath {
   }
 
   public installPath(): string {
-    return path.join(this.context.globalStorageUri.fsPath, INSTALL_FOLDER_NAME);
-  }
-
-  public stgInstallPath(): string {
-    return path.join(this.context.globalStorageUri.fsPath, 'stg');
+    return path.join(this.context.extensionPath, INSTALL_FOLDER_NAME);
   }
 
   // legacyBinPath represents old location where LS was installed.
@@ -37,14 +33,6 @@ export class ServerPath {
     }
 
     return path.resolve(this.installPath(), this.binName());
-  }
-
-  public stgBinPath(): string {
-    if (this.customBinPath) {
-      return this.customBinPath;
-    }
-
-    return path.resolve(this.stgInstallPath(), this.binName());
   }
 
   public binName(): string {
