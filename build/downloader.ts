@@ -68,7 +68,7 @@ async function run(platform: string, architecture: string) {
   // userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscodeVersion}`;
   const ciBuild = process.env.CI;
   const runnerLocation = ciBuild ? `CLI-Downloader GitHub-Actions` : `CLI-Downloader`;
-  const userAgent = `Terraform-VSCode/${extInfo.extensionVersion} ${runnerLocation}/(${platform}; ${architecture})`;
+  const userAgent = `Terraform-VSCode/${extInfo.extensionVersion} ${runnerLocation} (${platform}; ${architecture})`;
 
   const release = await releases.getRelease('terraform-ls', extInfo.languageServerVersion, userAgent);
 
