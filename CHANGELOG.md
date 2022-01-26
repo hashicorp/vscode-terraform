@@ -130,14 +130,14 @@ INTERNAL:
 
 # 2.11.0 (2021-05-18)
 
-Bugs:
+BUG FIXES:
 
 * Reorder functions to prioritize abspath highlight ([#630](https://github.com/hashicorp/vscode-terraform/pulls/630))
 * Only trigger language server auto update once ([#623](https://github.com/hashicorp/vscode-terraform/pulls/623))
 
 # 2.10.2 (2021-05-03)
 
-Bugs:
+BUG FIXES:
 
 * Correct delay for language server version check ([#620](https://github.com/hashicorp/vscode-terraform/pulls/620))
 
@@ -153,7 +153,7 @@ Security:
 
 # 2.9.1 (2021-03-24)
 
-Bugs:
+BUG FIXES:
 
 * Fix contents of vsix package
 
@@ -161,7 +161,7 @@ Bugs:
 
 * Check for language server updates every 24 hours ([#595](https://github.com/hashicorp/vscode-terraform/pulls/595))
 
-Bugs:
+BUG FIXES:
 
 * Normalize language server installer file paths ([#589](https://github.com/hashicorp/vscode-terraform/pulls/589))
 * Disable statusbar feature if a custom language server is in use ([#593](https://github.com/hashicorp/vscode-terraform/pulls/593))
@@ -174,14 +174,14 @@ Bugs:
 
 * Change telemetry value for the language server version to make it easier to filter ([#582](https://github.com/hashicorp/vscode-terraform/pulls/582))
 
-Bugs:
+BUG FIXES:
 
 * Match correct language server binary name per platform – fixes language server upgrade problems on Windows ([#583](https://github.com/hashicorp/vscode-terraform/pulls/583))
 * Rescue version check errors on language server install ([#584](https://github.com/hashicorp/vscode-terraform/pulls/584))
 
 # 2.8.1 (2021-03-10)
 
-Bugs:
+BUG FIXES:
 
 * Improve error message for failed language server install ([#580](https://github.com/hashicorp/vscode-terraform/pulls/580))
 * Add telemetry for tracking language server installed and upgrade versions ([#579](https://github.com/hashicorp/vscode-terraform/pulls/579))
@@ -190,7 +190,7 @@ Bugs:
 
 * Add stopClient and execWorkspaceCommand telemetry events ([#577](https://github.com/hashicorp/vscode-terraform/pulls/577))
 
-Bugs:
+BUG FIXES:
 
 * Cancel language server install when upgrade message is closed ([#570](https://github.com/hashicorp/vscode-terraform/pulls/570))
 
@@ -204,20 +204,20 @@ Language server integration:
 
 # 2.6.0 (2021-02-09)
 
-Features:
+FEATURES:
 
 * Execute terraform plan and apply using the VSCode terminal ([#551](https://github.com/hashicorp/vscode-terraform/pulls/551))
 
 # 2.5.0 (2021-01-14)
 
-Features:
+FEATURES:
 
 * Add setting for experimental features to enable validateOnSave ([#536](https://github.com/hashicorp/vscode-terraform/pulls/536))
 * Add terraform validate command ([#540](https://github.com/hashicorp/vscode-terraform/pulls/540))
 
 # 2.4.0 (2021-01-07)
 
-Features:
+FEATURES:
 
 * Use amd64 binary to support Apple Silicon Macs ([#527](https://github.com/hashicorp/vscode-terraform/pulls/527))
 * Add command and statusbar interface for running terraform init ([#495](https://github.com/hashicorp/vscode-terraform/pulls/495))
@@ -229,11 +229,11 @@ Language Server integration:
 
 # 2.3.0 (2020-11-12)
 
-Notes:
+NOTES:
 
 * Set up integration tests in GitHub actions ([#483](https://github.com/hashicorp/vscode-terraform/pulls/483))
 
-Bugs:
+BUG FIXES:
 
 * Fix 32bit downloads of language server ([#483](https://github.com/hashicorp/vscode-terraform/pulls/483))
 * Prune nested workspace folders to prevent running multiple language servers for the same directory ([#499](https://github.com/hashicorp/vscode-terraform/pulls/499))
@@ -241,19 +241,19 @@ Bugs:
 
 # 2.2.3 (2020-09-03)
 
-Bugs:
+BUG FIXES:
 
 * Update object syntax highlighting to fix unmatched cases ([#485](https://github.com/hashicorp/vscode-terraform/pulls/485))
 
 # 2.2.2 (2020-08-25)
 
-Bugs:
+BUG FIXES:
 
 * Fix additional object key matching issues ([#478](https://github.com/hashicorp/vscode-terraform/pulls/478))
 
 # 2.2.1 (2020-08-24)
 
-Bugs:
+BUG FIXES:
 
 * Fix object key syntax highlighting ([#475](https://github.com/hashicorp/vscode-terraform/pulls/475))
 
@@ -265,7 +265,7 @@ Bugs:
 * Ensure downloaded zips are deleted ([#464](https://github.com/hashicorp/vscode-terraform/pulls/464))
 * Add configuration to exclude root modules ([#446](https://github.com/hashicorp/vscode-terraform/pulls/446))
 
-Bugs:
+BUG FIXES:
 
 * Refactor and fix install bugs ([#444](https://github.com/hashicorp/vscode-terraform/pulls/444))
 * Fix block syntax labels ([#458](https://github.com/hashicorp/vscode-terraform/pulls/458))
@@ -285,7 +285,7 @@ Bugs:
 
 # 2.0.2 (2020-06-23)
 
-Bugs:
+BUG FIXES:
 
 * Hide language server output window to prevent stealing focus ([#408](https://github.com/hashicorp/vscode-terraform/pulls/408))
 
