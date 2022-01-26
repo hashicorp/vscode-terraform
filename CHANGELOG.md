@@ -289,11 +289,11 @@ Bugs:
 
 * Hide language server output window to prevent stealing focus (#408)
 
-# 2.0.1
+# 2.0.1 (2020-06-10)
 
 Fix for Marketplace listing issue
 
-# 2.0.0
+# 2.0.0 (2020-06-10)
 
 The Terraform VSCode extension has [a new home at HashiCorp](https://www.hashicorp.com/blog/supporting-the-hashicorp-terraform-extension-for-visual-studio-code/)! We're integrating with a [new language server](https://github.com/hashicorp/terraform-ls) designed to create a stable integration with Terraform through public APIs. When you upgrade to v2.0.0, the new language server will be installed by default, and checking for updates automatically.
 
