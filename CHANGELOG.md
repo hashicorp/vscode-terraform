@@ -1,5 +1,13 @@
 # [Unreleased]
 
+ENHANCEMENTS:
+
+ - Publish Platform Specific Extension [#905](https://github.com/hashicorp/vscode-terraform/pull/905)
+
+INTERNAL:
+
+ - deps: Update vsce, mocha, and node-fetch [#908](https://github.com/hashicorp/vscode-terraform/pull/908)
+
 # [2.19.0] (2022-01-20)
 
 NOTES:
