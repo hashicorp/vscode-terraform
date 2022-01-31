@@ -335,6 +335,9 @@
     "pretest": "npm run download:ls && npm run test-compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "test:unit": "jest",
+    "test:syntax": "npm run test:grammar && npm run test:snap",
+    "test:grammar": "npx vscode-tmgrammar-test -s scope.terraform -g syntaxes/terraform.tmGrammar.json -t tests/unit/**/*.tf",
+    "test:snap": "npx vscode-tmgrammar-snap -s scope.terraform -g syntaxes/terraform.tmGrammar.json -t tests/snapshot/**/*.tf",
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
@@ -372,6 +375,7 @@
     "ts-jest": "^27.1.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4",
-    "vsce": "^2.6.3"
+    "vsce": "^2.6.3",
+    "vscode-tmgrammar-test": "^0.0.11"
   }
 }

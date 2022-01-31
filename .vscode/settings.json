@@ -40,5 +40,15 @@
       "source.organizeImports": false
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "json.schemas": [
+    {
+      "fileMatch": ["*.tmGrammar.json"],
+      "url": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json"
+    }
+  ],
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json": "*.tmGrammar.yml"
   }
 }
