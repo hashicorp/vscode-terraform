@@ -1,0 +1,124 @@
+>locals {
+#^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
+#      ^ scope.terraform meta.block.terraform
+#       ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  service_name = "forum"
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#              ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#               ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#                 ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                  ^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                       ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>  owner        = "Community Team"
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#       ^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform
+#               ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#                 ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                  ^^^^^^^^^^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                                ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
+>locals {
+#^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
+#      ^ scope.terraform meta.block.terraform
+#       ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  # Ids for multiple sets of EC2 instances, merged together
+#^^ scope.terraform meta.block.terraform
+#  ^ scope.terraform meta.block.terraform comment.line.terraform punctuation.definition.comment.terraform
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform comment.line.terraform
+>  instance_ids = concat(aws_instance.blue.*.id, aws_instance.green.*.id)
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#              ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#               ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#                 ^^^^^^ scope.terraform meta.block.terraform meta.function-call.terraform support.function.builtin.terraform
+#                       ^ scope.terraform meta.block.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                        ^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.function-call.terraform
+#                                    ^ scope.terraform meta.block.terraform meta.function-call.terraform keyword.operator.accessor.terraform
+#                                     ^^^^ scope.terraform meta.block.terraform meta.function-call.terraform variable.other.member.terraform
+#                                         ^ scope.terraform meta.block.terraform meta.function-call.terraform keyword.operator.accessor.terraform
+#                                          ^^ scope.terraform meta.block.terraform meta.function-call.terraform
+#                                            ^^ scope.terraform meta.block.terraform meta.function-call.terraform variable.other.member.terraform
+#                                              ^ scope.terraform meta.block.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                               ^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.function-call.terraform
+#                                                            ^ scope.terraform meta.block.terraform meta.function-call.terraform keyword.operator.accessor.terraform
+#                                                             ^^^^^ scope.terraform meta.block.terraform meta.function-call.terraform variable.other.member.terraform
+#                                                                  ^ scope.terraform meta.block.terraform meta.function-call.terraform keyword.operator.accessor.terraform
+#                                                                   ^^ scope.terraform meta.block.terraform meta.function-call.terraform
+#                                                                     ^^ scope.terraform meta.block.terraform meta.function-call.terraform variable.other.member.terraform
+#                                                                       ^ scope.terraform meta.block.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
+>locals {
+#^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
+#      ^ scope.terraform meta.block.terraform
+#       ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  # Common tags to be assigned to all resources
+#^^ scope.terraform meta.block.terraform
+#  ^ scope.terraform meta.block.terraform comment.line.terraform punctuation.definition.comment.terraform
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform comment.line.terraform
+>  common_tags = {
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#             ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#              ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#               ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#                ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>    Service = local.service_name
+#^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#    ^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#           ^ scope.terraform meta.block.terraform meta.braces.terraform
+#            ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#             ^ scope.terraform meta.block.terraform meta.braces.terraform
+#              ^^^^^ scope.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
+#                   ^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+>    Owner   = local.owner
+#^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#    ^^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#         ^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#            ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#             ^ scope.terraform meta.block.terraform meta.braces.terraform
+#              ^^^^^ scope.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
+#                   ^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+>  }
+#^^ scope.terraform meta.block.terraform meta.braces.terraform
+#  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
+>resource "aws_instance" "example" {
+#^^^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
+#        ^ scope.terraform meta.block.terraform
+#         ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#          ^^^^^^^^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                      ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                       ^ scope.terraform meta.block.terraform
+#                        ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                         ^^^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                                ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                 ^ scope.terraform meta.block.terraform
+#                                  ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  # ...
+#^^ scope.terraform meta.block.terraform
+#  ^ scope.terraform meta.block.terraform comment.line.terraform punctuation.definition.comment.terraform
+#   ^^^^ scope.terraform meta.block.terraform comment.line.terraform
+>
+>  tags = local.common_tags
+#^^ scope.terraform meta.block.terraform
+#  ^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#      ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#       ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#        ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#         ^^^^^ scope.terraform meta.block.terraform support.constant.terraform
+#              ^ scope.terraform meta.block.terraform keyword.operator.accessor.terraform
+#               ^^^^^^^^^^^ scope.terraform meta.block.terraform variable.other.member.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>

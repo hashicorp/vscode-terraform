@@ -1,0 +1,199 @@
+>"hello"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^^^^ scope.terraform string.quoted.double.terraform
+#      ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>"\n\r\t\"\\"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^ scope.terraform string.quoted.double.terraform constant.character.escape.terraform
+#   ^^ scope.terraform string.quoted.double.terraform constant.character.escape.terraform
+#     ^^ scope.terraform string.quoted.double.terraform constant.character.escape.terraform
+#       ^^ scope.terraform string.quoted.double.terraform constant.character.escape.terraform
+#         ^^ scope.terraform string.quoted.double.terraform constant.character.escape.terraform
+#           ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>"$${}"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^^^ scope.terraform string.quoted.double.terraform
+#     ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>"%%{}"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^^^ scope.terraform string.quoted.double.terraform
+#     ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>thing = <<EOT
+#^^^^^ scope.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#     ^ scope.terraform variable.declaration.terraform
+#      ^ scope.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#       ^ scope.terraform variable.declaration.terraform
+#        ^^ scope.terraform string.unquoted.heredoc.terraform keyword.operator.heredoc.terraform
+#          ^^^ scope.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>hello
+#^^^^^^ scope.terraform string.unquoted.heredoc.terraform
+>world
+#^^^^^^ scope.terraform string.unquoted.heredoc.terraform
+>EOT
+#^^^^ scope.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>
+>block {
+#^^^^^ scope.terraform meta.block.terraform entity.name.label.terraform
+#     ^ scope.terraform meta.block.terraform
+#      ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  value = <<EOT
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#       ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#        ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#         ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#          ^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform keyword.operator.heredoc.terraform
+#            ^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>hello
+#^^^^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform
+>world
+#^^^^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform
+>EOT
+#^^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
+>block {
+#^^^^^ scope.terraform meta.block.terraform entity.name.label.terraform
+#     ^ scope.terraform meta.block.terraform
+#      ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  value = <<-EOT
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#       ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#        ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#         ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#          ^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform keyword.operator.heredoc.terraform
+#             ^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>  hello
+#^^^^^^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform
+>    world
+#^^^^^^^^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform
+>  EOT
+#^^^^^^ scope.terraform meta.block.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
+>"Hello, ${var.name}!"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^^^^^ scope.terraform string.quoted.double.terraform
+#       ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#        ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#          ^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform support.constant.terraform
+#             ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.operator.accessor.terraform
+#              ^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform variable.other.member.terraform
+#                  ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                   ^ scope.terraform string.quoted.double.terraform
+#                    ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>"Hello, %{ if var.name != "" }${var.name}%{ else }unnamed%{ endif }!"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^^^^^ scope.terraform string.quoted.double.terraform
+#       ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#        ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#          ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#           ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.control.terraform
+#             ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#              ^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform support.constant.terraform
+#                 ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.operator.accessor.terraform
+#                  ^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform variable.other.member.terraform
+#                      ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                       ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.operator.terraform
+#                         ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                          ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                           ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                            ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                             ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                              ^^^^^^^^^^ scope.terraform string.quoted.double.terraform
+#                                        ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                         ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#                                           ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                            ^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.control.terraform
+#                                                ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                                 ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                                                  ^^^^^^ scope.terraform string.quoted.double.terraform
+#                                                        ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                                         ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#                                                           ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                                            ^^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.control.terraform
+#                                                                 ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                                                  ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                                                                   ^ scope.terraform string.quoted.double.terraform
+#                                                                    ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+><<EOT
+#^^ scope.terraform string.unquoted.heredoc.terraform keyword.operator.heredoc.terraform
+#  ^^^ scope.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>%{ for ip in aws_instance.example.*.private_ip }
+#^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#  ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#   ^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.control.terraform
+#      ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#       ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#         ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#          ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.control.terraform
+#            ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#             ^^^^^^^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#                         ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.operator.accessor.terraform
+#                          ^^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.member.terraform
+#                                 ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.operator.accessor.terraform
+#                                  ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#                                    ^^^^^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.member.terraform
+#                                              ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#                                               ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+>server ${ip}
+#^^^^^^ scope.terraform string.unquoted.heredoc.terraform
+#      ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#       ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#         ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#           ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+>%{ endfor }
+#^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#  ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#   ^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.control.terraform
+#         ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#          ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+>EOT
+#^^^^ scope.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>
+><<EOT
+#^^ scope.terraform string.unquoted.heredoc.terraform keyword.operator.heredoc.terraform
+#  ^^^ scope.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>%{ for ip in aws_instance.example.*.private_ip ~}
+#^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#  ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#   ^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.control.terraform
+#      ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#       ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#         ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#          ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.control.terraform
+#            ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#             ^^^^^^^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#                         ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.operator.accessor.terraform
+#                          ^^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.member.terraform
+#                                 ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.operator.accessor.terraform
+#                                  ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#                                    ^^^^^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.member.terraform
+#                                              ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.operator.template.right.trim.terraform
+#                                                ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+>server ${ip}
+#^^^^^^ scope.terraform string.unquoted.heredoc.terraform
+#      ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#       ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#         ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#           ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+>%{ endfor ~}
+#^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#  ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform
+#   ^^^^^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.control.terraform
+#         ^^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.operator.template.right.trim.terraform
+#           ^ scope.terraform string.unquoted.heredoc.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+>EOT
+#^^^^ scope.terraform string.unquoted.heredoc.terraform keyword.control.heredoc.terraform
+>
+>
+>

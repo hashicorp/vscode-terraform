@@ -1,0 +1,62 @@
+>data "aws_ami" "example" {
+#^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
+#    ^ scope.terraform meta.block.terraform
+#     ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#      ^^^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#             ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#              ^ scope.terraform meta.block.terraform
+#               ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                ^^^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                       ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                        ^ scope.terraform meta.block.terraform
+#                         ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  most_recent = true
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#             ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#              ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#               ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#                ^^^^ scope.terraform meta.block.terraform constant.language.terraform
+>
+>  owners = ["self"]
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#        ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#         ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#          ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#           ^ scope.terraform meta.block.terraform punctuation.section.brackets.begin.terraform
+#            ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#             ^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                 ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                  ^ scope.terraform meta.block.terraform punctuation.section.brackets.end.terraform
+>  tags = {
+#^^ scope.terraform meta.block.terraform
+#  ^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#      ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#       ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#        ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#         ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>    Name   = "app-server"
+#^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#    ^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#        ^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#           ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#            ^ scope.terraform meta.block.terraform meta.braces.terraform
+#             ^ scope.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#              ^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform
+#                        ^ scope.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>    Tested = "true"
+#^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#    ^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#          ^ scope.terraform meta.block.terraform meta.braces.terraform
+#           ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#            ^ scope.terraform meta.block.terraform meta.braces.terraform
+#             ^ scope.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#              ^^^^ scope.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform
+#                  ^ scope.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>  }
+#^^ scope.terraform meta.block.terraform meta.braces.terraform
+#  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
