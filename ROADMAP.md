@@ -9,9 +9,9 @@ In 2021 we expanded and welcomed [@dbanck](https://github.com/dbanck) and [@jpog
 
 During the last year we shipped (April 2021 - Jan 2022):
 
-10 major releases
-16 new features/enhancements
-13 bugs fixed
+- 10 major releases
+- 16 new features/enhancements
+- 13 bugs fixed
 
 ### Release Highlights
 
@@ -25,7 +25,7 @@ During the last year we shipped (April 2021 - Jan 2022):
 - Reference Count code lens
 - Significantly improved client startup reliability including a shift to publishing platform specific extensions.
 
-## Upcoming Quarter
+## Roadmap Items
 
 This upcoming quarter (February - April 2022) we will be prioritizing the following areas of work:
 
