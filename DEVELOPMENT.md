@@ -106,7 +106,7 @@ The following workflow is recommended to work on Terraform TextMate grammar:
 
 ## Writing Grammar Unit Tests
 
-Unit tests are Terraform files with `vscode-tmgrammar-test` token lines specifying which TextMate grammer should be resolved.
+Unit tests are Terraform files with `vscode-tmgrammar-test` token lines specifying which TextMate grammar should be resolved.
 
 For example:
 
@@ -128,7 +128,7 @@ Snapshot tests comprise of two files: example files and their companion `snap` f
 
 Snapshot test example files are Terraform files without any `vscode-tmgrammar-test` token lines. Each example file is exactly how you would see it used in production. This ensures scope, inheritance, and resolution of tokens happen exactly as they would on a user's machine.
 
-The companion `snap` file is named the same as the example file with the `.snap` extension, and is the tmGrammar represenation of all resolved tokens. This file is commited alongside the example file. If anything changes with regards to how the tokens are resolved, the snapshot test will fail.
+The companion `snap` file is named the same as the example file with the `.snap` extension, and is the tmGrammar representation of all resolved tokens. This file is committed alongside the example file. If anything changes with regards to how the tokens are resolved, the snapshot test will fail.
 
 > Note: If modifying an existing snapshot test, run `npm run test:snap -- -u` to update the snapshot file. This will update the snapshot file with the new modified grammar. Be sure to do this after you've tested using `npm run test:grammar` and are sure that the modified grammar is correct, otherwise you may get false positives.
 
