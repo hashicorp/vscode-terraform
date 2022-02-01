@@ -1,39 +1,51 @@
-# Q1 2021 Roadmap
+# Q1 2022 Roadmap
 
 Each quarter, the team will highlight areas of focus for our work and upcoming research.
-Each release will include necessary tasks that lead to the completion of the stated goals as well as community pull requests, enhancements, and features that are not highlighted in the roadmap. This upcoming calendar quarter (January - March 2021) we will be prioritizing the following areas of work:
+Each release will include necessary tasks that lead to the completion of the stated goals as well as community pull requests, enhancements, and features that are not highlighted in the roadmap. 
 
-## Currently In Progress
+## Reflecting on 2021
 
-### Workflow Improvements
+In 2021 we expanded and welcomed [@dbanck](https://github.com/dbanck) and [@jpogran](https://github.com/jpogran) to the team, joining [@radeksimko](https://github.com/radeksimko). These new additions bring a wealth of experience in maintaining popular VS Code extensions and bolstering the team's front-end expertise.
 
-- Expanding integration of terraform commands :white_check_mark:
-- Expanding validation support :white_check_mark:
-- Detecting initialization outside of VS Code :white_check_mark:
+During the last year we shipped (April 2021 - Jan 2022):
 
-### Terraform Workspace Management 
+10 major releases
+16 new features/enhancements
+13 bugs fixed
 
-- Add Terraform workspace command execution for accessing module details :white_check_mark:
-- Root modules/ init :white_check_mark:
-- Include the ability to show the current Terraform workspace, list available workspaces, and switch between them
+### Release Highlights
 
+- Improved highlighting for Terraform 0.15 to 1.0 via semantic highlighting
+- Support for Terraform variable files (tfvars)
+- Links to provider documentation
+- Basic go-to-attribute/block and go-to-reference
+- Workspace-wide symbol navigation
+- Completion of required attributes for blocks
+- Module calls and providers views added to Explorer Pane
+- Reference Count code lens
+- Significantly improved client startup reliability including a shift to publishing platform specific extensions.
 
-### Expanded Completion and Hover
+## Upcoming Quarter
 
-The [Terraform language server](https://github.com/hashicorp/terraform-ls), used with the VSCode extension supports basic schema-driven completion. We plan to introduce additional completion and hover capabilities:
+This upcoming quarter (February - April 2022) we will be prioritizing the following areas of work:
 
-- Provide nested navigation symbols (i.e. nested blocks and block attributes) :white_check_mark:
-- Modules
+### Enhanced Module Support
 
+Issue: [#715](https://github.com/hashicorp/vscode-terraform/issues/715)
 
-## Researching 
+Terraform Modules are widely used to package and allow reuse of Terraform Configurations. Unfortunately, at present editing configurations with modules does not provide the same experience in VSCode as configurations without it, as some features (such as go-to-definition, go-to-references, completion of inputs/outputs etc.) do not work reliably in cases involving modules. This quarter we intend to improve support for modules, so that users can take advantage of the same comfort and features while using modules . 
 
-- Expression completion
-- Code Lens support for `required_providers` block and resources
+### Syntax Highlighting
 
-### Terraform Cloud Integration
+Issue [#638](https://github.com/hashicorp/vscode-terraform/issues/638) 
 
-`terraform login` integration, and information/status about your cloud workspace for the current root modules
+Improve syntax highlighting in all HCL languages by extracting the existing Terraform textmate grammar into product-agnostic HCL that can be applied into product specific and unit tested textmate grammar files. These grammar files will be available in a central repository for use in editors that support textmate grammars like VS Code and Sublime Text, and eventually even Github in the browser.
+
+### Linter Integration & Code Actions
+
+Issue [#635](https://github.com/hashicorp/vscode-terraform/issues/635)
+
+Integrating linting tools (such as tflint) into the extension is one of the most upvoted community issues. The integration allows users to see validation results inline in their code editor, reducing the need for tool and context switches. In this quarter we will align on a standardized design and interface and hope to ship partial support.
 
 ## Disclosures
 
