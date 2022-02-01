@@ -1,3 +1,8 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "connor4312.esbuild-problem-matchers"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "connor4312.esbuild-problem-matchers",
+    "redhat.vscode-yaml"
+  ]
 }
