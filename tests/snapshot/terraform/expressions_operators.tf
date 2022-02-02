@@ -11,7 +11,7 @@
 thing1 == thing2
 thing1 != thing2
 
-# comaprison
+# comparison
 
 thing1 > thing2
 thing1 >= thing2
