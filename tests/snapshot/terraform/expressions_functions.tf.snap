@@ -1,0 +1,348 @@
+># numeric
+#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^^ scope.terraform comment.line.terraform
+>
+>abs(23)
+#^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#   ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#    ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>ceil(5)
+#^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#    ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#     ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>floor(5)
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#       ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>log(50, 10)
+#^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#   ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#    ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#       ^ scope.terraform meta.function-call.terraform
+#        ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>max(12, 54, 3)
+#^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#   ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#    ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#       ^ scope.terraform meta.function-call.terraform
+#        ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#           ^ scope.terraform meta.function-call.terraform
+#            ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#             ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>min(12, 54, 3)
+#^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#   ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#    ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#       ^ scope.terraform meta.function-call.terraform
+#        ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#           ^ scope.terraform meta.function-call.terraform
+#            ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#             ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>parseint("100", 10)
+#^^^^^^^^ scope.terraform meta.function-call.terraform variable.function.terraform
+#        ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#         ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#          ^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#             ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#              ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#               ^ scope.terraform meta.function-call.terraform
+#                ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#                  ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>pow(3, 2)
+#^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#   ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#    ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#      ^ scope.terraform meta.function-call.terraform
+#       ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#        ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>signum(-13)
+#^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#       ^ scope.terraform meta.function-call.terraform keyword.operator.arithmetic.terraform
+#        ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>
+># string
+#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^ scope.terraform comment.line.terraform
+>
+>chomp("hello\n")
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#       ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#            ^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#              ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#               ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>format("Hello, %s!", "Ander")
+#^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#        ^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                  ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                   ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                    ^ scope.terraform meta.function-call.terraform
+#                     ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                      ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                            ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>formatlist("Hello, %s!", ["Valentina", "Ander", "Olivia", "Sam"])
+#^^^^^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#            ^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                       ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                        ^ scope.terraform meta.function-call.terraform
+#                         ^ scope.terraform meta.function-call.terraform punctuation.section.brackets.begin.terraform
+#                          ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                           ^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                    ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                     ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                      ^ scope.terraform meta.function-call.terraform
+#                                       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                        ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                             ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                              ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                               ^ scope.terraform meta.function-call.terraform
+#                                                ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                                 ^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                                       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                        ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                                         ^ scope.terraform meta.function-call.terraform
+#                                                          ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                                           ^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                                              ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                               ^ scope.terraform meta.function-call.terraform punctuation.section.brackets.end.terraform
+#                                                                ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>formatlist("%s, %s!", "Salutations", ["Valentina", "Ander", "Olivia", "Sam"])
+#^^^^^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#            ^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                   ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                    ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                     ^ scope.terraform meta.function-call.terraform
+#                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                       ^^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                  ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                   ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                    ^ scope.terraform meta.function-call.terraform
+#                                     ^ scope.terraform meta.function-call.terraform punctuation.section.brackets.begin.terraform
+#                                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                       ^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                                ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                 ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                                  ^ scope.terraform meta.function-call.terraform
+#                                                   ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                                    ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                                         ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                          ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                                           ^ scope.terraform meta.function-call.terraform
+#                                                            ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                                             ^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                                                   ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                                    ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                                                     ^ scope.terraform meta.function-call.terraform
+#                                                                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                                                       ^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                                                          ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                                           ^ scope.terraform meta.function-call.terraform punctuation.section.brackets.end.terraform
+#                                                                            ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>"  items: ${indent(2, "[\n  foo,\n  bar,\n]\n")}"
+#^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+# ^^^^^^^^ scope.terraform string.quoted.double.terraform
+#         ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
+#          ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#            ^^^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform support.function.builtin.terraform
+#                  ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                   ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#                    ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform punctuation.separator.terraform
+#                     ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform
+#                      ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                       ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform
+#                        ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#                          ^^^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#                                  ^^^^^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                        ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#                                          ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                           ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#                                             ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                              ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                                               ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                                                ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>join(", ", ["foo", "bar", "baz"])
+#^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#    ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#     ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#      ^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#        ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#         ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#          ^ scope.terraform meta.function-call.terraform
+#           ^ scope.terraform meta.function-call.terraform punctuation.section.brackets.begin.terraform
+#            ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#             ^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                 ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                  ^ scope.terraform meta.function-call.terraform
+#                   ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                    ^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                        ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                         ^ scope.terraform meta.function-call.terraform
+#                          ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                           ^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                              ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                               ^ scope.terraform meta.function-call.terraform punctuation.section.brackets.end.terraform
+#                                ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>lower("HELLO")
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#       ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#            ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#             ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>regex("[a-z]+", "53453453.345345aaabbbccc23454")
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#       ^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#             ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#              ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#               ^ scope.terraform meta.function-call.terraform
+#                ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                              ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                               ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>regexall("[a-z]+", "1234abcd5678efgh9")
+#^^^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#        ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#         ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#          ^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                 ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                  ^ scope.terraform meta.function-call.terraform
+#                   ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                    ^^^^^^^^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                                     ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>replace("1 + 2 + 3", "+", "-")
+#^^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#       ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#        ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#         ^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                  ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                   ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                    ^ scope.terraform meta.function-call.terraform
+#                     ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                        ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                         ^ scope.terraform meta.function-call.terraform
+#                          ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                            ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                             ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>split(",", "foo,bar,baz")
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#        ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#         ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#          ^ scope.terraform meta.function-call.terraform
+#           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#            ^^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                        ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>strrev("hello")
+#^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#        ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#             ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#              ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>substr("hello world", 1, 4)
+#^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#       ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#        ^^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                   ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                    ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                     ^ scope.terraform meta.function-call.terraform
+#                      ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#                       ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                        ^ scope.terraform meta.function-call.terraform
+#                         ^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#                          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>title("hello world")
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#       ^^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                  ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                   ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>trim("?!hello?!", "!?")
+#^^^^ scope.terraform meta.function-call.terraform variable.function.terraform
+#    ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#     ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#      ^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#               ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                 ^ scope.terraform meta.function-call.terraform
+#                  ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                   ^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                     ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>trimprefix("helloworld", "hello")
+#^^^^^^^^^^ scope.terraform meta.function-call.terraform variable.function.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#            ^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                       ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                        ^ scope.terraform meta.function-call.terraform
+#                         ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                          ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                               ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>trimsuffix("helloworld", "world")
+#^^^^^^^^^^ scope.terraform meta.function-call.terraform variable.function.terraform
+#          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#           ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#            ^^^^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                       ^ scope.terraform meta.function-call.terraform punctuation.separator.terraform
+#                        ^ scope.terraform meta.function-call.terraform
+#                         ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                          ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                               ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>trimspace("  hello\n\n")
+#^^^^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#         ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#          ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#           ^^^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#                  ^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#                    ^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform constant.character.escape.terraform
+#                      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                       ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>upper("hello")
+#^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#     ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#      ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#       ^^^^^ scope.terraform meta.function-call.terraform string.quoted.double.terraform
+#            ^ scope.terraform meta.function-call.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#             ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+>

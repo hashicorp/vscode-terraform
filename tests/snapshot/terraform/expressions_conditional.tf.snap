@@ -1,0 +1,53 @@
+>var.a != "" ? var.a : "default-a"
+#^^^ scope.terraform support.constant.terraform
+#   ^ scope.terraform keyword.operator.accessor.terraform
+#    ^ scope.terraform variable.other.member.terraform
+#     ^ scope.terraform
+#      ^^ scope.terraform keyword.operator.terraform
+#        ^ scope.terraform
+#         ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#          ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#           ^ scope.terraform
+#            ^ scope.terraform keyword.operator.terraform
+#             ^ scope.terraform
+#              ^^^ scope.terraform support.constant.terraform
+#                 ^ scope.terraform keyword.operator.accessor.terraform
+#                  ^ scope.terraform variable.other.member.terraform
+#                   ^ scope.terraform
+#                    ^ scope.terraform
+#                     ^ scope.terraform
+#                      ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                       ^^^^^^^^^ scope.terraform string.quoted.double.terraform
+#                                ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>var.example ? tostring(12) : "hello"
+#^^^ scope.terraform support.constant.terraform
+#   ^ scope.terraform keyword.operator.accessor.terraform
+#    ^^^^^^^ scope.terraform variable.other.member.terraform
+#           ^ scope.terraform
+#            ^ scope.terraform keyword.operator.terraform
+#             ^ scope.terraform
+#              ^^^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
+#                      ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                       ^^ scope.terraform meta.function-call.terraform constant.numeric.integer.terraform
+#                         ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                          ^ scope.terraform
+#                           ^ scope.terraform
+#                            ^ scope.terraform
+#                             ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                              ^^^^^ scope.terraform string.quoted.double.terraform
+#                                   ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>var.example ? 12 : "hello"
+#^^^ scope.terraform support.constant.terraform
+#   ^ scope.terraform keyword.operator.accessor.terraform
+#    ^^^^^^^ scope.terraform variable.other.member.terraform
+#           ^ scope.terraform
+#            ^ scope.terraform keyword.operator.terraform
+#             ^ scope.terraform
+#              ^^ scope.terraform constant.numeric.integer.terraform
+#                ^ scope.terraform
+#                 ^ scope.terraform
+#                  ^ scope.terraform
+#                   ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                    ^^^^^ scope.terraform string.quoted.double.terraform
+#                         ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>

@@ -1,0 +1,178 @@
+>resource "thing" "name" {
+#^^^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
+#        ^ scope.terraform meta.block.terraform
+#         ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#          ^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#               ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                ^ scope.terraform meta.block.terraform
+#                 ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                  ^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                      ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                       ^ scope.terraform meta.block.terraform
+#                        ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  name = "tf-test-name"
+#^^ scope.terraform meta.block.terraform
+#  ^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#      ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#       ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#        ^ scope.terraform meta.block.terraform variable.declaration.terraform
+#         ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#          ^^^^^^^^^^^^ scope.terraform meta.block.terraform string.quoted.double.terraform
+#                      ^ scope.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>  dynamic "setting" {
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform entity.name.label.terraform
+#         ^ scope.terraform meta.block.terraform meta.block.terraform
+#          ^ scope.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#           ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform
+#                  ^ scope.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                   ^ scope.terraform meta.block.terraform meta.block.terraform
+#                    ^ scope.terraform meta.block.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>    for_each = var.settings
+#^^^^ scope.terraform meta.block.terraform meta.block.terraform
+#    ^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#             ^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#              ^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#               ^^^ scope.terraform meta.block.terraform meta.block.terraform support.constant.terraform
+#                  ^ scope.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                   ^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+>    content {
+#^^^^ scope.terraform meta.block.terraform meta.block.terraform
+#    ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform entity.name.label.terraform
+#           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>      namespace = setting.value["namespace"]
+#^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#      ^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#               ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#                ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                 ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#                  ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                         ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                          ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+#                               ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.brackets.begin.terraform
+#                                ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                 ^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform
+#                                          ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.brackets.end.terraform
+>      name = setting.value["name"]
+#^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#      ^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#          ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#             ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                    ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                     ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+#                          ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.brackets.begin.terraform
+#                           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                            ^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform
+#                                ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                 ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.brackets.end.terraform
+>      value = setting.value["value"]
+#^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#      ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#             ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#              ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                     ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                      ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+#                           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.brackets.begin.terraform
+#                            ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                             ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform
+#                                  ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                   ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.brackets.end.terraform
+>    }
+#^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#    ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.end.terraform
+>  }
+#^^ scope.terraform meta.block.terraform meta.block.terraform
+#  ^ scope.terraform meta.block.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
+>  dynamic "origin_group" {
+#^^ scope.terraform meta.block.terraform
+#  ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform entity.name.label.terraform
+#         ^ scope.terraform meta.block.terraform meta.block.terraform
+#          ^ scope.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#           ^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform
+#                       ^ scope.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                        ^ scope.terraform meta.block.terraform meta.block.terraform
+#                         ^ scope.terraform meta.block.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>    for_each = var.load_balancer_origin_groups
+#^^^^ scope.terraform meta.block.terraform meta.block.terraform
+#    ^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#             ^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#              ^ scope.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#               ^^^ scope.terraform meta.block.terraform meta.block.terraform support.constant.terraform
+#                  ^ scope.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+>    content {
+#^^^^ scope.terraform meta.block.terraform meta.block.terraform
+#    ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform entity.name.label.terraform
+#           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>      name = origin_group.key
+#^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#      ^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#          ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#            ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#             ^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                         ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                          ^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+>
+>      dynamic "origin" {
+#^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#      ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform entity.name.label.terraform
+#             ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#              ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#               ^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform
+#                     ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                      ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                       ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>        for_each = origin_group.value.origins
+#^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#        ^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#                ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#                 ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                  ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#                   ^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                               ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                                ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+#                                     ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                                      ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+>        content {
+#^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#        ^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform entity.name.label.terraform
+#               ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>          hostname = origin.value.hostname
+#^^^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#          ^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#                  ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#                   ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                    ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.declaration.terraform
+#                     ^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#                           ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                            ^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+#                                 ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                                  ^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform variable.other.member.terraform
+>        }
+#^^^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#        ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.end.terraform
+>      }
+#^^^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#      ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.end.terraform
+>    }
+#^^^^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform
+#    ^ scope.terraform meta.block.terraform meta.block.terraform meta.block.terraform punctuation.section.block.end.terraform
+>  }
+#^^ scope.terraform meta.block.terraform meta.block.terraform
+#  ^ scope.terraform meta.block.terraform meta.block.terraform punctuation.section.block.end.terraform
+>}
+#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+>
