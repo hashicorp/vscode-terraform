@@ -751,10 +751,6 @@
 							"name": "support.function.builtin.terraform"
 						},
 						{
-							"match": "list|map",
-							"name": "invalid.deprecated.terraform"
-						},
-						{
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
 							"name": "variable.function.terraform"
 						}
