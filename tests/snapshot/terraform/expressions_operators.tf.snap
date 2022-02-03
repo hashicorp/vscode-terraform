@@ -41,7 +41,7 @@
 #       ^^ scope.terraform keyword.operator.terraform
 #         ^^^^^^^^ scope.terraform
 >
-># comaprison
+># comparison
 #^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
 # ^^^^^^^^^^^ scope.terraform comment.line.terraform
 >
