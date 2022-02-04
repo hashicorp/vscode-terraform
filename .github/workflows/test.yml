@@ -23,20 +23,6 @@ jobs:
       - name: lint
         run: npm run lint
 
-  syntax:
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version-file: '.nvmrc'
-      - name: npm install
-        run: npm ci
-      - name: syntax
-        run: npm run test:syntax
-
   unit:
     strategy:
       fail-fast: false
