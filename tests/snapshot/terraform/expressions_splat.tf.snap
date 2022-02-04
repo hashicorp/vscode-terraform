@@ -1,38 +1,38 @@
 >[for o in var.list : o.id]
-#^ scope.terraform punctuation.section.brackets.begin.terraform
-# ^^^ scope.terraform keyword.control.terraform
-#    ^ scope.terraform
-#     ^ scope.terraform variable.other.readwrite.terraform
-#      ^ scope.terraform
-#       ^^ scope.terraform keyword.operator.word.terraform
-#         ^ scope.terraform
-#          ^^^ scope.terraform support.constant.terraform
-#             ^ scope.terraform keyword.operator.accessor.terraform
-#              ^^^^ scope.terraform variable.other.member.terraform
-#                  ^ scope.terraform
-#                   ^ scope.terraform keyword.operator.terraform
-#                    ^ scope.terraform
-#                     ^ scope.terraform variable.other.readwrite.terraform
-#                      ^ scope.terraform keyword.operator.accessor.terraform
-#                       ^^ scope.terraform variable.other.member.terraform
-#                         ^ scope.terraform punctuation.section.brackets.end.terraform
+#^ source.terraform punctuation.section.brackets.begin.terraform
+# ^^^ source.terraform keyword.control.terraform
+#    ^ source.terraform
+#     ^ source.terraform variable.other.readwrite.terraform
+#      ^ source.terraform
+#       ^^ source.terraform keyword.operator.word.terraform
+#         ^ source.terraform
+#          ^^^ source.terraform support.constant.terraform
+#             ^ source.terraform keyword.operator.accessor.terraform
+#              ^^^^ source.terraform variable.other.member.terraform
+#                  ^ source.terraform
+#                   ^ source.terraform keyword.operator.terraform
+#                    ^ source.terraform
+#                     ^ source.terraform variable.other.readwrite.terraform
+#                      ^ source.terraform keyword.operator.accessor.terraform
+#                       ^^ source.terraform variable.other.member.terraform
+#                         ^ source.terraform punctuation.section.brackets.end.terraform
 >
 >var.list[*].id
-#^^^ scope.terraform support.constant.terraform
-#   ^ scope.terraform keyword.operator.accessor.terraform
-#    ^^^^ scope.terraform variable.other.member.terraform
-#        ^^^ scope.terraform
-#           ^ scope.terraform keyword.operator.accessor.terraform
-#            ^^ scope.terraform variable.other.member.terraform
+#^^^ source.terraform support.constant.terraform
+#   ^ source.terraform keyword.operator.accessor.terraform
+#    ^^^^ source.terraform variable.other.member.terraform
+#        ^^^ source.terraform
+#           ^ source.terraform keyword.operator.accessor.terraform
+#            ^^ source.terraform variable.other.member.terraform
 >
 >var.list[*].interfaces[0].name
-#^^^ scope.terraform support.constant.terraform
-#   ^ scope.terraform keyword.operator.accessor.terraform
-#    ^^^^ scope.terraform variable.other.member.terraform
-#        ^^^ scope.terraform
-#           ^ scope.terraform keyword.operator.accessor.terraform
-#            ^^^^^^^^^^ scope.terraform variable.other.member.terraform
-#                      ^^^ scope.terraform
-#                         ^ scope.terraform keyword.operator.accessor.terraform
-#                          ^^^^ scope.terraform variable.other.member.terraform
+#^^^ source.terraform support.constant.terraform
+#   ^ source.terraform keyword.operator.accessor.terraform
+#    ^^^^ source.terraform variable.other.member.terraform
+#        ^^^ source.terraform
+#           ^ source.terraform keyword.operator.accessor.terraform
+#            ^^^^^^^^^^ source.terraform variable.other.member.terraform
+#                      ^^^ source.terraform
+#                         ^ source.terraform keyword.operator.accessor.terraform
+#                          ^^^^ source.terraform variable.other.member.terraform
 >

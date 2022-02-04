@@ -1,15 +1,15 @@
 ># line comment
-#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^^^^^ scope.terraform comment.line.terraform
+#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^^^^^^^ source.terraform comment.line.terraform
 >
 >// line comment
-#^^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
-#  ^^^^^^^^^^^^^ scope.terraform comment.line.terraform
+#^^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
+#  ^^^^^^^^^^^^^ source.terraform comment.line.terraform
 >
 >/*
-#^^ scope.terraform comment.block.terraform punctuation.definition.comment.terraform
+#^^ source.terraform comment.block.terraform punctuation.definition.comment.terraform
 >  Block comment
-#^^^^^^^^^^^^^^^^ scope.terraform comment.block.terraform
+#^^^^^^^^^^^^^^^^ source.terraform comment.block.terraform
 >*/
-#^^ scope.terraform comment.block.terraform punctuation.definition.comment.terraform
+#^^ source.terraform comment.block.terraform punctuation.definition.comment.terraform
 >

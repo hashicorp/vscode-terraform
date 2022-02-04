@@ -1,217 +1,217 @@
 >[for s in var.list : upper(s)]
-#^ scope.terraform punctuation.section.brackets.begin.terraform
-# ^^^ scope.terraform keyword.control.terraform
-#    ^ scope.terraform
-#     ^ scope.terraform variable.other.readwrite.terraform
-#      ^ scope.terraform
-#       ^^ scope.terraform keyword.operator.word.terraform
-#         ^ scope.terraform
-#          ^^^ scope.terraform support.constant.terraform
-#             ^ scope.terraform keyword.operator.accessor.terraform
-#              ^^^^ scope.terraform variable.other.member.terraform
-#                  ^ scope.terraform
-#                   ^ scope.terraform keyword.operator.terraform
-#                    ^ scope.terraform
-#                     ^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
-#                          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
-#                           ^ scope.terraform meta.function-call.terraform
-#                            ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
-#                             ^ scope.terraform punctuation.section.brackets.end.terraform
+#^ source.terraform punctuation.section.brackets.begin.terraform
+# ^^^ source.terraform keyword.control.terraform
+#    ^ source.terraform
+#     ^ source.terraform variable.other.readwrite.terraform
+#      ^ source.terraform
+#       ^^ source.terraform keyword.operator.word.terraform
+#         ^ source.terraform
+#          ^^^ source.terraform support.constant.terraform
+#             ^ source.terraform keyword.operator.accessor.terraform
+#              ^^^^ source.terraform variable.other.member.terraform
+#                  ^ source.terraform
+#                   ^ source.terraform keyword.operator.terraform
+#                    ^ source.terraform
+#                     ^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
+#                          ^ source.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                           ^ source.terraform meta.function-call.terraform
+#                            ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                             ^ source.terraform punctuation.section.brackets.end.terraform
 >
 >[for k, v in var.map : length(k) + length(v)]
-#^ scope.terraform punctuation.section.brackets.begin.terraform
-# ^^^ scope.terraform keyword.control.terraform
-#    ^ scope.terraform
-#     ^ scope.terraform variable.other.readwrite.terraform
-#      ^ scope.terraform punctuation.separator.terraform
-#       ^ scope.terraform
-#        ^ scope.terraform variable.other.readwrite.terraform
-#         ^ scope.terraform
-#          ^^ scope.terraform keyword.operator.word.terraform
-#            ^ scope.terraform
-#             ^^^ scope.terraform support.constant.terraform
-#                ^ scope.terraform keyword.operator.accessor.terraform
-#                 ^^^ scope.terraform variable.other.member.terraform
-#                    ^ scope.terraform
-#                     ^ scope.terraform keyword.operator.terraform
-#                      ^ scope.terraform
-#                       ^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
-#                             ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
-#                              ^ scope.terraform meta.function-call.terraform
-#                               ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
-#                                ^ scope.terraform
-#                                 ^ scope.terraform keyword.operator.arithmetic.terraform
-#                                  ^ scope.terraform
-#                                   ^^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
-#                                         ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
-#                                          ^ scope.terraform meta.function-call.terraform
-#                                           ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
-#                                            ^ scope.terraform punctuation.section.brackets.end.terraform
+#^ source.terraform punctuation.section.brackets.begin.terraform
+# ^^^ source.terraform keyword.control.terraform
+#    ^ source.terraform
+#     ^ source.terraform variable.other.readwrite.terraform
+#      ^ source.terraform punctuation.separator.terraform
+#       ^ source.terraform
+#        ^ source.terraform variable.other.readwrite.terraform
+#         ^ source.terraform
+#          ^^ source.terraform keyword.operator.word.terraform
+#            ^ source.terraform
+#             ^^^ source.terraform support.constant.terraform
+#                ^ source.terraform keyword.operator.accessor.terraform
+#                 ^^^ source.terraform variable.other.member.terraform
+#                    ^ source.terraform
+#                     ^ source.terraform keyword.operator.terraform
+#                      ^ source.terraform
+#                       ^^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
+#                             ^ source.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                              ^ source.terraform meta.function-call.terraform
+#                               ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                                ^ source.terraform
+#                                 ^ source.terraform keyword.operator.arithmetic.terraform
+#                                  ^ source.terraform
+#                                   ^^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
+#                                         ^ source.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                                          ^ source.terraform meta.function-call.terraform
+#                                           ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                                            ^ source.terraform punctuation.section.brackets.end.terraform
 >
 >[for i, v in var.list : "${i} is ${v}"]
-#^ scope.terraform punctuation.section.brackets.begin.terraform
-# ^^^ scope.terraform keyword.control.terraform
-#    ^ scope.terraform
-#     ^ scope.terraform variable.other.readwrite.terraform
-#      ^ scope.terraform punctuation.separator.terraform
-#       ^ scope.terraform
-#        ^ scope.terraform variable.other.readwrite.terraform
-#         ^ scope.terraform
-#          ^^ scope.terraform keyword.operator.word.terraform
-#            ^ scope.terraform
-#             ^^^ scope.terraform support.constant.terraform
-#                ^ scope.terraform keyword.operator.accessor.terraform
-#                 ^^^^ scope.terraform variable.other.member.terraform
-#                     ^ scope.terraform
-#                      ^ scope.terraform keyword.operator.terraform
-#                       ^ scope.terraform
-#                        ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#                         ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
-#                           ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform variable.other.readwrite.terraform
-#                            ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
-#                             ^^^ scope.terraform string.quoted.double.terraform
-#                                ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform
-#                                 ^^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
-#                                   ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform variable.other.readwrite.terraform
-#                                    ^ scope.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
-#                                     ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
-#                                      ^ scope.terraform punctuation.section.brackets.end.terraform
+#^ source.terraform punctuation.section.brackets.begin.terraform
+# ^^^ source.terraform keyword.control.terraform
+#    ^ source.terraform
+#     ^ source.terraform variable.other.readwrite.terraform
+#      ^ source.terraform punctuation.separator.terraform
+#       ^ source.terraform
+#        ^ source.terraform variable.other.readwrite.terraform
+#         ^ source.terraform
+#          ^^ source.terraform keyword.operator.word.terraform
+#            ^ source.terraform
+#             ^^^ source.terraform support.constant.terraform
+#                ^ source.terraform keyword.operator.accessor.terraform
+#                 ^^^^ source.terraform variable.other.member.terraform
+#                     ^ source.terraform
+#                      ^ source.terraform keyword.operator.terraform
+#                       ^ source.terraform
+#                        ^ source.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                         ^^ source.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#                           ^ source.terraform string.quoted.double.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#                            ^ source.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                             ^^^ source.terraform string.quoted.double.terraform
+#                                ^ source.terraform string.quoted.double.terraform meta.interpolation.terraform
+#                                 ^^ source.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.begin.terraform
+#                                   ^ source.terraform string.quoted.double.terraform meta.interpolation.terraform variable.other.readwrite.terraform
+#                                    ^ source.terraform string.quoted.double.terraform meta.interpolation.terraform keyword.other.interpolation.end.terraform
+#                                     ^ source.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                      ^ source.terraform punctuation.section.brackets.end.terraform
 >
 >{for s in var.list : s => upper(s)}
-#^ scope.terraform punctuation.section.braces.begin.terraform
-# ^^^ scope.terraform keyword.control.terraform
-#    ^ scope.terraform
-#     ^ scope.terraform variable.other.readwrite.terraform
-#      ^ scope.terraform
-#       ^^ scope.terraform keyword.operator.word.terraform
-#         ^ scope.terraform
-#          ^^^ scope.terraform support.constant.terraform
-#             ^ scope.terraform keyword.operator.accessor.terraform
-#              ^^^^ scope.terraform variable.other.member.terraform
-#                  ^ scope.terraform
-#                   ^ scope.terraform keyword.operator.terraform
-#                    ^ scope.terraform
-#                     ^ scope.terraform variable.other.readwrite.terraform
-#                      ^ scope.terraform
-#                       ^^ scope.terraform storage.type.function.terraform
-#                         ^ scope.terraform
-#                          ^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
-#                               ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
-#                                ^ scope.terraform meta.function-call.terraform
-#                                 ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
-#                                  ^ scope.terraform punctuation.section.braces.end.terraform
+#^ source.terraform punctuation.section.braces.begin.terraform
+# ^^^ source.terraform keyword.control.terraform
+#    ^ source.terraform
+#     ^ source.terraform variable.other.readwrite.terraform
+#      ^ source.terraform
+#       ^^ source.terraform keyword.operator.word.terraform
+#         ^ source.terraform
+#          ^^^ source.terraform support.constant.terraform
+#             ^ source.terraform keyword.operator.accessor.terraform
+#              ^^^^ source.terraform variable.other.member.terraform
+#                  ^ source.terraform
+#                   ^ source.terraform keyword.operator.terraform
+#                    ^ source.terraform
+#                     ^ source.terraform variable.other.readwrite.terraform
+#                      ^ source.terraform
+#                       ^^ source.terraform storage.type.function.terraform
+#                         ^ source.terraform
+#                          ^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
+#                               ^ source.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                                ^ source.terraform meta.function-call.terraform
+#                                 ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                                  ^ source.terraform punctuation.section.braces.end.terraform
 >
 >[for s in var.list : upper(s) if s != ""]
-#^ scope.terraform punctuation.section.brackets.begin.terraform
-# ^^^ scope.terraform keyword.control.terraform
-#    ^ scope.terraform
-#     ^ scope.terraform variable.other.readwrite.terraform
-#      ^ scope.terraform
-#       ^^ scope.terraform keyword.operator.word.terraform
-#         ^ scope.terraform
-#          ^^^ scope.terraform support.constant.terraform
-#             ^ scope.terraform keyword.operator.accessor.terraform
-#              ^^^^ scope.terraform variable.other.member.terraform
-#                  ^ scope.terraform
-#                   ^ scope.terraform keyword.operator.terraform
-#                    ^ scope.terraform
-#                     ^^^^^ scope.terraform meta.function-call.terraform support.function.builtin.terraform
-#                          ^ scope.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
-#                           ^ scope.terraform meta.function-call.terraform
-#                            ^ scope.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
-#                             ^ scope.terraform
-#                              ^^ scope.terraform keyword.control.conditional.terraform
-#                                ^ scope.terraform
-#                                 ^ scope.terraform variable.other.readwrite.terraform
-#                                  ^ scope.terraform
-#                                   ^^ scope.terraform keyword.operator.terraform
-#                                     ^ scope.terraform
-#                                      ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#                                       ^ scope.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
-#                                        ^ scope.terraform punctuation.section.brackets.end.terraform
+#^ source.terraform punctuation.section.brackets.begin.terraform
+# ^^^ source.terraform keyword.control.terraform
+#    ^ source.terraform
+#     ^ source.terraform variable.other.readwrite.terraform
+#      ^ source.terraform
+#       ^^ source.terraform keyword.operator.word.terraform
+#         ^ source.terraform
+#          ^^^ source.terraform support.constant.terraform
+#             ^ source.terraform keyword.operator.accessor.terraform
+#              ^^^^ source.terraform variable.other.member.terraform
+#                  ^ source.terraform
+#                   ^ source.terraform keyword.operator.terraform
+#                    ^ source.terraform
+#                     ^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
+#                          ^ source.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#                           ^ source.terraform meta.function-call.terraform
+#                            ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                             ^ source.terraform
+#                              ^^ source.terraform keyword.control.conditional.terraform
+#                                ^ source.terraform
+#                                 ^ source.terraform variable.other.readwrite.terraform
+#                                  ^ source.terraform
+#                                   ^^ source.terraform keyword.operator.terraform
+#                                     ^ source.terraform
+#                                      ^ source.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                       ^ source.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                        ^ source.terraform punctuation.section.brackets.end.terraform
 >
 >locals {
-#^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
-#      ^ scope.terraform meta.block.terraform
-#       ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+#^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
+#      ^ source.terraform meta.block.terraform
+#       ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  admin_users = {
-#^^ scope.terraform meta.block.terraform
-#  ^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
-#             ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#              ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
-#               ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#                ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#             ^ source.terraform meta.block.terraform variable.declaration.terraform
+#              ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#               ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
 >    for name, user in var.users : name => user
-#^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                      ^^^ scope.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
-#                         ^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                 ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                  ^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
-#                                      ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                       ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                        ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                         ^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                      ^^^ source.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
+#                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                 ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#                                      ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                        ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                         ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >    if user.is_admin
-#^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >  }
-#^^ scope.terraform meta.block.terraform meta.braces.terraform
-#  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+#^^ source.terraform meta.block.terraform meta.braces.terraform
+#  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
 >  regular_users = {
-#^^ scope.terraform meta.block.terraform
-#  ^^^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
-#               ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#                ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
-#                 ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#                  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#               ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                 ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
 >    for name, user in var.users : name => user
-#^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                      ^^^ scope.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
-#                         ^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                 ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                  ^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
-#                                      ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                       ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                        ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                         ^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                      ^^^ source.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
+#                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                 ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#                                      ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                        ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                         ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >    if !user.is_admin
-#^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#       ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.logical.terraform
-#        ^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
+#^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.logical.terraform
+#        ^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >  }
-#^^ scope.terraform meta.block.terraform meta.braces.terraform
-#  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+#^^ source.terraform meta.block.terraform meta.braces.terraform
+#  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
 >}
-#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+#^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >
 >locals {
-#^^^^^^ scope.terraform meta.block.terraform entity.name.type.terraform
-#      ^ scope.terraform meta.block.terraform
-#       ^ scope.terraform meta.block.terraform punctuation.section.block.begin.terraform
+#^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
+#      ^ source.terraform meta.block.terraform
+#       ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  users_by_role = {
-#^^ scope.terraform meta.block.terraform
-#  ^^^^^^^^^^^^^ scope.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
-#               ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#                ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
-#                 ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#                  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#               ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                 ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
 >    for name, user in var.users : user.role => name...
-#^^^^^^^^^^^^^^^^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                      ^^^ scope.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
-#                         ^^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                 ^^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                       ^^^^ scope.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
-#                                           ^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                            ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                             ^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                              ^^^^^ scope.terraform meta.block.terraform meta.braces.terraform
-#                                                   ^^^ scope.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                      ^^^ source.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
+#                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                 ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                       ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#                                           ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                            ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                             ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                              ^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                                   ^^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
 >  }
-#^^ scope.terraform meta.block.terraform meta.braces.terraform
-#  ^ scope.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+#^^ source.terraform meta.block.terraform meta.braces.terraform
+#  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
 >}
-#^ scope.terraform meta.block.terraform punctuation.section.block.end.terraform
+#^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >
 >
