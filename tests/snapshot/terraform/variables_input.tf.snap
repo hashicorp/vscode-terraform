@@ -34,7 +34,7 @@
 #      ^^^^ scope.terraform meta.block.terraform variable.declaration.terraform
 #          ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
 #           ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#            ^^^^ scope.terraform meta.block.terraform meta.function-call.terraform variable.function.terraform
+#            ^^^^ scope.terraform meta.block.terraform meta.function-call.terraform support.function.builtin.terraform
 #                ^ scope.terraform meta.block.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
 #                 ^^^^^^ scope.terraform meta.block.terraform meta.function-call.terraform storage.type.terraform
 #                       ^ scope.terraform meta.block.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
@@ -66,7 +66,7 @@
 #      ^ scope.terraform meta.block.terraform variable.declaration.terraform
 #       ^ scope.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
 #        ^ scope.terraform meta.block.terraform variable.declaration.terraform
-#         ^^^^ scope.terraform meta.block.terraform meta.function-call.terraform variable.function.terraform
+#         ^^^^ scope.terraform meta.block.terraform meta.function-call.terraform support.function.builtin.terraform
 #             ^ scope.terraform meta.block.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
 #              ^^^^^^ scope.terraform meta.block.terraform meta.function-call.terraform meta.function-call.terraform support.function.builtin.terraform
 #                    ^ scope.terraform meta.block.terraform meta.function-call.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform

@@ -747,7 +747,7 @@
 				"1": {
 					"patterns": [
 						{
-							"match": "abspath|abs|ceil|floor|log|max|min|pow|signum|chomp|formatlist|indent|join|lower|regexall|regex|replace|split|strrev|substr|title|trimspace|upper|chunklist|coalescelist|coalesce|compact|concat|contains|distinct|element|flatten|index|keys|length|lookup|matchkeys|merge|range|reverse|setintersection|setproduct|setunion|slice|sort|transpose|values|zipmap|base64decode|base64encode|base64gzip|csvdecode|jsondecode|jsonencode|urlencode|yamldecode|yamlencode|dirname|pathexpand|basename|fileexists|fileset|filebase64|templatefile|formatdate|timeadd|timestamp|base64sha256|base64sha512|bcrypt|filebase64sha256|filebase64sha512|filemd5|filemd1|filesha256|filesha512|md5|rsadecrypt|sha1|sha256|sha512|uuidv5|uuid|cidrhost|cidrnetmask|cidrsubnet|tobool|tolist|tomap|tonumber|toset|tostring|file|format",
+							"match": "abspath|abs|ceil|floor|log|max|min|pow|signum|chomp|formatlist|indent|join|lower|regexall|regex|replace|split|strrev|substr|title|trimspace|upper|chunklist|coalescelist|coalesce|compact|concat|contains|distinct|element|flatten|index|keys|length|lookup|matchkeys|merge|range|reverse|setintersection|setproduct|setunion|slice|sort|transpose|values|zipmap|base64decode|base64encode|base64gzip|csvdecode|jsondecode|jsonencode|urlencode|yamldecode|yamlencode|dirname|pathexpand|basename|fileexists|fileset|filebase64|templatefile|formatdate|timeadd|timestamp|base64sha256|base64sha512|bcrypt|filebase64sha256|filebase64sha512|filemd5|filemd1|filesha256|filesha512|md5|rsadecrypt|sha1|sha256|sha512|uuidv5|uuid|cidrhost|cidrnetmask|cidrsubnet|tobool|tolist|tomap|tonumber|toset|tostring|file|format|map|list",
 							"name": "support.function.builtin.terraform"
 						},
 						{
