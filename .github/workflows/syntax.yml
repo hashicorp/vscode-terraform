@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - 'syntaxes/**'
+      - 'tests/**'
   pull_request:
     branches:
       - main
     paths:
       - 'syntaxes/**'
+      - 'tests/**'
 
 jobs:
   syntax:
