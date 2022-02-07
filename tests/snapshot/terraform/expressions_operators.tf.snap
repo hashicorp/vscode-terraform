@@ -1,80 +1,80 @@
 ># arithmetic
-#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^^^ scope.terraform comment.line.terraform
+#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^^^^^ source.terraform comment.line.terraform
 >
 >1 + 2 * 3 / 4
-#^ scope.terraform constant.numeric.integer.terraform
-# ^ scope.terraform
-#  ^ scope.terraform keyword.operator.arithmetic.terraform
-#   ^ scope.terraform
-#    ^ scope.terraform constant.numeric.integer.terraform
-#     ^ scope.terraform
-#      ^ scope.terraform keyword.operator.arithmetic.terraform
-#       ^ scope.terraform
-#        ^ scope.terraform constant.numeric.integer.terraform
-#         ^ scope.terraform
-#          ^ scope.terraform keyword.operator.arithmetic.terraform
-#           ^ scope.terraform
-#            ^ scope.terraform constant.numeric.integer.terraform
+#^ source.terraform constant.numeric.integer.terraform
+# ^ source.terraform
+#  ^ source.terraform keyword.operator.arithmetic.terraform
+#   ^ source.terraform
+#    ^ source.terraform constant.numeric.integer.terraform
+#     ^ source.terraform
+#      ^ source.terraform keyword.operator.arithmetic.terraform
+#       ^ source.terraform
+#        ^ source.terraform constant.numeric.integer.terraform
+#         ^ source.terraform
+#          ^ source.terraform keyword.operator.arithmetic.terraform
+#           ^ source.terraform
+#            ^ source.terraform constant.numeric.integer.terraform
 >
 >5 % 6
-#^ scope.terraform constant.numeric.integer.terraform
-# ^ scope.terraform
-#  ^ scope.terraform keyword.operator.arithmetic.terraform
-#   ^ scope.terraform
-#    ^ scope.terraform constant.numeric.integer.terraform
+#^ source.terraform constant.numeric.integer.terraform
+# ^ source.terraform
+#  ^ source.terraform keyword.operator.arithmetic.terraform
+#   ^ source.terraform
+#    ^ source.terraform constant.numeric.integer.terraform
 >
 >-thing
-#^ scope.terraform keyword.operator.arithmetic.terraform
-# ^^^^^^ scope.terraform
+#^ source.terraform keyword.operator.arithmetic.terraform
+# ^^^^^^ source.terraform
 >
 ># equality
-#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^ scope.terraform comment.line.terraform
+#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^^^ source.terraform comment.line.terraform
 >
 >thing1 == thing2
-#^^^^^^^ scope.terraform
-#       ^^ scope.terraform keyword.operator.terraform
-#         ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^^ source.terraform keyword.operator.terraform
+#         ^^^^^^^^ source.terraform
 >thing1 != thing2
-#^^^^^^^ scope.terraform
-#       ^^ scope.terraform keyword.operator.terraform
-#         ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^^ source.terraform keyword.operator.terraform
+#         ^^^^^^^^ source.terraform
 >
 ># comparison
-#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^^^ scope.terraform comment.line.terraform
+#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^^^^^ source.terraform comment.line.terraform
 >
 >thing1 > thing2
-#^^^^^^^ scope.terraform
-#       ^ scope.terraform keyword.operator.terraform
-#        ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^ source.terraform keyword.operator.terraform
+#        ^^^^^^^^ source.terraform
 >thing1 >= thing2
-#^^^^^^^ scope.terraform
-#       ^^ scope.terraform keyword.operator.terraform
-#         ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^^ source.terraform keyword.operator.terraform
+#         ^^^^^^^^ source.terraform
 >thing1 < thing2
-#^^^^^^^ scope.terraform
-#       ^ scope.terraform keyword.operator.terraform
-#        ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^ source.terraform keyword.operator.terraform
+#        ^^^^^^^^ source.terraform
 >thing1 <= thing2
-#^^^^^^^ scope.terraform
-#       ^^ scope.terraform keyword.operator.terraform
-#         ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^^ source.terraform keyword.operator.terraform
+#         ^^^^^^^^ source.terraform
 >
 ># logical
-#^ scope.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^ scope.terraform comment.line.terraform
+#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
+# ^^^^^^^^ source.terraform comment.line.terraform
 >
 >thing1 || thing2
-#^^^^^^^ scope.terraform
-#       ^^ scope.terraform keyword.operator.logical.terraform
-#         ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^^ source.terraform keyword.operator.logical.terraform
+#         ^^^^^^^^ source.terraform
 >thing1 && thing2
-#^^^^^^^ scope.terraform
-#       ^^ scope.terraform keyword.operator.logical.terraform
-#         ^^^^^^^^ scope.terraform
+#^^^^^^^ source.terraform
+#       ^^ source.terraform keyword.operator.logical.terraform
+#         ^^^^^^^^ source.terraform
 >!thing1
-#^ scope.terraform keyword.operator.logical.terraform
-# ^^^^^^^ scope.terraform
+#^ source.terraform keyword.operator.logical.terraform
+# ^^^^^^^ source.terraform
 >
