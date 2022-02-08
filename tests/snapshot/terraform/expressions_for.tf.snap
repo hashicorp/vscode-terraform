@@ -147,11 +147,11 @@
 #                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 #                                ^ source.terraform meta.block.terraform meta.braces.terraform
 #                                 ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
 #                                      ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                        ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                         ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                       ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform storage.type.function.terraform
+#                                         ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >    if user.is_admin
 #^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >  }
@@ -170,11 +170,11 @@
 #                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 #                                ^ source.terraform meta.block.terraform meta.braces.terraform
 #                                 ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
 #                                      ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                        ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                         ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                       ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform storage.type.function.terraform
+#                                         ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 >    if !user.is_admin
 #^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 #       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.logical.terraform
@@ -202,11 +202,11 @@
 #                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
 #                                ^ source.terraform meta.block.terraform meta.braces.terraform
 #                                 ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#                                       ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#                                       ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
 #                                           ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                            ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                             ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
-#                                              ^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                            ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform storage.type.function.terraform
+#                                              ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                               ^^^^ source.terraform meta.block.terraform meta.braces.terraform
 #                                                   ^^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
 >  }
 #^^ source.terraform meta.block.terraform meta.braces.terraform

@@ -38,18 +38,18 @@
 #         ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
 >    Name   = "app-server"
 #^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#    ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#    ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
 #        ^^^ source.terraform meta.block.terraform meta.braces.terraform
-#           ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#           ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform
 #            ^ source.terraform meta.block.terraform meta.braces.terraform
 #             ^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
 #              ^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform
 #                        ^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
 >    Tested = "true"
 #^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#    ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform string.unquoted.terraform
+#    ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
 #          ^ source.terraform meta.block.terraform meta.braces.terraform
-#           ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#           ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform
 #            ^ source.terraform meta.block.terraform meta.braces.terraform
 #             ^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
 #              ^^^^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform
