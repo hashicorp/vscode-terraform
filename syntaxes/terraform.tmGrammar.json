@@ -449,6 +449,9 @@
 					"include": "#comments"
 				},
 				{
+					"include": "#objects"
+				},
+				{
 					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*",
 					"comment": "Literal, named object key",
 					"captures": {
