@@ -449,14 +449,23 @@
 					"include": "#comments"
 				},
 				{
-					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=)\\s*",
+					"include": "#objects"
+				},
+				{
+					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=\\>?)\\s*",
 					"comment": "Literal, named object key",
 					"captures": {
 						"1": {
-							"name": "meta.mapping.key.terraform string.unquoted.terraform"
+							"name": "meta.mapping.key.terraform variable.other.readwrite.terraform"
 						},
 						"2": {
-							"name": "keyword.operator.terraform"
+							"name": "keyword.operator.assignment.terraform",
+							"patterns": [
+								{
+									"match": "\\=\\>",
+									"name": "storage.type.function.terraform"
+								}
+							]
 						}
 					}
 				},

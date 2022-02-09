@@ -1,0 +1,162 @@
+>ipam_configuration = {
+#^^^^^^^^^^^^^^^^^^ source.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform variable.declaration.terraform
+#                   ^ source.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                    ^ source.terraform variable.declaration.terraform
+#                     ^ source.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>  us-east-1 = {
+#^^ source.terraform meta.braces.terraform
+#  ^^^^^^^^^ source.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#           ^ source.terraform meta.braces.terraform
+#            ^ source.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#             ^ source.terraform meta.braces.terraform
+#              ^ source.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>    cidr   = ["10.0.0.0/16"]
+#^^^^ source.terraform meta.braces.terraform meta.braces.terraform
+#    ^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#        ^^^ source.terraform meta.braces.terraform meta.braces.terraform
+#           ^ source.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#            ^ source.terraform meta.braces.terraform meta.braces.terraform
+#             ^ source.terraform meta.braces.terraform meta.braces.terraform
+#              ^ source.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#               ^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                          ^ source.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                           ^^ source.terraform meta.braces.terraform meta.braces.terraform
+>    locale = "us-east-1"
+#^^^^ source.terraform meta.braces.terraform meta.braces.terraform
+#    ^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#          ^ source.terraform meta.braces.terraform meta.braces.terraform
+#           ^ source.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#            ^ source.terraform meta.braces.terraform meta.braces.terraform
+#             ^ source.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#              ^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                       ^ source.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>
+>    sub_pools = {
+#^^^^ source.terraform meta.braces.terraform meta.braces.terraform
+#    ^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#             ^ source.terraform meta.braces.terraform meta.braces.terraform
+#              ^ source.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#               ^ source.terraform meta.braces.terraform meta.braces.terraform
+#                ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>      dev = {
+#^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#      ^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#         ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#           ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#            ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>        cidr                              = ["10.0.0.0/20"]
+#^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#        ^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                                          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                                           ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                                            ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                                             ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                                              ^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                                                         ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                                          ^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+>        allocation_default_netmask_length = 28
+#^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                                         ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                                          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                                           ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                                            ^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform constant.numeric.integer.terraform
+>
+>        sub_pools = {
+#^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#        ^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                 ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                  ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                   ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                    ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>          app_team_b = {
+#^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#          ^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                    ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                     ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                      ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                       ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>            cidr        = ["10.0.0.0/24"]
+#^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#            ^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                ^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                        ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                         ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                           ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                            ^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                                       ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                        ^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+>            description = "app team b's space in us-east-1"
+#^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#            ^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                       ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                        ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                         ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                                                          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>          }
+#^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>          app_team_a = {
+#^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#          ^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                    ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                     ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                      ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                       ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>            cidr = ["10.0.1.0/24"]
+#^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#            ^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                 ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#                  ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                   ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                    ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                     ^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                                ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                                 ^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+>          }
+#^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#          ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>        }
+#^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#        ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>      }
+#^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#      ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>
+>      stage = {
+#^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#      ^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#           ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#            ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#             ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#              ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>        cidr = ["10.0.16.0/20"]
+#^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#        ^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#             ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform keyword.operator.assignment.terraform
+#              ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#               ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#                ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                 ^^^^^^^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform
+#                             ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#                              ^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+>      }
+#^^^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#      ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>    }
+#^^^^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform
+#    ^ source.terraform meta.braces.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>  }
+#^^ source.terraform meta.braces.terraform meta.braces.terraform
+#  ^ source.terraform meta.braces.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>}
+#^ source.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>
