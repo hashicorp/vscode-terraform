@@ -1,12 +1,27 @@
 ## [Unreleased]
 
+BUGS:
+
+ - Fix Nested Map Highlighting by @dbanck in https://github.com/hashicorp/vscode-terraform/pull/925
+ - Fix npm run syntax tests by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/928
+ - Move TextMate scope.terraform to source.terraform by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/921
+ 
 ENHANCEMENTS:
 
  - Publish Platform Specific Extension [#905](https://github.com/hashicorp/vscode-terraform/pull/905)
+ - Update list/map syntax highlighting by @dbanck in https://github.com/hashicorp/vscode-terraform/pull/918
 
 INTERNAL:
 
  - deps: Update vsce, mocha, and node-fetch [#908](https://github.com/hashicorp/vscode-terraform/pull/908)
+ - deps: Update deps to fix Dependabots alerts by @dbanck in https://github.com/hashicorp/vscode-terraform/pull/908
+ - deps: Update vsce to 2.6.6 by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/916
+ - Fix preview publish trigger by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/910
+ - Manual Preview release workflow dispatch by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/911
+ - Terraform TextMate Test Infrastructure by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/912
+ - Add Terraform language tmgrammar snapshots by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/914
+ - Run syntax tests on all snapshot files by @dbanck in https://github.com/hashicorp/vscode-terraform/pull/917
+ - Run syntax tests when grammar changes by @jpogran in https://github.com/hashicorp/vscode-terraform/pull/922
 
 ## [2.19.0] (2022-01-20)
 
