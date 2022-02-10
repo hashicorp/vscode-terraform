@@ -638,7 +638,7 @@
 					"name": "keyword.operator.accessor.terraform"
 				}
 			},
-			"end": "\\w+(\\[[0-9\\*]+\\])?",
+			"end": "[[:alpha:]][[:alnum:]_-]*(\\[[0-9\\*]+\\])?",
 			"endCaptures": {
 				"0": {
 					"patterns": [
@@ -646,11 +646,7 @@
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
 							"comment": "Attribute access",
 							"name": "variable.other.member.terraform"
-						}
-					]
-				},
-				"1": {
-					"patterns": [
+						},
 						{
 							"match": "\\d+",
 							"comment": "Subscript",

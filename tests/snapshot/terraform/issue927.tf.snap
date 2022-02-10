@@ -71,9 +71,7 @@
 #       ^ source.terraform meta.block.terraform variable.declaration.terraform
 #        ^^^ source.terraform meta.block.terraform support.constant.terraform
 #           ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
-#            ^^^^ source.terraform meta.block.terraform variable.other.member.terraform
-#                ^ source.terraform meta.block.terraform keyword.operator.arithmetic.terraform
-#                 ^^^ source.terraform meta.block.terraform support.constant.terraform
+#            ^^^^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
 >}
 #^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >
@@ -102,12 +100,8 @@
 #       ^ source.terraform meta.block.terraform variable.declaration.terraform
 #        ^^^^^^ source.terraform meta.block.terraform support.constant.terraform
 #              ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
-#               ^^^ source.terraform meta.block.terraform variable.other.member.terraform
-#                  ^ source.terraform meta.block.terraform keyword.operator.arithmetic.terraform
-#                   ^^^ source.terraform meta.block.terraform
+#               ^^^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
 #                      ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
-#                       ^^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
-#                             ^ source.terraform meta.block.terraform keyword.operator.arithmetic.terraform
-#                              ^^^^ source.terraform meta.block.terraform
+#                       ^^^^^^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
 >}
 #^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
