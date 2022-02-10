@@ -639,22 +639,23 @@
 				}
 			},
 			"end": "[[:alpha:]][[:alnum:]_-]*(\\[[0-9\\*]+\\])?",
+			"comment": "Matches a variable with an optional splat or index ([*]/[0])",
 			"endCaptures": {
 				"0": {
 					"patterns": [
 						{
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-							"comment": "Attribute access",
+							"comment": "Attribute name including - and _",
 							"name": "variable.other.member.terraform"
 						},
 						{
 							"match": "\\d+",
-							"comment": "Subscript",
+							"comment": "Optional attribute index",
 							"name": "constant.numeric.integer.terraform"
 						},
 						{
 							"match": "\\*",
-							"comment": "Attribute-only splat",
+							"comment": "Optional attribute-only splat",
 							"name": "keyword.operator.splat.terraform"
 						}
 					]
