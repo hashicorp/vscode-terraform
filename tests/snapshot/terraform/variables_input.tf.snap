@@ -1,6 +1,6 @@
 ># input variables
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >variable "image_id" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform

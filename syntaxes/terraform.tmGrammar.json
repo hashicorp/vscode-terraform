@@ -53,18 +53,26 @@
 		},
 		"comments": {
 			"patterns": [
-				{
-					"include": "#inline_comments"
-				},
-				{
-					"include": "#block_comments"
-				}
+				{ "include": "#hash_line_comments" },
+				{ "include": "#double_slash_line_comments" },
+				{ "include": "#block_inline_comments" }
 			]
 		},
-		"inline_comments": {
-			"begin": "#|//",
-			"comment": "Inline Comments",
-			"name": "comment.line.terraform",
+		"hash_line_comments": {
+			"name": "comment.line.number-sign.hcl",
+			"comment": "Line comments start with # sequence and end with the next newline sequence. A line comment is considered equivalent to a newline sequence",
+			"begin": "#",
+			"end": "$\\n?",
+			"captures": {
+				"0": {
+					"name": "punctuation.definition.comment.terraform"
+				}
+			}
+		},
+		"double_slash_line_comments": {
+			"name": "comment.line.double-slash.hcl",
+			"comment": "Line comments start with // sequence and end with the next newline sequence. A line comment is considered equivalent to a newline sequence",
+			"begin": "//",
 			"captures": {
 				"0": {
 					"name": "punctuation.definition.comment.terraform"
@@ -72,10 +80,10 @@
 			},
 			"end": "$\\n?"
 		},
-		"block_comments": {
+		"block_inline_comments": {
+			"name": "comment.block.hcl",
+			"comment": "Inline comments start with the /* sequence and end with the */ sequence, and may have any characters within except the ending sequence. An inline comment is considered equivalent to a whitespace sequence",
 			"begin": "/\\*",
-			"comment": "Block comments",
-			"name": "comment.block.terraform",
 			"captures": {
 				"0": {
 					"name": "punctuation.definition.comment.terraform"

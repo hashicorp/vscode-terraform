@@ -40,8 +40,8 @@
 #                             ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  # ...
 #^^ source.terraform meta.block.terraform
-#  ^ source.terraform meta.block.terraform comment.line.terraform punctuation.definition.comment.terraform
-#   ^^^^ source.terraform meta.block.terraform comment.line.terraform
+#  ^ source.terraform meta.block.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#   ^^^^ source.terraform meta.block.terraform comment.line.number-sign.hcl
 >
 >  instances = module.servers.instance_ids
 #^^ source.terraform meta.block.terraform

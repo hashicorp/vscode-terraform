@@ -1,6 +1,6 @@
 ># arithmetic
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >1 + 2 * 3 / 4
 #^ source.terraform constant.numeric.integer.terraform
@@ -29,8 +29,8 @@
 # ^^^^^^ source.terraform
 >
 ># equality
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >thing1 == thing2
 #^^^^^^^ source.terraform
@@ -42,8 +42,8 @@
 #         ^^^^^^^^ source.terraform
 >
 ># comparison
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >thing1 > thing2
 #^^^^^^^ source.terraform
@@ -63,8 +63,8 @@
 #         ^^^^^^^^ source.terraform
 >
 ># logical
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >thing1 || thing2
 #^^^^^^^ source.terraform
