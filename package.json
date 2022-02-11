@@ -349,7 +349,7 @@
   },
   "dependencies": {
     "short-unique-id": "^3.2.3",
-    "vscode-extension-telemetry": "^0.4.2",
+    "@vscode/extension-telemetry": "^0.4.9",
     "vscode-languageclient": "^7.0.0",
     "vscode-uri": "^3.0.2",
     "which": "^2.0.2"
