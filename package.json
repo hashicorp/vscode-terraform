@@ -39,11 +39,11 @@
   },
   "activationEvents": [
     "onLanguage:terraform",
-		"onLanguage:terraform-vars",
-		"onView:terraform-modules",
-		"workspaceContains:**/*.tf",
-		"workspaceContains:**/*.tfvars",
-		"onCommand:terraform.enableLanguageServer"
+    "onLanguage:terraform-vars",
+    "onView:terraform-modules",
+    "workspaceContains:**/*.tf",
+    "workspaceContains:**/*.tfvars",
+    "onCommand:terraform.enableLanguageServer"
   ],
   "main": "./out/extension",
   "contributes": {
