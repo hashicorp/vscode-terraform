@@ -1,16 +1,17 @@
 ## [Unreleased]
 
-BUGS:
-
- - Fix Nested Map Highlighting [#925](https://github.com/hashicorp/vscode-terraform/pull/925)
- - Fix npm run syntax tests [#928](https://github.com/hashicorp/vscode-terraform/pull/928)
- - Move TextMate scope.terraform to source.terraform [#921](https://github.com/hashicorp/vscode-terraform/pull/921)
- 
 ENHANCEMENTS:
 
  - Publish Platform Specific Extension [#905](https://github.com/hashicorp/vscode-terraform/pull/905)
  - Update list/map syntax highlighting [#918](https://github.com/hashicorp/vscode-terraform/pull/918)
 
+BUG FIXES:
+
+ - Fix Nested Map Highlighting [#925](https://github.com/hashicorp/vscode-terraform/pull/925)
+ - Fix npm run syntax tests [#928](https://github.com/hashicorp/vscode-terraform/pull/928)
+ - Move TextMate scope.terraform to source.terraform [#921](https://github.com/hashicorp/vscode-terraform/pull/921)
+ - Fix highlighting for attribute access with a dash [#933](https://github.com/hashicorp/vscode-terraform/pull/933)
+ 
 INTERNAL:
 
  - deps: Update vsce, mocha, and node-fetch [#908](https://github.com/hashicorp/vscode-terraform/pull/908)
