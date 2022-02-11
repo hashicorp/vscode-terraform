@@ -1,19 +1,19 @@
 ; SYNTAX TEST "source.terraform" "basic sample"
 
 # line comment
-; <- source.terraform comment.line.terraform punctuation.definition.comment.terraform
-;  ^^^^^^^^^^^^^ source.terraform comment.line.terraform
+; <- source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+;  ^^^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 
 // line comment
-; <-- source.terraform comment.line.terraform punctuation.definition.comment.terraform
-;   ^^^^^^^^^^^^^ source.terraform comment.line.terraform
+; <-- source.terraform comment.line.double-slash.hcl punctuation.definition.comment.terraform
+;   ^^^^^^^^^^^^^ source.terraform comment.line.double-slash.hcl
 
 /*
-; <~- source.terraform comment.block.terraform punctuation.definition.comment.terraform
+; <~- source.terraform comment.block.hcl punctuation.definition.comment.terraform
   Block comment
-; ^^^^^^^^^^^^^^^^ source.terraform comment.block.terraform
+; ^^^^^^^^^^^^^^^^ source.terraform comment.block.hcl
 */
-; <~- source.terraform comment.block.terraform punctuation.definition.comment.terraform
+; <~- source.terraform comment.block.hcl punctuation.definition.comment.terraform
 
 terraform {
 ; <--------- source.terraform meta.block.terraform entity.name.type.terraform

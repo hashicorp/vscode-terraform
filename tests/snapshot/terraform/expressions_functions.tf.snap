@@ -1,6 +1,6 @@
 ># numeric
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >abs(23)
 #^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
@@ -73,8 +73,8 @@
 #          ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
 >
 ># string
-#^ source.terraform comment.line.terraform punctuation.definition.comment.terraform
-# ^^^^^^^ source.terraform comment.line.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >chomp("hello\n")
 #^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
