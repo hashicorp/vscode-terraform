@@ -61,7 +61,8 @@
         "id": "terraform-vars",
         "extensions": [
           ".tfvars"
-        ]
+        ],
+        "configuration": "./language-configuration.json"
       },
       {
         "id": "json",
