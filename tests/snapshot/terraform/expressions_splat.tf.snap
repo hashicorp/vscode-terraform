@@ -21,7 +21,9 @@
 #^^^ source.terraform support.constant.terraform
 #   ^ source.terraform keyword.operator.accessor.terraform
 #    ^^^^ source.terraform variable.other.member.terraform
-#        ^^^ source.terraform
+#        ^ source.terraform
+#         ^ source.terraform keyword.operator.splat.terraform
+#          ^ source.terraform
 #           ^ source.terraform keyword.operator.accessor.terraform
 #            ^^ source.terraform variable.other.member.terraform
 >
@@ -29,10 +31,14 @@
 #^^^ source.terraform support.constant.terraform
 #   ^ source.terraform keyword.operator.accessor.terraform
 #    ^^^^ source.terraform variable.other.member.terraform
-#        ^^^ source.terraform
+#        ^ source.terraform
+#         ^ source.terraform keyword.operator.splat.terraform
+#          ^ source.terraform
 #           ^ source.terraform keyword.operator.accessor.terraform
 #            ^^^^^^^^^^ source.terraform variable.other.member.terraform
-#                      ^^^ source.terraform
+#                      ^ source.terraform
+#                       ^ source.terraform constant.numeric.integer.terraform
+#                        ^ source.terraform
 #                         ^ source.terraform keyword.operator.accessor.terraform
 #                          ^^^^ source.terraform variable.other.member.terraform
 >
