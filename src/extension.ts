@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import TelemetryReporter from 'vscode-extension-telemetry';
+import TelemetryReporter from '@vscode/extension-telemetry';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';

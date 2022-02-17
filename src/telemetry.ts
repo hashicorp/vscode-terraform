@@ -1,4 +1,4 @@
-import TelemetryReporter from 'vscode-extension-telemetry';
+import TelemetryReporter from '@vscode/extension-telemetry';
 import { BaseLanguageClient, ClientCapabilities, StaticFeature } from 'vscode-languageclient';
 
 import { ExperimentalClientCapabilities } from './types';
