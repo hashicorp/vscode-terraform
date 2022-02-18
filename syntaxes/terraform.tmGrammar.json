@@ -112,6 +112,7 @@
 		},
 		"block": {
 			"name": "meta.block.terraform",
+			"comment": "This will match Terraform blocks like `resource \"aws_instance\" \"web\" {` or `module {`",
 			"begin": "(\\w+)(?:([\\s\\\"\\-[:word:]]*)(\\{))",
 			"beginCaptures": {
 				"1": {
@@ -130,7 +131,19 @@
 				"2": {
 					"patterns": [
 						{
-							"include": "#string_literals"
+							"name":"entity.name.tag.terraform",
+							"begin": "\"",
+							"beginCaptures": {
+								"0": {
+									"name": "entity.name.tag.begin.terraform"
+								}
+							},
+							"end": "\"",
+							"endCaptures": {
+								"0": {
+									"name": "entity.name.tag.end.terraform"
+								}
+							}
 						}
 					]
 				},

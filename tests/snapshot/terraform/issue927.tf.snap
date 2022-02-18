@@ -1,18 +1,18 @@
 >variable "foo" {}
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#          ^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-#             ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+#          ^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+#             ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 #              ^ source.terraform meta.block.terraform
 #               ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 #                ^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >output "result-val" { value = var.foo }
 #^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #      ^ source.terraform meta.block.terraform
-#       ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#        ^^^^^^^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-#                  ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#       ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+#        ^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+#                  ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 #                   ^ source.terraform meta.block.terraform
 #                    ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 #                     ^ source.terraform meta.block.terraform
@@ -29,9 +29,9 @@
 >variable "some-var" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#          ^^^^^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-#                  ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+#          ^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+#                  ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 #                   ^ source.terraform meta.block.terraform
 #                    ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  default = "value"
@@ -49,9 +49,9 @@
 >module "foo-mod" {
 #^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #      ^ source.terraform meta.block.terraform
-#       ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#        ^^^^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-#               ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#       ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+#        ^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+#               ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 #                ^ source.terraform meta.block.terraform
 #                 ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  source = "./foo"
@@ -78,9 +78,9 @@
 >module "bar" {
 #^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #      ^ source.terraform meta.block.terraform
-#       ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#        ^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-#           ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#       ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+#        ^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+#           ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 #            ^ source.terraform meta.block.terraform
 #             ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  source = "./foo"

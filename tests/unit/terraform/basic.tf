@@ -71,9 +71,9 @@ terraform {
 provider "azurerm" {
 ; <-------- source.terraform meta.block.terraform entity.name.type.terraform
 ;       ^ source.terraform meta.block.terraform
-;        ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-;         ^^^^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-;                ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+;        ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+;         ^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+;                ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 ;                 ^ source.terraform meta.block.terraform
 ;                  ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
   features {}
@@ -88,13 +88,13 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
 ; <-------- source.terraform meta.block.terraform entity.name.type.terraform
 ;       ^ source.terraform meta.block.terraform
-;        ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-;         ^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
-;                               ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+;        ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+;         ^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+;                               ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 ;                                ^ source.terraform meta.block.terraform
-;                                 ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-;                                  ^^ source.terraform meta.block.terraform string.quoted.double.terraform
-;                                    ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+;                                 ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
+;                                  ^^ source.terraform meta.block.terraform entity.name.tag.terraform
+;                                    ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
 ;                                     ^ source.terraform meta.block.terraform
 ;                                      ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
   name     = "myTFResourceGroup"
