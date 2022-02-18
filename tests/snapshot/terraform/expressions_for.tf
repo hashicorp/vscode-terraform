@@ -10,13 +10,19 @@
 
 locals {
   admin_users = {
-    for name, user in var.users : name => user
-    if user.is_admin
+    for name, user in var.users : name => user if user.is_admin
   }
   regular_users = {
     for name, user in var.users : name => user
     if !user.is_admin
   }
+  admin_users_list = [
+    for name, user in var.users : name if user.is_admin
+  ]
+  regular_users_list = [
+    for name, user in var.users : name
+    if !user.is_admin
+  ]
 }
 
 locals {
