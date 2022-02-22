@@ -31,27 +31,6 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 
 This extension offers several configuration options. To modify these, navigate to the extension view within VS Code, select the settings cog and choose Extension settings, or alternatively, modify the `.vscode/settings.json` file in the root of your working directory. 
 
-### Multiple Workspaces
-If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
-```
-{
-    "terraform-ls.rootModules": [
-        "/module1",
-        "/module2"
-    ]
-}
-```
-
-If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
-```
-{
-    "terraform-ls.excludeRootModules": [
-        "/module3",
-        "/module4"
-    ]
-}
-```
-
 ### Formatting
 To enable formatting, it is recommended that the following be added to the extension settings for the Terraform extension:
 ```
@@ -103,6 +82,27 @@ An experimental validate-on-save option can be enabled with the following settin
     }
 ```
 This will create diagnostics for any elements that fail validation. `terraform validate` can also be run using the setting in the command palette.
+
+### Multiple Workspaces
+If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
+```
+{
+    "terraform-ls.rootModules": [
+        "/module1",
+        "/module2"
+    ]
+}
+```
+
+If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
+```
+{
+    "terraform-ls.excludeRootModules": [
+        "/module3",
+        "/module4"
+    ]
+}
+```
 
 ### Telemetry
 
