@@ -34,7 +34,7 @@ This extension offers several configuration options. To modify these, navigate t
 
 To enable formatting, it is recommended that the following be added to the extension settings for the Terraform extension:
 
-```
+```json
 "[terraform]": {
   "editor.defaultFormatter": "hashicorp.terraform",
   "editor.formatOnSave": true,
@@ -53,7 +53,7 @@ When using the `editor.formatOnSaveMode` setting, only `file` is currently suppo
 
 If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to automatically format Terraform files, use the following configuration:
 
-```
+```json
 "editor.formatOnSave": true,
 "[terraform]": {
   "editor.defaultFormatter": "hashicorp.terraform",
@@ -79,10 +79,10 @@ This will keep the global `editor.formatOnSave` for other languages you use, and
 
 An experimental validate-on-save option can be enabled with the following setting:
 
-```
-    "terraform-ls.experimentalFeatures": {
-      "validateOnSave": true
-    }
+```json
+"terraform-ls.experimentalFeatures": {
+  "validateOnSave": true
+}
 ```
 
 This will create diagnostics for any elements that fail validation. `terraform validate` can also be run using the setting in the command palette.
@@ -91,24 +91,20 @@ This will create diagnostics for any elements that fail validation. `terraform v
 
 If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
 
-```
-{
-    "terraform-ls.rootModules": [
-        "/module1",
-        "/module2"
-    ]
-}
+```json
+"terraform-ls.rootModules": [
+  "/module1",
+  "/module2"
+]
 ```
 
 If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
 
-```
-{
-    "terraform-ls.excludeRootModules": [
-        "/module3",
-        "/module4"
-    ]
-}
+```json
+"terraform-ls.excludeRootModules": [
+  "/module3",
+  "/module4"
+]
 ```
 
 ### Telemetry
@@ -141,11 +137,9 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 The configuration has changed in v2.X o from 1.4.0. If you are having issues with the Language Server starting, you can reset the configuration to the following:
 
 ```json
-{
-  "terraform.languageServer": {
-    "external": true,
-    "args": ["serve"]
-  }
+"terraform.languageServer": {
+  "external": true,
+  "args": ["serve"]
 }
 ```
 
