@@ -145,12 +145,6 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 - Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
 - A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
-## User Group
-
-We're starting a user group for the Terraform VS Code extension. This group offers opportunities to provide feedback, access pre-release versions, and help influence the direction of this project. Collaboration and updates will be via HashiCorp Discuss (discuss.hashicorp.com), along with occasional live events.
-
-If you are interested, please complete and submit our [participation form](https://forms.gle/JY2Rwt3e657gRFHj9), and we will get back to you with an invite!
-
 ## Credits
 
 - [Mikael Olenfalk](https://github.com/mauve) - creating and supporting the [vscode-terraform](https://github.com/mauve/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
