@@ -141,19 +141,34 @@
 #              ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
 #               ^ source.terraform meta.block.terraform variable.declaration.terraform
 #                ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
->    for name, user in var.users : name => user
-#^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+>    for name, user in var.users : name => user if user.is_admin
+#^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#    ^^^ source.terraform meta.block.terraform meta.braces.terraform keyword.control.terraform
+#       ^ source.terraform meta.block.terraform meta.braces.terraform
+#        ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.separator.terraform
+#             ^ source.terraform meta.block.terraform meta.braces.terraform
+#              ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform meta.block.terraform meta.braces.terraform
+#                   ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.word.terraform
+#                     ^ source.terraform meta.block.terraform meta.braces.terraform
 #                      ^^^ source.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
-#                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#                                ^ source.terraform meta.block.terraform meta.braces.terraform
+#                         ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.accessor.terraform
+#                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.member.terraform
+#                               ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
 #                                 ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
 #                                      ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                       ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform storage.type.function.terraform
+#                                       ^^ source.terraform meta.block.terraform meta.braces.terraform storage.type.function.terraform
 #                                         ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform
->    if user.is_admin
-#^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                          ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#                                              ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                               ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.control.conditional.terraform
+#                                                 ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#                                                      ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.accessor.terraform
+#                                                       ^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.member.terraform
 >  }
 #^^ source.terraform meta.block.terraform meta.braces.terraform
 #  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
@@ -165,23 +180,108 @@
 #                 ^ source.terraform meta.block.terraform variable.declaration.terraform
 #                  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
 >    for name, user in var.users : name => user
-#^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#    ^^^ source.terraform meta.block.terraform meta.braces.terraform keyword.control.terraform
+#       ^ source.terraform meta.block.terraform meta.braces.terraform
+#        ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.separator.terraform
+#             ^ source.terraform meta.block.terraform meta.braces.terraform
+#              ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform meta.block.terraform meta.braces.terraform
+#                   ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.word.terraform
+#                     ^ source.terraform meta.block.terraform meta.braces.terraform
 #                      ^^^ source.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
-#                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#                                ^ source.terraform meta.block.terraform meta.braces.terraform
+#                         ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.accessor.terraform
+#                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.member.terraform
+#                               ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
 #                                 ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
 #                                      ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                       ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform storage.type.function.terraform
+#                                       ^^ source.terraform meta.block.terraform meta.braces.terraform storage.type.function.terraform
 #                                         ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                          ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
 >    if !user.is_admin
-#^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#    ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.control.conditional.terraform
+#      ^ source.terraform meta.block.terraform meta.braces.terraform
 #       ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.logical.terraform
-#        ^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#        ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.accessor.terraform
+#             ^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.member.terraform
 >  }
 #^^ source.terraform meta.block.terraform meta.braces.terraform
 #  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+>  admin_users_list = [
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                   ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                    ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                     ^ source.terraform meta.block.terraform punctuation.section.brackets.begin.terraform
+>    for name, user in var.users : name if user.is_admin
+#^^^^ source.terraform meta.block.terraform
+#    ^^^ source.terraform meta.block.terraform keyword.control.terraform
+#       ^ source.terraform meta.block.terraform
+#        ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform punctuation.separator.terraform
+#             ^ source.terraform meta.block.terraform
+#              ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform meta.block.terraform
+#                   ^^ source.terraform meta.block.terraform keyword.operator.word.terraform
+#                     ^ source.terraform meta.block.terraform
+#                      ^^^ source.terraform meta.block.terraform support.constant.terraform
+#                         ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                          ^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
+#                               ^ source.terraform meta.block.terraform
+#                                ^ source.terraform meta.block.terraform keyword.operator.terraform
+#                                 ^ source.terraform meta.block.terraform
+#                                  ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#                                      ^ source.terraform meta.block.terraform
+#                                       ^^ source.terraform meta.block.terraform keyword.control.conditional.terraform
+#                                         ^ source.terraform meta.block.terraform
+#                                          ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#                                              ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                                               ^^^^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
+>  ]
+#^^ source.terraform meta.block.terraform
+#  ^ source.terraform meta.block.terraform punctuation.section.brackets.end.terraform
+>  regular_users_list = [
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#                    ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                     ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                      ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                       ^ source.terraform meta.block.terraform punctuation.section.brackets.begin.terraform
+>    for name, user in var.users : name
+#^^^^ source.terraform meta.block.terraform
+#    ^^^ source.terraform meta.block.terraform keyword.control.terraform
+#       ^ source.terraform meta.block.terraform
+#        ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform punctuation.separator.terraform
+#             ^ source.terraform meta.block.terraform
+#              ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform meta.block.terraform
+#                   ^^ source.terraform meta.block.terraform keyword.operator.word.terraform
+#                     ^ source.terraform meta.block.terraform
+#                      ^^^ source.terraform meta.block.terraform support.constant.terraform
+#                         ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
+#                          ^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
+#                               ^ source.terraform meta.block.terraform
+#                                ^ source.terraform meta.block.terraform keyword.operator.terraform
+#                                 ^ source.terraform meta.block.terraform
+#                                  ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+>    if !user.is_admin
+#^^^^ source.terraform meta.block.terraform
+#    ^^ source.terraform meta.block.terraform keyword.control.conditional.terraform
+#      ^ source.terraform meta.block.terraform
+#       ^ source.terraform meta.block.terraform keyword.operator.logical.terraform
+#        ^^^^ source.terraform meta.block.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform keyword.operator.accessor.terraform
+#             ^^^^^^^^ source.terraform meta.block.terraform variable.other.member.terraform
+>  ]
+#^^ source.terraform meta.block.terraform
+#  ^ source.terraform meta.block.terraform punctuation.section.brackets.end.terraform
 >}
 #^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >
@@ -197,16 +297,29 @@
 #                 ^ source.terraform meta.block.terraform variable.declaration.terraform
 #                  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
 >    for name, user in var.users : user.role => name...
-#^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#    ^^^ source.terraform meta.block.terraform meta.braces.terraform keyword.control.terraform
+#       ^ source.terraform meta.block.terraform meta.braces.terraform
+#        ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#            ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.separator.terraform
+#             ^ source.terraform meta.block.terraform meta.braces.terraform
+#              ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#                  ^ source.terraform meta.block.terraform meta.braces.terraform
+#                   ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.word.terraform
+#                     ^ source.terraform meta.block.terraform meta.braces.terraform
 #                      ^^^ source.terraform meta.block.terraform meta.braces.terraform support.constant.terraform
-#                         ^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#                                ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                 ^^^^^^ source.terraform meta.block.terraform meta.braces.terraform
-#                                       ^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
+#                         ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.accessor.terraform
+#                          ^^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.member.terraform
+#                               ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
+#                                 ^ source.terraform meta.block.terraform meta.braces.terraform
+#                                  ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
+#                                      ^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.accessor.terraform
+#                                       ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.member.terraform
 #                                           ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                            ^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.assignment.terraform storage.type.function.terraform
+#                                            ^^ source.terraform meta.block.terraform meta.braces.terraform storage.type.function.terraform
 #                                              ^ source.terraform meta.block.terraform meta.braces.terraform
-#                                               ^^^^ source.terraform meta.block.terraform meta.braces.terraform
+#                                               ^^^^ source.terraform meta.block.terraform meta.braces.terraform variable.other.readwrite.terraform
 #                                                   ^^^ source.terraform meta.block.terraform meta.braces.terraform keyword.operator.terraform
 >  }
 #^^ source.terraform meta.block.terraform meta.braces.terraform

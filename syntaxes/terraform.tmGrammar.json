@@ -444,6 +444,12 @@
 					"include": "#comments"
 				},
 				{
+					"include": "#inline_for_expression"
+				},
+				{
+					"include": "#inline_if_expression"
+				},
+				{
 					"include": "#expressions"
 				},
 				{
@@ -471,6 +477,12 @@
 				},
 				{
 					"include": "#objects"
+				},
+				{
+					"include": "#inline_for_expression"
+				},
+				{
+					"include": "#inline_if_expression"
 				},
 				{
 					"match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=\\>?)\\s*",
@@ -619,6 +631,47 @@
 				},
 				{
 					"include": "#for_expression_body"
+				}
+			]
+		},
+		"inline_for_expression": {
+			"begin": "(for)\\b",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.control.terraform"
+				}
+			},
+			"end": "\\n",
+			"patterns": [
+				{
+					"match": "\\=\\>",
+					"name": "storage.type.function.terraform"
+				},
+				{
+					"include": "#for_expression_body"
+				}
+			]
+		},
+		"inline_if_expression": {
+			"begin": "(if)\\b",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.control.conditional.terraform"
+				}
+			},
+			"end": "\\n",
+			"patterns": [
+				{
+					"include": "#expressions"
+				},
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#comma"
+				},
+				{
+					"include": "#local_identifiers"
 				}
 			]
 		},
