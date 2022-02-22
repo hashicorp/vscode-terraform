@@ -26,13 +26,14 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension adds syntax highl
 1. Open your desired workspace and/or the root folder containing your Terraform files. Note: see [Known Issues](#known-issues) below about multi-folder workspaces
 1. Depending on your settings in VS Code, completion will start automatically (if not inside quotes/string literal, on certain trigger characters), or you can explicitly trigger completion via keyboard combination (Ctrl+Space on Windows, control+space on Mac).
 
-
 ## Configuration
 
-This extension offers several configuration options. To modify these, navigate to the extension view within VS Code, select the settings cog and choose Extension settings, or alternatively, modify the `.vscode/settings.json` file in the root of your working directory. 
+This extension offers several configuration options. To modify these, navigate to the extension view within VS Code, select the settings cog and choose Extension settings, or alternatively, modify the `.vscode/settings.json` file in the root of your working directory.
 
 ### Formatting
+
 To enable formatting, it is recommended that the following be added to the extension settings for the Terraform extension:
+
 ```
 "[terraform]": {
   "editor.defaultFormatter": "hashicorp.terraform",
@@ -75,16 +76,21 @@ This will keep the global `editor.formatOnSave` for other languages you use, and
 > **Note**: Ensure that the terraform binary is present in the environment `PATH` variable. If the terraform binary cannot be found, formatting will silently fail.
 
 ### Validation
+
 An experimental validate-on-save option can be enabled with the following setting:
+
 ```
     "terraform-ls.experimentalFeatures": {
       "validateOnSave": true
     }
 ```
+
 This will create diagnostics for any elements that fail validation. `terraform validate` can also be run using the setting in the command palette.
 
 ### Multiple Workspaces
+
 If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
+
 ```
 {
     "terraform-ls.rootModules": [
@@ -95,6 +101,7 @@ If you have multiple root modules in your workspace, you can configure the langu
 ```
 
 If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
+
 ```
 {
     "terraform-ls.excludeRootModules": [
@@ -110,7 +117,7 @@ We use telemetry to send error reports to our team, so we can respond more effec
 
 ## Release History
 
-**v2.0.0**  is the first official release from HashiCorp, prior releases were by [Mikael Olenfalk](https://github.com/mauve).
+**v2.0.0** is the first official release from HashiCorp, prior releases were by [Mikael Olenfalk](https://github.com/mauve).
 
 The 2.0.0 release integrates a new [Language Server package from HashiCorp](https://github.com/hashicorp/terraform-ls). The extension will install and upgrade terraform-ls to continue to add new functionality around code completion and formatting. See the [terraform-ls CHANGELOG](https://github.com/hashicorp/terraform-ls/blob/main/CHANGELOG.md) for details.
 
@@ -122,9 +129,7 @@ In addition, this new version brings the syntax highlighting up to date with all
 {
   "terraform.languageServer": {
     "external": true,
-    "args": [
-      "serve"
-    ]
+    "args": ["serve"]
   }
 }
 ```
@@ -137,10 +142,11 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 
 ## Known Issues
 
-* Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
-* A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
+- Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
+- A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
 ## User Group
+
 We're starting a user group for the Terraform VS Code extension. This group offers opportunities to provide feedback, access pre-release versions, and help influence the direction of this project. Collaboration and updates will be via HashiCorp Discuss (discuss.hashicorp.com), along with occasional live events.
 
 If you are interested, please complete and submit our [participation form](https://forms.gle/JY2Rwt3e657gRFHj9), and we will get back to you with an invite!
