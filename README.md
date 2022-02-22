@@ -123,7 +123,22 @@ The 2.0.0 release integrates a new [Language Server package from HashiCorp](http
 
 In addition, this new version brings the syntax highlighting up to date with all HCL2 features, as needed for Terraform 0.12 and above.
 
-**Configuration Changes** Please note that in 2.x, the configuration differs from 1.4.0, if you are having issues with the Language Server starting, you can reset the configuration to the following:
+**Configuration Changes** Please note that in 2.x, the configuration differs from 1.4.0, see [Known Issues](#known-issues) for more information.
+
+See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/main/CHANGELOG.md) for more detailed release notes.
+
+## Known Issues
+
+- Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
+- A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
+
+### Terraform 0.11
+
+If you are using a Terraform version prior to 0.12.0, you can install the pre-transfer version of this extension manually by [following the instructions in the wiki](https://github.com/hashicorp/vscode-terraform/wiki/Install-a-Pre-transfer-Version).
+
+### Configuration Changes
+
+The configuration has changed in v2.X o from 1.4.0. If you are having issues with the Language Server starting, you can reset the configuration to the following:
 
 ```json
 {
@@ -133,17 +148,6 @@ In addition, this new version brings the syntax highlighting up to date with all
   }
 }
 ```
-
-See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/main/CHANGELOG.md) for more information.
-
-## Terraform 0.11
-
-If you are using a Terraform version prior to 0.12.0, you can install the pre-transfer version of this extension manually by [following the instructions in the wiki](https://github.com/hashicorp/vscode-terraform/wiki/Install-a-Pre-transfer-Version).
-
-## Known Issues
-
-- Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
-- A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
 ## Credits
 
