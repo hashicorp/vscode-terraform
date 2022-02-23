@@ -119,11 +119,12 @@
 					"patterns": [
 						{
 							"match": "\\bresource|provider|variable|output|locals|module|data|terraform\\b",
+							"comment": "Known block type",
 							"name": "entity.name.type.terraform"
 						},
 						{
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-							"comment": "Identifer label",
+							"comment": "Unknown block type",
 							"name": "entity.name.label.terraform"
 						}
 					]
@@ -132,6 +133,7 @@
 					"patterns": [
 						{
 							"name": "variable.other.enummember.terraform",
+							"comment": "Block label",
 							"match": "[\\\"\\-\\w]+"
 						}
 					]
