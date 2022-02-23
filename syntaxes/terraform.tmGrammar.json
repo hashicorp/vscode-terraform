@@ -113,12 +113,12 @@
 		"block": {
 			"name": "meta.block.terraform",
 			"comment": "This will match Terraform blocks like `resource \"aws_instance\" \"web\" {` or `module {`",
-			"begin": "(\\w+)(?:([\\s\\\"\\-\\w]*)(\\{))",
+			"begin": "(\\w+)([\\s\\\"\\-\\w]*)(\\{)",
 			"beginCaptures": {
 				"1": {
 					"patterns": [
 						{
-							"match": "\\b(?:resource|provider|variable|output|locals|module|data|terraform)\\b",
+							"match": "\\bresource|provider|variable|output|locals|module|data|terraform\\b",
 							"name": "entity.name.type.terraform"
 						},
 						{
