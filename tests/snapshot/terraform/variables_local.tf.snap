@@ -96,13 +96,9 @@
 >resource "aws_instance" "example" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
-#          ^^^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
-#                      ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
+#         ^^^^^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
 #                       ^ source.terraform meta.block.terraform
-#                        ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
-#                         ^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
-#                                ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
+#                        ^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
 #                                 ^ source.terraform meta.block.terraform
 #                                  ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  # ...

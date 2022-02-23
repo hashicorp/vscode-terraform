@@ -131,19 +131,8 @@
 				"2": {
 					"patterns": [
 						{
-							"name":"entity.name.tag.terraform",
-							"begin": "\"",
-							"beginCaptures": {
-								"0": {
-									"name": "entity.name.tag.begin.terraform"
-								}
-							},
-							"end": "\"",
-							"endCaptures": {
-								"0": {
-									"name": "entity.name.tag.end.terraform"
-								}
-							}
+							"name": "entity.name.tag.terraform",
+							"match": "[\\\"\\-\\w]+"
 						}
 					]
 				},
