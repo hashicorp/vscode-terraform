@@ -131,7 +131,7 @@
 				"2": {
 					"patterns": [
 						{
-							"name": "entity.name.tag.terraform",
+							"name": "variable.other.enummember.terraform",
 							"match": "[\\\"\\-\\w]+"
 						}
 					]

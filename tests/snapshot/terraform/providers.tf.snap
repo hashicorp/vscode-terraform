@@ -1,7 +1,7 @@
 >provider "google" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+#         ^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 #                 ^ source.terraform meta.block.terraform
 #                  ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  project = "acme-app"

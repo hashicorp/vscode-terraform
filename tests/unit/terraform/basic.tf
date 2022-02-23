@@ -71,7 +71,7 @@ terraform {
 provider "azurerm" {
 ; <-------- source.terraform meta.block.terraform entity.name.type.terraform
 ;       ^ source.terraform meta.block.terraform
-;        ^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+;        ^^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 ;                 ^ source.terraform meta.block.terraform
 ;                  ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
   features {}
@@ -86,9 +86,9 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
 ; <-------- source.terraform meta.block.terraform entity.name.type.terraform
 ;       ^ source.terraform meta.block.terraform
-;        ^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+;        ^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 ;                                ^ source.terraform meta.block.terraform
-;                                 ^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
+;                                 ^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 ;                                     ^ source.terraform meta.block.terraform
 ;                                      ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
   name     = "myTFResourceGroup"
