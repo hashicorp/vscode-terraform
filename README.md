@@ -28,9 +28,25 @@ See [Getting Started](#getting-started) for more detailed information.
 
 IntelliSense is a general term for a variety of code editing features including: code completion, parameter info, quick info, and member lists. IntelliSense features are sometimes called by other names such as autcomplete, code completion, and code hinting.
 
-IntelliSense is provided for all files within the current working folder. They're also available for Terraform modules that are installed in the workspace.
+> **Note:** If there are compile time errors present in the open document, intellisense will not provide completions. Please fix the errors and reload the document and intellisense will return. See [hcl-lang#57](https://github.com/hashicorp/hcl-lang/issues/57) for more information.
 
- (if not inside quotes/string literal, on certain trigger characters), or you can explicitly trigger completion via keyboard combination (Ctrl+Space on Windows, control+space on Mac).
+For Terraform constructs like resource and data, labels, blocks and attributes are auto completed both at the root of the document and inside other blocks. This also works for Terraform modules that are installed in the workspace, attributes and other constructs are autocompleted.
+
+Invoking intellisense is performed through the keyboard combination for your platform (Ctrl+Space on Windows, control+space on Mac) and the results depend on where the cursor is placed.
+
+If the cursor is a the begining of a line and no other characters are present, then a list of constructs like data, provider, resource, etc are shown.
+
+![](docs/intellisense1.png)
+
+If inside a set of quotes or inside a block, the extension provides context specific completions appropriate for the location. For example, inside a `resource` block attributes for a given provider are listed.
+
+![](docs/intellisense2.png)
+
+Combining `editor.suggest.preview` with [pre-fill required fields](#code-completion), the extension will provide inline snippet suggestions for blocks of code:
+
+![](docs/intellisense3.png)
+
+Completing the snippet allows you to tab complete through each attribute and block.
 
 ### Syntax validation
 
@@ -39,6 +55,8 @@ The extension provides validation through [`terraform validate`](https://www.ter
 ### Syntax highlighting
 
 Terraform syntax highlighting reconizes language constructs from Terraform version 0.12 to 1.X. Terraform providers, modules, variables and other high-level constructs are reconized, as well as more complex code statements like `for` loops, condtional expressions, and other complex expressions.
+
+![](docs/syntax2.png)
 
 Some language constructs will highlight differently for older versions of Terrafrom that are incompatible with newer ways of expressing Terraform code. In these cases we lean toward ensuring the latest version of Terraform displays correctly and do our best with older versions.
 
@@ -107,6 +125,8 @@ An experimental option can be enabled to prefill required fields when completing
 }
 ```
 
+![](docs/pre-fill.png)
+
 ### Code Lens
 
 Display reference counts above top level blocks and attributes
@@ -114,6 +134,10 @@ Display reference counts above top level blocks and attributes
 ```json
 "terraform.codelens.referenceCount": true
 ```
+
+![](docs/code_lens.png)
+
+> **Note:** This feature impacts extension perfomance when opening folders with many modules present. If you experience slowness or high cpu utilization, open a smaller set of folders or disable this setting.
 
 ### Formatting
 
@@ -246,7 +270,7 @@ See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/main/CHAN
 - If you come across a problem with the extension, please file an [issue](https://github.com/hashicorp/vscode-terraform/issues/new/choose).
 - If someone has already filed an issue that encompasses your feedback, please leave a 👍/👎 reaction on the issue
 - Contributions are always welcome! Please see our [contributing guide](https://github.com/hashicorp/vscode-terraform/issues/new?assignees=&labels=enhancement&template=feature_request.md) for more details
-- If you're interested in the development of the extension, you can read about our [development process](./DEVELOPMENT.md)
+- If you're interested in the development of the extension, you can read about our [development process](DEVELOPMENT.md)
 
 ### Generate a Bug Report
 
