@@ -5,6 +5,7 @@ ENHANCEMENTS:
  - Publish Platform Specific Extension [#905](https://github.com/hashicorp/vscode-terraform/pull/905)
  - Update list/map syntax highlighting [#918](https://github.com/hashicorp/vscode-terraform/pull/918)
  - Improve comment detection [#935](https://github.com/hashicorp/vscode-terraform/pull/935)
+ - Highlight block label as "enumMember" & highlight unquoted labels [#943](https://github.com/hashicorp/vscode-terraform/pull/943)
 
 BUG FIXES:
 
