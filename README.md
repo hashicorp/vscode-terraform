@@ -227,7 +227,7 @@ If you want to automatically ignore certain directories when terraform-ls indexe
 
 ### Terraform command options
 
-You can configure the path to the Terraform binary used by terrafomr-ls to perform operations inside the editor by configuring this setting:
+You can configure the path to the Terraform binary used by terraform-ls to perform operations inside the editor by configuring this setting:
 
 ```json
 "terraform-ls.terraformExecPath": "C:/some/folder/path"
@@ -252,6 +252,49 @@ Supports variables (e.g. Timestamp, Pid, Ppid) via Go template syntax `{{.VarNam
 
 We use telemetry to send error reports to our team, so we can respond more effectively. You can configure VS Code to send all telemetry, just crash telemetry, just errors or turn it off entirely by [configuring](https://code.visualstudio.com/docs/getstarted/telemetry#_disable-telemetry-reporting) `"telemetry.telemetryLevel"` to your desired value. You can also [monitor what's being sent](https://code.visualstudio.com/docs/getstarted/telemetry#_output-channel-for-telemetry-events) in your logs.
 
+## Known Issues
+
+- If there are validation errors in the open document, intellisense does not provide inline completions. Run `Terraform: validate` and fix validation errors, then reload the document and intellisense will work again. This is being worked on in [terraform-vscode#123](https://github.com/hashicorp/terraform-vscode/issues/123).
+- Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [terraform-ls#57](https://github.com/hashicorp/terraform-ls/issues/57) for more information.
+- A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. More information available in ([terraform-ls#32](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
+
+### Terraform 0.11 compatibility
+
+If you are using a Terraform version prior to 0.12.0, you can install the pre-transfer 1.4.0 version of this extension by following the instructions in the [pin version section](#pin-to-a-specific-version-of-the-extension).
+
+The configuration has changed from 1.4.0 to v2.X. If you are having issues with the Language Server starting, you can reset the configuration to the following:
+
+```json
+"terraform.languageServer": {
+  "external": true,
+  "args": ["serve"]
+}
+```
+
+## Troubleshooting
+
+- If you have a question about how to accomplish something with the extension, please ask on the [Terraform Editor Discuss site](https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46)
+- If you come across a problem with the extension, please file an [issue](https://github.com/hashicorp/vscode-terraform/issues/new/choose).
+- If someone has already filed an issue that encompasses your feedback, please leave a 👍/👎 reaction on the issue
+- Contributions are always welcome! Please see our [contributing guide](https://github.com/hashicorp/vscode-terraform/issues/new?assignees=&labels=enhancement&template=feature_request.md) for more details
+- If you're interested in the development of the extension, you can read about our [development process](DEVELOPMENT.md)
+
+### Generate a bug report
+
+Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `Terraform: Generate Bug Report`. This will inspect the VS Code version, the Terrafform extension version, the terraform-ls version and the list of installed extensions and open a browser window with Github loaded. You can then inspect the information provided, edit if desired, and submit the issue.
+
+### Reload the extension
+
+If you haven't see the Problems Pane update in awhile, or hover and intellisense doesn't seem to showing up, you might not know what to do. Sometimes the Terraform extension can experience problems which cause the language server to crash or not respond. The extension has a way of logging the crash, but there is something you can do to get right back to working: reload the Terraform Language Server.
+
+You can reload the Terraform Language Server by opening the command palette and starting to type Reload. A list of commands will appear, select Reload Window. This will reload the Visual Studio Code window without closing down the entire editor, and without losing any work currently open in the editor.
+
+### Pin to a specific version of the extension
+
+If you wish to install a specific version of the extension, you can choose 'Install Another version' option in the Extensions pane. This will bring up a list of prior versions for the selected extension. Choose the version you want to install from the list.
+
+![](docs/pin_version.png)
+
 ## Release History
 
 **v2.0.0** is the first official release from HashiCorp, prior releases were by [Mikael Olenfalk](https://github.com/mauve).
@@ -263,44 +306,6 @@ In addition, this new version brings the syntax highlighting up to date with all
 > **Configuration Changes** Please note that in 2.x, the configuration differs from 1.4.0, see [Known Issues](#known-issues) for more information.
 
 See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/main/CHANGELOG.md) for more detailed release notes.
-
-## Troubleshooting
-
-- If you have a question about how to accomplish something with the extension, please ask on the [Terraform Editor Discuss site](https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46)
-- If you come across a problem with the extension, please file an [issue](https://github.com/hashicorp/vscode-terraform/issues/new/choose).
-- If someone has already filed an issue that encompasses your feedback, please leave a 👍/👎 reaction on the issue
-- Contributions are always welcome! Please see our [contributing guide](https://github.com/hashicorp/vscode-terraform/issues/new?assignees=&labels=enhancement&template=feature_request.md) for more details
-- If you're interested in the development of the extension, you can read about our [development process](DEVELOPMENT.md)
-
-### Generate a Bug Report
-
-Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `Terraform: Generate Bug Report`. This will inspect the VS Code version, the Terrafform extension version, the terraform-ls version and the list of installed extensions and open a browser window with Github loaded. You can then inspect the information provided, edit if desired, and submit the issue.
-
-### Reloading the Terraform VS Code extension
-
-If you haven't see the Problems Pane update in awhile, or hover and intellisense doesn't seem to showing up, you might not know what to do. Sometimes the Terraform extension can experience problems which cause the language server to crash or not respond. The extension has a way of logging the crash, but there is something you can do to get right back to working: reload the Terraform Language Server.
-
-You can reload the Terraform Language Server by opening the command palette and starting to type Reload. A list of commands will appear, select Reload Window. This will reload the Visual Studio Code window without closing down the entire editor, and without losing any work currently open in the editor.
-
-## Known Issues
-
-- Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [relevant issue](https://github.com/hashicorp/terraform-ls/issues/57) for more.
-- A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. ([info](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
-
-### Terraform 0.11
-
-If you are using a Terraform version prior to 0.12.0, you can install the pre-transfer version of this extension manually by [following the instructions in the wiki](https://github.com/hashicorp/vscode-terraform/wiki/Install-a-Pre-transfer-Version).
-
-### Configuration Changes
-
-The configuration has changed from 1.4.0 to v2.X. If you are having issues with the Language Server starting, you can reset the configuration to the following:
-
-```json
-"terraform.languageServer": {
-  "external": true,
-  "args": ["serve"]
-}
-```
 
 ## Credits
 
