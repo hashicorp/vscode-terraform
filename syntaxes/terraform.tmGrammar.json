@@ -113,17 +113,18 @@
 		"block": {
 			"name": "meta.block.terraform",
 			"comment": "This will match Terraform blocks like `resource \"aws_instance\" \"web\" {` or `module {`",
-			"begin": "(\\w+)(?:([\\s\\\"\\-[:word:]]*)(\\{))",
+			"begin": "(\\w+)([\\s\\\"\\-\\w]*)(\\{)",
 			"beginCaptures": {
 				"1": {
 					"patterns": [
 						{
-							"match": "\\b(?:resource|provider|variable|output|locals|module|data|terraform)\\b",
+							"match": "\\bresource|provider|variable|output|locals|module|data|terraform\\b",
+							"comment": "Known block type",
 							"name": "entity.name.type.terraform"
 						},
 						{
 							"match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
-							"comment": "Identifer label",
+							"comment": "Unknown block type",
 							"name": "entity.name.label.terraform"
 						}
 					]
@@ -131,19 +132,9 @@
 				"2": {
 					"patterns": [
 						{
-							"name":"entity.name.tag.terraform",
-							"begin": "\"",
-							"beginCaptures": {
-								"0": {
-									"name": "entity.name.tag.begin.terraform"
-								}
-							},
-							"end": "\"",
-							"endCaptures": {
-								"0": {
-									"name": "entity.name.tag.end.terraform"
-								}
-							}
+							"name": "variable.other.enummember.terraform",
+							"comment": "Block label",
+							"match": "[\\\"\\-\\w]+"
 						}
 					]
 				},

@@ -5,9 +5,7 @@
 >variable "image_id" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
-#          ^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
-#                  ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
+#         ^^^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 #                   ^ source.terraform meta.block.terraform
 #                    ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  type = string
@@ -23,9 +21,7 @@
 >variable "availability_zone_names" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
-#          ^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
-#                                 ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
+#         ^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 #                                  ^ source.terraform meta.block.terraform
 #                                   ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  type    = list(string)
@@ -55,9 +51,7 @@
 >variable "docker_ports" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
-#          ^^^^^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
-#                      ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
+#         ^^^^^^^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 #                       ^ source.terraform meta.block.terraform
 #                        ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  type = list(object({
@@ -142,9 +136,7 @@
 >variable "image_id" {
 #^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
 #        ^ source.terraform meta.block.terraform
-#         ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.begin.terraform
-#          ^^^^^^^^ source.terraform meta.block.terraform entity.name.tag.terraform
-#                  ^ source.terraform meta.block.terraform entity.name.tag.terraform entity.name.tag.end.terraform
+#         ^^^^^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
 #                   ^ source.terraform meta.block.terraform
 #                    ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  type        = string
