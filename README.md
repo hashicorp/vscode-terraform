@@ -10,7 +10,7 @@ Get started writing Terraform configurations with VS Code in three steps:
 
 - **Step 1:** If you haven't done so already, install [Terraform](https://www.terraform.io/downloads)
 
-- **Step 2:** Install the [VS Code Terraform extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform).
+- **Step 2:** Install the [Terraform VS Code extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform).
 
 - **Step 3:** To activate the extension, open any folder or VS Code workspace containing Terraform files. Once activated, the Terraform language indicator will appear in the bottom right corner of the window.
 
@@ -18,7 +18,7 @@ New to Terraform? Read the [Terraform Learning guides](https://learn.hashicorp.c
 
 See [Usage](#usage) for more detailed getting started information.
 
-Read the [troubleshooting guide](#troubleshooting) for answers to common questions.
+Read the [Troubleshooting Guide](#troubleshooting) for answers to common questions.
 
 ## Features
 
@@ -26,9 +26,9 @@ Read the [troubleshooting guide](#troubleshooting) for answers to common questio
 - [Syntax validation](#syntax-validation) Diagnostics using `terraform validate` provide inline error checking
 - [Syntax highlighting](#syntax-highlighting) Highlighting syntax from Terraform 0.12 to 1.X
 - [Code Navigation](#code-navigation) Navigate through your codebase with Go to Defintion and Symbol support
-- [Code Formating](#code-formating) Format your code with `terraform fmt` automatically
-- [Code Snippets](#code-snippets) Shortcuts for commmon snippets like fore_each and variable
-- [Terraform Module Explorer](#terraform-module-explorer) View all modules and providers referenced in the currentyl open document.
+- [Code Formatting](#code-formatting) Format your code with `terraform fmt` automatically
+- [Code Snippets](#code-snippets) Shortcuts for commmon snippets like `for_each` and `variable`
+- [Terraform Module Explorer](#terraform-module-explorer) View all modules and providers referenced in the currently open document.
 - [Terraform commands](#terraform-commands) Directly execute commands like `terraform init` or `terraform plan` from the VS Code Command Palette.
 
 ### IntelliSense and Autocomplete
@@ -41,7 +41,7 @@ For Terraform constructs like resource and data, labels, blocks and attributes a
 
 Invoking intellisense is performed through the [keyboard combination](https://code.visualstudio.com/docs/getstarted/keybindings) for your platform and the results depend on where the cursor is placed.
 
-If the cursor is a the begining of a line and no other characters are present, then a list of constructs like data, provider, resource, etc are shown.
+If the cursor is at the beginning of a line and no other characters are present, then a list of constructs like `data`, `provider`, `resource`, etc are shown.
 
 ![](docs/intellisense1.png)
 
@@ -55,17 +55,17 @@ Combining `editor.suggest.preview` with the [pre-fill required fields](#code-com
 
 Completing the snippet allows you to tab complete through each attribute and block.
 
-### Syntax validation
+### Syntax Validation
 
 The extension provides validation through [`terraform validate`](https://www.terraform.io/cli/commands/validate). This verifies whether a configuration is syntactically valid and internally consistent, regardless of any provided variables or existing state. It is thus primarily useful for general verification of reusable modules, including correctness of attribute names and value types.
 
-### Syntax highlighting
+### Syntax Highlighting
 
-Terraform syntax highlighting reconizes language constructs from Terraform version 0.12 to 1.X. Terraform providers, modules, variables and other high-level constructs are reconized, as well as more complex code statements like `for` loops, condtional expressions, and other complex expressions.
+Terraform syntax highlighting recognizes language constructs from Terraform version 0.12 to 1.X. Terraform providers, modules, variables and other high-level constructs are recognized, as well as more complex code statements like `for` loops, conditional expressions, and other complex expressions.
 
 ![](docs/syntax2.png)
 
-Some language constructs will highlight differently for older versions of Terrafrom that are incompatible with newer ways of expressing Terraform code. In these cases we lean toward ensuring the latest version of Terraform displays correctly and do our best with older versions.
+Some language constructs will highlight differently for older versions of Terraform that are incompatible with newer ways of expressing Terraform code. In these cases we lean toward ensuring the latest version of Terraform displays correctly and do our best with older versions.
 
 ### Code Navigation
 
@@ -76,9 +76,9 @@ While editing, you can right-click different identifiers to take advantage of se
 - `Go to Declaration` navigates to the place where the variable or other construct is declared.
 - `Peek Declaration` displays the declaration directly inside the current editor.
 
-### Code Formating
+### Code Formatting
 
-This extension utilizies [`terraform fmt`](https://www.terraform.io/cli/commands/fmt) to rewrite an open document to a canonical format and style. This command applies a subset of the [Terraform language style conventions](https://www.terraform.io/language/syntax/style), along with other minor adjustments for readability.
+This extension utilizes [`terraform fmt`](https://www.terraform.io/cli/commands/fmt) to rewrite an open document to a canonical format and style. This command applies a subset of the [Terraform language style conventions](https://www.terraform.io/language/syntax/style), along with other minor adjustments for readability.
 
 
 See the [Formating](#formatting) Configuration section for information on how to configure this feature.
@@ -98,7 +98,7 @@ The extension provides several snippets to accelerate adding Terraform code to y
 
 List Terraform modules used in the current open document in the Explorer Pane, or drag to the Side Bar pane for an expanded view.
 
-Each item shows an icon indicating whether the module is a local module, a git module, or from the Terraform Registry.
+Each item shows an icon indicating where the module comes from (local filesystem, git repository, or Terraform Registry).
 
 ![](docs/module_calls.png)
 
@@ -138,7 +138,7 @@ The extension should work anywhere VS Code itself and Terraform 0.12 or higher i
 
 Intellisense, error checking and other language features are supported for Terraform v0.12 and greater.
 
-Syntax highlighting supports Terraform v1.0 and greater. Syntax support for v0.12 and v0.15 is on a best effort basis.
+Syntax highlighting targets Terraform v1.0 and greater. Highlighting 0.12-0.15 configuration is done on a best effort basis.
 
 ## Usage
 
@@ -146,7 +146,7 @@ Syntax highlighting supports Terraform v1.0 and greater. Syntax support for v0.1
 
 It is a common pattern to have seperate folders containing related Terraform configuration that are not contained under one root folder. For example, you have a main Terraform folder containing the configuration for a single application and several module folders containing encapsualted code for configuring different parts of component pieces. You could open each folder in a separate VS Code window, and bounce between each window to author your changes.
 
-A better approach is to use [VS Code Workspaces](https://code.visualstudio.com/docs/editor/workspaces). Using our exmaple above, open the main Terraform folder first, then use Add Folder to workspace to add the dependent module folders. A single VS Code window is used and all Terrraform files are available to author your changes. This uses a single terraform-ls process that has an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across your project.
+A better approach is to use [VS Code Workspaces](https://code.visualstudio.com/docs/editor/workspaces). Using our example above, open the main Terraform folder first, then use Add Folder to workspace to add the dependent module folders. A single VS Code window is used and all Terrraform files are available to author your changes. This uses a single terraform-ls process that has an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across your project.
 
 ### Single file support
 
@@ -154,7 +154,7 @@ Opening a single Terraform configuration file inside VS Code is currently not su
 
 The Terraform VS Code extension works best when it has the full context of a Terraform project where it can parse the referenced files and provide the expected advanced language features.
 
-The recommend workflow is to instead  open the containing folder for the desired Terraform file inside a single VS Code editor window, then navigate to the desired file. This seems counter-intuitive when you only want to edit a single file, but this allows the extension to understand the Terraform setup you are using and provide accurate and helpful intellisense, error checking, and other language features.
+The recommended workflow is to instead open the containing folder for the desired Terraform file inside a single VS Code editor window, then navigate to the desired file. This seems counter-intuitive when you only want to edit a single file, but this allows the extension to understand the Terraform setup you are using and provide accurate and helpful intellisense, error checking, and other language features.
 
 ### Refresh Intellisense
 
@@ -200,7 +200,7 @@ Display reference counts above top level blocks and attributes
 
 ![](docs/code_lens.png)
 
-> **Note:** This feature impacts extension perfomance when opening folders with many modules present. If you experience slowness or high cpu utilization, open a smaller set of folders or disable this setting.
+> **Note:** This feature impacts extension performance when opening folders with many modules present. If you experience slowness or high CPU utilization, open a smaller set of folders or disable this setting.
 
 ### Formatting
 
@@ -343,7 +343,7 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 
 ### Generate a bug report
 
-Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `Terraform: Generate Bug Report`. This will inspect the VS Code version, the Terrafform extension version, the terraform-ls version and the list of installed extensions and open a browser window with Github loaded. You can then inspect the information provided, edit if desired, and submit the issue.
+Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `Terraform: Generate Bug Report`. This will inspect the VS Code version, the Terraform extension version, the terraform-ls version and the list of installed extensions and open a browser window with GitHub loaded. You can then inspect the information provided, edit if desired, and submit the issue.
 
 ### Reload the extension
 
@@ -365,7 +365,7 @@ Please read the full text at https://www.hashicorp.com/community-guidelines
 
 ## Contributing
 
-We are an open source project on GitHub and would enjoy your contributions! Consult our [development guide](DEVELOPMENT.md) for steps on how to get started.Please [open a new issue](https://github.com/hashicorp/terraform-vscode/issues) before working on a PR that requires significant effort. This will allow us to make sure the work is in line with the project's goals.
+We are an open source project on GitHub and would enjoy your contributions! Consult our [development guide](DEVELOPMENT.md) for steps on how to get started. Please [open a new issue](https://github.com/hashicorp/terraform-vscode/issues) before working on a PR that requires significant effort. This will allow us to make sure the work is in line with the project's goals.
 
 ## Release History
 
