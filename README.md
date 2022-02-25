@@ -94,7 +94,7 @@ The extension provides several snippets to accelerate adding Terraform code to y
 - `vare` - Empty variable
 - `varm` - Map Variable
 
-### Terraform Module Explorer
+### Terraform Module and Provider Explorer
 
 List Terraform modules used in the current open document in the Explorer Pane, or drag to the Side Bar pane for an expanded view.
 
@@ -105,6 +105,10 @@ Each item shows an icon indicating whether the module is a local module, a git m
 If the module comes from the Terraform Registry, a link to open the documentation in a browser is provided.
 
 ![](docs/module_calls_doc_link.png)
+
+List Terraform providers used in the current open document in the Explorer Pane, or drag to the Side Bar pane for an expanded view.
+
+![](docs/module_providers.png)
 
 ### Terraform Commands
 
