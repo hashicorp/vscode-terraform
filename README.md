@@ -2,7 +2,7 @@
 
 <img alt="HashiCorp Terraform" src="terraform-banner.png" width="600px">
 
-The HashiCorp Terraform Visual Studio Code (VS Code) extension with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for <a href="https://www.terraform.io/">Terraform</a> files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
+The HashiCorp [Terraform Visual Studio Code] (VS Code)(https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) extension with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [Terraform](https://www.terraform.io) files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
 
 ## Quick Start
 
@@ -305,11 +305,10 @@ You can override the Terraform execution timeout by configuring this setting:
 You can set the path Terraform logs (TF_LOG_PATH) by configuring this setting:
 
 ```json
-"terraform-ls.terraformLogFilePath": "C:/some/folder/path/log-{{.varName}}.log"
+"terraform-ls.terraformLogFilePath": "C:/some/folder/path/log-{{varname}}.log"
 ```
 
 Supports variables (e.g. Timestamp, Pid, Ppid) via Go template syntax `{{.VarName}}`
-        
 
 ### Telemetry
 
