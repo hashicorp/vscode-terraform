@@ -348,9 +348,9 @@ Experience a problem? You can have VS Code open a Github issue in our repo with 
 
 ### Reload the extension
 
-If you haven't see the Problems Pane update in awhile, or hover and intellisense doesn't seem to showing up, you might not know what to do. Sometimes the Terraform extension can experience problems which cause the language server to crash or not respond. The extension has a way of logging the crash, but there is something you can do to get right back to working: reload the Terraform Language Server.
+If you haven't seen the Problems Pane update in awhile, or hover and intellisense doesn't seem to showing up, you might not know what to do. Sometimes the Terraform extension can experience problems which cause the editor to not respond. The extension has a way of [reporting the problem](#generate-a-bug-report), but there is something you can do to get right back to working after reporting the problem: reload the Terraform extension.
 
-You can reload the Terraform Language Server by opening the command palette and starting to type Reload. A list of commands will appear, select Reload Window. This will reload the Visual Studio Code window without closing down the entire editor, and without losing any work currently open in the editor.
+You can reload the Terraform extension by opening the command palette and starting to type `Reload`. A list of commands will appear, select `Reload Window`. This will reload the Visual Studio Code window without closing down the entire editor, and without losing any work currently open in the editor.
 
 ### Pin to a specific version of the extension
 
