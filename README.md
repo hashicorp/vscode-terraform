@@ -309,7 +309,7 @@ You can set the path Terraform logs (TF_LOG_PATH) by configuring this setting:
 "terraform-ls.terraformLogFilePath": "C:/some/folder/path/log-{{varname}}.log"
 ```
 
-Supports variables (e.g. Timestamp, Pid, Ppid) via Go template syntax `{{.VarName}}`
+Supports variables (e.g. Timestamp, Pid, Ppid) via Go template syntax `{{varname}}`
 
 ### Telemetry
 
