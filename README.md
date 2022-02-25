@@ -117,8 +117,12 @@ The extension provides access to several Terraform commands through the Command 
 
 ## Requirements
 
-- Terraform v0.12 or greater
+The Terraform VS Code extension bundles the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) and is a self-contained install.
+
+The extension does require the following to be installed before use:
+
 - VS Code v1.61 or greater
+- Terraform v0.12 or greater
 
 ## Platform Support
 
@@ -134,6 +138,20 @@ Syntax highlighting supports Terraform v1.0 and greater. Syntax support for v0.1
 
 ## Usage
 
+### VS Code Workspace support
+
+It is a common pattern to have seperate folders containing related Terraform configuration that are not contained under one root folder. For example, you have a main Terraform folder containing the configuration for a single application and several module folders containing encapsualted code for configuring different parts of component pieces. You could open each folder in a separate VS Code window, and bounce between each window to author your changes.
+
+A better approach is to use [VS Code Workspaces](https://code.visualstudio.com/docs/editor/workspaces). Using our exmaple above, open the main Terraform folder first, then use Add Folder to workspace to add the dependent module folders. A single VS Code window is used and all Terrraform files are available to author your changes. This uses a single terraform-ls process that has an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across your project.
+
+### Single file support
+
+Opening a single Terraform configuration file inside VS Code is currently not supported. We see this approach most commonly attempted by users of terminal editors like vim, where it is common to edit a single file at a time.
+
+The Terraform VS Code extension works best when it has the full context of a Terraform project where it can parse the referenced files and provide the expected advanced language features.
+
+The recommend workflow is to instead  open the containing folder for the desired Terraform file inside a single VS Code editor window, then navigate to the desired file. This seems counter-intuitive when you only want to edit a single file, but this allows the extension to understand the Terraform setup you are using and provide accurate and helpful intellisense, error checking, and other language features.
+
 ### Refresh Intellisense
 
 To provide the extension with an up-to-date schema for the Terraform providers used in your configuration:
@@ -144,7 +162,9 @@ To provide the extension with an up-to-date schema for the Terraform providers u
 
 ## Configuration
 
-This extension offers several configuration options. To modify these, navigate to the extension view within VS Code, select the settings cog and choose Extension settings, or alternatively, modify the `.vscode/settings.json` file in the root of your working directory.
+The extension does not require any initial configuration and should work out of the box. To take advantage of additional VS Code features or experimental extension features you can configure settings to customize behavior.
+
+This extension offers several configuration options. To modify these open the [VS Code Settings Editor](https://code.visualstudio.com/docs/getstarted/settings#_settings-editor) in the UI or JSON view for [user and workspace level](https://code.visualstudio.com/docs/getstarted/settings#_creating-user-and-workspace-settings) settings, [scope your settings by language](https://code.visualstudio.com/docs/getstarted/settings#_languagespecific-editor-settings), or alternatively modify the `.vscode/settings.json` file in the root of your working directory.
 
 ### Code Completion
 
@@ -156,7 +176,15 @@ An experimental option can be enabled to prefill required fields when completing
 }
 ```
 
+For example, choosing `aws_alb_listener` in the following block inserts a snippet in the current line with the `resource` block entirely filled out, containing tab stops to fill in the required values.
+
 ![](docs/pre-fill.png)
+
+Combine this with `editor.suggest.preview` and the editor will provide inline snippet suggestions for blocks of code:
+
+![](docs/intellisense3.png)
+
+Completing the snippet allows you to tab complete through each attribute and block.
 
 ### Code Lens
 
@@ -187,7 +215,7 @@ To enable automatic formatting, it is recommended that the following be added to
 }
 ```
 
-It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows which extension to use to format your files. It is possible to have more than one extension installed which claim a capability to format Terraform files.
+> It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows which extension to use to format your files. It is possible to have more than one extension installed which claim a capability to format Terraform files.
 
 When using the `editor.formatOnSaveMode` setting, only `file` is currently supported. The `modifications` or `modificationsIfAvailable` settings [use the currently configured SCM](https://code.visualstudio.com/updates/v1_49#_only-format-modified-text) to detect file line ranges that have changed and send those ranges to the formatter. The `file` setting works because `terraform fmt` was originally designed for formatting an entire file, not ranges. If you don't have an SCM enabled for the files you are editing, `modifications` won't work at all. The `modificationsIfAvailable` setting will fall back to `file` if there is no SCM and will appear to work sometimes.
 
@@ -325,6 +353,16 @@ You can reload the Terraform Language Server by opening the command palette and 
 If you wish to install a specific version of the extension, you can choose 'Install Another version' option in the Extensions pane. This will bring up a list of prior versions for the selected extension. Choose the version you want to install from the list.
 
 ![](docs/pin_version.png)
+
+## Code of Conduct
+
+HashiCorp Community Guidelines apply to you when interacting with the community here on GitHub and contributing code to this repository.
+
+Please read the full text at https://www.hashicorp.com/community-guidelines
+
+## Contributing
+
+We are an open source project on GitHub and would enjoy your contributions! Consult our [development guide](DEVELOPMENT.md) for steps on how to get started.Please [open a new issue](https://github.com/hashicorp/terraform-vscode/issues) before working on a PR that requires significant effort. This will allow us to make sure the work is in line with the project's goals.
 
 ## Release History
 
