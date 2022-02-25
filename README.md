@@ -158,11 +158,12 @@ The recommended workflow is to instead open the containing folder for the desire
 
 ### Refresh Intellisense
 
+The extension will pick up new schema for Terraform providers you reference in your configuration files automatically whenever anything changes inside `.terraform`.
+
 To provide the extension with an up-to-date schema for the Terraform providers used in your configuration:
 
-1. Open a terminal and change the current working directory to your desired workspace and/or the root folder containing your Terraform files.
-1. Perform a `terraform init` from the terminal.
-1. Open VS Code in the current working directory by typing `code .`
+1. Open any folder or VS Code workspace containing Terraform files. 
+1. Open the Command Palette and run `Terraform: init current folder` or perform a `terraform init` from the terminal.
 
 ## Configuration
 
