@@ -317,7 +317,7 @@ We use telemetry to send error reports to our team, so we can respond more effec
 
 ## Known Issues
 
-- If there are validation errors in the open document, intellisense does not provide inline completions. Run `Terraform: validate` and fix validation errors, then reload the document and intellisense will work again. This is being worked on in [terraform-vscode#123](https://github.com/hashicorp/terraform-vscode/issues/123).
+- If there are syntax errors present in the document upon opening, intellisense may not provide all completions. Run `Terraform: validate` and fix validation errors, then reload the document and intellisense will work again. Potential solutions for this are being investigated in See [hcl-lang#57](https://github.com/hashicorp/hcl-lang/issues/57) for more information.
 - Completion inside incomplete blocks, such as `resource "here` (without the closing quote and braces) is not supported. You can complete the 1st level blocks though and that will automatically trigger subsequent completion for e.g. resource types. See [terraform-ls#57](https://github.com/hashicorp/terraform-ls/issues/57) for more information.
 - A number of different folder configurations (specifically when your root module is not a parent to any submodules) are not yet supported. More information available in ([terraform-ls#32](https://github.com/hashicorp/terraform-ls/issues/32#issuecomment-649707345))
 
