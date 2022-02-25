@@ -6,11 +6,17 @@ The HashiCorp Terraform Visual Studio Code (VS Code) extension with the [Terrafo
 
 ## Quick Start
 
-1. Install [Terraform](https://www.terraform.io/downloads)
-1. Install the extension [from the Marketplace](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform)
-1. Open your desired workspace and/or the root folder containing your Terraform files.
+Get started writing Terraform configurations with VS Code in three steps:
 
-See [Usage](#usage) for more detailed information.
+- **Step 1:** If you haven't done so already, install [Terraform](https://www.terraform.io/downloads)
+
+- **Step 2:** Install the [VS Code Terraform extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform).
+
+- **Step 3:** To activate the extension, open any folder or VS Code workspace containing Terraform files. Once activated, the Terraform language indicator will appear in the bottom right corner of the window.
+
+New to Terraform? Read the [Terraform Learning guides](https://learn.hashicorp.com/terraform)
+
+See [Usage](#usage) for more detailed getting started information.
 
 Read the [troubleshooting guide](#troubleshooting) for answers to common questions.
 
@@ -122,9 +128,9 @@ The extension should work anywhere VS Code itself and Terraform 0.12 or higher i
 - macOS 10.15 with Terraform v1.1
 - Ubuntu 20.04 with Terraform v1.1
 
-Syntax highlighting supports 1.0 and greater. Support for 0.12 and 0.15 is on a best effort basis.
+Intellisense, error checking and other language features are supported for Terraform v0.12 and greater.
 
-Intellisense, error checking and other language features are supported for 0.12 and greater.
+Syntax highlighting supports Terraform v1.0 and greater. Syntax support for v0.12 and v0.15 is on a best effort basis.
 
 ## Usage
 
