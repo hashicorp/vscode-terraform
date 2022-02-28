@@ -179,7 +179,7 @@
         "terraform-ls.terraformLogFilePath": {
           "scope": "resource",
           "type": "string",
-          "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. Timestamp, Pid, Ppid) via Go template syntax {{.VarName}}"
+          "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}"
         },
         "terraform-ls.excludeRootModules": {
           "scope": "resource",
