@@ -303,13 +303,13 @@ You can override the Terraform execution timeout by configuring this setting:
 "terraform-ls.terraformExecTimeout": "30"
 ```
 
-You can set the path Terraform logs (TF_LOG_PATH) by configuring this setting:
+You can set the path Terraform logs (`TF_LOG_PATH`) by configuring this setting:
 
 ```json
 "terraform-ls.terraformLogFilePath": "C:/some/folder/path/log-{{varname}}.log"
 ```
 
-Supports variables (e.g. Timestamp, Pid, Ppid) via Go template syntax `{{varname}}`
+Supports variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varname}}`
 
 ### Telemetry
 
