@@ -2,7 +2,7 @@
 
 <img alt="HashiCorp Terraform" src="terraform-banner.png" width="600px">
 
-The HashiCorp [Terraform Visual Studio Code] (VS Code)(https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) extension with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [Terraform](https://www.terraform.io) files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
+The HashiCorp [Terraform Visual Studio Code (VS Code)](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) extension with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [Terraform](https://www.terraform.io) files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
 
 ## Quick Start
 
@@ -22,13 +22,13 @@ Read the [Troubleshooting Guide](#troubleshooting) for answers to common questio
 
 ## Features
 
-- [IntelliSense](#autocomplete-and-intellisense) Edit your code with auto-completion of providers, resource names, data sources, attributes and more
+- [IntelliSense](#intellisense-and-autocomplete) Edit your code with auto-completion of providers, resource names, data sources, attributes and more
 - [Syntax validation](#syntax-validation) Diagnostics using `terraform validate` provide inline error checking
 - [Syntax highlighting](#syntax-highlighting) Highlighting syntax from Terraform 0.12 to 1.X
 - [Code Navigation](#code-navigation) Navigate through your codebase with Go to Defintion and Symbol support
 - [Code Formatting](#code-formatting) Format your code with `terraform fmt` automatically
 - [Code Snippets](#code-snippets) Shortcuts for commmon snippets like `for_each` and `variable`
-- [Terraform Module Explorer](#terraform-module-explorer) View all modules and providers referenced in the currently open document.
+- [Terraform Module Explorer](#terraform-module-and-provider-explorer) View all modules and providers referenced in the currently open document.
 - [Terraform commands](#terraform-commands) Directly execute commands like `terraform init` or `terraform plan` from the VS Code Command Palette.
 
 ### IntelliSense and Autocomplete
