@@ -23,16 +23,33 @@
 #     ^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform support.constant.terraform
 #          ^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform keyword.operator.accessor.terraform
 #           ^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.member.terraform
-#                   ^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#                   ^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform punctuation.section.parens.end.terraform
+#                    ^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform keyword.operator.terraform
+#                     ^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#                      ^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#                       ^^^^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform
+#                           ^ source.terraform meta.block.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
 >  }
-#^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#^^ source.terraform meta.block.terraform meta.braces.terraform
+#  ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.end.terraform
 >}
-#^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >
 >variable "test" {
-#^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
+#        ^ source.terraform meta.block.terraform
+#         ^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
+#               ^ source.terraform meta.block.terraform
+#                ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  default = "test"
-#^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#         ^ source.terraform meta.block.terraform variable.declaration.terraform
+#          ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#           ^ source.terraform meta.block.terraform variable.declaration.terraform
+#            ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#             ^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
+#                 ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
 >}
-#^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+#^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >
