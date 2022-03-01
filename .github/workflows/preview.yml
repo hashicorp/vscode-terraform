@@ -2,6 +2,11 @@ name: Publish Preview release
 
 on:
   workflow_dispatch:
+    inputs:
+      langserver:
+        description: 'The terraform-ls version to use. If not specified will use version in package.json'
+        required: false
+        type: string
 
 jobs:
   build:
@@ -41,6 +46,8 @@ jobs:
         id: set-preview
         run: |
           ./build/preview
+        env:
+          LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
       - name: Read extension version
         id: ext-version
         run: |
