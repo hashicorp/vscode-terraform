@@ -8,6 +8,7 @@ ENHANCEMENTS:
  - Highlight block label as "enumMember" & highlight unquoted labels [#943](https://github.com/hashicorp/vscode-terraform/pull/943)
  - Add new scope for block type and name [#934](https://github.com/hashicorp/vscode-terraform/pull/934)
  - Resolve issue with tfvars comment toggling [#937](https://github.com/hashicorp/vscode-terraform/pull/937)
+ - Improve Extension Documentation [#942]https://github.com/hashicorp/vscode-terraform/pull/942)
 
 BUG FIXES:
 
