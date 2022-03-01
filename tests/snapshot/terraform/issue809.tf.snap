@@ -1,0 +1,38 @@
+>locals {
+#^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
+#      ^ source.terraform meta.block.terraform
+#       ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
+>  key_name = "testing"
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#          ^ source.terraform meta.block.terraform variable.declaration.terraform
+#           ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#            ^ source.terraform meta.block.terraform variable.declaration.terraform
+#             ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#              ^^^^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
+#                     ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+>  test_example = {
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#              ^ source.terraform meta.block.terraform variable.declaration.terraform
+#               ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#                ^ source.terraform meta.block.terraform variable.declaration.terraform
+#                 ^ source.terraform meta.block.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+>    (local.key_name): "test"
+#^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform punctuation.section.parens.begin.terraform
+#     ^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform support.constant.terraform
+#          ^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform keyword.operator.accessor.terraform
+#           ^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.member.terraform
+#                   ^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+>  }
+#^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+>}
+#^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+>
+>variable "test" {
+#^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+>  default = "test"
+#^^^^^^^^^^^^^^^^^^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+>}
+#^^ source.terraform meta.block.terraform meta.braces.terraform meta.mapping.key.terraform
+>
