@@ -38,6 +38,7 @@ function getArch(arch: string) {
 interface ExtensionInfo {
   extensionVersion: string;
   languageServerVersion: string;
+  preview: false;
 }
 
 function getExtensionInfo(): ExtensionInfo {
@@ -46,6 +47,7 @@ function getExtensionInfo(): ExtensionInfo {
   return {
     extensionVersion: pjson.version,
     languageServerVersion: pjson.langServer.version,
+    preview: pjson.preview,
   };
 }
 
@@ -70,7 +72,7 @@ async function run(platform: string, architecture: string) {
   const runnerLocation = ciBuild ? `CLI-Downloader GitHub-Actions` : `CLI-Downloader`;
   const userAgent = `Terraform-VSCode/${extInfo.extensionVersion} ${runnerLocation} (${platform}; ${architecture})`;
 
-  const release = await releases.getRelease('terraform-ls', extInfo.languageServerVersion, userAgent);
+  const release = await releases.getRelease('terraform-ls', extInfo.languageServerVersion, userAgent, extInfo.preview);
 
   const os = getPlatform(platform);
   const arch = getArch(architecture);
