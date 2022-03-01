@@ -9,16 +9,18 @@ cd $ROOT_RELATIVE_DIR
 
 # get current version info
 VERSION=`git log -1 --format=%cd --date="format:%Y.%-m.%-d%H"`
-LANGVERSION=`0.26.0-beta1`
+if [ -z "$LANGUAGE_SERVER_VERSION" ]; then
+  LANGUAGE_SERVER_VERSION="$(jq -r .langServer.version package.json)"
+fi
 
 # Get existing name & description
 DISPLAY_NAME="$(jq -r .displayName package.json) (Preview)"
 DESCRIPTION="$(jq -r .description package.json) (Preview)"
 
 # set preview info in package.json
-(cat package.json | jq --arg VER $VERSION --arg LANGVER $LANGVERSION --arg NAME "$DISPLAY_NAME" --arg DESC "$DESCRIPTION" '
+(cat package.json | jq --arg VER $VERSION --arg LANGVER $LANGUAGE_SERVER_VERSION --arg NAME "$DISPLAY_NAME" --arg DESC "$DESCRIPTION" '
 .version=$VER |
-.langServer[version]=$LANGVER |
+.langServer.version=$LANGVER |
 .preview=true |
 .name="terraform-preview" |
 .displayName=$NAME |
