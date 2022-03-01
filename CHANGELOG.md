@@ -1,11 +1,16 @@
 ## [Unreleased]
 
+## [2.20.0] (2022-03-01)
+
 ENHANCEMENTS:
 
  - Publish Platform Specific Extension [#905](https://github.com/hashicorp/vscode-terraform/pull/905)
  - Update list/map syntax highlighting [#918](https://github.com/hashicorp/vscode-terraform/pull/918)
  - Improve comment detection [#935](https://github.com/hashicorp/vscode-terraform/pull/935)
  - Highlight block label as "enumMember" & highlight unquoted labels [#943](https://github.com/hashicorp/vscode-terraform/pull/943)
+ - Add new scope for block type and name [#934](https://github.com/hashicorp/vscode-terraform/pull/934)
+ - Resolve issue with tfvars comment toggling [#937](https://github.com/hashicorp/vscode-terraform/pull/937)
+ - Improve Extension Documentation [#942](https://github.com/hashicorp/vscode-terraform/pull/942)
 
 BUG FIXES:
 
@@ -13,6 +18,8 @@ BUG FIXES:
  - Fix npm run syntax tests [#928](https://github.com/hashicorp/vscode-terraform/pull/928)
  - Move TextMate scope.terraform to source.terraform [#921](https://github.com/hashicorp/vscode-terraform/pull/921)
  - Fix highlighting for attribute access with a dash [#933](https://github.com/hashicorp/vscode-terraform/pull/933)
+ - Fix highlighting for nested expression syntax [#940](https://github.com/hashicorp/vscode-terraform/pull/940)
+ - Update description for log file argument [#945](https://github.com/hashicorp/vscode-terraform/pull/945)
  
 INTERNAL:
 
@@ -24,6 +31,8 @@ INTERNAL:
  - Add Terraform language tmgrammar snapshots [#914](https://github.com/hashicorp/vscode-terraform/pull/914)
  - Run syntax tests on all snapshot files [#917](https://github.com/hashicorp/vscode-terraform/pull/917)
  - Run syntax tests when grammar changes [#922](https://github.com/hashicorp/vscode-terraform/pull/922)
+ - deps: Update to @vscode/extension-telemetry [#939](https://github.com/hashicorp/vscode-terraform/pull/)
+ - Fix ignore markdown files [#946](https://github.com/hashicorp/vscode-terraform/pull/946)
 
 ## [2.19.0] (2022-01-20)
 
@@ -366,7 +375,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...main
+[2.20.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...v2.20.0
 [2.19.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.18.0...v2.19.0
 [2.18.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.16.0...v2.17.0
