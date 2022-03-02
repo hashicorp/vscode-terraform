@@ -4,8 +4,9 @@
 #              ^ source.terraform variable.declaration.terraform keyword.operator.assignment.terraform
 #               ^ source.terraform variable.declaration.terraform
 #                ^ source.terraform punctuation.section.parens.begin.terraform
-#                 ^^^^^^^^^^^^^^^^^^^^ source.terraform
-#                                     ^^^^^^^ source.terraform variable.other.readwrite.terraform
+#                 ^^^^^^^^^^^^^^^^^^^ source.terraform
+#                                    ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                     ^^^^^^^ source.terraform comment.line.number-sign.hcl
 >  length(var.instance_size) > 0 ? ( #Comment
 #^^ source.terraform
 #  ^^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
@@ -22,36 +23,29 @@
 #                                ^ source.terraform keyword.operator.terraform
 #                                 ^ source.terraform
 #                                  ^ source.terraform punctuation.section.parens.begin.terraform
-#                                   ^^ source.terraform
-#                                     ^^^^^^^ source.terraform variable.other.readwrite.terraform
+#                                   ^ source.terraform
+#                                    ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                     ^^^^^^^ source.terraform comment.line.number-sign.hcl
 >    var.instance_size               #If instance size is provided, use it.
 #^^^^ source.terraform
 #    ^^^ source.terraform support.constant.terraform
 #       ^ source.terraform keyword.operator.accessor.terraform
 #        ^^^^^^^^^^^^^ source.terraform variable.other.member.terraform
-#                     ^^^^^^^^^^^^^^^^ source.terraform
-#                                     ^^ source.terraform variable.other.readwrite.terraform
-#                                       ^ source.terraform
-#                                        ^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                ^ source.terraform
-#                                                 ^^^^ source.terraform variable.other.readwrite.terraform
-#                                                     ^ source.terraform
-#                                                      ^^ source.terraform variable.other.readwrite.terraform
-#                                                        ^ source.terraform
-#                                                         ^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                 ^^ source.terraform
-#                                                                   ^^^ source.terraform variable.other.readwrite.terraform
-#                                                                      ^ source.terraform
-#                                                                       ^^ source.terraform variable.other.readwrite.terraform
-#                                                                         ^ source.terraform keyword.operator.accessor.terraform
+#                     ^^^^^^^^^^^^^^^ source.terraform
+#                                    ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >  )                                 #Comment
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform
-#                                     ^^^^^^^ source.terraform variable.other.member.terraform
+#^^ source.terraform
+#  ^ source.terraform punctuation.section.parens.end.terraform
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform
+#                                    ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                     ^^^^^^^ source.terraform comment.line.number-sign.hcl
 >  :                                 #Comment
 #^^ source.terraform
 #  ^ source.terraform
-#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform
-#                                     ^^^^^^^ source.terraform variable.other.readwrite.terraform
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform
+#                                    ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                     ^^^^^^^ source.terraform comment.line.number-sign.hcl
 >  (var.insane_mode ?
 #^^ source.terraform
 #  ^ source.terraform punctuation.section.parens.begin.terraform
@@ -76,110 +70,58 @@
 #                                                            ^ source.terraform meta.function-call.terraform
 #                                                             ^^^^ source.terraform meta.function-call.terraform constant.language.terraform
 #                                                                 ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
-#                                                                  ^^ source.terraform
-#                                                                    ^^ source.terraform variable.other.readwrite.terraform
-#                                                                      ^ source.terraform
-#                                                                       ^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                               ^ source.terraform
-#                                                                                ^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                    ^ source.terraform
-#                                                                                     ^^ source.terraform variable.other.readwrite.terraform
-#                                                                                       ^ source.terraform
-#                                                                                        ^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                           ^ source.terraform
-#                                                                                            ^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                    ^ source.terraform
-#                                                                                                     ^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                        ^ source.terraform
-#                                                                                                         ^^^ source.terraform support.constant.terraform
-#                                                                                                            ^ source.terraform keyword.operator.accessor.terraform
-#                                                                                                             ^^^^^^^^^^^ source.terraform variable.other.member.terraform
-#                                                                                                                        ^ source.terraform
-#                                                                                                                         ^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                           ^ source.terraform
-#                                                                                                                            ^^^^ source.terraform constant.language.terraform
-#                                                                                                                                ^^ source.terraform
-#                                                                                                                                  ^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                        ^ source.terraform
-#                                                                                                                                         ^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                           ^ source.terraform
-#                                                                                                                                            ^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                                ^ source.terraform
-#                                                                                                                                                 ^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                                      ^ source.terraform keyword.operator.accessor.terraform
+#                                                                  ^ source.terraform
+#                                                                   ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >    :                                                              #
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform
+#^^^^ source.terraform
+#    ^ source.terraform
+#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform
+#                                                                   ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
 >    lookup(local.instance_size_map, local.cloud, null)             #If instance size is not provided and var.insane_mode is false, lookup in this table.
 #^^^^ source.terraform
-#    ^^^^^^ source.terraform variable.other.member.terraform
-#          ^ source.terraform punctuation.section.parens.begin.terraform
-#           ^^^^^ source.terraform support.constant.terraform
-#                ^ source.terraform keyword.operator.accessor.terraform
-#                 ^^^^^^^^^^^^^^^^^ source.terraform variable.other.member.terraform
-#                                  ^^ source.terraform
-#                                    ^^^^^ source.terraform support.constant.terraform
-#                                         ^ source.terraform keyword.operator.accessor.terraform
-#                                          ^^^^^ source.terraform variable.other.member.terraform
-#                                               ^^ source.terraform
-#                                                 ^^^^ source.terraform constant.language.terraform
-#                                                     ^ source.terraform punctuation.section.parens.end.terraform
-#                                                      ^^^^^^^^^^^^^^ source.terraform
-#                                                                    ^^ source.terraform variable.other.readwrite.terraform
-#                                                                      ^ source.terraform
-#                                                                       ^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                               ^ source.terraform
-#                                                                                ^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                    ^ source.terraform
-#                                                                                     ^^ source.terraform variable.other.readwrite.terraform
-#                                                                                       ^ source.terraform
-#                                                                                        ^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                           ^ source.terraform
-#                                                                                            ^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                    ^ source.terraform
-#                                                                                                     ^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                        ^ source.terraform
-#                                                                                                         ^^^ source.terraform support.constant.terraform
-#                                                                                                            ^ source.terraform keyword.operator.accessor.terraform
-#                                                                                                             ^^^^^^^^^^^ source.terraform variable.other.member.terraform
-#                                                                                                                        ^ source.terraform
-#                                                                                                                         ^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                           ^ source.terraform
-#                                                                                                                            ^^^^^ source.terraform constant.language.terraform
-#                                                                                                                                 ^^ source.terraform
-#                                                                                                                                   ^^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                         ^ source.terraform
-#                                                                                                                                          ^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                            ^ source.terraform
-#                                                                                                                                             ^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                                 ^ source.terraform
-#                                                                                                                                                  ^^^^^ source.terraform variable.other.readwrite.terraform
-#                                                                                                                                                       ^ source.terraform keyword.operator.accessor.terraform
+#    ^^^^^^ source.terraform meta.function-call.terraform support.function.builtin.terraform
+#          ^ source.terraform meta.function-call.terraform punctuation.section.parens.begin.terraform
+#           ^^^^^ source.terraform meta.function-call.terraform support.constant.terraform
+#                ^ source.terraform meta.function-call.terraform keyword.operator.accessor.terraform
+#                 ^^^^^^^^^^^^^^^^^ source.terraform meta.function-call.terraform variable.other.member.terraform
+#                                  ^ source.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                   ^ source.terraform meta.function-call.terraform
+#                                    ^^^^^ source.terraform meta.function-call.terraform support.constant.terraform
+#                                         ^ source.terraform meta.function-call.terraform keyword.operator.accessor.terraform
+#                                          ^^^^^ source.terraform meta.function-call.terraform variable.other.member.terraform
+#                                               ^ source.terraform meta.function-call.terraform punctuation.separator.terraform
+#                                                ^ source.terraform meta.function-call.terraform
+#                                                 ^^^^ source.terraform meta.function-call.terraform constant.language.terraform
+#                                                     ^ source.terraform meta.function-call.terraform punctuation.section.parens.end.terraform
+#                                                      ^^^^^^^^^^^^^ source.terraform
+#                                                                   ^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+#                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >  )
-#^^^^ source.terraform
->)
 #^^ source.terraform
+#  ^ source.terraform punctuation.section.parens.end.terraform
+>)
+#^ source.terraform punctuation.section.parens.end.terraform
 >
 ># Comment
-#^^ source.terraform
-#  ^^^^^^^ source.terraform variable.other.member.terraform
+#^ source.terraform comment.line.number-sign.hcl punctuation.definition.comment.terraform
+# ^^^^^^^^ source.terraform comment.line.number-sign.hcl
 >
 >variable "test" {
-#^^^^^^^^ source.terraform variable.other.readwrite.terraform
-#        ^ source.terraform
-#         ^ source.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#          ^^^^ source.terraform string.quoted.double.terraform
-#              ^ source.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
-#               ^ source.terraform
-#                ^ source.terraform meta.braces.terraform punctuation.section.braces.begin.terraform
+#^^^^^^^^ source.terraform meta.block.terraform entity.name.type.terraform
+#        ^ source.terraform meta.block.terraform
+#         ^^^^^^ source.terraform meta.block.terraform variable.other.enummember.terraform
+#               ^ source.terraform meta.block.terraform
+#                ^ source.terraform meta.block.terraform punctuation.section.block.begin.terraform
 >  default = "test"
-#^^ source.terraform meta.braces.terraform
-#  ^^^^^^^ source.terraform meta.braces.terraform meta.mapping.key.terraform variable.other.readwrite.terraform
-#         ^ source.terraform meta.braces.terraform
-#          ^ source.terraform meta.braces.terraform keyword.operator.assignment.terraform
-#           ^ source.terraform meta.braces.terraform
-#            ^ source.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
-#             ^^^^ source.terraform meta.braces.terraform string.quoted.double.terraform
-#                 ^ source.terraform meta.braces.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
+#^^ source.terraform meta.block.terraform
+#  ^^^^^^^ source.terraform meta.block.terraform variable.declaration.terraform variable.other.readwrite.terraform
+#         ^ source.terraform meta.block.terraform variable.declaration.terraform
+#          ^ source.terraform meta.block.terraform variable.declaration.terraform keyword.operator.assignment.terraform
+#           ^ source.terraform meta.block.terraform variable.declaration.terraform
+#            ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.begin.terraform
+#             ^^^^ source.terraform meta.block.terraform string.quoted.double.terraform
+#                 ^ source.terraform meta.block.terraform string.quoted.double.terraform punctuation.definition.string.end.terraform
 >}
-#^ source.terraform meta.braces.terraform punctuation.section.braces.end.terraform
+#^ source.terraform meta.block.terraform punctuation.section.block.end.terraform
 >

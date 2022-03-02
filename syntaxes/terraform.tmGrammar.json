@@ -865,10 +865,10 @@
 			},
 			"patterns": [
 				{
-					"include": "#expressions"
+					"include": "#comments"
 				},
 				{
-					"include": "#local_identifiers"
+					"include": "#expressions"
 				}
 			]
 		}
