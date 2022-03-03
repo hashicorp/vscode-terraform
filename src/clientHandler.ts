@@ -14,6 +14,7 @@ import { ServerPath } from './serverPath';
 import { ShowReferencesFeature } from './showReferences';
 import { TelemetryFeature } from './telemetry';
 import { config } from './vscodeUtils';
+import { CustomSemanticTokens } from './semanticTokens';
 
 export interface TerraformLanguageClient {
   commandPrefix: string;
@@ -28,6 +29,9 @@ export class ClientHandler {
   private shortUid: ShortUniqueId = new ShortUniqueId();
   private tfClient: TerraformLanguageClient | undefined;
   private commands: string[] = [];
+
+  public extSemanticTokenTypes: string[] = [];
+  public extSemanticTokenModifiers: string[] = [];
 
   constructor(
     private lsPath: ServerPath,
@@ -85,6 +89,10 @@ export class ClientHandler {
 
     const id = `terraform`;
     const client = new LanguageClient(id, serverOptions, clientOptions);
+
+    client.registerFeature(
+      new CustomSemanticTokens(client, this.extSemanticTokenTypes, this.extSemanticTokenModifiers),
+    );
 
     const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount');
     if (codeLensReferenceCount) {
