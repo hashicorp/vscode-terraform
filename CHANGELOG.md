@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+INTERNAL:
+ - deps: Bump jest from 27.4.7 to 27.5.1 [#951](https://github.com/hashicorp/vscode-terraform/pull/951)
+ - deps: Bump @types/node from 16.11.22 to 16.11.26 [#948](https://github.com/hashicorp/vscode-terraform/pull/948)
+ - deps: Bump eslint-config-prettier from 8.3.0 to 8.5.0 [#957](https://github.com/hashicorp/vscode-terraform/pull/957)
+ - deps: Bump esbuild from 0.14.17 to 0.14.25 [#967](https://github.com/hashicorp/vscode-terraform/pull/967)
+
 ## [2.20.0] (2022-03-01)
 
 ENHANCEMENTS:
