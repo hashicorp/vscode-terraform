@@ -2,6 +2,8 @@
 # GitHub Actions CI doesn't have "native" solution for this
 # See https://github.com/actions/checkout/issues/226
 *.ts text eol=lf
+language-configuration.json linguist-language=jsonc
+.vscode/**.json linguist-language=jsonc
 *.json text eol=lf
 *.md text eol=lf
 *.tf text eol=lf
