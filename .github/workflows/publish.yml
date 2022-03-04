@@ -1,5 +1,8 @@
 name: Publish release
 
+permissions:
+  contents: write # for uploading release artifacts
+
 on:
   push:
     tags:

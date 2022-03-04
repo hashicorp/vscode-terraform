@@ -1,5 +1,8 @@
 name: Publish Preview release
 
+permissions:
+  contents: write # for uploading release artifacts
+
 on:
   workflow_dispatch:
     inputs:
