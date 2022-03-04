@@ -54,7 +54,7 @@ jobs:
           echo "Received ref: ${{ github.ref }}"
           echo "Expected ref: refs/tags/v${{ steps.ext-version.outputs.content }}"
           exit 1
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
       - name: Install dependencies
