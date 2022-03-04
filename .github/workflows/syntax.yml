@@ -1,8 +1,5 @@
 name: Run syntax tests
 
-permissions:
-  contents: read
-
 on:
   push:
     branches:
