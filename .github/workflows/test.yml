@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
       - name: npm install
@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
       - name: npm install
@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
       - name: Set up Xvfb (Ubuntu)
