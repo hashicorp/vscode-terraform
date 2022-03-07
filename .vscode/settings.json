@@ -15,10 +15,6 @@
     "node_modules": true,
     "out": true
   },
-  "files.associations": {
-    "language-configuration.json": "jsonc",
-    ".vscode/**.json": "jsonc"
-  },
 
   "typescript.format.enable": false,
   "typescript.tsc.autoDetect": "off",
