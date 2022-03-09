@@ -9,6 +9,9 @@
   "license": "MPL-2.0",
   "preview": false,
   "private": true,
+  "extensionKind": [
+    "workspace"
+  ],
   "engines": {
     "npm": "~8.X",
     "node": "~16.X",
