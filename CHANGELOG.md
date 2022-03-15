@@ -2,7 +2,7 @@
 
 BUG FIXES:
 
- - Advertise proper exectution location [#989](https://github.com/hashicorp/vscode-terraform/pull/989
+ - Advertise proper exectution location [#989](https://github.com/hashicorp/vscode-terraform/pull/989)
 
 INTERNAL:
 
