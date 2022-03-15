@@ -1,10 +1,34 @@
 ## [Unreleased]
 
+BUG FIXES:
+
+ - Advertise proper exectution location [#989](https://github.com/hashicorp/vscode-terraform/pull/989
+
 INTERNAL:
+
  - deps: Bump jest from 27.4.7 to 27.5.1 [#951](https://github.com/hashicorp/vscode-terraform/pull/951)
  - deps: Bump @types/node from 16.11.22 to 16.11.26 [#948](https://github.com/hashicorp/vscode-terraform/pull/948)
  - deps: Bump eslint-config-prettier from 8.3.0 to 8.5.0 [#957](https://github.com/hashicorp/vscode-terraform/pull/957)
  - deps: Bump esbuild from 0.14.17 to 0.14.25 [#967](https://github.com/hashicorp/vscode-terraform/pull/967)
+ - deps: Bump @types/jest from 27.4.0 to 27.4.1 [#970](https://github.com/hashicorp/vscode-terraform/pull/970)
+ - deps: Bump mocha from 9.2.0 to 9.2.1 [#969](https://github.com/hashicorp/vscode-terraform/pull/969)
+ - deps: Bump @typescript-eslint/parser from 5.10.2 to 5.13.0 [#971](https://github.com/hashicorp/vscode-terraform/pull/971)
+ - deps: Bump @vscode/test-electron from 2.1.1 to 2.1.2 [#972](https://github.com/hashicorp/vscode-terraform/pull/972)
+ - deps: Bump vsce from 2.6.6 to 2.6.7 [#976](https://github.com/hashicorp/vscode-terraform/pull/976)
+ - deps: Bump @types/vscode from 1.63.2 to 1.65.0 [#959](https://github.com/hashicorp/vscode-terraform/pull/959)
+ - deps: Bump @typescript-eslint/eslint-plugin from 5.10.2 to 5.13.0 [#977](https://github.com/hashicorp/vscode-terraform/pull/977)
+ - deps: Bump ts-node from 10.4.0 to 10.7.0 [#981](https://github.com/hashicorp/vscode-terraform/pull/981)
+ - deps: Bump eslint from 8.8.0 to 8.10.0 [#974](https://github.com/hashicorp/vscode-terraform/pull/974)
+ - deps: Bump @vscode/test-electron from 2.1.2 to 2.1.3 [#984](https://github.com/hashicorp/vscode-terraform/pull/984)
+ - deps: Bump typescript from 4.5.5 to 4.6.2 [#973](https://github.com/hashicorp/vscode-terraform/pull/973)
+ - deps: Bump @typescript-eslint/eslint-plugin from 5.13.0 to 5.14.0 [#986](https://github.com/hashicorp/vscode-terraform/pull/986)
+ - deps: Bump @typescript-eslint/parser from 5.13.0 to 5.14.0 [#985](https://github.com/hashicorp/vscode-terraform/pull/985)
+ - deps: Bump eslint from 8.10.0 to 8.11.0 [#991](https://github.com/hashicorp/vscode-terraform/pull/991)
+ - deps: Bump vsce from 2.6.7 to 2.7.0 [#992](https://github.com/hashicorp/vscode-terraform/pull/992)
+ - deps: Bump mocha from 9.2.1 to 9.2.2 [#993](https://github.com/hashicorp/vscode-terraform/pull/993)
+ - deps: Bump esbuild from 0.14.25 to 0.14.27 [#995](https://github.com/hashicorp/vscode-terraform/pull/995)
+ - deps: Bump @typescript-eslint/eslint-plugin from 5.14.0 to 5.15.0 [#994](https://github.com/hashicorp/vscode-terraform/pull/994)
+ - deps: Bump @typescript-eslint/parser from 5.14.0 to 5.15.0 [#996](https://github.com/hashicorp/vscode-terraform/pull/996)
 
 ## [2.20.0] (2022-03-01)
 
