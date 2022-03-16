@@ -1,3 +1,4 @@
+import got from 'got';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as releases from '@hashicorp/js-releases';
@@ -36,22 +37,26 @@ function getArch(arch: string) {
 }
 
 interface ExtensionInfo {
+  name: string;
   extensionVersion: string;
   languageServerVersion: string;
   preview: false;
+  syntaxVersion: string;
 }
 
 function getExtensionInfo(): ExtensionInfo {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pjson = require('../package.json');
   return {
+    name: pjson.name,
     extensionVersion: pjson.version,
     languageServerVersion: pjson.langServer.version,
+    syntaxVersion: pjson.syntax.version,
     preview: pjson.preview,
   };
 }
 
-async function run(platform: string, architecture: string) {
+async function downloadLanguageServer(platform: string, architecture: string, extInfo: ExtensionInfo) {
   const cwd = path.resolve(__dirname);
 
   const buildDir = path.basename(cwd);
@@ -63,9 +68,6 @@ async function run(platform: string, architecture: string) {
   }
 
   fs.mkdirSync(installPath);
-
-  const extInfo = getExtensionInfo();
-  console.log(extInfo);
 
   // userAgent = `Terraform-VSCode/${extensionVersion} VSCode/${vscodeVersion}`;
   const ciBuild = process.env.CI;
@@ -92,6 +94,36 @@ async function run(platform: string, architecture: string) {
   fs.rmSync(zipfile, {
     recursive: true,
   });
+}
+
+async function downloadSyntax(info: ExtensionInfo) {
+  const release = `v${info.syntaxVersion}`;
+
+  const fileName = `${info.name}.tmGrammar.json`;
+  const url = `https://github.com/hashicorp/syntax/releases/download/${release}/${fileName}`;
+  console.log(`Downloading: ${url}`);
+
+  const cwd = path.resolve(__dirname);
+  const buildDir = path.basename(cwd);
+  const repoDir = cwd.replace(buildDir, '');
+  const installPath = path.join(repoDir, 'syntaxes');
+
+  const fpath = path.join(installPath, fileName);
+  if (fs.existsSync(installPath)) {
+    fs.rmSync(installPath, { recursive: true, force: true });
+  }
+  fs.mkdirSync(installPath);
+
+  const content = await got({ url }).text();
+  fs.writeFileSync(fpath, content);
+  console.log(`Download completed: ${fpath}`);
+}
+
+async function run(platform: string, architecture: string) {
+  const extInfo = getExtensionInfo();
+  console.log(extInfo);
+  await downloadLanguageServer(platform, architecture, extInfo);
+  await downloadSyntax(extInfo);
 }
 
 let os = process.platform.toString();
