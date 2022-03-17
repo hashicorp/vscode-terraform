@@ -1,8 +1,10 @@
 ## [Unreleased]
 
+## [2.20.1] (2022-03-17)
+
 BUG FIXES:
 
- - Advertise proper exectution location [#989](https://github.com/hashicorp/vscode-terraform/pull/989)
+ - Advertise proper execution location [#989](https://github.com/hashicorp/vscode-terraform/pull/989)
 
 INTERNAL:
 
@@ -405,7 +407,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.1...main
+[2.20.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...v2.20.1
 [2.20.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...v2.20.0
 [2.19.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.18.0...v2.19.0
 [2.18.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.17.0...v2.18.0
