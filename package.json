@@ -19,7 +19,7 @@
     "vscode": "^1.61.0"
   },
   "langServer": {
-    "version": "0.25.2"
+    "version": "0.26.0"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
