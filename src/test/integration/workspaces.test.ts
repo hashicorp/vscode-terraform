@@ -18,7 +18,12 @@ suite('moduleCallers', () => {
     assert.ok(response);
 
     assert.strictEqual(response.moduleCallers.length, 1);
-    assert.strictEqual(response.moduleCallers[0].uri, vscode.Uri.file(testFolderPath).toString(true));
+    assert.strictEqual(
+      // ensure both URIs are normalized, which is what VSCode would do anyway
+      // see https://github.com/microsoft/vscode/issues/42159#issuecomment-360533151
+      vscode.Uri.parse(response.moduleCallers[0].uri).toString(true),
+      vscode.Uri.file(testFolderPath).toString(true),
+    );
   });
 });
 
