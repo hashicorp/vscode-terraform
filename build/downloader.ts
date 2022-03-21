@@ -99,7 +99,8 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
 async function downloadSyntax(info: ExtensionInfo) {
   const release = `v${info.syntaxVersion}`;
 
-  const fileName = `${info.name}.tmGrammar.json`;
+  const productName = info.name.replace('-preview', '');
+  const fileName = `${productName}.tmGrammar.json`;
   const url = `https://github.com/hashicorp/syntax/releases/download/${release}/${fileName}`;
   console.log(`Downloading: ${url}`);
 
