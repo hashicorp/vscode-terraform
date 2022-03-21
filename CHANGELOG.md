@@ -8,7 +8,7 @@ ENHANCEMENTS:
  - Enable completion, hover, go-to-definition/reference etc. for Terraform Registry modules ([terraform-ls#808](https://github.com/hashicorp/terraform-ls/pull/808))
  - Report dependent semantic highlighting modifiers as `defaultLibrary` (instead of `modification`) ([terraform-ls#817](https://github.com/hashicorp/terraform-ls/pull/817))
  - Semantically highlight type declarations in variable `type` ([terraform-ls#827](https://github.com/hashicorp/terraform-ls/pull/827))
- - Decouple highlighting Terraform grammar to `hashicorp/syntax` [`v0.1.0`](https://github.com/hashicorp/syntax/releases/tag/v0.1.0) & [`v0.2.0`](https://github.com/hashicorp/syntax/releases/tag/v0.2.0)  [#1004](https://github.com/hashicorp/vscode-terraform/pull/1004)
+ - Decouple highlighting Terraform grammar to `hashicorp/syntax` [`v0.1.0`](https://github.com/hashicorp/syntax/releases/tag/v0.1.0) & [`v0.2.0`](https://github.com/hashicorp/syntax/releases/tag/v0.2.0) ([#1004](https://github.com/hashicorp/vscode-terraform/pull/1004))
 
 BUG FIXES:
 
@@ -19,10 +19,10 @@ BUG FIXES:
 
 INTERNAL:
 
- - Bump language server to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) [#1002](https://github.com/hashicorp/vscode-terraform/pull/1002)
- - Bump prettier from 2.5.1 to 2.6.0 [#998](https://github.com/hashicorp/vscode-terraform/pull/998)
- - Bump @hashicorp/js-releases from 1.4.0 to 1.5.1 [#1001](https://github.com/hashicorp/vscode-terraform/pull/1001)
- - Bump @vscode/extension-telemetry from 0.4.9 to 0.4.10 [#1003](https://github.com/hashicorp/vscode-terraform/pull/1003)
+ - Bump language server to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) ([#1002](https://github.com/hashicorp/vscode-terraform/pull/1002))
+ - Bump prettier from 2.5.1 to 2.6.0 ([#998](https://github.com/hashicorp/vscode-terraform/pull/998))
+ - Bump @hashicorp/js-releases from 1.4.0 to 1.5.1 ([#1001](https://github.com/hashicorp/vscode-terraform/pull/1001))
+ - Bump @vscode/extension-telemetry from 0.4.9 to 0.4.10 ([#1003](https://github.com/hashicorp/vscode-terraform/pull/1003))
 
 ## [2.20.1] (2022-03-17)
 
