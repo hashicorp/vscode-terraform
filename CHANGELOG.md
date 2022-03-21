@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+ENHANCEMENTS:
+
+ - Bump language server to [`0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) [#1002](https://github.com/hashicorp/vscode-terraform/pull/1002)
+
 ## [2.20.1] (2022-03-17)
 
 BUG FIXES:
