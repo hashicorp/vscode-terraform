@@ -2,11 +2,24 @@
 
 ENHANCEMENTS:
 
- - Bump language server to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) [#1002](https://github.com/hashicorp/vscode-terraform/pull/1002)
- - Use decoupled highlighting Terraform grammar from `hashicorp/syntax` [`v0.1.0`](https://github.com/hashicorp/syntax/releases/tag/v0.1.0) & [`v0.2.0`](https://github.com/hashicorp/syntax/releases/tag/v0.2.0)  [#1004](https://github.com/hashicorp/vscode-terraform/pull/1004)
+ - Introduce go-to-variable from `tfvars` files ([terraform-ls#727](https://github.com/hashicorp/terraform-ls/pull/727))
+ - Automatically refresh semantic tokens for more reliable highlighting ([terraform-ls#630](https://github.com/hashicorp/terraform-ls/pull/630))
+ - Enhance semantic highlighting of block labels ([terraform-ls#802](https://github.com/hashicorp/terraform-ls/pull/802))
+ - Enable completion, hover, go-to-definition/reference etc. for Terraform Registry modules ([terraform-ls#808](https://github.com/hashicorp/terraform-ls/pull/808))
+ - Report dependent semantic highlighting modifiers as `defaultLibrary` (instead of `modification`) ([terraform-ls#817](https://github.com/hashicorp/terraform-ls/pull/817))
+ - Semantically highlight type declarations in variable `type` ([terraform-ls#827](https://github.com/hashicorp/terraform-ls/pull/827))
+ - Decouple highlighting Terraform grammar to `hashicorp/syntax` [`v0.1.0`](https://github.com/hashicorp/syntax/releases/tag/v0.1.0) & [`v0.2.0`](https://github.com/hashicorp/syntax/releases/tag/v0.2.0)  [#1004](https://github.com/hashicorp/vscode-terraform/pull/1004)
+
+BUG FIXES:
+
+ - Address race conditions typically surfaced as "out of range" errors, lack of completion/hover/etc. data or data associated with wrong position within the document ([terraform-ls#782](https://github.com/hashicorp/terraform-ls/pull/782))
+ - Fix broken validate on save ([terraform-ls#799](https://github.com/hashicorp/terraform-ls/pull/799))
+ - Fix encoding of unknown semantic token types ([terraform-ls#815](https://github.com/hashicorp/terraform-ls/pull/815))
+ - Fix missing references for some blocks in a separate config file ([terraform-ls#829](https://github.com/hashicorp/terraform-ls/pull/829))
 
 INTERNAL:
 
+ - Bump language server to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) [#1002](https://github.com/hashicorp/vscode-terraform/pull/1002)
  - Bump prettier from 2.5.1 to 2.6.0 [#998](https://github.com/hashicorp/vscode-terraform/pull/998)
  - Bump @hashicorp/js-releases from 1.4.0 to 1.5.1 [#1001](https://github.com/hashicorp/vscode-terraform/pull/1001)
  - Bump @vscode/extension-telemetry from 0.4.9 to 0.4.10 [#1003](https://github.com/hashicorp/vscode-terraform/pull/1003)
@@ -418,7 +431,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.1...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...main
+[2.21.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.1...v2.21.0
 [2.20.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...v2.20.1
 [2.20.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...v2.20.0
 [2.19.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.18.0...v2.19.0
