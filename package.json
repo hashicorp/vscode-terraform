@@ -21,6 +21,9 @@
   "langServer": {
     "version": "0.26.0"
   },
+  "syntax": {
+    "version": "0.1.0"
+  },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
     "url": "https://github.com/hashicorp/vscode-terraform/issues",
@@ -80,12 +83,12 @@
     "grammars": [
       {
         "language": "terraform",
-        "scopeName": "source.terraform",
+        "scopeName": "source.hcl.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
       },
       {
         "language": "terraform-vars",
-        "scopeName": "source.terraform",
+        "scopeName": "source.hcl.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
       }
     ],
@@ -334,17 +337,14 @@
     "esbuild": "npm run esbuild-base -- --sourcemap",
     "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
     "compile": "npm run esbuild",
-    "watch": "npm run download:ls && npm run esbuild-watch",
-    "download:ls": "ts-node ./build/downloader.ts",
-    "vscode:prepublish": "npm run download:ls && npm run esbuild-base -- --minify",
+    "watch": "npm run download:artifacts && npm run esbuild-watch",
+    "download:artifacts": "ts-node ./build/downloader.ts",
+    "vscode:prepublish": "npm run download:artifacts && npm run esbuild-base -- --minify",
     "package": "vsce package",
     "test-compile": "tsc -p ./",
-    "pretest": "npm run download:ls && npm run test-compile && npm run lint",
+    "pretest": "npm run download:artifacts && npm run test-compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "test:unit": "jest",
-    "test:syntax": "npm run test:grammar && npm run test:snap",
-    "test:grammar": "npx vscode-tmgrammar-test -s source.terraform -g syntaxes/terraform.tmGrammar.json -t \"tests/unit/**/*.tf\"",
-    "test:snap": "npx vscode-tmgrammar-snap -s source.terraform -g syntaxes/terraform.tmGrammar.json -t \"tests/snapshot/**/*.tf\"",
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
@@ -352,8 +352,8 @@
     "preview": "ts-node ./build/preview.ts"
   },
   "dependencies": {
-    "short-unique-id": "^3.2.3",
     "@vscode/extension-telemetry": "^0.4.9",
+    "short-unique-id": "^3.2.3",
     "vscode-languageclient": "^7.0.0",
     "vscode-uri": "^3.0.2",
     "which": "^2.0.2"
@@ -376,12 +376,13 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "glob": "^7.1.6",
+    "got": "^11.8.3",
     "jest": "^27.4.3",
     "mocha": "^9.1.3",
     "prettier": "^2.3.2",
     "ts-jest": "^27.1.0",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.4",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2",
     "vsce": "^2.6.6",
     "vscode-tmgrammar-test": "^0.0.11"
   }

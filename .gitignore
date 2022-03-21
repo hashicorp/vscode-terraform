@@ -1,6 +1,7 @@
 bin/
 out/
 node_modules/
+syntaxes/
 *.vsix
 .DS_Store
 .vscode-test
