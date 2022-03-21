@@ -83,12 +83,12 @@
     "grammars": [
       {
         "language": "terraform",
-        "scopeName": "source.terraform",
+        "scopeName": "source.hcl.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
       },
       {
         "language": "terraform-vars",
-        "scopeName": "source.terraform",
+        "scopeName": "source.hcl.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
       }
     ],
