@@ -1,3 +1,9 @@
+## [Unreleased]
+
+ENHANCEMENTS:
+
+ - Support custom semantic tokens & modifiers ([#958](https://github.com/hashicorp/terraform-ls/pull/958))
+
 ## [2.21.0] (2022-03-21)
 
 ENHANCEMENTS:
