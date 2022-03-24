@@ -25,8 +25,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const lsPath = new ServerPath(context);
   clientHandler = new ClientHandler(lsPath, outputChannel, reporter);
-  clientHandler.extSemanticTokenTypes = tokenTypesFromExtManifest(context.extension);
-  clientHandler.extSemanticTokenModifiers = tokenModifiersFromExtManifest(context.extension);
+  clientHandler.extSemanticTokenTypes = tokenTypesFromExtManifest(manifest);
+  clientHandler.extSemanticTokenModifiers = tokenModifiersFromExtManifest(manifest);
 
   // get rid of pre-2.0.0 settings
   if (config('terraform').has('languageServer.enabled')) {
@@ -295,23 +295,30 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
   }
 }
 
+interface PartialManifest {
+  contributes: {
+    semanticTokenTypes?: ObjectWithId[];
+    semanticTokenModifiers?: ObjectWithId[];
+  };
+}
+
 interface ObjectWithId {
   id: string;
 }
 
-function tokenTypesFromExtManifest(ext: vscode.Extension<unknown>): string[] {
-  if (!ext.packageJSON.contributes.semanticTokenTypes) {
+function tokenTypesFromExtManifest(manifest: PartialManifest): string[] {
+  if (!manifest.contributes.semanticTokenTypes) {
     return [];
   }
-  return ext.packageJSON.contributes.semanticTokenTypes.map((token: ObjectWithId) => token.id);
+  return manifest.contributes.semanticTokenTypes.map((token: ObjectWithId) => token.id);
 }
 
-function tokenModifiersFromExtManifest(ext: vscode.Extension<unknown>): string[] {
-  if (!ext.packageJSON.contributes.semanticTokenModifiers) {
+function tokenModifiersFromExtManifest(manifest: PartialManifest): string[] {
+  if (!manifest.contributes.semanticTokenModifiers) {
     return [];
   }
 
-  return ext.packageJSON.contributes.semanticTokenModifiers.map((modifier: ObjectWithId) => modifier.id);
+  return manifest.contributes.semanticTokenModifiers.map((modifier: ObjectWithId) => modifier.id);
 }
 
 function enabled(): boolean {
