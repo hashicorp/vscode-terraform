@@ -92,6 +92,58 @@
         "path": "./syntaxes/terraform.tmGrammar.json"
       }
     ],
+    "semanticTokenTypes": [
+      {"id": "hcl-attrName", "superType": "property"},
+      {"id": "hcl-blockType", "superType": "type"},
+      {"id": "hcl-blockLabel", "superType": "enumMember"},
+
+      {"id": "hcl-bool", "superType": "keyword"},
+	    {"id": "hcl-string", "superType": "string"},
+	    {"id": "hcl-number", "superType": "number"},
+	    {"id": "hcl-objectKey", "superType": "parameter"},
+	    {"id": "hcl-mapKey", "superType": "parameter"},
+	    {"id": "hcl-keyword", "superType": "variable"},
+	    {"id": "hcl-traversalStep", "superType": "variable"},
+	    {"id": "hcl-typeCapsule", "superType": "keyword"},
+	    {"id": "hcl-typePrimitive", "superType": "keyword"}
+    ],
+    "semanticTokenScopes": [
+      {
+        "scopes": {
+          "hcl-attrName": ["variable.other.property"],
+          "hcl-blockType": ["entity.name.type"],
+          "hcl-blockLabel": ["variable.other.enummember"],
+
+          "hcl-bool": ["keyword.control"],
+          "hcl-string": ["string"],
+          "hcl-number": ["constant.numeric"],
+          "hcl-objectKey": ["variable.parameter"],
+          "hcl-mapKey": ["variable.parameter"],
+          "hcl-keyword": ["keyword.control"],
+          "hcl-traversalStep": ["variable.other.readwrite"],
+          "hcl-typeCapsule": ["keyword.control"],
+          "hcl-typePrimitive": ["keyword.control"]
+        }
+      }
+    ],
+    "semanticTokenModifiers": [
+      {"id": "hcl-dependent"},
+
+      {"id": "terraform-data"},
+      {"id": "terraform-locals"},
+      {"id": "terraform-module"},
+      {"id": "terraform-output"},
+      {"id": "terraform-provider"},
+      {"id": "terraform-resource"},
+      {"id": "terraform-provisioner"},
+      {"id": "terraform-connection"},
+      {"id": "terraform-variable"},
+      {"id": "terraform-terraform"},
+      {"id": "terraform-backend"},
+      {"id": "terraform-name"},
+      {"id": "terraform-type"},
+      {"id": "terraform-requiredProviders"}
+    ],
     "snippets": [
       {
         "language": "terraform",
