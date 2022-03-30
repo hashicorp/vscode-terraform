@@ -30,6 +30,8 @@ jobs:
         run: npm install
       - name: lint
         run: npm run lint
+      - name: format
+        run: npm run check-format
 
   unit:
     strategy:
