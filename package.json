@@ -220,6 +220,11 @@
               "trace.server": "off"
             }
           },
+          "terraform.languageServer.ignoreSingleFileWarning": {
+            "scope": "resource",
+            "type": "boolean",
+            "description": "Path to the Terraform binary"
+          },
           "terraform-ls.rootModules": {
             "scope": "resource",
             "type": "array",
