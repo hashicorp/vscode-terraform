@@ -223,7 +223,8 @@
           "terraform.languageServer.ignoreSingleFileWarning": {
             "scope": "resource",
             "type": "boolean",
-            "description": "Path to the Terraform binary"
+            "default": false,
+            "description": "This setting controls whether terraform-ls sends a warning about opening up a single Terraform file instead of a Terraform folder. Setting this to `true` will prevent the message being sent. The default value is `false`."
           },
           "terraform-ls.rootModules": {
             "scope": "resource",
