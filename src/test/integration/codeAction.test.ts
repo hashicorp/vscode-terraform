@@ -14,6 +14,7 @@ suite('code actions', () => {
       .update('languageServer', { external: true }, vscode.ConfigurationTarget.Workspace);
     await vscode.workspace
       .getConfiguration('editor')
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       .update('codeActionsOnSave', { 'source.formatAll.terraform': true }, vscode.ConfigurationTarget.Workspace);
 
     const docUri = getDocUri('actions.tf');
