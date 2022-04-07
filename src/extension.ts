@@ -23,13 +23,21 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
 
-  if (context.extension.id === 'hashicorp.terraform-preview') {
-    const stable = vscode.extensions.getExtension('hashicorp.terraform');
-    if (stable !== null) {
-      vscode.window.showErrorMessage(
-        'Terraform Preview cannot be used while Terraform Stable is also enabled. Please ensure only one is enabled and reload this window',
-      );
+  const stable = vscode.extensions.getExtension('hashicorp.terraform');
+  const preview = vscode.extensions.getExtension('hashicorp.terraform-preview');
 
+  if (context.extension.id === 'hashicorp.terraform-preview') {
+    if (stable !== undefined) {
+      vscode.window.showErrorMessage(
+        'Terraform Preview cannot be used while Terraform Stable is also enabled. Please ensure only one is enabled or installed and reload this window',
+      );
+      return undefined;
+    }
+  } else if (context.extension.id === 'hashicorp.terraform') {
+    if (preview !== undefined) {
+      vscode.window.showErrorMessage(
+        'Terraform Stable cannot be used while Terraform Preview is also enabled. Please ensure only one is enabled or installed and reload this window',
+      );
       return undefined;
     }
   }
