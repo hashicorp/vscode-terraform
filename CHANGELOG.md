@@ -1,8 +1,30 @@
 ## [Unreleased]
 
+NOTES:
+
+ - Remove terraform.languageServer.requiredVersion ([1021](https://github.com/hashicorp/vscode-terraform/pull/1021))
+ - Deprecate terraform.languageServer.maxNumberOfProblems ([1010](https://github.com/hashicorp/vscode-terraform/pull/1010))
+
 ENHANCEMENTS:
 
  - Support custom semantic tokens & modifiers ([#958](https://github.com/hashicorp/terraform-ls/pull/958))
+ - Organize extension settings into Sections ([1024](https://github.com/hashicorp/vscode-terraform/pull/1024))
+
+INTERNAL:
+
+ - Format semantic token settings ([1019](https://github.com/hashicorp/vscode-terraform/pull/1019))
+ - Disable naming convention warning for Code Action identifier ([1036](https://github.com/hashicorp/vscode-terraform/pull/1036))
+ - Add CODEOWNERS file ([1038](https://github.com/hashicorp/vscode-terraform/pull/1038))
+ - Bump minimist from 1.2.5 to 1.2.6 ([1009](https://github.com/hashicorp/vscode-terraform/pull/1009))
+ - Bump ts-jest from 27.1.3 to 27.1.4 ([1011](https://github.com/hashicorp/vscode-terraform/pull/1011))
+ - Bump eslint from 8.11.0 to 8.12.0 ([1014](https://github.com/hashicorp/vscode-terraform/pull/1014))
+ - Bump prettier from 2.6.0 to 2.6.1 ([1016](https://github.com/hashicorp/vscode-terraform/pull/1016))
+ - Bump esbuild from 0.14.27 to 0.14.28 ([1015](https://github.com/hashicorp/vscode-terraform/pull/1015))
+ - Bump typescript from 4.6.2 to 4.6.3 ([1012](https://github.com/hashicorp/vscode-terraform/pull/1012))
+ - Bump @typescript-eslint/parser from 5.15.0 to 5.16.0 ([1008](https://github.com/hashicorp/vscode-terraform/pull/1008))
+ - Bump @typescript-eslint/eslint-plugin from 5.15.0 to 5.16.0 ([1007](https://github.com/hashicorp/vscode-terraform/pull/1007))
+ - Bump @typescript-eslint/parser from 5.16.0 to 5.17.0 ([1017](https://github.com/hashicorp/vscode-terraform/pull/1017))
+ - Bump @typescript-eslint/eslint-plugin from 5.16.0 to 5.17.0 ([1018](https://github.com/hashicorp/vscode-terraform/pull/1018))
 
 ## [2.21.0] (2022-03-21)
 
