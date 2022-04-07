@@ -150,129 +150,144 @@
         "path": "./snippets/terraform.json"
       }
     ],
-    "configuration": {
-      "type": "object",
-      "title": "Terraform",
-      "properties": {
-        "terraform.languageServer": {
-          "type": "object",
-          "description": "Language Server settings",
-          "properties": {
-            "external": {
-              "type": "boolean",
-              "default": true,
-              "description": "Whether an external language server binary should be launched."
+    "configuration": [
+      {
+        "title": "General",
+        "order": 0,
+        "properties": {
+          "terraform.codelens.referenceCount": {
+            "scope": "resource",
+            "type": "boolean",
+            "default": false,
+            "description": "Display reference counts above top level blocks and attributes."
+          }
+        }
+      },
+      {
+        "title": "Language Server",
+        "order": 1,
+        "properties": {
+          "terraform.languageServer": {
+            "order": "0",
+            "type": "object",
+            "description": "Language Server settings",
+            "properties": {
+              "external": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether an external language server binary should be launched."
+              },
+              "pathToBinary": {
+                "scope": "resource",
+                "type": "string",
+                "default": "",
+                "description": "Path to language server binary (optional)"
+              },
+              "args": {
+                "scope": "resource",
+                "type": "array",
+                "default": [
+                  "serve"
+                ],
+                "description": "Arguments to pass to language server binary"
+              },
+              "maxNumberOfProblems": {
+                "scope": "resource",
+                "type": "number",
+                "default": 100,
+                "description": "Controls the maximum number of problems produced by the server.",
+                "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
+              },
+              "trace.server": {
+                "scope": "window",
+                "type": "string",
+                "enum": [
+                  "off",
+                  "messages",
+                  "verbose"
+                ],
+                "default": "off",
+                "description": "Traces the communication between VS Code and the language server."
+              }
             },
-            "pathToBinary": {
-              "scope": "resource",
-              "type": "string",
-              "default": "",
-              "description": "Path to language server binary (optional)"
-            },
-            "args": {
-              "scope": "resource",
-              "type": "array",
-              "default": [
+            "default": {
+              "external": true,
+              "pathToBinary": "",
+              "args": [
                 "serve"
               ],
-              "description": "Arguments to pass to language server binary"
-            },
-            "maxNumberOfProblems": {
-              "scope": "resource",
-              "type": "number",
-              "default": 100,
-              "description": "Controls the maximum number of problems produced by the server.",
-              "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
-            },
-            "trace.server": {
-              "scope": "window",
-              "type": "string",
-              "enum": [
-                "off",
-                "messages",
-                "verbose"
-              ],
-              "default": "off",
-              "description": "Traces the communication between VS Code and the language server."
+              "maxNumberOfProblems": 100,
+              "trace.server": "off"
             }
           },
-          "default": {
-            "external": true,
-            "pathToBinary": "",
-            "args": [
-              "serve"
-            ],
-            "maxNumberOfProblems": 100,
-            "trace.server": "off"
-          }
-        },
-        "terraform.codelens.referenceCount": {
-          "scope": "resource",
-          "type": "boolean",
-          "default": false,
-          "description": "Display reference counts above top level blocks and attributes."
-        },
-        "terraform-ls.rootModules": {
-          "scope": "resource",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [],
-          "description": "Per-workspace list of module directories for the language server to read"
-        },
-        "terraform-ls.terraformExecPath": {
-          "scope": "resource",
-          "type": "string",
-          "description": "Path to the Terraform binary"
-        },
-        "terraform-ls.terraformExecTimeout": {
-          "scope": "resource",
-          "type": "string",
-          "description": "Overrides Terraform execution timeout (e.g. 30s)"
-        },
-        "terraform-ls.terraformLogFilePath": {
-          "scope": "resource",
-          "type": "string",
-          "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}"
-        },
-        "terraform-ls.excludeRootModules": {
-          "scope": "resource",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [],
-          "description": "Per-workspace list of module directories for the language server to exclude"
-        },
-        "terraform-ls.ignoreDirectoryNames": {
-          "scope": "resource",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [],
-          "description": "Per-workspace list of directory names for the language server to ignore when indexing files"
-        },
-        "terraform-ls.experimentalFeatures": {
-          "scope": "resource",
-          "type": "object",
-          "description": "Experimental (opt-in) terraform-ls features",
-          "properties": {
-            "validateOnSave": {
-              "scope": "resource",
-              "type": "boolean",
-              "default": false
+          "terraform-ls.rootModules": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
             },
-            "prefillRequiredFields": {
-              "scope": "resource",
-              "type": "boolean",
-              "default": false
+            "default": [],
+            "description": "Per-workspace list of module directories for the language server to read"
+          },
+          "terraform-ls.terraformExecPath": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to the Terraform binary"
+          },
+          "terraform-ls.terraformExecTimeout": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Overrides Terraform execution timeout (e.g. 30s)"
+          },
+          "terraform-ls.terraformLogFilePath": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}"
+          },
+          "terraform-ls.excludeRootModules": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of module directories for the language server to exclude"
+          },
+          "terraform-ls.ignoreDirectoryNames": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of directory names for the language server to ignore when indexing files"
+          }
+        }
+      },
+      {
+        "title": "Experimental Features",
+        "order": 3,
+        "properties": {
+          "terraform-ls.experimentalFeatures": {
+            "scope": "resource",
+            "type": "object",
+            "description": "Experimental (opt-in) terraform-ls features",
+            "properties": {
+              "validateOnSave": {
+                "scope": "resource",
+                "type": "boolean",
+                "default": false
+              },
+              "prefillRequiredFields": {
+                "scope": "resource",
+                "type": "boolean",
+                "default": false
+              }
             }
           }
         }
       }
-    },
+    ],
     "commands": [
       {
         "command": "terraform.generateBugReport",
