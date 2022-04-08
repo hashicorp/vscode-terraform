@@ -9,7 +9,7 @@ cd $ROOT_RELATIVE_DIR
 
 # get current version info
 VERSION=`git log -1 --format=%cd --date="format:%Y.%-m.%-d%H"`
-if [ -z "$LANGUAGE_SERVER_VERSION" ]; then
+if [ -z "${LANGUAGE_SERVER_VERSION:-}" ]; then
   LANGUAGE_SERVER_VERSION="$(jq -r .langServer.version package.json)"
 fi
 
