@@ -68,7 +68,7 @@ jobs:
         env:
           ls_target: ${{ matrix.ls_target }}
       - name: Upload vsix as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.vsce_target }}
           path: "*.vsix"
