@@ -84,7 +84,7 @@ jobs:
     needs: build
     if: success()
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
       - name: Publish Preview Extension
         run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
