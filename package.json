@@ -197,17 +197,6 @@
                 "default": 100,
                 "description": "Controls the maximum number of problems produced by the server.",
                 "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
-              },
-              "trace.server": {
-                "scope": "window",
-                "type": "string",
-                "enum": [
-                  "off",
-                  "messages",
-                  "verbose"
-                ],
-                "default": "off",
-                "description": "Traces the communication between VS Code and the language server."
               }
             },
             "default": {
@@ -216,8 +205,7 @@
               "args": [
                 "serve"
               ],
-              "maxNumberOfProblems": 100,
-              "trace.server": "off"
+              "maxNumberOfProblems": 100
             }
           },
           "terraform.languageServer.ignoreSingleFileWarning": {
