@@ -7,9 +7,6 @@ changelog:
       labels:
         - note
         - documentation
-    - title: FEATURES
-      labels:
-        - feature
     - title: ENHANCEMENTS
       labels:
         - enhancement
@@ -24,9 +21,7 @@ changelog:
   exclude:
     labels:
       - duplicate
-      - wontfix
       - question
-      - invalid
       - needs-reproduction
       - needs-research
       - stale
