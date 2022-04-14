@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
-import { LanguageClient } from 'vscode-languageclient/node';
+import { ExecuteCommandParams } from 'vscode-languageclient';
 import { Utils } from 'vscode-uri';
-import { ClientHandler, TerraformLanguageClient } from './clientHandler';
+import { ClientHandler } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
-import { config, getActiveTextEditor, isTerraformFile } from './vscodeUtils';
+import { config, isTerraformFile } from './vscodeUtils';
+import { execWorkspaceCommand, moduleCallers, terraformCommand } from './commands/terraformCommands';
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);
@@ -86,7 +86,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       return stopLanguageServer();
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply', false);
+      await terraformCommand('apply', clientHandler, reporter, false);
     }),
     vscode.commands.registerCommand('terraform.init', async () => {
       const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -104,17 +104,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           command: `${client.commandPrefix}.terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
         };
-        await execWorkspaceCommand(client.client, requestParams);
+        await execWorkspaceCommand(client.client, requestParams, reporter);
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', true);
+      await terraformCommand('init', clientHandler, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', false);
+      await terraformCommand('plan', clientHandler, reporter, false);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', true);
+      await terraformCommand('validate', clientHandler, reporter, true);
     }),
     new GenerateBugReportCommand(context),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleCallsDataProvider(context, clientHandler)),
@@ -171,7 +171,7 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
 
   try {
     const moduleUri = Utils.dirname(documentUri);
-    const response = await moduleCallers(moduleUri.toString());
+    const response = await moduleCallers(moduleUri.toString(), clientHandler, reporter);
 
     if (response.moduleCallers.length === 0) {
       const dirName = Utils.basename(moduleUri);
@@ -219,98 +219,6 @@ async function stopLanguageServer() {
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
     }
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
-  reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
-  return client.sendRequest(ExecuteCommandRequest.type, params);
-}
-
-interface ModuleCaller {
-  uri: string;
-}
-
-interface ModuleCallersResponse {
-  version: number;
-  moduleCallers: ModuleCaller[];
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function modulesCallersCommand(languageClient: TerraformLanguageClient, moduleUri: string): Promise<any> {
-  const requestParams: ExecuteCommandParams = {
-    command: `${languageClient.commandPrefix}.terraform-ls.module.callers`,
-    arguments: [`uri=${moduleUri}`],
-  };
-  return execWorkspaceCommand(languageClient.client, requestParams);
-}
-
-export async function moduleCallers(moduleUri: string): Promise<ModuleCallersResponse> {
-  const client = clientHandler.getClient();
-  if (client === undefined) {
-    return {
-      version: 0,
-      moduleCallers: [],
-    };
-  }
-
-  const response = await modulesCallersCommand(client, moduleUri);
-  const moduleCallers: ModuleCaller[] = response.callers;
-
-  return { version: response.v, moduleCallers };
-}
-
-async function terraformCommand(command: string, languageServerExec = true): Promise<void> {
-  const textEditor = getActiveTextEditor();
-  if (textEditor) {
-    const languageClient = clientHandler.getClient();
-
-    const moduleUri = Utils.dirname(textEditor.document.uri);
-    const response = await moduleCallers(moduleUri.toString());
-
-    let selectedModule: string;
-    if (response.moduleCallers.length > 1) {
-      const selected = await vscode.window.showQuickPick(
-        response.moduleCallers.map((m) => m.uri),
-        { canPickMany: false },
-      );
-      if (!selected) {
-        return;
-      }
-
-      selectedModule = selected;
-    } else if (response.moduleCallers.length === 1) {
-      selectedModule = response.moduleCallers[0].uri;
-    } else {
-      selectedModule = moduleUri.toString();
-    }
-
-    if (languageServerExec && languageClient) {
-      const requestParams: ExecuteCommandParams = {
-        command: `${languageClient.commandPrefix}.terraform-ls.terraform.${command}`,
-        arguments: [`uri=${selectedModule}`],
-      };
-      return execWorkspaceCommand(languageClient.client, requestParams);
-    } else {
-      const terminalName = `Terraform ${selectedModule}`;
-      const moduleURI = vscode.Uri.parse(selectedModule);
-      const terraformCommand = await vscode.window.showInputBox({
-        value: `terraform ${command}`,
-        prompt: `Run in ${selectedModule}`,
-      });
-      if (terraformCommand) {
-        const terminal =
-          vscode.window.terminals.find((t) => t.name === terminalName) ||
-          vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
-        terminal.sendText(terraformCommand);
-        terminal.show();
-      }
-      return;
-    }
-  } else {
-    vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
-    return;
   }
 }
 
