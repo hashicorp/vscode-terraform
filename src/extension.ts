@@ -11,14 +11,12 @@ import { execWorkspaceCommand, terraformCommand, updateTerraformStatusBar } from
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);
-export let terraformStatus: vscode.StatusBarItem;
 
 let reporter: TelemetryReporter;
 let clientHandler: ClientHandler;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;
-  terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
 
@@ -140,7 +138,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         return;
       }
 
-      await updateTerraformStatusBar(textEditor.document.uri, clientHandler, terraformStatus, reporter);
+      await updateTerraformStatusBar(textEditor.document.uri, clientHandler, reporter);
     }),
   );
 

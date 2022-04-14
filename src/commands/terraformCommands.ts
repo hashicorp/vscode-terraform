@@ -6,6 +6,8 @@ import { Utils } from 'vscode-uri';
 import { ClientHandler, TerraformLanguageClient } from '../clientHandler';
 import { getActiveTextEditor } from '../vscodeUtils';
 
+const terraformStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+
 interface ModuleCaller {
   uri: string;
 }
@@ -18,7 +20,6 @@ interface ModuleCallersResponse {
 export async function updateTerraformStatusBar(
   documentUri: vscode.Uri,
   clientHandler: ClientHandler,
-  terraformStatus: vscode.StatusBarItem,
   reporter: TelemetryReporter,
 ): Promise<void> {
   const client = clientHandler.getClient();
