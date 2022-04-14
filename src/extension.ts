@@ -1,14 +1,13 @@
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { ExecuteCommandParams } from 'vscode-languageclient';
-import { Utils } from 'vscode-uri';
 import { ClientHandler } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
 import { config, isTerraformFile } from './vscodeUtils';
-import { execWorkspaceCommand, moduleCallers, terraformCommand } from './commands/terraformCommands';
+import { execWorkspaceCommand, terraformCommand, updateTerraformStatusBar } from './commands/terraformCommands';
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);
@@ -141,7 +140,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         return;
       }
 
-      await updateTerraformStatusBar(textEditor.document.uri);
+      await updateTerraformStatusBar(textEditor.document.uri, clientHandler, terraformStatus, reporter);
     }),
   );
 
@@ -156,42 +155,6 @@ export async function deactivate(): Promise<void> {
   }
 
   return clientHandler.stopClient();
-}
-
-export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise<void> {
-  const client = clientHandler.getClient();
-  if (client === undefined) {
-    return;
-  }
-
-  const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
-  if (!initSupported) {
-    return;
-  }
-
-  try {
-    const moduleUri = Utils.dirname(documentUri);
-    const response = await moduleCallers(moduleUri.toString(), clientHandler, reporter);
-
-    if (response.moduleCallers.length === 0) {
-      const dirName = Utils.basename(moduleUri);
-
-      terraformStatus.text = `$(refresh) ${dirName}`;
-      terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
-      terraformStatus.tooltip = `Click to run terraform init`;
-      terraformStatus.command = 'terraform.initCurrent';
-      terraformStatus.show();
-    } else {
-      terraformStatus.hide();
-      terraformStatus.text = '';
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      vscode.window.showErrorMessage(err.message);
-      reporter.sendTelemetryException(err);
-    }
-    terraformStatus.hide();
-  }
 }
 
 async function startLanguageServer() {

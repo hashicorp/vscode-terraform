@@ -15,6 +15,47 @@ interface ModuleCallersResponse {
   moduleCallers: ModuleCaller[];
 }
 
+export async function updateTerraformStatusBar(
+  documentUri: vscode.Uri,
+  clientHandler: ClientHandler,
+  terraformStatus: vscode.StatusBarItem,
+  reporter: TelemetryReporter,
+): Promise<void> {
+  const client = clientHandler.getClient();
+  if (client === undefined) {
+    return;
+  }
+
+  const initSupported = clientHandler.clientSupportsCommand(`${client.commandPrefix}.terraform-ls.terraform.init`);
+  if (!initSupported) {
+    return;
+  }
+
+  try {
+    const moduleUri = Utils.dirname(documentUri);
+    const response = await moduleCallers(moduleUri.toString(), clientHandler, reporter);
+
+    if (response.moduleCallers.length === 0) {
+      const dirName = Utils.basename(moduleUri);
+
+      terraformStatus.text = `$(refresh) ${dirName}`;
+      terraformStatus.color = new vscode.ThemeColor('statusBar.foreground');
+      terraformStatus.tooltip = `Click to run terraform init`;
+      terraformStatus.command = 'terraform.initCurrent';
+      terraformStatus.show();
+    } else {
+      terraformStatus.hide();
+      terraformStatus.text = '';
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      vscode.window.showErrorMessage(err.message);
+      reporter.sendTelemetryException(err);
+    }
+    terraformStatus.hide();
+  }
+}
+
 export function execWorkspaceCommand(
   client: LanguageClient,
   params: ExecuteCommandParams,
@@ -23,25 +64,6 @@ export function execWorkspaceCommand(
 ): Promise<any> {
   reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
   return client.sendRequest(ExecuteCommandRequest.type, params);
-}
-
-export async function moduleCallers(
-  moduleUri: string,
-  clientHandler: ClientHandler,
-  reporter: TelemetryReporter,
-): Promise<ModuleCallersResponse> {
-  const client = clientHandler.getClient();
-  if (client === undefined) {
-    return {
-      version: 0,
-      moduleCallers: [],
-    };
-  }
-
-  const response = await modulesCallersCommand(client, moduleUri, reporter);
-  const moduleCallers: ModuleCaller[] = response.callers;
-
-  return { version: response.v, moduleCallers };
 }
 
 export async function terraformCommand(
@@ -102,7 +124,26 @@ export async function terraformCommand(
   terminal.show();
 }
 
-async function modulesCallersCommand(
+async function moduleCallers(
+  moduleUri: string,
+  clientHandler: ClientHandler,
+  reporter: TelemetryReporter,
+): Promise<ModuleCallersResponse> {
+  const client = clientHandler.getClient();
+  if (client === undefined) {
+    return {
+      version: 0,
+      moduleCallers: [],
+    };
+  }
+
+  const response = await modulesCallersCommand(client, moduleUri, reporter);
+  const moduleCallers: ModuleCaller[] = response.callers;
+
+  return { version: response.v, moduleCallers };
+}
+
+function modulesCallersCommand(
   languageClient: TerraformLanguageClient,
   moduleUri: string,
   reporter: TelemetryReporter,
