@@ -221,7 +221,8 @@
               "type": "string"
             },
             "default": [],
-            "description": "Per-workspace list of module directories for the language server to read"
+            "description": "Per-workspace list of module directories for the language server to read",
+            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform-ls.terraformExecPath": {
             "scope": "resource",
@@ -245,7 +246,8 @@
               "type": "string"
             },
             "default": [],
-            "description": "Per-workspace list of module directories for the language server to exclude"
+            "description": "Per-workspace list of module directories for the language server to exclude",
+            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform-ls.ignoreDirectoryNames": {
             "scope": "resource",
