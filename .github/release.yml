@@ -1,0 +1,32 @@
+changelog:
+  categories:
+    - title: BREAKING CHANGES
+      labels:
+        - breaking
+    - title: NOTES
+      labels:
+        - note
+        - documentation
+    - title: FEATURES
+      labels:
+        - feature
+    - title: ENHANCEMENTS
+      labels:
+        - enhancement
+    - title: BUG FIXES
+      labels:
+        - bug
+    - title: INTERNAL
+      labels:
+        - dependencies
+        - ci
+        - "*"
+  exclude:
+    labels:
+      - duplicate
+      - wontfix
+      - question
+      - invalid
+      - needs-reproduction
+      - needs-research
+      - stale
