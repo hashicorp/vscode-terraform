@@ -15,6 +15,12 @@ import { ShowReferencesFeature } from './showReferences';
 import { TelemetryFeature } from './telemetry';
 import { config } from './vscodeUtils';
 import { CustomSemanticTokens } from './semanticTokens';
+import {
+  setLanguageServerRunning,
+  setLanguageServerStarting,
+  setLanguageServerStopped,
+  setLanguageServerVersion,
+} from './providers/languageServerStatus';
 
 export interface TerraformLanguageClient {
   commandPrefix: string;
@@ -38,6 +44,7 @@ export class ClientHandler {
     private outputChannel: vscode.OutputChannel,
     private reporter: TelemetryReporter,
   ) {
+    setLanguageServerStarting();
     if (lsPath.hasCustomBinPath()) {
       this.reporter.sendTelemetryEvent('usePathToBinary');
     }
@@ -59,6 +66,8 @@ export class ClientHandler {
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
 
       this.commands = initializeResult.capabilities.executeCommandProvider?.commands ?? [];
+
+      setLanguageServerVersion(initializeResult.serverInfo?.version ?? '');
     }
 
     return disposable;
@@ -107,6 +116,18 @@ export class ClientHandler {
       console.log(`Client: ${State[event.oldState]} --> ${State[event.newState]}`);
       if (event.newState === State.Stopped) {
         this.reporter.sendTelemetryEvent('stopClient');
+      }
+
+      switch (event.newState) {
+        case State.Starting:
+          setLanguageServerStarting();
+          break;
+        case State.Running:
+          setLanguageServerRunning();
+          break;
+        case State.Stopped:
+          setLanguageServerStopped();
+          break;
       }
     });
 

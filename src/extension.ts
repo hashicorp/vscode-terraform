@@ -9,6 +9,7 @@ import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './serverPath';
 import { config, getActiveTextEditor, isTerraformFile } from './vscodeUtils';
+import { setLanguageServerState } from './providers/languageServerStatus';
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);
@@ -84,6 +85,39 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         );
       }
       return stopLanguageServer();
+    }),
+    vscode.commands.registerCommand('terraform.restartLanguageServer', async () => {
+      vscode.commands.executeCommand('workbench.action.reloadWindow');
+    }),
+    vscode.commands.registerCommand('terraform.showLanguageServerLogs', async () => {
+      outputChannel.show();
+    }),
+    vscode.commands.registerCommand('terraform.languageServerCommands', async () => {
+      await vscode.window
+        .showQuickPick([
+          {
+            label: 'Enable Langauge Server',
+            command: 'terraform.enableLanguageServer',
+          },
+          {
+            label: 'Disable Langauge Server',
+            command: 'terraform.disableLanguageServer',
+          },
+          {
+            label: 'Restart Langauge Server',
+            command: 'terraform.restartLanguageServer',
+          },
+          {
+            label: 'Show Langauge Server Logs',
+            command: 'terraform.showLanguageServerLogs',
+          },
+        ])
+        .then((option) => {
+          if (!option || !option.command || option.command.length === 0) {
+            return;
+          }
+          vscode.commands.executeCommand(option.command);
+        });
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
       await terraformCommand('apply', false);
@@ -201,9 +235,12 @@ async function startLanguageServer() {
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      const theError = error instanceof Error ? error.message : error;
+      vscode.window.showErrorMessage(theError);
+      setLanguageServerState(theError, false, vscode.LanguageStatusSeverity.Error);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
+      setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
     }
   }
 }
@@ -215,9 +252,12 @@ async function stopLanguageServer() {
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      const theError = error instanceof Error ? error.message : error;
+      vscode.window.showErrorMessage(theError);
+      setLanguageServerState(theError, false, vscode.LanguageStatusSeverity.Error);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
+      setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
     }
   }
 }
