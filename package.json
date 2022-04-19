@@ -190,13 +190,6 @@
                   "serve"
                 ],
                 "description": "Arguments to pass to language server binary"
-              },
-              "maxNumberOfProblems": {
-                "scope": "resource",
-                "type": "number",
-                "default": 100,
-                "description": "Controls the maximum number of problems produced by the server.",
-                "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
               }
             },
             "default": {
@@ -204,8 +197,7 @@
               "pathToBinary": "",
               "args": [
                 "serve"
-              ],
-              "maxNumberOfProblems": 100
+              ]
             }
           },
           "terraform.languageServer.ignoreSingleFileWarning": {
