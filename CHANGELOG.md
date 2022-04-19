@@ -2,13 +2,13 @@
 
 NOTES:
 
- - Remove terraform.languageServer.requiredVersion ([#1021](https://github.com/hashicorp/vscode-terraform/pull/1021))
- - Deprecate terraform.languageServer.maxNumberOfProblems ([#1010](https://github.com/hashicorp/vscode-terraform/pull/1010))
+ - Remove `terraform.languageServer.requiredVersion` settings option (language server is no longer installed by the extension) ([#1021](https://github.com/hashicorp/vscode-terraform/pull/1021))
+ - Deprecate `terraform.languageServer.maxNumberOfProblems` (this option is no-op in all v2 versions) ([#1010](https://github.com/hashicorp/vscode-terraform/pull/1010))
 
 ENHANCEMENTS:
 
  - Support custom semantic tokens & modifiers ([#958](https://github.com/hashicorp/terraform-ls/pull/958))
- - Organize extension settings into Sections ([#1024](https://github.com/hashicorp/vscode-terraform/pull/1024))
+ - Organize extension settings into sections ([#1024](https://github.com/hashicorp/vscode-terraform/pull/1024))
 
 INTERNAL:
 
