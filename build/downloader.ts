@@ -63,7 +63,7 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
   const repoDir = cwd.replace(buildDir, '');
   const installPath = path.join(repoDir, 'bin');
   if (fs.existsSync(installPath)) {
-    console.log('terraform-ls path exists. Exiting');
+    console.log(`bin path exists at ${installPath}. Exiting`);
     return;
   }
 
