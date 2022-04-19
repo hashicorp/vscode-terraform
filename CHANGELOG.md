@@ -7,8 +7,17 @@ NOTES:
 
 ENHANCEMENTS:
 
- - Support custom semantic tokens & modifiers ([#958](https://github.com/hashicorp/terraform-ls/pull/958))
+ - Support custom semantic tokens & modifiers ([#958](https://github.com/hashicorp/terraform-ls/pull/958) / [terraform-ls#833](https://github.com/hashicorp/terraform-ls/pull/833))
+ - Enable 'go to module source' for local modules ([#849](https://github.com/hashicorp/terraform-ls/pull/849))
+ - Enable opening a single Terraform file ([terraform-ls#843](https://github.com/hashicorp/terraform-ls/pull/843))
  - Organize extension settings into sections ([#1024](https://github.com/hashicorp/vscode-terraform/pull/1024))
+
+BUG FIXES:
+
+ - Avoid hanging when workspace contains >50 folders ([terraform-ls#839](https://github.com/hashicorp/terraform-ls/pull/839))
+ - Make loading of parent directory after lower level directories work ([terraform-ls#851](https://github.com/hashicorp/terraform-ls/pull/851))
+ - Fix corrupted diffs in formatting responses ([terraform-ls#876](https://github.com/hashicorp/terraform-ls/pull/876))
+ - Fix Module View for Registry modules installed by Terraform v1.1+ ([terraform-ls#872](https://github.com/hashicorp/terraform-ls/pull/872))
 
 INTERNAL:
 
