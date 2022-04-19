@@ -214,16 +214,6 @@
             "default": false,
             "description": "This setting controls whether terraform-ls sends a warning about opening up a single Terraform file instead of a Terraform folder. Setting this to `true` will prevent the message being sent. The default value is `false`."
           },
-          "terraform-ls.rootModules": {
-            "scope": "resource",
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": [],
-            "description": "Per-workspace list of module directories for the language server to read",
-            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
-          },
           "terraform-ls.terraformExecPath": {
             "scope": "resource",
             "type": "string",
@@ -238,16 +228,6 @@
             "scope": "resource",
             "type": "string",
             "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}"
-          },
-          "terraform-ls.excludeRootModules": {
-            "scope": "resource",
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": [],
-            "description": "Per-workspace list of module directories for the language server to exclude",
-            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform-ls.ignoreDirectoryNames": {
             "scope": "resource",

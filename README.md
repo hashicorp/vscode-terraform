@@ -262,24 +262,6 @@ This will create diagnostics for any elements that fail validation. You can also
 
 ### Multiple Workspaces
 
-If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
-
-```json
-"terraform-ls.rootModules": [
-  "/module1",
-  "/module2"
-]
-```
-
-If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
-
-```json
-"terraform-ls.excludeRootModules": [
-  "/module3",
-  "/module4"
-]
-```
-
 If you want to automatically ignore certain directories when terraform-ls indexes files, add the folder names to this setting:
 
 ```json
