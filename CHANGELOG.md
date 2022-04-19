@@ -21,6 +21,7 @@ BUG FIXES:
 
 INTERNAL:
 
+ - Bump language server to `0.27.0` ([#1060](https://github.com/hashicorp/vscode-terraform/pull/1060))
  - Format semantic token settings ([#1019](https://github.com/hashicorp/vscode-terraform/pull/1019))
  - Disable naming convention warning for Code Action identifier ([#1036](https://github.com/hashicorp/vscode-terraform/pull/1036))
  - Add CODEOWNERS file ([#1038](https://github.com/hashicorp/vscode-terraform/pull/1038))
