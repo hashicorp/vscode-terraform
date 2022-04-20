@@ -307,12 +307,12 @@
       },
       {
         "command": "terraform.modules.refreshList",
-        "title": "Refresh",
+        "title": "Refresh Module Calls",
         "icon": "$(refresh)"
       },
       {
         "command": "terraform.providers.refreshList",
-        "title": "Refresh",
+        "title": "Refresh Module Providers",
         "icon": "$(refresh)"
       },
       {
