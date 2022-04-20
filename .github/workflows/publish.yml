@@ -78,7 +78,11 @@ jobs:
     if: success() && startsWith( github.ref, 'refs/tags/v')
     steps:
       - uses: actions/download-artifact@v3
-      - name: Publish Extension
+      - name: Publish Extension (Microsoft Marketplace)
         run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Publish Extension (OpenVSX)
+        run: npx ovsx publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
