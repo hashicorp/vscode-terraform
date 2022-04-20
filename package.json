@@ -311,6 +311,11 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "terraform.providers.refreshList",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "terraform.modules.openDocumentation",
         "title": "Open Documentation",
         "icon": "$(book)"
@@ -328,6 +333,10 @@
           "when": "false"
         },
         {
+          "command": "terraform.providers.refreshList",
+          "when": "false"
+        },
+        {
           "command": "terraform.modules.openDocumentation",
           "when": "false"
         },
@@ -340,6 +349,11 @@
         {
           "command": "terraform.modules.refreshList",
           "when": "view == terraform.modules",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.providers.refreshList",
+          "when": "view == terraform.providers",
           "group": "navigation"
         }
       ],
