@@ -307,7 +307,12 @@
       },
       {
         "command": "terraform.modules.refreshList",
-        "title": "Refresh",
+        "title": "Refresh Module Calls",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.providers.refreshList",
+        "title": "Refresh Module Providers",
         "icon": "$(refresh)"
       },
       {
@@ -328,6 +333,10 @@
           "when": "false"
         },
         {
+          "command": "terraform.providers.refreshList",
+          "when": "false"
+        },
+        {
           "command": "terraform.modules.openDocumentation",
           "when": "false"
         },
@@ -340,6 +349,11 @@
         {
           "command": "terraform.modules.refreshList",
           "when": "view == terraform.modules",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.providers.refreshList",
+          "when": "view == terraform.providers",
           "group": "navigation"
         }
       ],

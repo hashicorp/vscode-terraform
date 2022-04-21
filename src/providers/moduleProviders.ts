@@ -47,6 +47,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
 
   constructor(ctx: vscode.ExtensionContext, private handler: ClientHandler) {
     ctx.subscriptions.push(
+      vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
         const activeEditor = getActiveTextEditor();
 
