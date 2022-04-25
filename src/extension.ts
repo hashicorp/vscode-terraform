@@ -7,8 +7,8 @@ import { ClientHandler, TerraformLanguageClient } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
-import { ServerPath } from './serverPath';
-import { config, getActiveTextEditor, isTerraformFile } from './vscodeUtils';
+import { ServerPath } from './utils/serverPath';
+import { config, getActiveTextEditor, isTerraformFile } from './utils/vscodeUtils';
 
 const brand = `HashiCorp Terraform`;
 const outputChannel = vscode.window.createOutputChannel(brand);

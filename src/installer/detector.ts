@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from '../utils';
+import { exec } from '../utils/utils';
 
 export async function getLsVersion(binPath: string): Promise<string | undefined> {
   try {
