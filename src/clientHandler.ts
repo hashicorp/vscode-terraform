@@ -11,10 +11,10 @@ import {
   State,
 } from 'vscode-languageclient/node';
 import { ServerPath } from './serverPath';
-import { ShowReferencesFeature } from './showReferences';
-import { TelemetryFeature } from './telemetry';
+import { ShowReferencesFeature } from './features/showReferences';
+import { TelemetryFeature } from './features/telemetry';
 import { config } from './vscodeUtils';
-import { CustomSemanticTokens } from './semanticTokens';
+import { CustomSemanticTokens } from './features/semanticTokens';
 
 export interface TerraformLanguageClient {
   commandPrefix: string;
