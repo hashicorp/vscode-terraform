@@ -11,10 +11,10 @@ import {
   State,
 } from 'vscode-languageclient/node';
 import { ServerPath } from './serverPath';
-import { ShowReferencesFeature } from './showReferences';
-import { TelemetryFeature } from './telemetry';
+import { ShowReferencesFeature } from './features/showReferences';
+import { TelemetryFeature } from './features/telemetry';
 import { config } from './vscodeUtils';
-import { CustomSemanticTokens } from './semanticTokens';
+import { CustomSemanticTokens, PartialManifest } from './features/semanticTokens';
 
 export interface TerraformLanguageClient {
   commandPrefix: string;
@@ -37,6 +37,7 @@ export class ClientHandler {
     private lsPath: ServerPath,
     private outputChannel: vscode.OutputChannel,
     private reporter: TelemetryReporter,
+    private manifest: PartialManifest,
   ) {
     if (lsPath.hasCustomBinPath()) {
       this.reporter.sendTelemetryEvent('usePathToBinary');
@@ -90,9 +91,7 @@ export class ClientHandler {
     const id = `terraform`;
     const client = new LanguageClient(id, serverOptions, clientOptions);
 
-    client.registerFeature(
-      new CustomSemanticTokens(client, this.extSemanticTokenTypes, this.extSemanticTokenModifiers),
-    );
+    client.registerFeature(new CustomSemanticTokens(client, this.manifest));
 
     const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount');
     if (codeLensReferenceCount) {
