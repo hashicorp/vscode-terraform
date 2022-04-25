@@ -6,19 +6,6 @@ updates:
     schedule:
       interval: "daily"
     labels: ["dependencies"]
-    allow:
-      - dependency-type: "production"
-      - dependency-name: "@hashicorp/js-releases"
-
-  - package-ecosystem: "npm"
-    versioning-strategy: lockfile-only
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels: ["dependencies"]
-    allow:
-      - dependency-type: "development"
-
 
   - package-ecosystem: "github-actions"
     directory: "/"
