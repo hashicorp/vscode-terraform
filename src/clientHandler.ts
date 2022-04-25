@@ -17,7 +17,6 @@ import { ShowReferencesFeature } from './features/showReferences';
 import { TelemetryFeature } from './features/telemetry';
 
 export interface TerraformLanguageClient {
-  commandPrefix: string;
   client: LanguageClient;
 }
 
@@ -66,9 +65,7 @@ export class ClientHandler {
   }
 
   private async createTerraformClient(): Promise<TerraformLanguageClient> {
-    const commandPrefix = this.shortUid.seq();
-
-    const initializationOptions = this.getInitializationOptions(commandPrefix);
+    const initializationOptions = this.getInitializationOptions();
 
     const serverOptions = await this.getServerOptions();
 
@@ -109,7 +106,7 @@ export class ClientHandler {
       }
     });
 
-    return { commandPrefix, client };
+    return { client };
   }
 
   private async getServerOptions(): Promise<ServerOptions> {
@@ -128,7 +125,7 @@ export class ClientHandler {
     return serverOptions;
   }
 
-  private getInitializationOptions(commandPrefix: string) {
+  private getInitializationOptions() {
     const rootModulePaths = config('terraform-ls').get<string[]>('rootModules', []);
     const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath', '');
     const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout', '');
@@ -146,7 +143,6 @@ export class ClientHandler {
 
     const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
     const initializationOptions = {
-      commandPrefix,
       experimentalFeatures,
       ignoreSingleFileWarning,
       ...(terraformExecPath.length > 0 && { terraformExecPath }),

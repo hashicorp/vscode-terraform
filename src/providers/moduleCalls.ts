@@ -79,6 +79,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   constructor(ctx: vscode.ExtensionContext, public handler: ClientHandler) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
+
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
       vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
@@ -136,15 +137,13 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     }
 
     return await handler.client.onReady().then(async () => {
-      const moduleCallsSupported = this.handler.clientSupportsCommand(
-        `${handler.commandPrefix}.terraform-ls.module.calls`,
-      );
+      const moduleCallsSupported = this.handler.clientSupportsCommand(`terraform-ls.module.calls`);
       if (!moduleCallsSupported) {
         return Promise.resolve([]);
       }
 
       const params: ExecuteCommandParams = {
-        command: `${handler.commandPrefix}.terraform-ls.module.calls`,
+        command: `terraform-ls.module.calls`,
         arguments: [`uri=${documentURI}`],
       };
 
