@@ -43,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   const lsPath = new ServerPath(context);
-  clientHandler = new ClientHandler(lsPath, outputChannel, reporter);
+  clientHandler = new ClientHandler(lsPath, outputChannel, reporter, manifest);
 
   // get rid of pre-2.0.0 settings
   if (config('terraform').has('languageServer.enabled')) {

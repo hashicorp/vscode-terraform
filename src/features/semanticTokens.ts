@@ -1,6 +1,6 @@
 import { BaseLanguageClient, ClientCapabilities, ServerCapabilities, StaticFeature } from 'vscode-languageclient';
 
-interface PartialManifest {
+export interface PartialManifest {
   contributes: {
     semanticTokenTypes?: ObjectWithId[];
     semanticTokenModifiers?: ObjectWithId[];
