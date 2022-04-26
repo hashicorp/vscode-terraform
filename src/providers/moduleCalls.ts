@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 import { Utils } from 'vscode-uri';
 import { ClientHandler } from '../clientHandler';
-import { getActiveTextEditor, isTerraformFile } from '../vscodeUtils';
+import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleCall {

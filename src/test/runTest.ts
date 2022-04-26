@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { runTests } from '@vscode/test-electron';
 import { TestOptions } from '@vscode/test-electron/out/runTest';
-import { exec } from '../utils';
+import { exec } from '../utils/helpers';
 
 async function terraformInit() {
   const cwd = process.cwd();
