@@ -1,4 +1,3 @@
-import ShortUniqueId from 'short-unique-id';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
@@ -16,17 +15,12 @@ import { PartialManifest, CustomSemanticTokens } from './features/semanticTokens
 import { ShowReferencesFeature } from './features/showReferences';
 import { TelemetryFeature } from './features/telemetry';
 
-export interface TerraformLanguageClient {
-  client: LanguageClient;
-}
-
 /**
  * ClientHandler maintains lifecycles of language clients
  * based on the server's capabilities
  */
 export class ClientHandler {
-  private shortUid: ShortUniqueId = new ShortUniqueId();
-  private tfClient: TerraformLanguageClient | undefined;
+  private client: LanguageClient | undefined;
   private commands: string[] = [];
 
   public extSemanticTokenTypes: string[] = [];
@@ -46,14 +40,14 @@ export class ClientHandler {
   public async startClient(): Promise<vscode.Disposable> {
     console.log('Starting client');
 
-    this.tfClient = await this.createTerraformClient();
-    const disposable = this.tfClient.client.start();
+    this.client = await this.createTerraformClient();
+    const disposable = this.client.start();
 
-    await this.tfClient.client.onReady();
+    await this.client.onReady();
 
     this.reporter.sendTelemetryEvent('startClient');
 
-    const initializeResult = this.tfClient.client.initializeResult;
+    const initializeResult = this.client.initializeResult;
     if (initializeResult !== undefined) {
       const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
@@ -64,7 +58,7 @@ export class ClientHandler {
     return disposable;
   }
 
-  private async createTerraformClient(): Promise<TerraformLanguageClient> {
+  private async createTerraformClient(): Promise<LanguageClient> {
     const initializationOptions = this.getInitializationOptions();
 
     const serverOptions = await this.getServerOptions();
@@ -106,7 +100,7 @@ export class ClientHandler {
       }
     });
 
-    return { client };
+    return client;
   }
 
   private async getServerOptions(): Promise<ServerOptions> {
@@ -156,16 +150,16 @@ export class ClientHandler {
   }
 
   public async stopClient(): Promise<void> {
-    if (this.tfClient?.client === undefined) {
+    if (this.client === undefined) {
       return;
     }
 
-    await this.tfClient.client.stop();
+    await this.client.stop();
     console.log('Client stopped');
   }
 
-  public getClient(): TerraformLanguageClient | undefined {
-    return this.tfClient;
+  public getClient(): LanguageClient | undefined {
+    return this.client;
   }
 
   public clientSupportsCommand(cmdName: string): boolean {

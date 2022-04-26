@@ -3,7 +3,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { ClientHandler, TerraformLanguageClient } from './clientHandler';
+import { ClientHandler } from './clientHandler';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
@@ -102,7 +102,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           command: `terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
         };
-        await execWorkspaceCommand(client.client, requestParams);
+        await execWorkspaceCommand(client, requestParams);
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
@@ -236,12 +236,12 @@ interface ModuleCallersResponse {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function modulesCallersCommand(languageClient: TerraformLanguageClient, moduleUri: string): Promise<any> {
+async function modulesCallersCommand(languageClient: LanguageClient, moduleUri: string): Promise<any> {
   const requestParams: ExecuteCommandParams = {
     command: `terraform-ls.module.callers`,
     arguments: [`uri=${moduleUri}`],
   };
-  return execWorkspaceCommand(languageClient.client, requestParams);
+  return execWorkspaceCommand(languageClient, requestParams);
 }
 
 export async function moduleCallers(moduleUri: string): Promise<ModuleCallersResponse> {
@@ -289,7 +289,7 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
         command: `terraform-ls.terraform.${command}`,
         arguments: [`uri=${selectedModule}`],
       };
-      return execWorkspaceCommand(languageClient.client, requestParams);
+      return execWorkspaceCommand(languageClient, requestParams);
     } else {
       const terminalName = `Terraform ${selectedModule}`;
       const moduleURI = vscode.Uri.parse(selectedModule);

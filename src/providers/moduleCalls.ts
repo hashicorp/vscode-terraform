@@ -136,7 +136,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
       return [];
     }
 
-    return await handler.client.onReady().then(async () => {
+    return await handler.onReady().then(async () => {
       const moduleCallsSupported = this.handler.clientSupportsCommand(`terraform-ls.module.calls`);
       if (!moduleCallsSupported) {
         return Promise.resolve([]);
@@ -147,7 +147,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
         arguments: [`uri=${documentURI}`],
       };
 
-      const response = await handler.client.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
+      const response = await handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
         ExecuteCommandRequest.type,
         params,
       );
