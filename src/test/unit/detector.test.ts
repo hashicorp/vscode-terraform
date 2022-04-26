@@ -1,7 +1,7 @@
-import { exec as execOrg } from '../../utils/utils';
+import { exec as execOrg } from '../../utils/helpers';
 import { getLsVersion } from '../../installer/detector';
 
-jest.mock('../../utils/utils');
+jest.mock('../../utils/helpers');
 
 const exec = jest.mocked(execOrg);
 

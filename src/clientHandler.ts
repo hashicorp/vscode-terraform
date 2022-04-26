@@ -10,7 +10,7 @@ import {
   ServerOptions,
   State,
 } from 'vscode-languageclient/node';
-import { config } from './utils/vscodeUtils';
+import { config } from './utils/vscode';
 import { ServerPath } from './utils/serverPath';
 import { PartialManifest, CustomSemanticTokens } from './features/semanticTokens';
 import { ShowReferencesFeature } from './features/showReferences';
