@@ -135,32 +135,31 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     if (handler === undefined) {
       return [];
     }
+    await handler.onReady();
 
-    return await handler.onReady().then(async () => {
-      const moduleCallsSupported = this.handler.clientSupportsCommand(`terraform-ls.module.calls`);
-      if (!moduleCallsSupported) {
-        return Promise.resolve([]);
-      }
+    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.calls`);
+    if (!commandSupported) {
+      return Promise.resolve([]);
+    }
 
-      const params: ExecuteCommandParams = {
-        command: `terraform-ls.module.calls`,
-        arguments: [`uri=${documentURI}`],
-      };
+    const params: ExecuteCommandParams = {
+      command: `terraform-ls.module.calls`,
+      arguments: [`uri=${documentURI}`],
+    };
 
-      const response = await handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
-        ExecuteCommandRequest.type,
-        params,
-      );
-      if (response === null) {
-        return Promise.resolve([]);
-      }
+    const response = await handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
+      ExecuteCommandRequest.type,
+      params,
+    );
+    if (response === null) {
+      return Promise.resolve([]);
+    }
 
-      const list = response.module_calls.map((m) =>
-        this.toModuleCall(m.name, m.source_addr, m.version, m.source_type, m.docs_link, this.svg, m.dependent_modules),
-      );
+    const list = response.module_calls.map((m) =>
+      this.toModuleCall(m.name, m.source_addr, m.version, m.source_type, m.docs_link, this.svg, m.dependent_modules),
+    );
 
-      return list;
-    });
+    return list;
   }
 
   toModuleCall(

@@ -102,8 +102,8 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     }
     await handler.onReady();
 
-    const moduleCallsSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
-    if (!moduleCallsSupported) {
+    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
+    if (!commandSupported) {
       return [];
     }
 
