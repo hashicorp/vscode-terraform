@@ -100,21 +100,19 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     if (handler === undefined) {
       return [];
     }
-    await handler.client.onReady();
+    await handler.onReady();
 
-    const moduleCallsSupported = this.handler.clientSupportsCommand(
-      `${handler.commandPrefix}.terraform-ls.module.providers`,
-    );
-    if (!moduleCallsSupported) {
+    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
+    if (!commandSupported) {
       return [];
     }
 
     const params: ExecuteCommandParams = {
-      command: `${handler.commandPrefix}.terraform-ls.module.providers`,
+      command: `terraform-ls.module.providers`,
       arguments: [`uri=${documentURI}`],
     };
 
-    const response = await handler.client.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
+    const response = await handler.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
       ExecuteCommandRequest.type,
       params,
     );

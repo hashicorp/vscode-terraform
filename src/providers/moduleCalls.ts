@@ -79,6 +79,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   constructor(ctx: vscode.ExtensionContext, public handler: ClientHandler) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
+
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
       vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
@@ -134,34 +135,31 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     if (handler === undefined) {
       return [];
     }
+    await handler.onReady();
 
-    return await handler.client.onReady().then(async () => {
-      const moduleCallsSupported = this.handler.clientSupportsCommand(
-        `${handler.commandPrefix}.terraform-ls.module.calls`,
-      );
-      if (!moduleCallsSupported) {
-        return Promise.resolve([]);
-      }
+    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.calls`);
+    if (!commandSupported) {
+      return Promise.resolve([]);
+    }
 
-      const params: ExecuteCommandParams = {
-        command: `${handler.commandPrefix}.terraform-ls.module.calls`,
-        arguments: [`uri=${documentURI}`],
-      };
+    const params: ExecuteCommandParams = {
+      command: `terraform-ls.module.calls`,
+      arguments: [`uri=${documentURI}`],
+    };
 
-      const response = await handler.client.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
-        ExecuteCommandRequest.type,
-        params,
-      );
-      if (response === null) {
-        return Promise.resolve([]);
-      }
+    const response = await handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
+      ExecuteCommandRequest.type,
+      params,
+    );
+    if (response === null) {
+      return Promise.resolve([]);
+    }
 
-      const list = response.module_calls.map((m) =>
-        this.toModuleCall(m.name, m.source_addr, m.version, m.source_type, m.docs_link, this.svg, m.dependent_modules),
-      );
+    const list = response.module_calls.map((m) =>
+      this.toModuleCall(m.name, m.source_addr, m.version, m.source_type, m.docs_link, this.svg, m.dependent_modules),
+    );
 
-      return list;
-    });
+    return list;
   }
 
   toModuleCall(
