@@ -28,9 +28,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     return undefined;
   }
 
-  const lsPath = new ServerPath(context);
-  clientHandler = new ClientHandler(lsPath, outputChannel, reporter, manifest);
-
   // get rid of pre-2.0.0 settings
   await migrateLegacySettings();
 
@@ -105,6 +102,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     reporter.sendTelemetryEvent('disabledTerraformLS');
     return;
   }
+
+  const lsPath = new ServerPath(context);
+  clientHandler = new ClientHandler(lsPath, outputChannel, reporter, manifest);
 
   await startLanguageServer();
 
