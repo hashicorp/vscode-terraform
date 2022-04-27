@@ -68,25 +68,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     vscode.commands.registerCommand('terraform.apply', async () => {
       await terraformCommand('apply', false);
     }),
-    vscode.commands.registerCommand('terraform.init', async () => {
-      const workspaceFolders = vscode.workspace.workspaceFolders;
-      const selected = await vscode.window.showOpenDialog({
-        canSelectFiles: false,
-        canSelectFolders: true,
-        canSelectMany: false,
-        defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
-        openLabel: 'Initialize',
-      });
-      const client = clientHandler.getClient();
-      if (selected && client) {
-        const moduleUri = selected[0];
-        const requestParams: ExecuteCommandParams = {
-          command: `${client.commandPrefix}.terraform-ls.terraform.init`,
-          arguments: [`uri=${moduleUri}`],
-        };
-        await execWorkspaceCommand(client.client, requestParams);
-      }
-    }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
       await terraformCommand('init', true);
     }),
@@ -110,6 +91,25 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
+    vscode.commands.registerCommand('terraform.init', async () => {
+      const workspaceFolders = vscode.workspace.workspaceFolders;
+      const selected = await vscode.window.showOpenDialog({
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false,
+        defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
+        openLabel: 'Initialize',
+      });
+      const client = clientHandler.getClient();
+      if (selected && client) {
+        const moduleUri = selected[0];
+        const requestParams: ExecuteCommandParams = {
+          command: `${client.commandPrefix}.terraform-ls.terraform.init`,
+          arguments: [`uri=${moduleUri}`],
+        };
+        await execWorkspaceCommand(client.client, requestParams);
+      }
+    }),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleCallsDataProvider(context, clientHandler)),
     vscode.window.registerTreeDataProvider(
       'terraform.providers',
