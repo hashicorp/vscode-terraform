@@ -23,44 +23,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
 
-  const stable = vscode.extensions.getExtension('hashicorp.terraform');
-  const preview = vscode.extensions.getExtension('hashicorp.terraform-preview');
-
-  if (context.extension.id === 'hashicorp.terraform-preview') {
-    if (stable !== undefined) {
-      vscode.window.showErrorMessage(
-        'Terraform Preview cannot be used while Terraform Stable is also enabled. Please ensure only one is enabled or installed and reload this window',
-      );
-      return undefined;
-    }
-  } else if (context.extension.id === 'hashicorp.terraform') {
-    if (preview !== undefined) {
-      vscode.window.showErrorMessage(
-        'Terraform Stable cannot be used while Terraform Preview is also enabled. Please ensure only one is enabled or installed and reload this window',
-      );
-      return undefined;
-    }
+  if (previewExtensionPresent(context.extension.id)) {
+    reporter.sendTelemetryEvent('previewExtensionPresentWithStable');
+    return undefined;
   }
-
-  const lsPath = new ServerPath(context);
-  clientHandler = new ClientHandler(lsPath, outputChannel, reporter, manifest);
 
   // get rid of pre-2.0.0 settings
-  if (config('terraform').has('languageServer.enabled')) {
-    try {
-      await config('terraform').update(
-        'languageServer',
-        { enabled: undefined, external: true },
-        vscode.ConfigurationTarget.Global,
-      );
-    } catch (err) {
-      const error = err instanceof Error ? err.message : err;
-      console.error(`Error trying to erase pre-2.0.0 settings: ${error}`);
-    }
-  }
+  await migrateLegacySettings();
 
   // Subscriptions
   context.subscriptions.push(
+    new GenerateBugReportCommand(context),
     vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
       if (!enabled()) {
         const current = config('terraform').get('languageServer');
@@ -83,9 +56,41 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       }
       return stopLanguageServer();
     }),
+    vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
+      if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
+        const reloadMsg = 'Reload VSCode window to apply language server changes';
+        const selected = await vscode.window.showInformationMessage(reloadMsg, 'Reload');
+        if (selected === 'Reload') {
+          vscode.commands.executeCommand('workbench.action.reloadWindow');
+        }
+      }
+    }),
     vscode.commands.registerCommand('terraform.apply', async () => {
       await terraformCommand('apply', false);
     }),
+    vscode.commands.registerCommand('terraform.initCurrent', async () => {
+      await terraformCommand('init', true);
+    }),
+    vscode.commands.registerCommand('terraform.plan', async () => {
+      await terraformCommand('plan', false);
+    }),
+    vscode.commands.registerCommand('terraform.validate', async () => {
+      await terraformCommand('validate', true);
+    }),
+  );
+
+  if (!enabled()) {
+    reporter.sendTelemetryEvent('disabledTerraformLS');
+    return;
+  }
+
+  const lsPath = new ServerPath(context);
+  clientHandler = new ClientHandler(lsPath, outputChannel, reporter, manifest);
+
+  await startLanguageServer();
+
+  // these need the LS to function, so are only registered if enabled
+  context.subscriptions.push(
     vscode.commands.registerCommand('terraform.init', async () => {
       const workspaceFolders = vscode.workspace.workspaceFolders;
       const selected = await vscode.window.showOpenDialog({
@@ -105,30 +110,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         await execWorkspaceCommand(client, requestParams);
       }
     }),
-    vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', true);
-    }),
-    vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', false);
-    }),
-    vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', true);
-    }),
-    new GenerateBugReportCommand(context),
     vscode.window.registerTreeDataProvider('terraform.modules', new ModuleCallsDataProvider(context, clientHandler)),
     vscode.window.registerTreeDataProvider(
       'terraform.providers',
       new ModuleProvidersDataProvider(context, clientHandler),
     ),
-    vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
-      if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
-        const reloadMsg = 'Reload VSCode window to apply language server changes';
-        const selected = await vscode.window.showInformationMessage(reloadMsg, 'Reload');
-        if (selected === 'Reload') {
-          vscode.commands.executeCommand('workbench.action.reloadWindow');
-        }
-      }
-    }),
     vscode.window.onDidChangeVisibleTextEditors(async (editors: readonly vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
       if (textEditor?.document === undefined) {
@@ -142,10 +128,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       await updateTerraformStatusBar(textEditor.document.uri);
     }),
   );
-
-  if (enabled()) {
-    await startLanguageServer();
-  }
 }
 
 export async function deactivate(): Promise<void> {
@@ -314,4 +296,40 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
 
 function enabled(): boolean {
   return config('terraform').get('languageServer.external', false);
+}
+
+async function migrateLegacySettings() {
+  if (config('terraform').has('languageServer.enabled')) {
+    try {
+      await config('terraform').update(
+        'languageServer',
+        { enabled: undefined, external: true },
+        vscode.ConfigurationTarget.Global,
+      );
+    } catch (err) {
+      const error = err instanceof Error ? err.message : err;
+      console.error(`Error trying to erase pre-2.0.0 settings: ${error}`);
+    }
+  }
+}
+
+function previewExtensionPresent(currentExtensionID: string) {
+  const stable = vscode.extensions.getExtension('hashicorp.terraform');
+  const preview = vscode.extensions.getExtension('hashicorp.terraform-preview');
+
+  const msg = 'Please ensure only one is enabled or installed and reload this window';
+
+  if (currentExtensionID === 'hashicorp.terraform-preview') {
+    if (stable !== undefined) {
+      vscode.window.showErrorMessage('Terraform Preview cannot be used while Terraform Stable is also enabled.' + msg);
+      return true;
+    }
+  } else if (currentExtensionID === 'hashicorp.terraform') {
+    if (preview !== undefined) {
+      vscode.window.showErrorMessage('Terraform Stable cannot be used while Terraform Preview is also enabled.' + msg);
+      return true;
+    }
+  }
+
+  return false;
 }
