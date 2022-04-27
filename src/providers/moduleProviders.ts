@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 
-import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
+import { LanguageClient } from 'vscode-languageclient/node';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleProvidersResponse {
@@ -45,7 +45,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
-  constructor(ctx: vscode.ExtensionContext, private handler: ClientHandler) {
+  constructor(ctx: vscode.ExtensionContext, private handler: LanguageClient) {
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
@@ -96,13 +96,15 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    const handler = this.handler.getClient();
-    if (handler === undefined) {
+    if (this.handler === undefined) {
       return [];
     }
-    await handler.onReady();
+    await this.handler.onReady();
 
-    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
+    // const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
+    const commandSupported = this.handler.initializeResult?.capabilities.executeCommandProvider?.commands.includes(
+      'terraform-ls.module.providers',
+    );
     if (!commandSupported) {
       return [];
     }
@@ -112,7 +114,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
       arguments: [`uri=${documentURI}`],
     };
 
-    const response = await handler.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
+    const response = await this.handler.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
       ExecuteCommandRequest.type,
       params,
     );

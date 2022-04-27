@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
+import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -77,7 +77,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   private svg = '';
 
-  constructor(ctx: vscode.ExtensionContext, public handler: ClientHandler) {
+  constructor(ctx: vscode.ExtensionContext, public handler: LanguageClient) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
 
     ctx.subscriptions.push(
@@ -131,13 +131,16 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    const handler = this.handler.getClient();
-    if (handler === undefined) {
+    if (this.handler === undefined) {
       return [];
     }
-    await handler.onReady();
+    await this.handler.onReady();
 
-    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.calls`);
+    // clientSupportsCommand(`terraform-ls.module.calls`)
+    const commandSupported =
+      this.handler.initializeResult?.capabilities.executeCommandProvider?.commands.includes(
+        'terraform-ls.module.calls',
+      );
     if (!commandSupported) {
       return Promise.resolve([]);
     }
@@ -147,7 +150,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
       arguments: [`uri=${documentURI}`],
     };
 
-    const response = await handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
+    const response = await this.handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
       ExecuteCommandRequest.type,
       params,
     );
