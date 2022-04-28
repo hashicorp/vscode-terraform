@@ -5,5 +5,6 @@ export interface ExperimentalClientCapabilities {
   experimental: {
     telemetryVersion?: number;
     showReferencesCommandId?: string;
+    refereshModuleProvidersCommandId?: string;
   };
 }
