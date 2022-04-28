@@ -1,4 +1,4 @@
-import { Executable } from 'vscode-languageclient/node';
+import { Executable, InitializeResult } from 'vscode-languageclient/node';
 import { config } from './vscode';
 import { ServerPath } from './serverPath';
 
@@ -49,4 +49,12 @@ export function getInitializationOptions() {
   };
 
   return initializationOptions;
+}
+
+export function clientSupportsCommand(initializeResult: InitializeResult | undefined, cmdName: string): boolean {
+  if (!initializeResult) {
+    return false;
+  }
+
+  return initializeResult.capabilities.executeCommandProvider?.commands.includes(cmdName) ?? false;
 }

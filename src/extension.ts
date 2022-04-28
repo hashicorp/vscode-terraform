@@ -12,7 +12,7 @@ import {
   ServerOptions,
 } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { getInitializationOptions, getServerExecutable } from './utils/clientHelpers';
+import { clientSupportsCommand, getInitializationOptions, getServerExecutable } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
@@ -195,9 +195,7 @@ export async function updateTerraformStatusBar(documentUri: vscode.Uri): Promise
     return;
   }
 
-  // const initSupported = clientHandler.clientSupportsCommand(`terraform-ls.terraform.init`);
-  const initSupported =
-    client.initializeResult?.capabilities.executeCommandProvider?.commands.includes('terraform-ls.terraform.init');
+  const initSupported = clientSupportsCommand(client.initializeResult, `terraform-ls.terraform.init`);
   if (!initSupported) {
     return;
   }

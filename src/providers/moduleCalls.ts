@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
+import { clientSupportsCommand } from '../utils/clientHelpers';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -136,9 +137,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     }
     await this.client.onReady();
 
-    // clientSupportsCommand(`terraform-ls.module.calls`)
-    const commandSupported =
-      this.client.initializeResult?.capabilities.executeCommandProvider?.commands.includes('terraform-ls.module.calls');
+    const commandSupported = clientSupportsCommand(this.client.initializeResult, 'terraform-ls.module.calls');
     if (!commandSupported) {
       return Promise.resolve([]);
     }

@@ -4,6 +4,7 @@ import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclie
 
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
+import { clientSupportsCommand } from '../utils/clientHelpers';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleProvidersResponse {
@@ -101,10 +102,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     }
     await this.client.onReady();
 
-    // const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
-    const commandSupported = this.client.initializeResult?.capabilities.executeCommandProvider?.commands.includes(
-      'terraform-ls.module.providers',
-    );
+    const commandSupported = clientSupportsCommand(this.client.initializeResult, 'terraform-ls.module.providers');
     if (!commandSupported) {
       return [];
     }
