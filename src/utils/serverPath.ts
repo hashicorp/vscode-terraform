@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import * as which from 'which';
 
 const INSTALL_FOLDER_NAME = 'bin';
-export const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
+const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
 
 export class ServerPath {
   private customBinPath: string | undefined;
@@ -12,22 +12,15 @@ export class ServerPath {
     this.customBinPath = vscode.workspace.getConfiguration('terraform').get(CUSTOM_BIN_PATH_OPTION_NAME);
   }
 
-  public installPath(): string {
+  private installPath(): string {
     return path.join(this.context.extensionPath, INSTALL_FOLDER_NAME);
-  }
-
-  // legacyBinPath represents old location where LS was installed.
-  // We only use it to ensure that old installations are removed
-  // from there after LS is installed into the new path.
-  public legacyBinPath(): string {
-    return path.resolve(this.context.asAbsolutePath('lsp'), this.binName());
   }
 
   public hasCustomBinPath(): boolean {
     return !!this.customBinPath;
   }
 
-  public binPath(): string {
+  private binPath(): string {
     if (this.customBinPath) {
       return this.customBinPath;
     }
@@ -35,7 +28,7 @@ export class ServerPath {
     return path.resolve(this.installPath(), this.binName());
   }
 
-  public binName(): string {
+  private binName(): string {
     if (this.customBinPath) {
       return path.basename(this.customBinPath);
     }

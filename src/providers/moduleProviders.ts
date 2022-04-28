@@ -2,8 +2,9 @@ import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
 import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 
-import { ClientHandler } from '../clientHandler';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
+import { LanguageClient } from 'vscode-languageclient/node';
+import { clientSupportsCommand } from '../utils/clientHelpers';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 interface ModuleProvidersResponse {
@@ -45,7 +46,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
-  constructor(ctx: vscode.ExtensionContext, private handler: ClientHandler) {
+  constructor(ctx: vscode.ExtensionContext, private client: LanguageClient) {
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
@@ -96,13 +97,12 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    const handler = this.handler.getClient();
-    if (handler === undefined) {
+    if (this.client === undefined) {
       return [];
     }
-    await handler.onReady();
+    await this.client.onReady();
 
-    const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
+    const commandSupported = clientSupportsCommand(this.client.initializeResult, 'terraform-ls.module.providers');
     if (!commandSupported) {
       return [];
     }
@@ -112,7 +112,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
       arguments: [`uri=${documentURI}`],
     };
 
-    const response = await handler.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
+    const response = await this.client.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
       ExecuteCommandRequest.type,
       params,
     );
