@@ -122,17 +122,15 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
       return [];
     }
 
-    return Object.entries(response.provider_requirements)
-      .map(
-        ([provider, details]) =>
-          new ModuleProviderItem(
-            provider,
-            details.display_name,
-            details.version_constraint,
-            response.installed_providers[provider],
-            details.docs_link,
-          ),
-      )
-      .filter((m) => Boolean(m.requiredVersion));
+    return Object.entries(response.provider_requirements).map(
+      ([provider, details]) =>
+        new ModuleProviderItem(
+          provider,
+          details.display_name,
+          details.version_constraint,
+          response.installed_providers[provider],
+          details.docs_link,
+        ),
+    );
   }
 }
