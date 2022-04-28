@@ -1,3 +1,9 @@
+## [2.23.0] (Unreleased)
+
+ENHANCEMENTS:
+
+ - Automatically refresh Terraform Providers View when providers change in open document ([#1084](https://github.com/hashicorp/vscode-terraform/pull/1084)) / [terraform-ls#902](https://github.com/hashicorp/terraform-ls/pull/902))
+
 ## [2.22.0] (2022-04-19)
 
 BREAKING CHANGES:
