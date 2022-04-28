@@ -6,7 +6,7 @@ import { ExperimentalClientCapabilities } from './types';
 export const CLIENT_MODULE_PROVIDERS_CMD_ID = 'client.refreshModuleProviders';
 
 export class ModuleProvidersFeature implements StaticFeature {
-  private registeredCommands: vscode.Disposable[] = [];
+  private disposables: vscode.Disposable[] = [];
 
   constructor(private client: BaseLanguageClient, private moduleProviderView: ModuleProvidersDataProvider) {}
 
@@ -29,16 +29,14 @@ export class ModuleProvidersFeature implements StaticFeature {
 
     await this.client.onReady();
 
-    this.client.onRequest(CLIENT_MODULE_PROVIDERS_CMD_ID, () => {
+    const d = this.client.onRequest(CLIENT_MODULE_PROVIDERS_CMD_ID, () => {
       console.log(`refreshing module view: ${this.moduleProviderView}`);
       this.moduleProviderView?.refresh();
     });
+    this.disposables.push(d);
   }
 
   public dispose(): void {
-    this.registeredCommands.forEach(function (cmd, index, commands) {
-      cmd.dispose();
-      commands.splice(index, 1);
-    });
+    this.disposables.forEach((d: vscode.Disposable) => d.dispose());
   }
 }
