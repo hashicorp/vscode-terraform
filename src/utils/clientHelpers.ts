@@ -1,8 +1,8 @@
-import { Executable, ServerOptions } from 'vscode-languageclient/node';
-import { config } from './utils/vscode';
-import { ServerPath } from './utils/serverPath';
+import { Executable } from 'vscode-languageclient/node';
+import { config } from './vscode';
+import { ServerPath } from './serverPath';
 
-export async function getServerOptions(lsPath: ServerPath): Promise<ServerOptions> {
+export async function getServerExecutable(lsPath: ServerPath): Promise<Executable> {
   const cmd = await lsPath.resolvedPathToBinary();
   const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
 
@@ -11,17 +11,16 @@ export async function getServerOptions(lsPath: ServerPath): Promise<ServerOption
     args: serverArgs,
     options: {},
   };
-  const serverOptions: ServerOptions = {
-    run: executable,
-    debug: executable,
-  };
 
-  // this.outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
-
-  return serverOptions;
+  return executable;
 }
 
 export function getInitializationOptions() {
+  /*
+    This is basically a set of settings masquerading as a function. The intention
+    here is to make room for this to be added to a configuration builder when
+    we tackle #791
+  */
   const rootModulePaths = config('terraform-ls').get<string[]>('rootModules', []);
   const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath', '');
   const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout', '');

@@ -45,7 +45,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
-  constructor(ctx: vscode.ExtensionContext, private handler: LanguageClient) {
+  constructor(ctx: vscode.ExtensionContext, private client: LanguageClient) {
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
@@ -96,13 +96,13 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    if (this.handler === undefined) {
+    if (this.client === undefined) {
       return [];
     }
-    await this.handler.onReady();
+    await this.client.onReady();
 
     // const commandSupported = this.handler.clientSupportsCommand(`terraform-ls.module.providers`);
-    const commandSupported = this.handler.initializeResult?.capabilities.executeCommandProvider?.commands.includes(
+    const commandSupported = this.client.initializeResult?.capabilities.executeCommandProvider?.commands.includes(
       'terraform-ls.module.providers',
     );
     if (!commandSupported) {
@@ -114,7 +114,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
       arguments: [`uri=${documentURI}`],
     };
 
-    const response = await this.handler.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
+    const response = await this.client.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
       ExecuteCommandRequest.type,
       params,
     );

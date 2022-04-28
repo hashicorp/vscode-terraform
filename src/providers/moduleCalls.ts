@@ -77,7 +77,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   private svg = '';
 
-  constructor(ctx: vscode.ExtensionContext, public handler: LanguageClient) {
+  constructor(ctx: vscode.ExtensionContext, public client: LanguageClient) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
 
     ctx.subscriptions.push(
@@ -131,16 +131,14 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    if (this.handler === undefined) {
+    if (this.client === undefined) {
       return [];
     }
-    await this.handler.onReady();
+    await this.client.onReady();
 
     // clientSupportsCommand(`terraform-ls.module.calls`)
     const commandSupported =
-      this.handler.initializeResult?.capabilities.executeCommandProvider?.commands.includes(
-        'terraform-ls.module.calls',
-      );
+      this.client.initializeResult?.capabilities.executeCommandProvider?.commands.includes('terraform-ls.module.calls');
     if (!commandSupported) {
       return Promise.resolve([]);
     }
@@ -150,7 +148,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
       arguments: [`uri=${documentURI}`],
     };
 
-    const response = await this.handler.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
+    const response = await this.client.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
       ExecuteCommandRequest.type,
       params,
     );
