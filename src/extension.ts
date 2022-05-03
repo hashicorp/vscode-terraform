@@ -117,6 +117,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const initializationOptions = getInitializationOptions();
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
+    synchronize: {
+      fileEvents: [
+        vscode.workspace.createFileSystemWatcher('**/*.tf'),
+        vscode.workspace.createFileSystemWatcher('**/*.tfvars'),
+      ],
+    },
     initializationOptions: initializationOptions,
     initializationFailedHandler: (error) => {
       reporter.sendTelemetryException(error);
