@@ -19,7 +19,7 @@ export class ModuleProvidersFeature implements StaticFeature {
 
   public async initialize(capabilities: ServerCapabilities): Promise<void> {
     if (!capabilities.experimental?.refreshModuleProviders) {
-      console.log('Server doesnt support client.refreshModuleProviders');
+      console.log('Server doesn't support client.refreshModuleProviders');
       return;
     }
 
