@@ -63,7 +63,7 @@ The extension provides validation through [`terraform validate`](https://www.ter
 
 Terraform syntax highlighting recognizes language constructs from Terraform version 0.12 to 1.X. Terraform providers, modules, variables and other high-level constructs are recognized, as well as more complex code statements like `for` loops, conditional expressions, and other complex expressions.
 
-![](docs/syntax2.png)
+![](docs/syntax.png)
 
 Some language constructs will highlight differently for older versions of Terraform that are incompatible with newer ways of expressing Terraform code. In these cases we lean toward ensuring the latest version of Terraform displays correctly and do our best with older versions.
 
