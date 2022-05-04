@@ -134,12 +134,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
   });
 
-  const moduleDataProvider = new ModuleProvidersDataProvider(context, client);
+  const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client);
   const moduleCallsDataProvider = new ModuleCallsDataProvider(context, client);
 
   const features: StaticFeature[] = [
     new CustomSemanticTokens(client, manifest),
-    new ModuleProvidersFeature(client, moduleDataProvider),
+    new ModuleProvidersFeature(client, moduleProvidersDataProvider),
     new ModuleCallsFeature(client, moduleCallsDataProvider),
   ];
   if (vscode.env.isTelemetryEnabled) {
