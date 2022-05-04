@@ -93,56 +93,170 @@
       }
     ],
     "semanticTokenTypes": [
-      {"id": "hcl-attrName", "superType": "property", "description": "Attribute name"},
-      {"id": "hcl-blockType", "superType": "type", "description": "Block type"},
-      {"id": "hcl-blockLabel", "superType": "enumMember", "description": "Block label"},
-
-      {"id": "hcl-bool", "superType": "keyword", "description": "Boolean"},
-	    {"id": "hcl-string", "superType": "string", "description": "String"},
-	    {"id": "hcl-number", "superType": "number", "description": "Number"},
-	    {"id": "hcl-objectKey", "superType": "parameter", "description": "Object key"},
-	    {"id": "hcl-mapKey", "superType": "parameter", "description": "Map key"},
-	    {"id": "hcl-keyword", "superType": "variable", "description": "Keyword"},
-	    {"id": "hcl-traversalStep", "superType": "variable", "description": "Traversal step"},
-	    {"id": "hcl-typeCapsule", "superType": "keyword", "description": "Type (complex)"},
-	    {"id": "hcl-typePrimitive", "superType": "keyword", "description": "Type (primitive)"}
+      {
+        "id": "hcl-attrName",
+        "superType": "property",
+        "description": "Attribute name"
+      },
+      {
+        "id": "hcl-blockType",
+        "superType": "type",
+        "description": "Block type"
+      },
+      {
+        "id": "hcl-blockLabel",
+        "superType": "enumMember",
+        "description": "Block label"
+      },
+      {
+        "id": "hcl-bool",
+        "superType": "keyword",
+        "description": "Boolean"
+      },
+      {
+        "id": "hcl-string",
+        "superType": "string",
+        "description": "String"
+      },
+      {
+        "id": "hcl-number",
+        "superType": "number",
+        "description": "Number"
+      },
+      {
+        "id": "hcl-objectKey",
+        "superType": "parameter",
+        "description": "Object key"
+      },
+      {
+        "id": "hcl-mapKey",
+        "superType": "parameter",
+        "description": "Map key"
+      },
+      {
+        "id": "hcl-keyword",
+        "superType": "variable",
+        "description": "Keyword"
+      },
+      {
+        "id": "hcl-traversalStep",
+        "superType": "variable",
+        "description": "Traversal step"
+      },
+      {
+        "id": "hcl-typeCapsule",
+        "superType": "keyword",
+        "description": "Type (complex)"
+      },
+      {
+        "id": "hcl-typePrimitive",
+        "superType": "keyword",
+        "description": "Type (primitive)"
+      }
     ],
     "semanticTokenScopes": [
       {
         "scopes": {
-          "hcl-attrName": ["variable.other.property"],
-          "hcl-blockType": ["entity.name.type"],
-          "hcl-blockLabel": ["variable.other.enummember"],
-
-          "hcl-bool": ["keyword.control"],
-          "hcl-string": ["string"],
-          "hcl-number": ["constant.numeric"],
-          "hcl-objectKey": ["variable.parameter"],
-          "hcl-mapKey": ["variable.parameter"],
-          "hcl-keyword": ["keyword.control"],
-          "hcl-traversalStep": ["variable.other.readwrite"],
-          "hcl-typeCapsule": ["keyword.control"],
-          "hcl-typePrimitive": ["keyword.control"]
+          "hcl-attrName": [
+            "variable.other.property"
+          ],
+          "hcl-blockType": [
+            "entity.name.type"
+          ],
+          "hcl-blockLabel": [
+            "variable.other.enummember"
+          ],
+          "hcl-bool": [
+            "keyword.control"
+          ],
+          "hcl-string": [
+            "string"
+          ],
+          "hcl-number": [
+            "constant.numeric"
+          ],
+          "hcl-objectKey": [
+            "variable.parameter"
+          ],
+          "hcl-mapKey": [
+            "variable.parameter"
+          ],
+          "hcl-keyword": [
+            "keyword.control"
+          ],
+          "hcl-traversalStep": [
+            "variable.other.readwrite"
+          ],
+          "hcl-typeCapsule": [
+            "keyword.control"
+          ],
+          "hcl-typePrimitive": [
+            "keyword.control"
+          ]
         }
       }
     ],
     "semanticTokenModifiers": [
-      {"id": "hcl-dependent", "description": "Dependent"},
-
-      {"id": "terraform-data", "description": "Data source"},
-      {"id": "terraform-locals", "description": "Locals"},
-      {"id": "terraform-module", "description": "Module"},
-      {"id": "terraform-output", "description": "Output"},
-      {"id": "terraform-provider", "description": "Provider"},
-      {"id": "terraform-resource", "description": "Resource"},
-      {"id": "terraform-provisioner", "description": "Provisioner"},
-      {"id": "terraform-connection", "description": "Connection"},
-      {"id": "terraform-variable", "description": "Variable"},
-      {"id": "terraform-terraform", "description": "Terraform"},
-      {"id": "terraform-backend", "description": "Backend"},
-      {"id": "terraform-name", "description": "Name"},
-      {"id": "terraform-type", "description": "Type"},
-      {"id": "terraform-requiredProviders", "description": "Required providers"}
+      {
+        "id": "hcl-dependent",
+        "description": "Dependent"
+      },
+      {
+        "id": "terraform-data",
+        "description": "Data source"
+      },
+      {
+        "id": "terraform-locals",
+        "description": "Locals"
+      },
+      {
+        "id": "terraform-module",
+        "description": "Module"
+      },
+      {
+        "id": "terraform-output",
+        "description": "Output"
+      },
+      {
+        "id": "terraform-provider",
+        "description": "Provider"
+      },
+      {
+        "id": "terraform-resource",
+        "description": "Resource"
+      },
+      {
+        "id": "terraform-provisioner",
+        "description": "Provisioner"
+      },
+      {
+        "id": "terraform-connection",
+        "description": "Connection"
+      },
+      {
+        "id": "terraform-variable",
+        "description": "Variable"
+      },
+      {
+        "id": "terraform-terraform",
+        "description": "Terraform"
+      },
+      {
+        "id": "terraform-backend",
+        "description": "Backend"
+      },
+      {
+        "id": "terraform-name",
+        "description": "Name"
+      },
+      {
+        "id": "terraform-type",
+        "description": "Type"
+      },
+      {
+        "id": "terraform-requiredProviders",
+        "description": "Required providers"
+      }
     ],
     "snippets": [
       {
@@ -447,7 +561,6 @@
     "ts-jest": "^27.1.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.2",
-    "vsce": "^2.6.6",
-    "vscode-tmgrammar-test": "^0.0.11"
+    "vsce": "^2.6.6"
   }
 }
