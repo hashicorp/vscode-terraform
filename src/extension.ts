@@ -175,7 +175,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       }
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
-    vscode.window.registerTreeDataProvider('terraform.providers', moduleDataProvider),
+    vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
     vscode.window.onDidChangeVisibleTextEditors(async (editors: readonly vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
       if (textEditor?.document === undefined) {
