@@ -91,6 +91,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
       - name: Publish Extension
-        run: npx ovsx publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
+        run: npx ovsx publish --packagePath $(find . -iname *.vsix)
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
