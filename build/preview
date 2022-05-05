@@ -28,4 +28,4 @@ DESCRIPTION="$(jq -r .description package.json) (Preview)"
 ') > /tmp/package.json && mv /tmp/package.json package.json
 
 # prepend preview info to README.md
-sed '/^# Terraform Visual Studio Code Extension$/d' README.md | cat build/nightly.md - > /tmp/rdme && mv /tmp/rdme README.md
+sed '/^# Terraform Extension for Visual Studio Code$/d' README.md | cat build/nightly.md - > /tmp/rdme && mv /tmp/rdme README.md
