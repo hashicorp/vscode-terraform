@@ -14,7 +14,7 @@ export class ModuleProvidersFeature implements StaticFeature {
     if (!capabilities['experimental']) {
       capabilities['experimental'] = {};
     }
-    capabilities['experimental']['refereshModuleProvidersCommandId'] = CLIENT_MODULE_PROVIDERS_CMD_ID;
+    capabilities['experimental']['refreshModuleProvidersCommandId'] = CLIENT_MODULE_PROVIDERS_CMD_ID;
   }
 
   public async initialize(capabilities: ServerCapabilities): Promise<void> {
