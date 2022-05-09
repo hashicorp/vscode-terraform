@@ -22,6 +22,7 @@ import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
+import { ModuleCallsFeature } from './features/moduleCalls';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -133,11 +134,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
   });
 
-  const moduleDataProvider = new ModuleProvidersDataProvider(context, client);
+  const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client);
+  const moduleCallsDataProvider = new ModuleCallsDataProvider(context, client);
 
   const features: StaticFeature[] = [
     new CustomSemanticTokens(client, manifest),
-    new ModuleProvidersFeature(client, moduleDataProvider),
+    new ModuleProvidersFeature(client, moduleProvidersDataProvider),
+    new ModuleCallsFeature(client, moduleCallsDataProvider),
   ];
   if (vscode.env.isTelemetryEnabled) {
     features.push(new TelemetryFeature(client, reporter));
@@ -171,8 +174,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         await execWorkspaceCommand(client, requestParams);
       }
     }),
-    vscode.window.registerTreeDataProvider('terraform.modules', new ModuleCallsDataProvider(context, client)),
-    vscode.window.registerTreeDataProvider('terraform.providers', moduleDataProvider),
+    vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
+    vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
     vscode.window.onDidChangeVisibleTextEditors(async (editors: readonly vscode.TextEditor[]) => {
       const textEditor = editors.find((ed) => !!ed.viewColumn);
       if (textEditor?.document === undefined) {
