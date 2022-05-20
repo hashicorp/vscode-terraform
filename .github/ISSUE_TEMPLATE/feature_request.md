@@ -6,22 +6,9 @@ labels: enhancement
 
 ## Versions
 
-This feature does not yet exist in:
- - [ ] the **latest** version of the extension (below)
- - [ ] the **latest** version of the language server (below)
-
 ### Extension
 <!--
 Find this in the VS Code UI: Extensions Pane -> Installed -> HashiCorp Terraform
--->
-```
-
-```
-
-### Language Server
-<!--
-Find this from the first few lines of relevant Output pane:
-View -> Output -> terraform-ls
 -->
 ```
 
