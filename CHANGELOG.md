@@ -9,6 +9,10 @@ ENHANCEMENTS:
  - Automatically refresh Terraform Providers View when providers change in open document ([#1084](https://github.com/hashicorp/vscode-terraform/pull/1084)) / [terraform-ls#902](https://github.com/hashicorp/terraform-ls/pull/902))
  - Add Module Providers view refresh button ([#1065](https://github.com/hashicorp/vscode-terraform/pull/1065))
 
+BUG FIXES:
+
+ - Variables with no space between them break syntax highlighting ([#34](https://github.com/hashicorp/syntax/pull/34))
+
 INTERNAL:
 
  - dependabot: Reduce interval for dev dependencies to weekly ([#1072](https://github.com/hashicorp/vscode-terraform/pull/1072))
