@@ -6,6 +6,11 @@ updates:
     schedule:
       interval: "daily"
     labels: ["dependencies"]
+    ignore:
+      - dependency-name: "@types/*"
+        update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+      - dependency-name: "@typescript-eslint/*"
+        update-types: ["version-update:semver-minor", "version-update:semver-patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
