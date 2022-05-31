@@ -1,5 +1,5 @@
 {
-  "icon": "terraform.png",
+  "icon": "assets/icons/terraform_logo_mark_light_universal.png",
   "name": "terraform",
   "displayName": "HashiCorp Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
@@ -40,6 +40,10 @@
     "terraform",
     "hcl"
   ],
+  "galleryBanner": {
+    "color": "#FFF",
+    "theme": "light"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hashicorp/vscode-terraform.git"
