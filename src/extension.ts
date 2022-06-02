@@ -17,7 +17,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, getActiveTextEditor, getScope, isTerraformFile, updateConfig } from './utils/vscode';
+import { config, getActiveTextEditor, getScope, isTerraformFile, LanguageServerSettings } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -35,13 +35,6 @@ export let terraformStatus: vscode.StatusBarItem;
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
-
-export interface LanguageServerSettings {
-  external: boolean;
-  pathToBinary: string;
-  args: string[];
-  ignoreSingleFileWarning: boolean;
-}
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;

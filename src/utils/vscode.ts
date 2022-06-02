@@ -1,5 +1,12 @@
 import * as vscode from 'vscode';
 
+export interface LanguageServerSettings {
+  external: boolean;
+  pathToBinary: string;
+  args: string[];
+  ignoreSingleFileWarning: boolean;
+}
+
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(section, scope);
 }
