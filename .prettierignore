@@ -1,7 +1,6 @@
 snippets/
 syntaxes/
 out/
-package.json
 package-lock.json
 node_modules/
 .vscode-test/
