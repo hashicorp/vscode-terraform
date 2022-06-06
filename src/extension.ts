@@ -66,9 +66,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       });
       const newValue = Object.assign(current, { external: true });
 
-      const scoppe: vscode.ConfigurationTarget = getScope('terraform', 'languageServer');
+      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer');
 
-      await config('terraform').update('languageServer', newValue, scoppe);
+      await config('terraform').update('languageServer', newValue, scope);
     }),
     vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
       if (config('terraform').get('languageServer.external') === false) {
@@ -83,9 +83,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       });
       const newValue = Object.assign(current, { external: false });
 
-      const scoppe: vscode.ConfigurationTarget = getScope('terraform', 'languageServer');
+      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer');
 
-      await config('terraform').update('languageServer', newValue, scoppe);
+      await config('terraform').update('languageServer', newValue, scope);
     }),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
       if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
