@@ -31,7 +31,11 @@
   "[markdown]": {
     "editor.wordWrapColumn": 80,
     "editor.wordWrap": "wordWrapColumn",
-    "editor.quickSuggestions": false,
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    },
     "files.trimTrailingWhitespace": false
   },
   "[typescript]": {
