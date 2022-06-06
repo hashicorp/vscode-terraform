@@ -10,7 +10,7 @@ ENHANCEMENTS:
  - Automatically refresh Module Calls view when module calls change in open document ([#1088](https://github.com/hashicorp/vscode-terraform/pull/1088) / [terraform-ls#909](https://github.com/hashicorp/terraform-ls/pull/909))
  - Add Module Providers view refresh button ([#1065](https://github.com/hashicorp/vscode-terraform/pull/1065))
  - Use theme-universal icon with solid background ([#1119](https://github.com/hashicorp/vscode-terraform/pull/1119))
- - Watch `**/*.tf` & `**/*.tfvars` by default such that changes outside the editor (e.g. when changing git branch) can be reflected ([#1095](https://github.com/hashicorp/vscode-terraform/pull/1095))
+ - Watch `**/*.tf` & `**/*.tfvars` by default such that changes outside the editor (e.g. when changing git branch) can be reflected ([#1095](https://github.com/hashicorp/vscode-terraform/pull/1095) / [terraform-ls#790](https://github.com/hashicorp/terraform-ls/pull/790))
 
 BUG FIXES:
 
