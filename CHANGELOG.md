@@ -6,6 +6,8 @@ BREAKING CHANGES:
 
 ENHANCEMENTS:
 
+ - Link to documentation from module source for Registry modules ([#673](https://github.com/hashicorp/vscode-terraform/issues/673) / [terraform-ls#874](https://github.com/hashicorp/terraform-ls/pull/874))
+ - Improve performance by reducing amount of notifications sent for any single module changes ([terraform-ls#931](https://github.com/hashicorp/terraform-ls/pull/931))
  - Automatically refresh Providers view when providers change in open document ([#1084](https://github.com/hashicorp/vscode-terraform/pull/1084)) / [terraform-ls#902](https://github.com/hashicorp/terraform-ls/pull/902))
  - Automatically refresh Module Calls view when module calls change in open document ([#1088](https://github.com/hashicorp/vscode-terraform/pull/1088) / [terraform-ls#909](https://github.com/hashicorp/terraform-ls/pull/909))
  - Add Module Providers view refresh button ([#1065](https://github.com/hashicorp/vscode-terraform/pull/1065))
