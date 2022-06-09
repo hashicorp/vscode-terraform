@@ -16,7 +16,9 @@ ENHANCEMENTS:
 
 BUG FIXES:
 
- - Variables with no space between them break syntax highlighting ([#34](https://github.com/hashicorp/syntax/pull/34))
+ - Variables with no space between them break syntax highlighting ([syntax#34](https://github.com/hashicorp/syntax/pull/34))
+ - Fix parsing block with dash in name ([syntax#42](https://github.com/hashicorp/syntax/pull/42))
+ - Fix highlighting of `.0`, `.*` attribute access and `[*]` brackets ([syntax#44](https://github.com/hashicorp/syntax/pull/44))
 
 INTERNAL:
 
