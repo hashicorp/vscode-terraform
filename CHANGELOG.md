@@ -1,6 +1,6 @@
-## [2.23.0] (Unreleased)
+## [2.23.0] (2022-06-09)
 
-BREAKING CHANGES:
+NOTES:
 
  - Remove `terraform.languageServer.maxNumberOfProblems`. This setting is not used by the extension as of v2.0.0. ([#1062](https://github.com/hashicorp/vscode-terraform/pull/1062))
 
