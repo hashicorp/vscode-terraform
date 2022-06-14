@@ -1,5 +1,9 @@
 ## [2.23.1] (Unreleased)
 
+ENHANCEMENTS:
+
+ - Use dark extension icon for preview ([#1143](https://github.com/hashicorp/vscode-terraform/pull/1143))
+
 INTERNAL:
 
  - Bump @hashicorp/js-releases from 1.5.1 to 1.6.0 ([#1144](https://github.com/hashicorp/vscode-terraform/pull/1144))
