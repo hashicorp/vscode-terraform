@@ -23,6 +23,7 @@ DESCRIPTION="$(jq -r .description package.json) (Preview)"
 .langServer.version=$LANGVER |
 .preview=true |
 .name="terraform-preview" |
+.icon="assets/icons/terraform_logo_mark_dark_universal.png" |
 .displayName=$NAME |
 .description=$DESC
 ') > /tmp/package.json && mv /tmp/package.json package.json
