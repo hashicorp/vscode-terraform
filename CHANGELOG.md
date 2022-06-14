@@ -1,3 +1,9 @@
+## [2.23.1] (Unreleased)
+
+INTERNAL:
+
+ - Bump @hashicorp/js-releases from 1.5.1 to 1.6.0 ([#1144](https://github.com/hashicorp/vscode-terraform/pull/1144))
+
 ## [2.23.0] (2022-06-09)
 
 NOTES:
