@@ -1,21 +1,5 @@
 import * as vscode from 'vscode';
 
-export interface LegacyLanguageServerSettings {
-  enable: boolean;
-  pathToBinary: string;
-  args: string[];
-}
-
-export interface LanguageServerSettings {
-  enable: boolean;
-  pathToBinary: string;
-  args: string[];
-  ignoreDirectoryNames: string[];
-  ignoreSingleFileWarning: boolean;
-  rootModules: string[];
-  excludeRootModules: string[];
-}
-
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(section, scope);
 }

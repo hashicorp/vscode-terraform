@@ -17,16 +17,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import {
-  config,
-  getActiveTextEditor,
-  getScope,
-  isTerraformFile,
-  LanguageServerSettings,
-  LegacyLanguageServerSettings,
-  migrate,
-  warnIfMigrate,
-} from './utils/vscode';
+import { config, getActiveTextEditor, getScope, isTerraformFile, migrate, warnIfMigrate } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
