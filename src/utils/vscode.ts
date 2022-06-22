@@ -1,5 +1,21 @@
 import * as vscode from 'vscode';
 
+export interface LegacyLanguageServerSettings {
+  enable: boolean;
+  pathToBinary: string;
+  args: string[];
+}
+
+export interface LanguageServerSettings {
+  enable: boolean;
+  pathToBinary: string;
+  args: string[];
+  ignoreDirectoryNames: string[];
+  ignoreSingleFileWarning: boolean;
+  rootModules: string[];
+  excludeRootModules: string[];
+}
+
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(section, scope);
 }
@@ -26,6 +42,63 @@ export function getScope(section: string, settingName: string): vscode.Configura
   }
 
   return scoppe;
+}
+
+export async function warnIfMigrate(settings: string[]): Promise<boolean> {
+  for (let index = 0; index < settings.length; index++) {
+    const setting = settings[index];
+    const section = setting.split('.')[0];
+    const settingName = setting.replace(section + '.', '');
+
+    const inspect = await vscode.workspace.getConfiguration(section).inspect(settingName);
+    if (inspect === undefined) {
+      continue;
+    }
+
+    if (inspect.globalValue !== undefined) {
+      return true;
+    }
+    if (inspect.workspaceFolderValue !== undefined) {
+      return true;
+    }
+    if (inspect.workspaceValue !== undefined) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export async function migrate(
+  section: string,
+  oldSettingName: string,
+  newSettingName: string,
+): Promise<vscode.ConfigurationTarget> {
+  const target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
+
+  const inspect = vscode.workspace.getConfiguration(section).inspect(oldSettingName);
+  if (inspect === undefined) {
+    return target;
+  }
+
+  const targetSection = section === 'terraform-ls' ? 'terraform' : section;
+  if (inspect.globalValue !== undefined) {
+    await vscode.workspace
+      .getConfiguration(targetSection)
+      .update(newSettingName, inspect.globalValue, vscode.ConfigurationTarget.Global);
+  }
+  if (inspect.workspaceFolderValue !== undefined) {
+    await vscode.workspace
+      .getConfiguration(targetSection)
+      .update(newSettingName, inspect.workspaceFolderValue, vscode.ConfigurationTarget.WorkspaceFolder);
+  }
+  if (inspect.workspaceValue !== undefined) {
+    await vscode.workspace
+      .getConfiguration(targetSection)
+      .update(newSettingName, inspect.workspaceValue, vscode.ConfigurationTarget.Workspace);
+  }
+
+  return target;
 }
 
 export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder | undefined {

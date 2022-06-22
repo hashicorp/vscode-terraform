@@ -17,7 +17,16 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, getActiveTextEditor, getScope, isTerraformFile } from './utils/vscode';
+import {
+  config,
+  getActiveTextEditor,
+  getScope,
+  isTerraformFile,
+  LanguageServerSettings,
+  LegacyLanguageServerSettings,
+  migrate,
+  warnIfMigrate,
+} from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -48,7 +57,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   // get rid of pre-2.0.0 settings
-  await migrateLegacySettings();
+  await migrateLegacySettings(context);
 
   // Subscriptions
   context.subscriptions.push(
@@ -370,8 +379,67 @@ function enabled(): boolean {
   return config('terraform').get('languageServer.enable', false);
 }
 
-async function migrateLegacySettings() {
-  // TODO
+async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
+  ctx.globalState.update('terraform.disableSettingsMigration', false);
+  if (ctx.globalState.get('terraform.disableSettingsMigration', false)) {
+    return;
+  }
+
+  const warnMigration = await warnIfMigrate([
+    'terraform.languageServer.external',
+    'terraform.languageServer.pathToBinary',
+    'terraform-ls.rootModules',
+    'terraform-ls.excludeRootModules',
+    'terraform-ls.ignoreDirectoryNames',
+    'terraform-ls.terraformExecPath',
+    'terraform-ls.terraformExecTimeout',
+    'terraform-ls.terraformLogFilePath',
+    'terraform-ls.experimentalFeatures',
+  ]);
+  if (warnMigration === false) {
+    return;
+  }
+
+  const choice = await vscode.window.showInformationMessage(
+    'Terraform configuration settings have changed in the latest update',
+    {
+      detail: 'You can automatically migrate or ask to not be reminded again and migrate the settings yourself',
+      modal: true,
+    },
+    { title: 'Migrate' },
+    { title: "Don't remind me again" },
+  );
+  if (choice === undefined) {
+    return;
+  }
+
+  switch (choice.title) {
+    case "Don't remind me again":
+      ctx.globalState.update('terraform.disableSettingsMigration', true);
+      return;
+    case 'Migrate':
+    // migrate below
+  }
+
+  await migrate('terraform', 'languageServer.external', 'languageServer.enable');
+  await migrate('terraform', 'languageServer.pathToBinary', 'languageServer.path');
+  await migrate('terraform', 'languageServer.args', 'languageServer.args');
+  await migrate('terraform', 'languageServer.ignoreSingleFileWarning', 'languageServer.ignoreSingleFileWarning');
+
+  await migrate('terraform-ls', 'rootModules', 'languageServer.rootModules');
+  await migrate('terraform-ls', 'excludeRootModules', 'languageServer.excludeRootModules');
+  await migrate('terraform-ls', 'ignoreDirectoryNames', 'languageServer.ignoreDirectoryNames');
+
+  await migrate('terraform-ls', 'terraformExecPath', 'languageServer.terraform.executable.path');
+  await migrate('terraform-ls', 'terraformExecTimeout', 'languageServer.terraform.executable.timeout');
+  await migrate('terraform-ls', 'terraformLogFilePath', 'languageServer.terraform.executable.logFilePath');
+
+  await migrate('terraform-ls', 'experimentalFeatures.validateOnSave', 'experimentalFeatures.validateOnSave');
+  await migrate(
+    'terraform-ls',
+    'experimentalFeatures.prefillRequiredFields',
+    'experimentalFeatures.prefillRequiredFields',
+  );
 }
 
 function previewExtensionPresent(currentExtensionID: string) {

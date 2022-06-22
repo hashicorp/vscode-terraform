@@ -286,6 +286,7 @@
         "order": 1,
         "properties": {
           "terraform.languageServer.enable": {
+            "scope": "resource",
             "order": "0",
             "type": "boolean",
             "default": true,
