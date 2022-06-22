@@ -11,7 +11,7 @@ suite('code actions', () => {
   test('supported actions', async () => {
     await vscode.workspace
       .getConfiguration('terraform')
-      .update('languageServer', { external: true }, vscode.ConfigurationTarget.Workspace);
+      .update('languageServer.enable', true, vscode.ConfigurationTarget.Workspace);
     await vscode.workspace
       .getConfiguration('editor')
       // eslint-disable-next-line @typescript-eslint/naming-convention
