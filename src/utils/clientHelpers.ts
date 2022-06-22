@@ -21,22 +21,22 @@ export function getInitializationOptions() {
     here is to make room for this to be added to a configuration builder when
     we tackle #791
   */
-  const rootModulePaths = config('terraform-ls').get<string[]>('rootModules', []);
-  const terraformExecPath = config('terraform-ls').get<string>('terraformExecPath', '');
-  const terraformExecTimeout = config('terraform-ls').get<string>('terraformExecTimeout', '');
-  const terraformLogFilePath = config('terraform-ls').get<string>('terraformLogFilePath', '');
-  const excludeModulePaths = config('terraform-ls').get<string[]>('excludeRootModules', []);
-  const ignoreDirectoryNames = config('terraform-ls').get<string[]>('ignoreDirectoryNames', []);
-
+  const terraformExecPath = config('terraform').get<string>('languageServer.terraform.executable.path', '');
+  const terraformExecTimeout = config('terraform').get<string>('languageServer.terraform.executable.timeout', '');
+  const terraformLogFilePath = config('terraform').get<string>('languageServer.terraform.executable.logFilePath', '');
+  const ignoreDirectoryNames = config('terraform').get<string[]>('languageServer.ignoreDirectoryNames', []);
   const ignoreSingleFileWarning = config('terraform').get<boolean>('languageServer.ignoreSingleFileWarning', false);
+  const experimentalFeatures = config('terraform').get('experimentalFeatures');
 
+  // deprecated
+  const rootModulePaths = config('terraform').get<string[]>('languageServer.rootModules', []);
+  const excludeModulePaths = config('terraform').get<string[]>('languageServer.excludeRootModules', []);
   if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
     throw new Error(
       'Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload',
     );
   }
 
-  const experimentalFeatures = config('terraform-ls').get('experimentalFeatures');
   const initializationOptions = {
     experimentalFeatures,
     ignoreSingleFileWarning,

@@ -17,7 +17,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, getActiveTextEditor, getScope, isTerraformFile, LanguageServerSettings } from './utils/vscode';
+import { config, getActiveTextEditor, getScope, isTerraformFile } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -54,38 +54,22 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(
     new GenerateBugReportCommand(context),
     vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
-      if (config('terraform').get('languageServer.external') === true) {
+      if (config('terraform').get('languageServer.enable') === true) {
         return startLanguageServer(context);
       }
 
-      const current: LanguageServerSettings = config('terraform').get<LanguageServerSettings>('languageServer', {
-        external: true,
-        pathToBinary: '',
-        args: ['serve'],
-        ignoreSingleFileWarning: false,
-      });
-      const newValue = Object.assign(current, { external: true });
+      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer.enable');
 
-      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer');
-
-      await config('terraform').update('languageServer', newValue, scope);
+      await config('terraform').update('languageServer.enable', true, scope);
     }),
     vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
-      if (config('terraform').get('languageServer.external') === false) {
+      if (config('terraform').get('languageServer.enable') === false) {
         return stopLanguageServer();
       }
 
-      const current: LanguageServerSettings = config('teraform').get<LanguageServerSettings>('languageServer', {
-        external: true,
-        pathToBinary: '',
-        args: ['serve'],
-        ignoreSingleFileWarning: false,
-      });
-      const newValue = Object.assign(current, { external: false });
+      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer.enable');
 
-      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer');
-
-      await config('terraform').update('languageServer', newValue, scope);
+      await config('terraform').update('languageServer.enable', false, scope);
     }),
     vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
       if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
@@ -383,22 +367,11 @@ async function terraformCommand(command: string, languageServerExec = true): Pro
 }
 
 function enabled(): boolean {
-  return config('terraform').get('languageServer.external', false);
+  return config('terraform').get('languageServer.enable', false);
 }
 
 async function migrateLegacySettings() {
-  if (config('terraform').has('languageServer.enabled')) {
-    try {
-      await config('terraform').update(
-        'languageServer',
-        { enabled: undefined, external: true },
-        vscode.ConfigurationTarget.Global,
-      );
-    } catch (err) {
-      const error = err instanceof Error ? err.message : err;
-      console.error(`Error trying to erase pre-2.0.0 settings: ${error}`);
-    }
-  }
+  // TODO
 }
 
 function previewExtensionPresent(currentExtensionID: string) {
