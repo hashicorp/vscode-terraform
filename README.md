@@ -334,6 +334,10 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 - Contributions are always welcome! Please see our [contributing guide](https://github.com/hashicorp/vscode-terraform/issues/new?assignees=&labels=enhancement&template=feature_request.md) for more details
 - If you're interested in the development of the extension, you can read about our [development process](DEVELOPMENT.md)
 
+### Settings Migration
+
+
+
 ### Generate a bug report
 
 Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `Terraform: Generate Bug Report`. This will inspect the VS Code version, the Terraform extension version, the terraform-ls version and the list of installed extensions and open a browser window with GitHub loaded. You can then inspect the information provided, edit if desired, and submit the issue.

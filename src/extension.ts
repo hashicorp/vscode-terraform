@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     return undefined;
   }
 
-  // get rid of pre-2.0.0 settings
+  // migrate pre-2.24.0 settings
   await migrateLegacySettings(context);
 
   // Subscriptions
@@ -371,26 +371,35 @@ function enabled(): boolean {
 }
 
 async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
-  ctx.globalState.update('terraform.disableSettingsMigration', false);
+  // User has asked not to check if settings need to be migrated, so return
   if (ctx.globalState.get('terraform.disableSettingsMigration', false)) {
     return;
   }
 
-  const warnMigration = await warnIfMigrate([
-    'terraform.languageServer.external',
-    'terraform.languageServer.pathToBinary',
-    'terraform-ls.rootModules',
-    'terraform-ls.excludeRootModules',
-    'terraform-ls.ignoreDirectoryNames',
-    'terraform-ls.terraformExecPath',
-    'terraform-ls.terraformExecTimeout',
-    'terraform-ls.terraformLogFilePath',
-    'terraform-ls.experimentalFeatures',
+  // TODO: Short circuit here so we don't check for every activation forever
+
+  // If any of the following list needs to be migrated, ask user if they want
+  // to migrate. This is a blunt force approach, but we don't intend to keep
+  // checking this forever
+  const warnMigration = warnIfMigrate([
+    { section: 'terraform', name: 'languageServer.external' },
+    { section: 'terraform', name: 'languageServer.pathToBinary' },
+    { section: 'terraform-ls', name: 'rootModules' },
+    { section: 'terraform-ls', name: 'excludeRootModules' },
+    { section: 'terraform-ls', name: 'ignoreDirectoryNames' },
+    { section: 'terraform-ls', name: 'terraformExecPath' },
+    { section: 'terraform-ls', name: 'terraformExecTimeout' },
+    { section: 'terraform-ls', name: 'terraformLogFilePath' },
+    { section: 'terraform-ls', name: 'experimentalFeatures' },
   ]);
   if (warnMigration === false) {
     return;
   }
 
+  // Prompt the user if they want to migrate. If the choose no, then return
+  // and they are left to migrate the settings themselves.
+  // If they choose yes, then automatically migrate the settings
+  // Lastly user can be directed to our README for more information about this
   const choice = await vscode.window.showInformationMessage(
     'Terraform configuration settings have changed in the latest update',
     {
@@ -398,6 +407,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
       modal: true,
     },
     { title: 'Migrate' },
+    { title: 'More Info' },
     { title: "Don't remind me again" },
   );
   if (choice === undefined) {
@@ -408,23 +418,33 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     case "Don't remind me again":
       ctx.globalState.update('terraform.disableSettingsMigration', true);
       return;
+    case 'More Info':
+      await vscode.commands.executeCommand(
+        'vscode.open',
+        vscode.Uri.parse('https://www.github.com/hashicorp/vscode-terraform#settings-migration'),
+      );
+      return;
     case 'Migrate':
     // migrate below
   }
 
   await migrate('terraform', 'languageServer.external', 'languageServer.enable');
   await migrate('terraform', 'languageServer.pathToBinary', 'languageServer.path');
+
+  // We need to move args and ignoreSingleFileWarning out of the JSON object format
   await migrate('terraform', 'languageServer.args', 'languageServer.args');
   await migrate('terraform', 'languageServer.ignoreSingleFileWarning', 'languageServer.ignoreSingleFileWarning');
 
+  // This simultaneously moves terraform-ls to terraform as well as migrate setting names
   await migrate('terraform-ls', 'rootModules', 'languageServer.rootModules');
   await migrate('terraform-ls', 'excludeRootModules', 'languageServer.excludeRootModules');
   await migrate('terraform-ls', 'ignoreDirectoryNames', 'languageServer.ignoreDirectoryNames');
-
   await migrate('terraform-ls', 'terraformExecPath', 'languageServer.terraform.executable.path');
   await migrate('terraform-ls', 'terraformExecTimeout', 'languageServer.terraform.executable.timeout');
   await migrate('terraform-ls', 'terraformLogFilePath', 'languageServer.terraform.executable.logFilePath');
 
+  // We need to move prefillRequiredFields and validateOnSave out of the JSON object format as well as
+  // move terraform-ls to terraform
   await migrate('terraform-ls', 'experimentalFeatures.validateOnSave', 'experimentalFeatures.validateOnSave');
   await migrate(
     'terraform-ls',
