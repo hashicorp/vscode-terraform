@@ -411,19 +411,21 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
   const choice = await vscode.window.showInformationMessage(
     'Terraform configuration settings have changed in the latest update',
     {
-      detail: 'You can automatically migrate or ask to not be reminded again and migrate the settings yourself',
+      detail:
+        'We can automatically migrate your settings, open the Settings UI for you to change the settings, or you can Suppress this detection.\n\nTo read more about the this change click "More Info" and delay changing anything',
       modal: true,
     },
     { title: 'Migrate' },
+    { title: 'Open Settings' },
+    { title: 'Suppress' },
     { title: 'More Info' },
-    { title: "Don't remind me again" },
   );
   if (choice === undefined) {
     return;
   }
 
   switch (choice.title) {
-    case "Don't remind me again":
+    case 'Suppress':
       ctx.globalState.update('terraform.disableSettingsMigration', true);
       return;
     case 'More Info':
