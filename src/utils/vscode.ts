@@ -5,27 +5,27 @@ export function config(section: string, scope?: vscode.ConfigurationScope): vsco
 }
 
 export function getScope(section: string, settingName: string): vscode.ConfigurationTarget {
-  let scoppe: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
+  let target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
 
   // getConfiguration('terraform').inspect('languageServer');
   // not getConfiguration('terraform').inspect('languageServer.external'); !
   // can use when we extract settings
   const inspect = vscode.workspace.getConfiguration(section).inspect(settingName);
   if (inspect === undefined) {
-    return scoppe;
+    return target;
   }
 
   if (inspect.globalValue) {
-    scoppe = vscode.ConfigurationTarget.Global;
+    target = vscode.ConfigurationTarget.Global;
   }
   if (inspect.workspaceFolderValue) {
-    scoppe = vscode.ConfigurationTarget.WorkspaceFolder;
+    target = vscode.ConfigurationTarget.WorkspaceFolder;
   }
   if (inspect.workspaceValue) {
-    scoppe = vscode.ConfigurationTarget.Workspace;
+    target = vscode.ConfigurationTarget.Workspace;
   }
 
-  return scoppe;
+  return target;
 }
 
 interface ConfigOption {
