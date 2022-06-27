@@ -336,7 +336,82 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 
 ### Settings Migration
 
+The settings for the Terraform VS Code Extension were an amalgam of historical settings from the time before HashiCorp took ownership of the extension and settings we have added since taking it over. 
 
+Some settings were present that were not used, some settings were confusingly named, and other settings did not follow common VS Code setting naming conventions.
+
+In v0.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as discoverability when typing in the JSON Settings view.
+
+The `terraform.languageServer` setting block has been extracted out to individual settings. In addition, `terraform.languageServer.external` has been renamed to `terraform.languageServer.enable`
+
+<table>
+<tr><td>Old</td><td>New</td></tr>
+<tr>
+<td>
+
+```json
+"terraform.languageServer": {
+  "external": true,
+  "pathToBinary": "",
+  "args": [ "serve" ],
+  "ignoreSingleFileWarning": false
+},
+```
+</td>
+<td>
+    
+```json
+"terraform.languageServer.enable": true,
+"terraform.languageServer.pathToBinary": "",
+"terraform.languageServer.args": [ "serve" ],
+"terraform.languageServer.ignoreSingleFileWarning": false
+```
+
+</td>
+</tr>
+</table>
+
+The `terraform-ls.terraformExec` settings have been moved to the `terraform` section and have been renamed:
+
+Old | New
+-- | --
+`terraform-ls.terraformExecPath` | `terraform.languageServer.terraform.path`
+`terraform-ls.terraformExecTimeout` | `terraform.languageServer.terraform.timeout`
+`terraform-ls.terraformExecLogFilePath` | `terraform.languageServer.terraform.logFilePath`
+
+All settings previously under the `terraform-ls` section have been moved to the `terraform` section:
+
+Old | New
+-- | --
+`terraform-ls.rootModules` | `terraform.languageServer.terraform.path`
+`terraform-ls.excludeRootModules` | `terraform.languageServer.terraform.path`
+`terraform-ls.ignoreDirectoryNames` | `terraform.languageServer.terraform.path`
+
+
+The `terraform.experimentalFeatures` setting block has been extracted out to individual settings:
+
+<table>
+<tr><td>Old</td><td>New</td></tr>
+<tr>
+<td>
+
+```json
+"terraform.experimentalFeatures": {
+  "validateOnSave": false,
+  "prefillRequiredFields": false,
+},
+```
+</td>
+<td>
+    
+```json
+"terraform.experimentalFeatures.validateOnSave": false,
+"terraform.experimentalFeatures.prefillRequiredFields": false,
+```
+
+</td>
+</tr>
+</table>
 
 ### Generate a bug report
 
