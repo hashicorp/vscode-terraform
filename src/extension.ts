@@ -428,6 +428,9 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     case 'Suppress':
       ctx.globalState.update('terraform.disableSettingsMigration', true);
       return;
+    case 'Open Settings':
+      await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hashicorp.terraform');
+      return;
     case 'More Info':
       await vscode.commands.executeCommand(
         'vscode.open',
