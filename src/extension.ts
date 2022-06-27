@@ -442,7 +442,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
   // We need to move args and ignoreSingleFileWarning out of the JSON object format
   await migrate('terraform', 'languageServer.args', 'languageServer.args');
   await migrate('terraform', 'languageServer.ignoreSingleFileWarning', 'languageServer.ignoreSingleFileWarning');
-  // await deleteSetting('terraform', 'languageServer');
+  await deleteSetting('terraform', 'languageServer');
 
   // This simultaneously moves terraform-ls to terraform as well as migrate setting names
   await migrate('terraform-ls', 'rootModules', 'languageServer.rootModules');
@@ -460,7 +460,8 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     'experimentalFeatures.prefillRequiredFields',
     'experimentalFeatures.prefillRequiredFields',
   );
-  // await deleteSetting('terraform-ls', 'experimentalFeatures');
+  await deleteSetting('terraform-ls', 'experimentalFeatures');
+  await vscode.commands.executeCommand('workbench.action.reloadWindow');
 }
 
 function previewExtensionPresent(currentExtensionID: string) {
