@@ -338,6 +338,14 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 
 In v0.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as making the settings easier to discover when typing in the JSON Settings view.
 
+After v0.24.0, if there are old settings left in the User or Workspace scopes, this extension will show a prompt asking to migrate the settings. The user can either automatically migrate, ignore future warnings, open the Settings UI to manually migrate, or click a link for more information.
+
+Automatic migration uses the VS Code Settings API to update your currently settings. It respects the currently set values and migrates settings only if they are set.
+
+> WARNING: Since this process uses the VS Code Settings API, it does rewrite your Settings file. VS Code may rearrange settings or remove comments in this process. If you have comments, a special order, or other customizations please chose to migrate your settings manually.
+
+__Changed Settings__
+
 The `terraform.languageServer` setting block has been extracted out to individual settings. In addition, `terraform.languageServer.external` has been renamed to `terraform.languageServer.enable`
 
 <table>
@@ -355,7 +363,7 @@ The `terraform.languageServer` setting block has been extracted out to individua
 ```
 </td>
 <td>
-    
+
 ```json
 "terraform.languageServer.enable": true,
 "terraform.languageServer.pathToBinary": "",
@@ -369,11 +377,29 @@ The `terraform.languageServer` setting block has been extracted out to individua
 
 The `terraform-ls.terraformExec` settings have been moved to the `terraform` section and have been renamed:
 
-Old | New
--- | --
-`terraform-ls.terraformExecPath` | `terraform.languageServer.terraform.path`
-`terraform-ls.terraformExecTimeout` | `terraform.languageServer.terraform.timeout`
-`terraform-ls.terraformExecLogFilePath` | `terraform.languageServer.terraform.logFilePath`
+<table>
+<tr><td>Old</td><td>New</td></tr>
+<tr>
+<td>
+
+```json
+"terraform-ls.terraformExecPath": "",
+"terraform-ls.terraformExecTimeout": "",
+"terraform-ls.terraformExecLogFilePath": ""
+```
+
+</td>
+<td>
+
+```json
+"terraform.languageServer.terraform.path": "",
+"terraform.languageServer.terraform.timeout": "",
+"terraform.languageServer.terraform.logFilePath": ""
+```
+
+</td>
+</tr>
+</table>
 
 All settings previously under the `terraform-ls` section have been moved to the `terraform` section:
 
