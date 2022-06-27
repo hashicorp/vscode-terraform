@@ -17,7 +17,15 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, getActiveTextEditor, getScope, isTerraformFile, migrate, warnIfMigrate } from './utils/vscode';
+import {
+  config,
+  deleteSetting,
+  getActiveTextEditor,
+  getScope,
+  isTerraformFile,
+  migrate,
+  warnIfMigrate,
+} from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -434,6 +442,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
   // We need to move args and ignoreSingleFileWarning out of the JSON object format
   await migrate('terraform', 'languageServer.args', 'languageServer.args');
   await migrate('terraform', 'languageServer.ignoreSingleFileWarning', 'languageServer.ignoreSingleFileWarning');
+  // await deleteSetting('terraform', 'languageServer');
 
   // This simultaneously moves terraform-ls to terraform as well as migrate setting names
   await migrate('terraform-ls', 'rootModules', 'languageServer.rootModules');
@@ -451,6 +460,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     'experimentalFeatures.prefillRequiredFields',
     'experimentalFeatures.prefillRequiredFields',
   );
+  // await deleteSetting('terraform-ls', 'experimentalFeatures');
 }
 
 function previewExtensionPresent(currentExtensionID: string) {

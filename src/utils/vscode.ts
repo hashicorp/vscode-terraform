@@ -99,6 +99,29 @@ export async function migrate(section: string, oldSettingName: string, newSettin
   }
 
   await vscode.workspace.getConfiguration(targetSection).update(newSettingName, targetValue, configTarget);
+  // await vscode.workspace.getConfiguration(section).update(oldSettingName, undefined, configTarget);
+}
+
+export async function deleteSetting(section: string, settingName: string) {
+  let configTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
+
+  const inspect = vscode.workspace.getConfiguration(section).inspect(settingName);
+  if (inspect === undefined) {
+    return configTarget;
+  }
+
+  // only change user (global), folder or workspace settings
+  if (inspect.globalValue !== undefined) {
+    configTarget = vscode.ConfigurationTarget.Global;
+  }
+  if (inspect.workspaceFolderValue !== undefined) {
+    configTarget = vscode.ConfigurationTarget.WorkspaceFolder;
+  }
+  if (inspect.workspaceValue !== undefined) {
+    configTarget = vscode.ConfigurationTarget.Workspace;
+  }
+
+  await vscode.workspace.getConfiguration(section).update(settingName, undefined, configTarget);
 }
 
 export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder | undefined {
