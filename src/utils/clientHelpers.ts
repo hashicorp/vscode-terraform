@@ -21,9 +21,9 @@ export function getInitializationOptions() {
     here is to make room for this to be added to a configuration builder when
     we tackle #791
   */
-  const terraformExecPath = config('terraform').get<string>('languageServer.terraform.executable.path', '');
-  const terraformExecTimeout = config('terraform').get<string>('languageServer.terraform.executable.timeout', '');
-  const terraformLogFilePath = config('terraform').get<string>('languageServer.terraform.executable.logFilePath', '');
+  const terraformExecPath = config('terraform').get<string>('languageServer.terraform.path', '');
+  const terraformExecTimeout = config('terraform').get<string>('languageServer.terraform.timeout', '');
+  const terraformLogFilePath = config('terraform').get<string>('languageServer.terraform.logFilePath', '');
   const ignoreDirectoryNames = config('terraform').get<string[]>('languageServer.ignoreDirectoryNames', []);
   const ignoreSingleFileWarning = config('terraform').get<boolean>('languageServer.ignoreSingleFileWarning', false);
   const experimentalFeatures = config('terraform').get('experimentalFeatures');

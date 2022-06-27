@@ -353,19 +353,19 @@
         "title": "Terraform Features",
         "order": 3,
         "properties": {
-          "terraform.languageServer.terraform.executable.path": {
+          "terraform.languageServer.terraform.path": {
             "order": 0,
             "scope": "resource",
             "type": "string",
             "description": "Path to the Terraform binary used by the Terraform Language Server"
           },
-          "terraform.languageServer.terraform.executable.timeout": {
+          "terraform.languageServer.terraform.timeout": {
             "order": 1,
             "scope": "resource",
             "type": "string",
             "description": "Overrides Terraform execution timeout (e.g. 30s) used by the Terraform Language Server"
           },
-          "terraform.languageServer.terraform.executable.logFilePath": {
+          "terraform.languageServer.terraform.logFilePath": {
             "order": 2,
             "scope": "resource",
             "type": "string",

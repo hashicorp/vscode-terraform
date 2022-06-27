@@ -288,19 +288,19 @@ If you want to automatically ignore certain directories when terraform-ls indexe
 You can configure the path to the Terraform binary used by terraform-ls to perform operations inside the editor by configuring this setting:
 
 ```json
-"terraform.languageServer.terraform.executable.path": "C:/some/folder/path"
+"terraform.languageServer.terraform.path": "C:/some/folder/path"
 ```
 
 You can override the Terraform execution timeout by configuring this setting:
 
 ```json
-"terraform.languageServer.terraform.executable.timeout": "30"
+"terraform.languageServer.terraform.timeout": "30"
 ```
 
 You can set the path Terraform logs (`TF_LOG_PATH`) by configuring this setting:
 
 ```json
-"terraform.languageServer.terraform.executable.logFilePath": "C:/some/folder/path/log-{{varname}}.log"
+"terraform.languageServer.terraform.logFilePath": "C:/some/folder/path/log-{{varname}}.log"
 ```
 
 Supports variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varname}}`
