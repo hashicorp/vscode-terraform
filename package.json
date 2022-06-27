@@ -290,7 +290,7 @@
             "order": "0",
             "type": "boolean",
             "default": true,
-            "description": "Enable/disable Terraform Language Server"
+            "description": "Enable Terraform Language Server"
           },
           "terraform.languageServer.path": {
             "order": "1",
@@ -316,7 +316,7 @@
             "scope": "resource",
             "type": "boolean",
             "default": false,
-            "description": "Enable/disable warning when opening a single Terraform file instead of a Terraform folder. Enabling this will prevent the message being sent"
+            "description": "Enable warning when opening a single Terraform file instead of a Terraform folder. Enabling this will prevent the message being sent"
           },
           "terraform.languageServer.rootModules": {
             "scope": "resource",
@@ -378,13 +378,13 @@
         "order": 4,
         "properties": {
           "terraform.experimentalFeatures.validateOnSave": {
-            "description": "Enable/disable validating the currently open file on save",
+            "description": "Enable validating the currently open file on save",
             "scope": "resource",
             "type": "boolean",
             "default": false
           },
           "terraform.experimentalFeatures.prefillRequiredFields": {
-            "markdownDescription": "Enable/disable autocompletion for required fields when completing Terraform blocks. Combine with `#editor.suggest.preview#` and the editor will provide inline snippet suggestions for blocks of code",
+            "markdownDescription": "Enable autocompletion for required fields when completing Terraform blocks. Combine with `#editor.suggest.preview#` and the editor will provide inline snippet suggestions for blocks of code",
             "scope": "resource",
             "type": "boolean",
             "default": false
