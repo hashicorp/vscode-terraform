@@ -413,7 +413,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     {
       detail:
         'We can automatically migrate your settings, open the Settings UI for you to change the settings, or you can Suppress this detection.\n\nTo read more about the this change click "More Info" and delay changing anything',
-      modal: true,
+      modal: false,
     },
     { title: 'Migrate' },
     { title: 'Open Settings' },
@@ -453,9 +453,9 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
   await migrate('terraform-ls', 'rootModules', 'languageServer.rootModules');
   await migrate('terraform-ls', 'excludeRootModules', 'languageServer.excludeRootModules');
   await migrate('terraform-ls', 'ignoreDirectoryNames', 'languageServer.ignoreDirectoryNames');
-  await migrate('terraform-ls', 'terraformExecPath', 'languageServer.terraform.executable.path');
-  await migrate('terraform-ls', 'terraformExecTimeout', 'languageServer.terraform.executable.timeout');
-  await migrate('terraform-ls', 'terraformLogFilePath', 'languageServer.terraform.executable.logFilePath');
+  await migrate('terraform-ls', 'terraformExecPath', 'languageServer.terraform.path');
+  await migrate('terraform-ls', 'terraformExecTimeout', 'languageServer.terraform.timeout');
+  await migrate('terraform-ls', 'terraformLogFilePath', 'languageServer.terraform.logFilePath');
 
   // We need to move prefillRequiredFields and validateOnSave out of the JSON object format as well as
   // move terraform-ls to terraform
