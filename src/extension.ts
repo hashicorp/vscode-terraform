@@ -413,7 +413,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     {
       detail:
         'We can automatically migrate your settings, open the Settings UI for you to change the settings, or you can Suppress this detection.\n\nTo read more about the this change click "More Info" and delay changing anything',
-      modal: false,
+      modal: true,
     },
     { title: 'Migrate' },
     { title: 'Open Settings' },
@@ -436,6 +436,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
         'vscode.open',
         vscode.Uri.parse('https://www.github.com/hashicorp/vscode-terraform#settings-migration'),
       );
+      await migrateLegacySettings(ctx);
       return;
     case 'Migrate':
     // migrate below
