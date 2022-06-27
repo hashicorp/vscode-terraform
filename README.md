@@ -336,11 +336,7 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 
 ### Settings Migration
 
-The settings for the Terraform VS Code Extension were an amalgam of historical settings from the time before HashiCorp took ownership of the extension and settings we have added since taking it over. 
-
-Some settings were present that were not used, some settings were confusingly named, and other settings did not follow common VS Code setting naming conventions.
-
-In v0.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as discoverability when typing in the JSON Settings view.
+In v0.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as making the settings easier to discover when typing in the JSON Settings view.
 
 The `terraform.languageServer` setting block has been extracted out to individual settings. In addition, `terraform.languageServer.external` has been renamed to `terraform.languageServer.enable`
 
@@ -412,6 +408,8 @@ The `terraform.experimentalFeatures` setting block has been extracted out to ind
 </td>
 </tr>
 </table>
+
+For an easy to view table of settings, see the `Contributions` tab when viewing the Terraform Extension in the VS Code Extension Pane.
 
 ### Generate a bug report
 
