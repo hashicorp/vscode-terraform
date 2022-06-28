@@ -402,21 +402,23 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     return;
   }
 
+  const messageText =
+    'Automatic migration will change your settings file!' +
+    '\n\nTo read more about the this change click "More Info" and delay changing anything';
   // Prompt the user if they want to migrate. If the choose no, then return
   // and they are left to migrate the settings themselves.
   // If they choose yes, then automatically migrate the settings
   // Lastly user can be directed to our README for more information about this
   const choice = await vscode.window.showInformationMessage(
-    'Terraform configuration settings have changed in the latest update',
+    'Terraform Extension settings have moved in the latest update',
     {
-      detail:
-        'We can automatically migrate your settings, open the Settings UI for you to change the settings, or you can Suppress this detection.\n\nTo read more about the this change click "More Info" and delay changing anything',
-      modal: true,
+      detail: messageText,
+      modal: false,
     },
+    { title: 'More Info' },
     { title: 'Migrate' },
     { title: 'Open Settings' },
     { title: 'Suppress' },
-    { title: 'More Info' },
   );
   if (choice === undefined) {
     return;
