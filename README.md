@@ -336,9 +336,9 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 
 ### Settings Migration
 
-In v0.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as making the settings easier to discover when typing in the JSON Settings view.
+In v2.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as making the settings easier to discover when typing in the JSON Settings view.
 
-After v0.24.0, if there are old settings left in the User or Workspace scopes, this extension will show a prompt asking to migrate the settings. The user can either automatically migrate, ignore future warnings, open the Settings UI to manually migrate, or click a link for more information.
+After v2.24.0, if there are old settings left in the User or Workspace scopes, this extension will show a prompt asking to migrate the settings. The user can either automatically migrate, ignore future warnings, open the Settings UI to manually migrate, or click a link for more information.
 
 Automatic migration uses the VS Code Settings API to update your currently settings. It respects the currently set values and migrates settings only if they are set.
 

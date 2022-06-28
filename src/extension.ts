@@ -434,7 +434,7 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     case 'More Info':
       await vscode.commands.executeCommand(
         'vscode.open',
-        vscode.Uri.parse('https://www.github.com/hashicorp/vscode-terraform#settings-migration'),
+        vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/docs/settings-migration.md'),
       );
       await migrateLegacySettings(ctx);
       return;
