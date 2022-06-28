@@ -346,6 +346,54 @@
             },
             "default": [],
             "description": "Per-workspace list of directory names for the language server to ignore when indexing files"
+          },
+          "terraform-ls.rootModules": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of module directories for the language server to read",
+            "deprecationMessage": "Moved: Use `#terraform.languageServer.rootModules#` instead"
+          },
+          "terraform-ls.terraformExecPath": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to the Terraform binary",
+            "deprecationMessage": "Moved: Use `#terraform.languageServer.terraform.path#` instead"
+          },
+          "terraform-ls.terraformExecTimeout": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Overrides Terraform execution timeout (e.g. 30s)",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.timeout#` instead"
+          },
+          "terraform-ls.terraformLogFilePath": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.logFilePath#` instead"
+          },
+          "terraform-ls.excludeRootModules": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of module directories for the language server to exclude",
+            "deprecationMessage": "Moved: Use `#terraform.languageServer.excludeRootModules#` instead"
+          },
+          "terraform-ls.ignoreDirectoryNames": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of directory names for the language server to ignore when indexing files",
+            "deprecationMessage": "Moved: Use `#terraform.languageServer.ignoreDirectoryNames#` instead"
           }
         }
       },
@@ -388,6 +436,26 @@
             "scope": "resource",
             "type": "boolean",
             "default": false
+          },
+          "terraform-ls.experimentalFeatures": {
+            "scope": "resource",
+            "type": "object",
+            "description": "Experimental (opt-in) terraform-ls features",
+            "deprecationMessage": "Moved: Use individual `#terraform.experimentalFeatures.*#` instead",
+            "properties": {
+              "validateOnSave": {
+                "scope": "resource",
+                "deprecationMessage": "Moved: Use `#terraform.experimentalFeatures.validateOnSave#` instead",
+                "type": "boolean",
+                "default": false
+              },
+              "prefillRequiredFields": {
+                "scope": "resource",
+                "deprecationMessage": "Moved: Use `#terraform.experimentalFeatures.prefillRequiredFields#` instead",
+                "type": "boolean",
+                "default": false
+              }
+            }
           }
         }
       }
