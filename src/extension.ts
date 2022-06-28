@@ -384,8 +384,6 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
     return;
   }
 
-  // TODO: Short circuit here so we don't check for every activation forever
-
   // If any of the following list needs to be migrated, ask user if they want
   // to migrate. This is a blunt force approach, but we don't intend to keep
   // checking this forever
