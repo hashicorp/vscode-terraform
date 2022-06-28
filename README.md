@@ -336,7 +336,7 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 
 ### Settings Migration
 
-
+Read more about [changes in settings options introduced in v2.24.0](./docs/settings-migration.md).
 
 ### Generate a bug report
 
