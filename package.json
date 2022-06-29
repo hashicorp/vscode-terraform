@@ -355,13 +355,13 @@
             },
             "default": [],
             "description": "Per-workspace list of module directories for the language server to read",
-            "deprecationMessage": "Moved: Use `#terraform.languageServer.rootModules#` instead"
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.rootModules#` instead"
           },
           "terraform-ls.terraformExecPath": {
             "scope": "resource",
             "type": "string",
             "description": "Path to the Terraform binary",
-            "deprecationMessage": "Moved: Use `#terraform.languageServer.terraform.path#` instead"
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.path#` instead"
           },
           "terraform-ls.terraformExecTimeout": {
             "scope": "resource",
@@ -383,7 +383,7 @@
             },
             "default": [],
             "description": "Per-workspace list of module directories for the language server to exclude",
-            "deprecationMessage": "Moved: Use `#terraform.languageServer.excludeRootModules#` instead"
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.excludeRootModules#` instead"
           },
           "terraform-ls.ignoreDirectoryNames": {
             "scope": "resource",
@@ -393,7 +393,7 @@
             },
             "default": [],
             "description": "Per-workspace list of directory names for the language server to ignore when indexing files",
-            "deprecationMessage": "Moved: Use `#terraform.languageServer.ignoreDirectoryNames#` instead"
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.ignoreDirectoryNames#` instead"
           }
         }
       },
@@ -441,17 +441,17 @@
             "scope": "resource",
             "type": "object",
             "description": "Experimental (opt-in) terraform-ls features",
-            "deprecationMessage": "Moved: Use individual `#terraform.experimentalFeatures.*#` instead",
+            "deprecationMessage": "Moved: Use individual terraform.experimentalFeatures.* instead",
             "properties": {
               "validateOnSave": {
                 "scope": "resource",
-                "deprecationMessage": "Moved: Use `#terraform.experimentalFeatures.validateOnSave#` instead",
+                "markdownDeprecationMessage": "Moved: Use `#terraform.experimentalFeatures.validateOnSave#` instead",
                 "type": "boolean",
                 "default": false
               },
               "prefillRequiredFields": {
                 "scope": "resource",
-                "deprecationMessage": "Moved: Use `#terraform.experimentalFeatures.prefillRequiredFields#` instead",
+                "markdownDeprecationMessage": "Moved: Use `#terraform.experimentalFeatures.prefillRequiredFields#` instead",
                 "type": "boolean",
                 "default": false
               }
