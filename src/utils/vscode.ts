@@ -1,52 +1,127 @@
 import * as vscode from 'vscode';
 
-export interface LanguageServerSettings {
-  external: boolean;
-  pathToBinary: string;
-  args: string[];
-  ignoreSingleFileWarning: boolean;
-}
-
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(section, scope);
 }
 
 export function getScope(section: string, settingName: string): vscode.ConfigurationTarget {
-  let scoppe: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
+  let target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
 
   // getConfiguration('terraform').inspect('languageServer');
   // not getConfiguration('terraform').inspect('languageServer.external'); !
   // can use when we extract settings
   const inspect = vscode.workspace.getConfiguration(section).inspect(settingName);
   if (inspect === undefined) {
-    return scoppe;
+    return target;
   }
 
   if (inspect.globalValue) {
-    scoppe = vscode.ConfigurationTarget.Global;
+    target = vscode.ConfigurationTarget.Global;
   }
   if (inspect.workspaceFolderValue) {
-    scoppe = vscode.ConfigurationTarget.WorkspaceFolder;
+    target = vscode.ConfigurationTarget.WorkspaceFolder;
   }
   if (inspect.workspaceValue) {
-    scoppe = vscode.ConfigurationTarget.Workspace;
+    target = vscode.ConfigurationTarget.Workspace;
   }
 
-  return scoppe;
+  return target;
 }
 
-export async function updateConfig<T>(
-  section: string,
-  setting: string,
-  newValue: T,
-  scope: vscode.ConfigurationTarget,
-) {
-  const current = config(section).get<T>('languageServer');
-  if (current === undefined) {
+interface ConfigOption {
+  section: string;
+  name: string;
+}
+
+export function warnIfMigrate(settings: ConfigOption[]): boolean {
+  for (let index = 0; index < settings.length; index++) {
+    const setting = settings[index];
+
+    const inspect = vscode.workspace.getConfiguration(setting.section).inspect(setting.name);
+    if (inspect === undefined) {
+      continue;
+    }
+
+    if (inspect.globalValue !== undefined) {
+      return true;
+    }
+    if (inspect.workspaceFolderValue !== undefined) {
+      return true;
+    }
+    if (inspect.workspaceValue !== undefined) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Migrate a VS Code Section and setting to a new name.
+ *
+ * @param section Existing VS Code section to operate on. If `terraform-ls` is provided, it will be migrated to `terraform`
+ * @param oldSettingName Existing VS Code setting name to migrate.
+ * @param newSettingName New VS Code setting name to migrate to.
+ * @return void.
+ */
+export async function migrate(section: string, oldSettingName: string, newSettingName: string) {
+  let configTarget: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global;
+
+  const inspect = vscode.workspace.getConfiguration(section).inspect(oldSettingName);
+  if (inspect === undefined) {
+    return configTarget;
+  }
+
+  /*
+    While this could be more explicit as part of the function definition, it made
+    the function call confusing and verbose without any type safety:
+
+      `migrate('terraform-ls','terraform', 'rootModules', 'languageServer.rootModules');`
+
+    We could make this a type but that seemed like too much involvement for this
+    short lived task.
+  */
+  const targetSection = section === 'terraform-ls' ? 'terraform' : section;
+  let targetValue: unknown;
+
+  // only change user (global), folder or workspace settings
+  if (inspect.globalValue !== undefined) {
+    targetValue = inspect.globalValue;
+    configTarget = vscode.ConfigurationTarget.Global;
+  }
+  if (inspect.workspaceFolderValue !== undefined) {
+    targetValue = inspect.workspaceFolderValue;
+    configTarget = vscode.ConfigurationTarget.WorkspaceFolder;
+  }
+  if (inspect.workspaceValue !== undefined) {
+    targetValue = inspect.workspaceValue;
+    configTarget = vscode.ConfigurationTarget.Workspace;
+  }
+
+  await vscode.workspace.getConfiguration(targetSection).update(newSettingName, targetValue, configTarget);
+  await vscode.workspace.getConfiguration(section).update(oldSettingName, undefined, configTarget);
+}
+
+export async function deleteSetting(section: string, settingName: string) {
+  const inspect = vscode.workspace.getConfiguration(section).inspect(settingName);
+  if (inspect === undefined) {
     return;
   }
 
-  await config(section).update(setting, newValue, scope);
+  // only change user (global), folder or workspace settings
+  if (inspect.globalValue !== undefined) {
+    await vscode.workspace.getConfiguration(section).update(settingName, undefined, vscode.ConfigurationTarget.Global);
+  }
+  if (inspect.workspaceFolderValue !== undefined) {
+    await vscode.workspace
+      .getConfiguration(section)
+      .update(settingName, undefined, vscode.ConfigurationTarget.WorkspaceFolder);
+  }
+  if (inspect.workspaceValue !== undefined) {
+    await vscode.workspace
+      .getConfiguration(section)
+      .update(settingName, undefined, vscode.ConfigurationTarget.Workspace);
+  }
 }
 
 export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder | undefined {

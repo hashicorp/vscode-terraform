@@ -1,15 +1,15 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as which from 'which';
+import { config } from './vscode';
 
 const INSTALL_FOLDER_NAME = 'bin';
-const CUSTOM_BIN_PATH_OPTION_NAME = 'languageServer.pathToBinary';
 
 export class ServerPath {
   private customBinPath: string | undefined;
 
   constructor(private context: vscode.ExtensionContext) {
-    this.customBinPath = vscode.workspace.getConfiguration('terraform').get(CUSTOM_BIN_PATH_OPTION_NAME);
+    this.customBinPath = config('terraform').get('languageServer.path');
   }
 
   private installPath(): string {
@@ -53,7 +53,7 @@ export class ServerPath {
     } catch (err) {
       let extraHint = '';
       if (this.customBinPath) {
-        extraHint = `. Check "${CUSTOM_BIN_PATH_OPTION_NAME}" in your settings.`;
+        extraHint = `. Check "terraform.languageServer.path" in your settings.`;
       }
       throw new Error(`Unable to launch language server: ${err instanceof Error ? err.message : err}${extraHint}`);
     }

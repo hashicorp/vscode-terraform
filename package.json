@@ -285,46 +285,40 @@
         "title": "Language Server",
         "order": 1,
         "properties": {
-          "terraform.languageServer": {
+          "terraform.languageServer.enable": {
+            "scope": "resource",
             "order": "0",
-            "type": "object",
-            "description": "Language Server settings",
-            "properties": {
-              "external": {
-                "type": "boolean",
-                "default": true,
-                "description": "Whether an external language server binary should be launched."
-              },
-              "pathToBinary": {
-                "scope": "resource",
-                "type": "string",
-                "default": "",
-                "description": "Path to language server binary (optional)"
-              },
-              "args": {
-                "scope": "resource",
-                "type": "array",
-                "default": [
-                  "serve"
-                ],
-                "description": "Arguments to pass to language server binary"
-              }
+            "type": "boolean",
+            "default": true,
+            "description": "Enable Terraform Language Server"
+          },
+          "terraform.languageServer.path": {
+            "order": "1",
+            "scope": "resource",
+            "type": "string",
+            "default": "",
+            "description": "Path to the Terraform Language Server binary (optional)"
+          },
+          "terraform.languageServer.args": {
+            "order": "2",
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
             },
-            "default": {
-              "external": true,
-              "pathToBinary": "",
-              "args": [
-                "serve"
-              ]
-            }
+            "default": [
+              "serve"
+            ],
+            "description": "Arguments to pass to language server binary"
           },
           "terraform.languageServer.ignoreSingleFileWarning": {
+            "order": "3",
             "scope": "resource",
             "type": "boolean",
             "default": false,
-            "description": "This setting controls whether terraform-ls sends a warning about opening up a single Terraform file instead of a Terraform folder. Setting this to `true` will prevent the message being sent. The default value is `false`."
+            "description": "Enable warning when opening a single Terraform file instead of a Terraform folder. Enabling this will prevent the message being sent"
           },
-          "terraform-ls.rootModules": {
+          "terraform.languageServer.rootModules": {
             "scope": "resource",
             "type": "array",
             "items": {
@@ -334,22 +328,7 @@
             "description": "Per-workspace list of module directories for the language server to read",
             "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
-          "terraform-ls.terraformExecPath": {
-            "scope": "resource",
-            "type": "string",
-            "description": "Path to the Terraform binary"
-          },
-          "terraform-ls.terraformExecTimeout": {
-            "scope": "resource",
-            "type": "string",
-            "description": "Overrides Terraform execution timeout (e.g. 30s)"
-          },
-          "terraform-ls.terraformLogFilePath": {
-            "scope": "resource",
-            "type": "string",
-            "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}"
-          },
-          "terraform-ls.excludeRootModules": {
+          "terraform.languageServer.excludeRootModules": {
             "scope": "resource",
             "type": "array",
             "items": {
@@ -359,7 +338,7 @@
             "description": "Per-workspace list of module directories for the language server to exclude",
             "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
-          "terraform-ls.ignoreDirectoryNames": {
+          "terraform.languageServer.ignoreDirectoryNames": {
             "scope": "resource",
             "type": "array",
             "items": {
@@ -367,25 +346,112 @@
             },
             "default": [],
             "description": "Per-workspace list of directory names for the language server to ignore when indexing files"
+          },
+          "terraform-ls.rootModules": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of module directories for the language server to read",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.rootModules#` instead"
+          },
+          "terraform-ls.terraformExecPath": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to the Terraform binary",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.path#` instead"
+          },
+          "terraform-ls.terraformExecTimeout": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Overrides Terraform execution timeout (e.g. 30s)",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.timeout#` instead"
+          },
+          "terraform-ls.terraformLogFilePath": {
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.logFilePath#` instead"
+          },
+          "terraform-ls.excludeRootModules": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of module directories for the language server to exclude",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.excludeRootModules#` instead"
+          },
+          "terraform-ls.ignoreDirectoryNames": {
+            "scope": "resource",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of directory names for the language server to ignore when indexing files",
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.ignoreDirectoryNames#` instead"
+          }
+        }
+      },
+      {
+        "title": "Terraform Features",
+        "order": 3,
+        "properties": {
+          "terraform.languageServer.terraform.path": {
+            "order": 0,
+            "scope": "resource",
+            "type": "string",
+            "description": "Path to the Terraform binary used by the Terraform Language Server"
+          },
+          "terraform.languageServer.terraform.timeout": {
+            "order": 1,
+            "scope": "resource",
+            "type": "string",
+            "description": "Overrides Terraform execution timeout (e.g. 30s) used by the Terraform Language Server"
+          },
+          "terraform.languageServer.terraform.logFilePath": {
+            "order": 2,
+            "scope": "resource",
+            "type": "string",
+            "markdownDescription": "Path to a file (`TF_LOG_PATH`) for Terraform executions to be logged used by the the Terraform Language Server. Support for variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varName}}`"
           }
         }
       },
       {
         "title": "Experimental Features",
-        "order": 3,
+        "order": 4,
         "properties": {
+          "terraform.experimentalFeatures.validateOnSave": {
+            "description": "Enable validating the currently open file on save",
+            "scope": "resource",
+            "type": "boolean",
+            "default": false
+          },
+          "terraform.experimentalFeatures.prefillRequiredFields": {
+            "markdownDescription": "Enable autocompletion for required fields when completing Terraform blocks. Combine with `#editor.suggest.preview#` and the editor will provide inline snippet suggestions for blocks of code",
+            "scope": "resource",
+            "type": "boolean",
+            "default": false
+          },
           "terraform-ls.experimentalFeatures": {
             "scope": "resource",
             "type": "object",
             "description": "Experimental (opt-in) terraform-ls features",
+            "deprecationMessage": "Moved: Use individual terraform.experimentalFeatures.* instead",
             "properties": {
               "validateOnSave": {
                 "scope": "resource",
+                "markdownDeprecationMessage": "Moved: Use `#terraform.experimentalFeatures.validateOnSave#` instead",
                 "type": "boolean",
                 "default": false
               },
               "prefillRequiredFields": {
                 "scope": "resource",
+                "markdownDeprecationMessage": "Moved: Use `#terraform.experimentalFeatures.prefillRequiredFields#` instead",
                 "type": "boolean",
                 "default": false
               }

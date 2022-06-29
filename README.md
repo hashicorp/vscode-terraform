@@ -142,9 +142,9 @@ Syntax highlighting targets Terraform v1.0 and greater. Highlighting 0.12-0.15 c
 
 ### VS Code Workspace support
 
-It is a common pattern to have seperate folders containing related Terraform configuration that are not contained under one root folder. For example, you have a main Terraform folder containing the configuration for a single application and several module folders containing encapsualted code for configuring different parts of component pieces. You could open each folder in a separate VS Code window, and bounce between each window to author your changes.
+It is a common pattern to have separate folders containing related Terraform configuration that are not contained under one root folder. For example, you have a main Terraform folder containing the configuration for a single application and several module folders containing encapsulated code for configuring different parts of component pieces. You could open each folder in a separate VS Code window, and bounce between each window to author your changes.
 
-A better approach is to use [VS Code Workspaces](https://code.visualstudio.com/docs/editor/workspaces). Using our example above, open the main Terraform folder first, then use Add Folder to workspace to add the dependent module folders. A single VS Code window is used and all Terrraform files are available to author your changes. This uses a single terraform-ls process that has an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across your project.
+A better approach is to use [VS Code Workspaces](https://code.visualstudio.com/docs/editor/workspaces). Using our example above, open the main Terraform folder first, then use Add Folder to workspace to add the dependent module folders. A single VS Code window is used and all Terraform files are available to author your changes. This uses a single terraform-ls process that has an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across your project.
 
 ### Single file support
 
@@ -174,9 +174,7 @@ This extension offers several configuration options. To modify these open the [V
 An experimental option can be enabled to prefill required fields when completing Terraform blocks with the following setting:
 
 ```json
-"terraform-ls.experimentalFeatures": {
-  "prefillRequiredFields": true
-}
+"terraform.experimentalFeatures.prefillRequiredFields": true
 ```
 
 For example, choosing `aws_alb_listener` in the following block inserts a snippet in the current line with the `resource` block entirely filled out, containing tab stops to fill in the required values.
@@ -251,9 +249,7 @@ This will keep the global `editor.formatOnSave` for other languages you use, and
 An experimental validate-on-save option can be enabled with the following setting:
 
 ```json
-"terraform-ls.experimentalFeatures": {
-  "validateOnSave": true
-}
+"terraform.experimentalFeatures.validateOnSave": true
 ```
 
 This will create diagnostics for any elements that fail validation. You can also run `terraform validate` by issuing the `Terraform: validate` in the command palette.
@@ -263,7 +259,7 @@ This will create diagnostics for any elements that fail validation. You can also
 If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
 
 ```json
-"terraform-ls.rootModules": [
+"terraform.languageServer.rootModules": [
   "/module1",
   "/module2"
 ]
@@ -272,7 +268,7 @@ If you have multiple root modules in your workspace, you can configure the langu
 If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
 
 ```json
-"terraform-ls.excludeRootModules": [
+"terraform.languageServer.excludeRootModules": [
   "/module3",
   "/module4"
 ]
@@ -281,7 +277,7 @@ If you want to automatically search root modules in your workspace and exclude s
 If you want to automatically ignore certain directories when terraform-ls indexes files, add the folder names to this setting:
 
 ```json
- "terraform-ls.ignoreDirectoryNames": [
+ "terraform.languageServer.ignoreDirectoryNames": [
    "folder1",
    "folder2"
  ]
@@ -292,19 +288,19 @@ If you want to automatically ignore certain directories when terraform-ls indexe
 You can configure the path to the Terraform binary used by terraform-ls to perform operations inside the editor by configuring this setting:
 
 ```json
-"terraform-ls.terraformExecPath": "C:/some/folder/path"
+"terraform.languageServer.terraform.path": "C:/some/folder/path"
 ```
 
 You can override the Terraform execution timeout by configuring this setting:
 
 ```json
-"terraform-ls.terraformExecTimeout": "30"
+"terraform.languageServer.terraform.timeout": "30"
 ```
 
 You can set the path Terraform logs (`TF_LOG_PATH`) by configuring this setting:
 
 ```json
-"terraform-ls.terraformLogFilePath": "C:/some/folder/path/log-{{varname}}.log"
+"terraform.languageServer.terraform.logFilePath": "C:/some/folder/path/log-{{varname}}.log"
 ```
 
 Supports variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varname}}`
@@ -326,10 +322,8 @@ If you are using a Terraform version prior to 0.12.0, you can install the pre-tr
 The configuration has changed from 1.4.0 to v2.X. If you are having issues with the Language Server starting, you can reset the configuration to the following:
 
 ```json
-"terraform.languageServer": {
-  "external": true,
-  "args": ["serve"]
-}
+"terraform.languageServer.enable": true,
+"terraform.languageServer.args": ["serve"]
 ```
 
 ## Troubleshooting
@@ -339,6 +333,10 @@ The configuration has changed from 1.4.0 to v2.X. If you are having issues with 
 - If someone has already filed an issue that encompasses your feedback, please leave a 👍/👎 reaction on the issue
 - Contributions are always welcome! Please see our [contributing guide](https://github.com/hashicorp/vscode-terraform/issues/new?assignees=&labels=enhancement&template=feature_request.md) for more details
 - If you're interested in the development of the extension, you can read about our [development process](DEVELOPMENT.md)
+
+### Settings Migration
+
+Read more about [changes in settings options introduced in v2.24.0](./docs/settings-migration.md).
 
 ### Generate a bug report
 
