@@ -274,7 +274,7 @@
         "order": 0,
         "properties": {
           "terraform.codelens.referenceCount": {
-            "scope": "resource",
+            "scope": "window",
             "type": "boolean",
             "default": false,
             "description": "Display reference counts above top level blocks and attributes."
@@ -286,7 +286,7 @@
         "order": 1,
         "properties": {
           "terraform.languageServer.enable": {
-            "scope": "resource",
+            "scope": "window",
             "order": "0",
             "type": "boolean",
             "default": true,
@@ -294,14 +294,14 @@
           },
           "terraform.languageServer.path": {
             "order": "1",
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "string",
             "default": "",
             "description": "Path to the Terraform Language Server binary (optional)"
           },
           "terraform.languageServer.args": {
             "order": "2",
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "array",
             "items": {
               "type": "string"
@@ -313,23 +313,23 @@
           },
           "terraform.languageServer.ignoreSingleFileWarning": {
             "order": "3",
-            "scope": "resource",
+            "scope": "window",
             "type": "boolean",
             "default": false,
             "description": "Enable warning when opening a single Terraform file instead of a Terraform folder. Enabling this will prevent the message being sent"
           },
           "terraform.languageServer.rootModules": {
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "machine"
             },
             "default": [],
             "description": "Per-workspace list of module directories for the language server to read",
             "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform.languageServer.excludeRootModules": {
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "array",
             "items": {
               "type": "string"
@@ -339,7 +339,7 @@
             "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform.languageServer.ignoreDirectoryNames": {
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "array",
             "items": {
               "type": "string"
@@ -348,7 +348,7 @@
             "description": "Per-workspace list of directory names for the language server to ignore when indexing files"
           },
           "terraform-ls.rootModules": {
-            "scope": "resource",
+            "scope": "window",
             "type": "array",
             "items": {
               "type": "string"
@@ -358,25 +358,25 @@
             "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.rootModules#` instead"
           },
           "terraform-ls.terraformExecPath": {
-            "scope": "resource",
+            "scope": "window",
             "type": "string",
             "description": "Path to the Terraform binary",
             "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.path#` instead"
           },
           "terraform-ls.terraformExecTimeout": {
-            "scope": "resource",
+            "scope": "window",
             "type": "string",
             "description": "Overrides Terraform execution timeout (e.g. 30s)",
             "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.timeout#` instead"
           },
           "terraform-ls.terraformLogFilePath": {
-            "scope": "resource",
+            "scope": "window",
             "type": "string",
             "description": "Path to a file for Terraform executions to be logged into (TF_LOG_PATH) with support for variables (e.g. timestamp, pid, ppid) via Go template syntax {{varName}}",
             "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.terraform.logFilePath#` instead"
           },
           "terraform-ls.excludeRootModules": {
-            "scope": "resource",
+            "scope": "window",
             "type": "array",
             "items": {
               "type": "string"
@@ -386,7 +386,7 @@
             "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.excludeRootModules#` instead"
           },
           "terraform-ls.ignoreDirectoryNames": {
-            "scope": "resource",
+            "scope": "window",
             "type": "array",
             "items": {
               "type": "string"
@@ -403,19 +403,19 @@
         "properties": {
           "terraform.languageServer.terraform.path": {
             "order": 0,
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "string",
             "description": "Path to the Terraform binary used by the Terraform Language Server"
           },
           "terraform.languageServer.terraform.timeout": {
             "order": 1,
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "string",
             "description": "Overrides Terraform execution timeout (e.g. 30s) used by the Terraform Language Server"
           },
           "terraform.languageServer.terraform.logFilePath": {
             "order": 2,
-            "scope": "resource",
+            "scope": "machine-overridable",
             "type": "string",
             "markdownDescription": "Path to a file (`TF_LOG_PATH`) for Terraform executions to be logged used by the the Terraform Language Server. Support for variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varName}}`"
           }
@@ -427,30 +427,30 @@
         "properties": {
           "terraform.experimentalFeatures.validateOnSave": {
             "description": "Enable validating the currently open file on save",
-            "scope": "resource",
+            "scope": "window",
             "type": "boolean",
             "default": false
           },
           "terraform.experimentalFeatures.prefillRequiredFields": {
             "markdownDescription": "Enable autocompletion for required fields when completing Terraform blocks. Combine with `#editor.suggest.preview#` and the editor will provide inline snippet suggestions for blocks of code",
-            "scope": "resource",
+            "scope": "window",
             "type": "boolean",
             "default": false
           },
           "terraform-ls.experimentalFeatures": {
-            "scope": "resource",
+            "scope": "window",
             "type": "object",
             "description": "Experimental (opt-in) terraform-ls features",
             "deprecationMessage": "Moved: Use individual terraform.experimentalFeatures.* instead",
             "properties": {
               "validateOnSave": {
-                "scope": "resource",
+                "scope": "window",
                 "markdownDeprecationMessage": "Moved: Use `#terraform.experimentalFeatures.validateOnSave#` instead",
                 "type": "boolean",
                 "default": false
               },
               "prefillRequiredFields": {
-                "scope": "resource",
+                "scope": "window",
                 "markdownDeprecationMessage": "Moved: Use `#terraform.experimentalFeatures.prefillRequiredFields#` instead",
                 "type": "boolean",
                 "default": false
