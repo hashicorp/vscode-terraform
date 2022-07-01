@@ -10,8 +10,7 @@
   "preview": false,
   "private": true,
   "extensionKind": [
-    "workspace",
-    "ui"
+    "workspace"
   ],
   "engines": {
     "npm": "~8.X",
