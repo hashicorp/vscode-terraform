@@ -1,8 +1,14 @@
 ## [2.23.1] (Unreleased)
 
+BUG FIXES:
+
+ - Ensure extension is installed in remote contexts automatically ([#1163](https://github.com/hashicorp/vscode-terraform/pull/1163))
+
 ENHANCEMENTS:
 
  - Use dark extension icon for preview ([#1143](https://github.com/hashicorp/vscode-terraform/pull/1143))
+ - Improve Extension Settings to follow VS Code setting naming conventions ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156))
+ - Set proper scope for machine based settings ([#1164](https://github.com/hashicorp/vscode-terraform/pull/1164))
 
 INTERNAL:
 
