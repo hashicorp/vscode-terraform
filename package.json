@@ -552,20 +552,23 @@
       ]
     },
     "views": {
-      "explorer": [
+      "terraform": [
         {
           "id": "terraform.providers",
-          "name": "Terraform Providers",
-          "icon": "assets/icons/terraform.svg",
-          "visibility": "collapsed",
-          "when": "terraform.showTreeViews"
+          "name": "Terraform Providers"
         },
         {
           "id": "terraform.modules",
-          "name": "Terraform Module Calls",
-          "icon": "assets/icons/terraform.svg",
-          "visibility": "collapsed",
-          "when": "terraform.showTreeViews"
+          "name": "Terraform Module Calls"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "terraform",
+          "title": "Terraform",
+          "icon": "assets/icons/terraform.svg"
         }
       ]
     },
