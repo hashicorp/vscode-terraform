@@ -555,11 +555,11 @@
       "terraform": [
         {
           "id": "terraform.providers",
-          "name": "Terraform Providers"
+          "name": "Providers"
         },
         {
           "id": "terraform.modules",
-          "name": "Terraform Module Calls"
+          "name": "Module Calls"
         }
       ]
     },
@@ -567,7 +567,7 @@
       "activitybar": [
         {
           "id": "terraform",
-          "title": "Terraform",
+          "title": "HashiCorp Terraform",
           "icon": "assets/icons/terraform.svg"
         }
       ]
