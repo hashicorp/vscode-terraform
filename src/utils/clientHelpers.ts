@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { Executable, InitializeResult, ServerOptions, StreamInfo } from 'vscode-languageclient/node';
 import { config } from './vscode';
 import { ServerPath } from './serverPath';
+import { outputChannel } from '../extension';
 
 export async function getServerOptions(lsPath: ServerPath): Promise<ServerOptions> {
   let serverOptions: ServerOptions;
@@ -31,12 +32,14 @@ export async function getServerOptions(lsPath: ServerPath): Promise<ServerOption
       };
       return Promise.resolve(result);
     };
+
+    outputChannel?.appendLine(`Connecting to language server via TCP at localhost:${port}`);
     return serverOptions;
   }
 
   const cmd = await lsPath.resolvedPathToBinary();
   const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
-  // this.outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
+  outputChannel?.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
   const executable: Executable = {
     command: cmd,
     args: serverArgs,

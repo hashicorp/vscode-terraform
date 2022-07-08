@@ -38,7 +38,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
 ];
-const outputChannel = vscode.window.createOutputChannel(brand);
+export const outputChannel = vscode.window.createOutputChannel(brand);
 export let terraformStatus: vscode.StatusBarItem;
 
 let reporter: TelemetryReporter;
@@ -112,7 +112,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     reporter.sendTelemetryEvent('usePathToBinary');
   }
   const serverOptions: ServerOptions = await getServerOptions(lsPath);
-  // outputChannel.appendLine(`Launching language server: ${executable.command} ${executable.args?.join(' ')}`);
 
   const initializationOptions = getInitializationOptions();
   const clientOptions: LanguageClientOptions = {
