@@ -443,7 +443,7 @@
             ],
             "scope": "machine-overridable",
             "default": null,
-            "markdownDescription": "Language server TCP port to connect to. This is not compatible with `#terraform.languageServer.path#`. This is used when you want the extension to connect via TCP to an already running Language Server is already running Language Server process."
+            "markdownDescription": "Language server TCP port to connect to. This is not compatible with `#terraform.languageServer.path#`. This is used when you want the extension to connect via TCP to an already running language server process."
           },
           "terraform-ls.experimentalFeatures": {
             "scope": "window",
