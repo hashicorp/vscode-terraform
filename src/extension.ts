@@ -9,7 +9,6 @@ import {
   RevealOutputChannelOn,
   State,
   StaticFeature,
-  ServerOptions,
   CloseAction,
   ErrorAction,
   Message,
