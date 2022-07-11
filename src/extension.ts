@@ -114,7 +114,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   if (lsPath.hasCustomBinPath()) {
     reporter.sendTelemetryEvent('usePathToBinary');
   }
-  const serverOptions: ServerOptions = await getServerOptions(lsPath);
+  const serverOptions = await getServerOptions(lsPath);
 
   const initializationOptions = getInitializationOptions();
 
