@@ -8,7 +8,7 @@ import { outputChannel } from '../extension';
 export async function getServerOptions(lsPath: ServerPath): Promise<ServerOptions> {
   let serverOptions: ServerOptions;
 
-  const port: number | undefined = config('terraform').get('experimentalFeatures.languageServer.tcp.port');
+  const port = config('terraform').get<number>('experimentalFeatures.languageServer.tcp.port');
   if (port) {
     const inspect = vscode.workspace.getConfiguration('terraform').inspect('languageServer.path');
     if (inspect !== undefined && (inspect.globalValue || inspect.workspaceFolderValue || inspect.workspaceValue)) {
