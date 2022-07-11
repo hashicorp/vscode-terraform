@@ -11,26 +11,22 @@ export async function getServerOptions(lsPath: ServerPath): Promise<ServerOption
   const port: number | undefined = config('terraform').get('experimentalFeatures.languageServer.tcp.port');
   if (port) {
     const inspect = vscode.workspace.getConfiguration('terraform').inspect('languageServer.path');
-    if (inspect !== undefined) {
-      ///
-      if (inspect.globalValue || inspect.workspaceFolderValue || inspect.workspaceValue) {
-        vscode.window.showWarningMessage(
-          'You cannot use experimentalFeatures.languageServer.tcp.port with terraform.languageServer.path. Ignoring terraform.languageServer.path and proceeding to connect via TCP',
-        );
-      }
+    if (inspect !== undefined && (inspect.globalValue || inspect.workspaceFolderValue || inspect.workspaceValue)) {
+      vscode.window.showWarningMessage(
+        'You cannot use experimentalFeatures.languageServer.tcp.port with terraform.languageServer.path. Ignoring terraform.languageServer.path and proceeding to connect via TCP',
+      );
     }
 
-    serverOptions = () => {
+    serverOptions = async () => {
       const socket = new net.Socket();
       socket.connect({
         port: port,
         host: 'localhost',
       });
-      const result: StreamInfo = {
+      return {
         writer: socket,
         reader: socket,
       };
-      return Promise.resolve(result);
     };
 
     outputChannel?.appendLine(`Connecting to language server via TCP at localhost:${port}`);
