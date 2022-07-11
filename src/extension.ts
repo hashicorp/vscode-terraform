@@ -259,8 +259,6 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
       const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
     }
-
-    vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', true);
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
@@ -274,7 +272,6 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
 async function stopLanguageServer() {
   try {
     await client?.stop();
-    vscode.commands.executeCommand('setContext', 'terraform.showTreeViews', false);
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
