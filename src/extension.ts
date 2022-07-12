@@ -117,10 +117,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const initializationOptions = getInitializationOptions();
 
-  let restartCount = 0;
-  const maxRestartAttempts = 5;
-  const restartDelay = 1000;
-
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
     synchronize: {
@@ -135,27 +131,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       return false;
     },
     errorHandler: {
-      error: (error: Error, message: Message, count: number) => {
+      error: (error, message, count) => {
         vscode.window.showErrorMessage(
-          `Terraform LS connection error: (${count})\n${error.message}\n${message.jsonrpc}`,
+          `Terraform LS connection error: (${count})\n${error.message}\n${message?.jsonrpc}`,
         );
 
         return ErrorAction.Continue;
       },
       closed: () => {
-        restartCount++;
-        outputChannel.appendLine(`Connection to terraform-ls failed. Attempting restart ${restartCount}...`);
-
-        if (restartCount < maxRestartAttempts) {
-          // wait a second to attempt to start again
-          setTimeout(async () => {
-            await client.onReady();
-            restartCount = 0;
-          }, restartDelay);
-
-          // tell VS Code to attempt to restart terraform-ls again
-          return CloseAction.Restart;
-        }
+        outputChannel.appendLine(
+          `Failure to start terraform-ls. Please check your configuration settings and reload this window`,
+        );
 
         vscode.window
           .showErrorMessage(
@@ -176,18 +162,16 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             switch (choice.title) {
               case 'Open Logs':
                 outputChannel.show();
-                return;
+                break;
               case 'Open Settings':
                 await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hashicorp.terraform');
-                return;
+                break;
               case 'More Info':
                 await vscode.commands.executeCommand(
                   'vscode.open',
                   vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform#troubleshooting'),
                 );
-                return;
-              case 'Migrate':
-              // migrate below
+                break;
             }
           });
 
