@@ -310,6 +310,16 @@
             ],
             "description": "Arguments to pass to language server binary"
           },
+          "terraform.languageServer.tcp.port": {
+            "order": 4,
+            "type": [
+              "number",
+              null
+            ],
+            "scope": "machine-overridable",
+            "default": null,
+            "markdownDescription": "Language server TCP port to connect to. This is not compatible with `#terraform.languageServer.path#`. This is used when you want the extension to connect via TCP to an already running language server process."
+          },
           "terraform.languageServer.ignoreSingleFileWarning": {
             "order": "3",
             "scope": "window",
@@ -435,15 +445,6 @@
             "scope": "window",
             "type": "boolean",
             "default": false
-          },
-          "terraform.experimentalFeatures.languageServer.tcp.port": {
-            "type": [
-              "number",
-              null
-            ],
-            "scope": "machine-overridable",
-            "default": null,
-            "markdownDescription": "Language server TCP port to connect to. This is not compatible with `#terraform.languageServer.path#`. This is used when you want the extension to connect via TCP to an already running language server process."
           },
           "terraform-ls.experimentalFeatures": {
             "scope": "window",
