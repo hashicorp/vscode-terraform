@@ -11,7 +11,6 @@ import {
   StaticFeature,
   CloseAction,
   ErrorAction,
-  Message,
 } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { clientSupportsCommand, getInitializationOptions, getServerOptions } from './utils/clientHelpers';
