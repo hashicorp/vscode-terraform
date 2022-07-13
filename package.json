@@ -522,6 +522,14 @@
     "menus": {
       "commandPalette": [
         {
+          "command": "terraform.enableLanguageServer",
+          "when": "config.terraform.languageServer.enable == false"
+        },
+        {
+          "command": "terraform.disableLanguageServer",
+          "when": "config.terraform.languageServer.enable == true"
+        },
+        {
           "command": "terraform.modules.refreshList",
           "when": "false"
         },
