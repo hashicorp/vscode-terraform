@@ -530,6 +530,22 @@
           "when": "config.terraform.languageServer.enable == true"
         },
         {
+          "command": "terraform.init",
+          "when": "config.terraform.languageServer.enable == true"
+        },
+        {
+          "command": "terraform.initCurrent",
+          "when": "config.terraform.languageServer.enable == true"
+        },
+        {
+          "command": "terraform.validate",
+          "when": "config.terraform.languageServer.enable == true"
+        },
+        {
+          "command": "terraform.plan",
+          "when": "config.terraform.languageServer.enable == true"
+        },
+        {
           "command": "terraform.modules.refreshList",
           "when": "false"
         },
