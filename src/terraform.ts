@@ -3,42 +3,100 @@ import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest, LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { getActiveTextEditor } from './utils/vscode';
+import { clientSupportsCommand } from './utils/clientHelpers';
 
-interface ModuleCaller {
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface ModuleCaller {
   uri: string;
 }
 
-interface ModuleCallersResponse {
+export interface ModuleCallersResponse {
   version: number;
   moduleCallers: ModuleCaller[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function execWorkspaceCommand(
-  client: LanguageClient,
-  params: ExecuteCommandParams,
-  reporter: TelemetryReporter,
-): Promise<any> {
-  reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
-  return client.sendRequest(ExecuteCommandRequest.type, params);
+export interface ModuleCall {
+  name: string;
+  source_addr: string;
+  version?: string;
+  source_type?: string;
+  docs_link?: string;
+  dependent_modules: ModuleCall[];
 }
+
+export interface ModuleCallsResponse {
+  v: number;
+  module_calls: ModuleCall[];
+}
+
+interface ModuleProvidersResponse {
+  v: number;
+  provider_requirements: {
+    [provider: string]: {
+      display_name: string;
+      version_constraint?: string;
+      docs_link?: string;
+    };
+  };
+  installed_providers: {
+    [provider: string]: string;
+  };
+}
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export async function moduleCallers(
   moduleUri: string,
   client: LanguageClient,
   reporter: TelemetryReporter,
 ): Promise<ModuleCallersResponse> {
-  if (client === undefined) {
-    return {
-      version: 0,
-      moduleCallers: [],
-    };
+  const command = 'terraform-ls.module.callers';
+
+  const response = await execWorkspaceLSCommand<ModuleCallersResponse>(command, moduleUri, client, reporter);
+
+  return response;
+}
+
+export async function moduleCalls(
+  moduleUri: string,
+  client: LanguageClient,
+  reporter: TelemetryReporter,
+): Promise<ModuleCallsResponse> {
+  const command = 'terraform-ls.module.calls';
+
+  const response = await execWorkspaceLSCommand<ModuleCallsResponse>(command, moduleUri, client, reporter);
+
+  return response;
+}
+
+export async function moduleProviders(
+  moduleUri: string,
+  client: LanguageClient,
+  reporter: TelemetryReporter,
+): Promise<ModuleProvidersResponse> {
+  const command = 'terraform-ls.module.providers';
+
+  const response = await execWorkspaceLSCommand<ModuleProvidersResponse>(command, moduleUri, client, reporter);
+
+  return response;
+}
+
+export async function terraformInitCommand(client: LanguageClient, reporter: TelemetryReporter) {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  const selected = await vscode.window.showOpenDialog({
+    canSelectFiles: false,
+    canSelectFolders: true,
+    canSelectMany: false,
+    defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
+    openLabel: 'Initialize',
+  });
+  if (selected === undefined) {
+    return;
   }
 
-  const response = await modulesCallersCommand(client, moduleUri, reporter);
-  const moduleCallers: ModuleCaller[] = response.callers;
+  const moduleUri = selected[0];
+  const command = `terraform-ls.terraform.init`;
 
-  return { version: response.v, moduleCallers };
+  return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
 }
 
 export async function terraformCommand(
@@ -49,7 +107,7 @@ export async function terraformCommand(
 ): Promise<void> {
   const textEditor = getActiveTextEditor();
   if (textEditor === undefined) {
-    vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
+    vscode.window.showWarningMessage(`Open a module file and then run terraform ${command} again`);
     return;
   }
 
@@ -80,39 +138,42 @@ export async function terraformCommand(
     return;
   }
 
-  const requestParams: ExecuteCommandParams = {
-    command: `terraform-ls.terraform.${command}`,
-    arguments: [`uri=${selectedModule}`],
-  };
+  const fullCommand = `terraform-ls.terraform.${command}`;
 
-  try {
-    await client.onReady();
+  await client.onReady();
 
-    return execWorkspaceCommand(client, requestParams, reporter);
-  } catch (error) {
-    if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-    } else if (typeof error === 'string') {
-      vscode.window.showErrorMessage(error);
-    }
-  }
+  return execWorkspaceLSCommand<void>(fullCommand, selectedModule, client, reporter);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function modulesCallersCommand(
-  languageClient: LanguageClient,
+async function execWorkspaceLSCommand<T>(
+  command: string,
   moduleUri: string,
+  client: LanguageClient,
   reporter: TelemetryReporter,
-): Promise<any> {
-  const requestParams: ExecuteCommandParams = {
-    command: `terraform-ls.module.callers`,
+): Promise<T> {
+  await client.onReady();
+
+  const commandSupported = clientSupportsCommand(client.initializeResult, command);
+  if (!commandSupported) {
+    throw new Error(`${command} not supported by this terraform-ls version`);
+  }
+
+  const params: ExecuteCommandParams = {
+    command: command,
     arguments: [`uri=${moduleUri}`],
   };
-  return execWorkspaceCommand(languageClient, requestParams, reporter);
+
+  reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
+
+  return client.sendRequest<ExecuteCommandParams, T, void>(ExecuteCommandRequest.type, params);
 }
 
 async function getSelectedModule(moduleUri: vscode.Uri, moduleCallers: ModuleCaller[]): Promise<string | undefined> {
   let selectedModule: string;
+  if (moduleCallers === undefined) {
+    return moduleUri.toString();
+  }
+
   if (moduleCallers.length > 1) {
     const selected = await vscode.window.showQuickPick(
       moduleCallers.map((m) => m.uri),

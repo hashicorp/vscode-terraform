@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
   DocumentSelector,
-  ExecuteCommandParams,
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
@@ -22,7 +21,7 @@ import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
-import { execWorkspaceCommand, terraformCommand } from './terraform';
+import { terraformCommand, terraformInitCommand } from './terraform';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -167,8 +166,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
   });
 
-  const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client);
-  const moduleCallsDataProvider = new ModuleCallsDataProvider(context, client);
+  const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client, reporter);
+  const moduleCallsDataProvider = new ModuleCallsDataProvider(context, client, reporter);
 
   const features: StaticFeature[] = [
     new CustomSemanticTokens(client, manifest),
@@ -190,34 +189,59 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
     vscode.commands.registerCommand('terraform.init', async () => {
-      const workspaceFolders = vscode.workspace.workspaceFolders;
-      const selected = await vscode.window.showOpenDialog({
-        canSelectFiles: false,
-        canSelectFolders: true,
-        canSelectMany: false,
-        defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
-        openLabel: 'Initialize',
-      });
-      if (selected && client) {
-        const moduleUri = selected[0];
-        const requestParams: ExecuteCommandParams = {
-          command: `terraform-ls.terraform.init`,
-          arguments: [`uri=${moduleUri}`],
-        };
-        await execWorkspaceCommand(client, requestParams, reporter);
+      try {
+        await terraformInitCommand(client, reporter);
+      } catch (error) {
+        if (error instanceof Error) {
+          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+        } else if (typeof error === 'string') {
+          vscode.window.showErrorMessage(error);
+        }
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', client, reporter);
+      try {
+        await terraformCommand('init', client, reporter);
+      } catch (error) {
+        if (error instanceof Error) {
+          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+        } else if (typeof error === 'string') {
+          vscode.window.showErrorMessage(error);
+        }
+      }
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply', client, reporter, true);
+      try {
+        await terraformCommand('apply', client, reporter, true);
+      } catch (error) {
+        if (error instanceof Error) {
+          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+        } else if (typeof error === 'string') {
+          vscode.window.showErrorMessage(error);
+        }
+      }
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', client, reporter, true);
+      try {
+        await terraformInitCommand(client, reporter);
+      } catch (error) {
+        if (error instanceof Error) {
+          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+        } else if (typeof error === 'string') {
+          vscode.window.showErrorMessage(error);
+        }
+      }
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', client, reporter);
+      try {
+        await terraformCommand('validate', client, reporter);
+      } catch (error) {
+        if (error instanceof Error) {
+          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+        } else if (typeof error === 'string') {
+          vscode.window.showErrorMessage(error);
+        }
+      }
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),

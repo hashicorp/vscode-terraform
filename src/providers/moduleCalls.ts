@@ -1,28 +1,10 @@
+import TelemetryReporter from '@vscode/extension-telemetry';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { clientSupportsCommand } from '../utils/clientHelpers';
+import { ModuleCall, moduleCalls } from '../terraform';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
-
-/* eslint-disable @typescript-eslint/naming-convention */
-interface ModuleCall {
-  name: string;
-  source_addr: string;
-  version?: string;
-  source_type?: string;
-  docs_link?: string;
-  dependent_modules: ModuleCall[];
-}
-/* eslint-enable @typescript-eslint/naming-convention */
-
-/* eslint-disable @typescript-eslint/naming-convention */
-interface ModuleCallsResponse {
-  v: number;
-  module_calls: ModuleCall[];
-}
-/* eslint-enable @typescript-eslint/naming-convention */
 
 class ModuleCallItem extends vscode.TreeItem {
   constructor(
@@ -78,7 +60,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   private svg = '';
 
-  constructor(ctx: vscode.ExtensionContext, public client: LanguageClient) {
+  constructor(ctx: vscode.ExtensionContext, public client: LanguageClient, private reporter: TelemetryReporter) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
 
     ctx.subscriptions.push(
@@ -135,31 +117,29 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     if (this.client === undefined) {
       return [];
     }
-    await this.client.onReady();
 
-    const commandSupported = clientSupportsCommand(this.client.initializeResult, 'terraform-ls.module.calls');
-    if (!commandSupported) {
-      return Promise.resolve([]);
+    try {
+      const response = await moduleCalls(documentURI.toString(), this.client, this.reporter);
+      if (response === null) {
+        return [];
+      }
+
+      const list = response.module_calls.map((m) => {
+        return this.toModuleCall(
+          m.name,
+          m.source_addr,
+          m.version,
+          m.source_type,
+          m.docs_link,
+          this.svg,
+          m.dependent_modules,
+        );
+      });
+
+      return list;
+    } catch {
+      return [];
     }
-
-    const params: ExecuteCommandParams = {
-      command: `terraform-ls.module.calls`,
-      arguments: [`uri=${documentURI}`],
-    };
-
-    const response = await this.client.sendRequest<ExecuteCommandParams, ModuleCallsResponse, void>(
-      ExecuteCommandRequest.type,
-      params,
-    );
-    if (response === null) {
-      return Promise.resolve([]);
-    }
-
-    const list = response.module_calls.map((m) =>
-      this.toModuleCall(m.name, m.source_addr, m.version, m.source_type, m.docs_link, this.svg, m.dependent_modules),
-    );
-
-    return list;
   }
 
   toModuleCall(
