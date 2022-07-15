@@ -79,18 +79,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         }
       }
     }),
-    vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply');
-    }),
-    vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', true);
-    }),
-    vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', false);
-    }),
-    vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', true);
-    }),
   );
 
   if (!enabled()) {
@@ -219,6 +207,18 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         };
         await execWorkspaceCommand(client, requestParams);
       }
+    }),
+    vscode.commands.registerCommand('terraform.initCurrent', async () => {
+      await terraformCommand('init', true);
+    }),
+    vscode.commands.registerCommand('terraform.apply', async () => {
+      await terraformCommand('apply');
+    }),
+    vscode.commands.registerCommand('terraform.plan', async () => {
+      await terraformCommand('plan', false);
+    }),
+    vscode.commands.registerCommand('terraform.validate', async () => {
+      await terraformCommand('validate', true);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
