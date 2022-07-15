@@ -3,7 +3,6 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import {
   DocumentSelector,
   ExecuteCommandParams,
-  ExecuteCommandRequest,
   LanguageClient,
   LanguageClientOptions,
   RevealOutputChannelOn,
@@ -12,18 +11,18 @@ import {
   CloseAction,
   ErrorAction,
 } from 'vscode-languageclient/node';
-import { Utils } from 'vscode-uri';
 import { getInitializationOptions, getServerOptions } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, deleteSetting, getActiveTextEditor, getScope, migrate, warnIfMigrate } from './utils/vscode';
+import { config, deleteSetting, getScope, migrate, warnIfMigrate } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
+import { execWorkspaceCommand, terraformCommand } from './terraform';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -205,20 +204,20 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           command: `terraform-ls.terraform.init`,
           arguments: [`uri=${moduleUri}`],
         };
-        await execWorkspaceCommand(client, requestParams);
+        await execWorkspaceCommand(client, requestParams, reporter);
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init');
+      await terraformCommand('init', client, reporter);
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply', true);
+      await terraformCommand('apply', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', true);
+      await terraformCommand('plan', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate');
+      await terraformCommand('validate', client, reporter);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
@@ -269,116 +268,6 @@ async function stopLanguageServer() {
       vscode.window.showErrorMessage(error);
     }
   }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function execWorkspaceCommand(client: LanguageClient, params: ExecuteCommandParams): Promise<any> {
-  reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
-  return client.sendRequest(ExecuteCommandRequest.type, params);
-}
-
-interface ModuleCaller {
-  uri: string;
-}
-
-interface ModuleCallersResponse {
-  version: number;
-  moduleCallers: ModuleCaller[];
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function modulesCallersCommand(languageClient: LanguageClient, moduleUri: string): Promise<any> {
-  const requestParams: ExecuteCommandParams = {
-    command: `terraform-ls.module.callers`,
-    arguments: [`uri=${moduleUri}`],
-  };
-  return execWorkspaceCommand(languageClient, requestParams);
-}
-
-export async function moduleCallers(moduleUri: string): Promise<ModuleCallersResponse> {
-  if (client === undefined) {
-    return {
-      version: 0,
-      moduleCallers: [],
-    };
-  }
-
-  const response = await modulesCallersCommand(client, moduleUri);
-  const moduleCallers: ModuleCaller[] = response.callers;
-
-  return { version: response.v, moduleCallers };
-}
-
-async function terraformCommand(command: string, useShell = false): Promise<void> {
-  const textEditor = getActiveTextEditor();
-  if (textEditor === undefined) {
-    vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
-    return;
-  }
-
-  const moduleUri = Utils.dirname(textEditor.document.uri);
-  const response = await moduleCallers(moduleUri.toString());
-
-  const selectedModule = await getSelectedModule(moduleUri, response.moduleCallers);
-  if (selectedModule === undefined) {
-    return;
-  }
-
-  if (useShell) {
-    const terminalName = `Terraform ${selectedModule}`;
-    const moduleURI = vscode.Uri.parse(selectedModule);
-    const terraformCommand = await vscode.window.showInputBox({
-      value: `terraform ${command}`,
-      prompt: `Run in ${selectedModule}`,
-    });
-    if (terraformCommand === undefined) {
-      return;
-    }
-
-    const terminal =
-      vscode.window.terminals.find((t) => t.name === terminalName) ||
-      vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
-    terminal.sendText(terraformCommand);
-    terminal.show();
-    return;
-  }
-
-  const requestParams: ExecuteCommandParams = {
-    command: `terraform-ls.terraform.${command}`,
-    arguments: [`uri=${selectedModule}`],
-  };
-
-  try {
-    await client.onReady();
-
-    return execWorkspaceCommand(client, requestParams);
-  } catch (error) {
-    if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-    } else if (typeof error === 'string') {
-      vscode.window.showErrorMessage(error);
-    }
-  }
-}
-
-async function getSelectedModule(moduleUri: vscode.Uri, moduleCallers: ModuleCaller[]): Promise<string | undefined> {
-  let selectedModule: string;
-  if (moduleCallers.length > 1) {
-    const selected = await vscode.window.showQuickPick(
-      moduleCallers.map((m) => m.uri),
-      { canPickMany: false },
-    );
-    if (selected === undefined) {
-      return selected;
-    }
-
-    selectedModule = selected;
-  } else if (moduleCallers.length === 1) {
-    selectedModule = moduleCallers[0].uri;
-  } else {
-    selectedModule = moduleUri.toString();
-  }
-  return selectedModule;
 }
 
 function enabled(): boolean {
