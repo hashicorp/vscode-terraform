@@ -209,16 +209,16 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       }
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraformCommand('init', true);
+      await terraformCommand('init');
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommand('apply');
+      await terraformCommand('apply', true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommand('plan', false);
+      await terraformCommand('plan', true);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommand('validate', true);
+      await terraformCommand('validate');
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
@@ -309,55 +309,76 @@ export async function moduleCallers(moduleUri: string): Promise<ModuleCallersRes
   return { version: response.v, moduleCallers };
 }
 
-async function terraformCommand(command: string, languageServerExec = true): Promise<void> {
+async function terraformCommand(command: string, useShell = false): Promise<void> {
   const textEditor = getActiveTextEditor();
-  if (textEditor) {
-    const moduleUri = Utils.dirname(textEditor.document.uri);
-    const response = await moduleCallers(moduleUri.toString());
-
-    let selectedModule: string;
-    if (response.moduleCallers.length > 1) {
-      const selected = await vscode.window.showQuickPick(
-        response.moduleCallers.map((m) => m.uri),
-        { canPickMany: false },
-      );
-      if (!selected) {
-        return;
-      }
-
-      selectedModule = selected;
-    } else if (response.moduleCallers.length === 1) {
-      selectedModule = response.moduleCallers[0].uri;
-    } else {
-      selectedModule = moduleUri.toString();
-    }
-
-    if (languageServerExec && client) {
-      const requestParams: ExecuteCommandParams = {
-        command: `terraform-ls.terraform.${command}`,
-        arguments: [`uri=${selectedModule}`],
-      };
-      return execWorkspaceCommand(client, requestParams);
-    } else {
-      const terminalName = `Terraform ${selectedModule}`;
-      const moduleURI = vscode.Uri.parse(selectedModule);
-      const terraformCommand = await vscode.window.showInputBox({
-        value: `terraform ${command}`,
-        prompt: `Run in ${selectedModule}`,
-      });
-      if (terraformCommand) {
-        const terminal =
-          vscode.window.terminals.find((t) => t.name === terminalName) ||
-          vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
-        terminal.sendText(terraformCommand);
-        terminal.show();
-      }
-      return;
-    }
-  } else {
+  if (textEditor === undefined) {
     vscode.window.showWarningMessage(`Open a module then run terraform ${command} again`);
     return;
   }
+
+  const moduleUri = Utils.dirname(textEditor.document.uri);
+  const response = await moduleCallers(moduleUri.toString());
+
+  const selectedModule = await getSelectedModule(moduleUri, response.moduleCallers);
+  if (selectedModule === undefined) {
+    return;
+  }
+
+  if (useShell) {
+    const terminalName = `Terraform ${selectedModule}`;
+    const moduleURI = vscode.Uri.parse(selectedModule);
+    const terraformCommand = await vscode.window.showInputBox({
+      value: `terraform ${command}`,
+      prompt: `Run in ${selectedModule}`,
+    });
+    if (terraformCommand === undefined) {
+      return;
+    }
+
+    const terminal =
+      vscode.window.terminals.find((t) => t.name === terminalName) ||
+      vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
+    terminal.sendText(terraformCommand);
+    terminal.show();
+    return;
+  }
+
+  const requestParams: ExecuteCommandParams = {
+    command: `terraform-ls.terraform.${command}`,
+    arguments: [`uri=${selectedModule}`],
+  };
+
+  try {
+    await client.onReady();
+
+    return execWorkspaceCommand(client, requestParams);
+  } catch (error) {
+    if (error instanceof Error) {
+      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+    } else if (typeof error === 'string') {
+      vscode.window.showErrorMessage(error);
+    }
+  }
+}
+
+async function getSelectedModule(moduleUri: vscode.Uri, moduleCallers: ModuleCaller[]): Promise<string | undefined> {
+  let selectedModule: string;
+  if (moduleCallers.length > 1) {
+    const selected = await vscode.window.showQuickPick(
+      moduleCallers.map((m) => m.uri),
+      { canPickMany: false },
+    );
+    if (selected === undefined) {
+      return selected;
+    }
+
+    selectedModule = selected;
+  } else if (moduleCallers.length === 1) {
+    selectedModule = moduleCallers[0].uri;
+  } else {
+    selectedModule = moduleUri.toString();
+  }
+  return selectedModule;
 }
 
 function enabled(): boolean {
