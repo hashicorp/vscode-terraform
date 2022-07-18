@@ -102,12 +102,14 @@ export async function initCurrentDirectoryCommandWithProgress(client: LanguageCl
     },
   );
 }
+
 export async function terraformInitCurrentDirectoryCommand(client: LanguageClient, reporter: TelemetryReporter) {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   const selected = await vscode.window.showOpenDialog({
     canSelectFiles: false,
     canSelectFolders: true,
     canSelectMany: false,
+    title: 'Choose which workspace to initialize with terraform init',
     defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
     openLabel: 'Initialize',
   });
@@ -126,7 +128,7 @@ export async function initCommandWithProgress(client: LanguageClient, reporter: 
     {
       location: vscode.ProgressLocation.Notification,
       cancellable: true,
-      title: 'Terraform Init Current Directory',
+      title: 'Terraform Init',
     },
     async (progress) => {
       progress.report({ message: 'Starting', increment: 10 });
@@ -250,7 +252,10 @@ async function getSelectedModule(moduleUri: vscode.Uri, moduleCallers: ModuleCal
   if (moduleCallers.length > 1) {
     const selected = await vscode.window.showQuickPick(
       moduleCallers.map((m) => m.uri),
-      { canPickMany: false },
+      {
+        canPickMany: false,
+        title: 'Choose which workspace to initialize with terraform init',
+      },
     );
     if (selected === undefined) {
       return selected;
