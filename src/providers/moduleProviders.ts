@@ -1,8 +1,8 @@
+import * as terraform from '../terraform';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
-import { moduleProviders } from '../terraform';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -88,7 +88,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     }
 
     try {
-      const response = await moduleProviders(documentURI.toString(), this.client, this.reporter);
+      const response = await terraform.moduleProviders(documentURI.toString(), this.client, this.reporter);
       if (response === null) {
         return [];
       }

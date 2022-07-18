@@ -1,3 +1,4 @@
+import * as terraform from './terraform';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
@@ -21,11 +22,6 @@ import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
-import {
-  terraformInitCommandWithProgress,
-  terraformCommandWithProgress,
-  terraformInitCurrentDirectoryCommandWithProgress,
-} from './terraform';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -193,19 +189,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
     vscode.commands.registerCommand('terraform.init', async () => {
-      return await terraformInitCommandWithProgress(client, reporter);
+      return await terraform.initCommandWithProgress(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      return await terraformInitCurrentDirectoryCommandWithProgress(client, reporter);
+      return await terraform.initCurrentDirectoryCommandWithProgress(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraformCommandWithProgress('apply', client, reporter, true);
+      await terraform.commandWithProgress('apply', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraformCommandWithProgress('plan', client, reporter, true);
+      await terraform.commandWithProgress('plan', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraformCommandWithProgress('validate', client, reporter);
+      await terraform.commandWithProgress('validate', client, reporter);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),

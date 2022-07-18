@@ -80,10 +80,7 @@ export async function moduleProviders(
   return response;
 }
 
-export async function terraformInitCurrentDirectoryCommandWithProgress(
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-) {
+export async function initCurrentDirectoryCommandWithProgress(client: LanguageClient, reporter: TelemetryReporter) {
   return await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -124,7 +121,7 @@ export async function terraformInitCurrentDirectoryCommand(client: LanguageClien
   return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
 }
 
-export async function terraformInitCommandWithProgress(client: LanguageClient, reporter: TelemetryReporter) {
+export async function initCommandWithProgress(client: LanguageClient, reporter: TelemetryReporter) {
   return await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -147,7 +144,7 @@ export async function terraformInitCommandWithProgress(client: LanguageClient, r
   );
 }
 
-export async function terraformCommandWithProgress(
+export async function commandWithProgress(
   command: string,
   client: LanguageClient,
   reporter: TelemetryReporter,

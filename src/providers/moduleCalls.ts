@@ -1,9 +1,9 @@
 import TelemetryReporter from '@vscode/extension-telemetry';
 import * as path from 'path';
+import * as terraform from '../terraform';
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { ModuleCall, moduleCalls } from '../terraform';
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 
 class ModuleCallItem extends vscode.TreeItem {
@@ -119,7 +119,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     }
 
     try {
-      const response = await moduleCalls(documentURI.toString(), this.client, this.reporter);
+      const response = await terraform.moduleCalls(documentURI.toString(), this.client, this.reporter);
       if (response === null) {
         return [];
       }
@@ -149,7 +149,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     sourceType: string | undefined,
     docsLink: string | undefined,
     terraformIcon: string,
-    dependents: ModuleCall[],
+    dependents: terraform.ModuleCall[],
   ): ModuleCallItem {
     let deps: ModuleCallItem[] = [];
     if (dependents.length !== 0) {
