@@ -21,7 +21,11 @@ import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
-import { terraformCommand, terraformInitCommand } from './terraform';
+import {
+  terraformInitCommandWithProgress,
+  terraformCommandWithProgress,
+  terraformInitCurrentDirectoryCommandWithProgress,
+} from './terraform';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -189,59 +193,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
     vscode.commands.registerCommand('terraform.init', async () => {
-      try {
-        await terraformInitCommand(client, reporter);
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
+      return await terraformInitCommandWithProgress(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      try {
-        await terraformCommand('init', client, reporter);
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
+      return await terraformInitCurrentDirectoryCommandWithProgress(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      try {
-        await terraformCommand('apply', client, reporter, true);
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
+      await terraformCommandWithProgress('apply', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      try {
-        await terraformInitCommand(client, reporter);
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
+      await terraformCommandWithProgress('plan', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      try {
-        await terraformCommand('validate', client, reporter);
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
+      await terraformCommandWithProgress('validate', client, reporter);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
