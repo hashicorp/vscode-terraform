@@ -184,8 +184,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   client.registerFeatures(features);
 
-  await startLanguageServer(context);
-
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
     vscode.commands.registerCommand('terraform.init', async () => {
@@ -206,6 +204,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
   );
+
+  await startLanguageServer(context);
 }
 
 export async function deactivate(): Promise<void> {
