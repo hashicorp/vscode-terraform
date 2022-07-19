@@ -182,7 +182,7 @@ async function terraformCommand(
 ): Promise<void> {
   const textEditor = getActiveTextEditor();
   if (textEditor === undefined) {
-    vscode.window.showWarningMessage(`Open a module file and then run terraform ${command} again`);
+    vscode.window.showErrorMessage(`Open a Terraform module file and then run terraform ${command} again`);
     return;
   }
 

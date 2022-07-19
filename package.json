@@ -488,7 +488,8 @@
       },
       {
         "command": "terraform.initCurrent",
-        "title": "Terraform: init current folder"
+        "title": "Terraform: init current folder",
+        "icon": "$(cloud-download)"
       },
       {
         "command": "terraform.validate",
@@ -570,6 +571,11 @@
         },
         {
           "command": "terraform.providers.refreshList",
+          "when": "view == terraform.providers",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.initCurrent",
           "when": "view == terraform.providers",
           "group": "navigation"
         }
