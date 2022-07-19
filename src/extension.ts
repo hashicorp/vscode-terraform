@@ -186,10 +186,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
-    vscode.commands.registerCommand('terraform.init', async () => {
+    vscode.commands.registerCommand('terraform.initCurrent', async () => {
       return await terraform.initCommandWithProgress(client, reporter);
     }),
-    vscode.commands.registerCommand('terraform.initCurrent', async () => {
+    vscode.commands.registerCommand('terraform.init', async () => {
       return await terraform.initCurrentDirectoryCommandWithProgress(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {

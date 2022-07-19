@@ -90,7 +90,7 @@ export async function initCurrentDirectoryCommandWithProgress(client: LanguageCl
     async (progress) => {
       try {
         progress.report({ message: 'Waiting for directory choice', increment: 10 });
-        await terraformInitCurrentDirectoryCommand(client, reporter);
+        await initCurrentDirectoryCommand(client, reporter);
         progress.report({ message: 'Done', increment: 90 });
       } catch (error) {
         if (error instanceof Error) {
@@ -103,7 +103,7 @@ export async function initCurrentDirectoryCommandWithProgress(client: LanguageCl
   );
 }
 
-export async function terraformInitCurrentDirectoryCommand(client: LanguageClient, reporter: TelemetryReporter) {
+export async function initCurrentDirectoryCommand(client: LanguageClient, reporter: TelemetryReporter) {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   const selected = await vscode.window.showOpenDialog({
     canSelectFiles: false,
@@ -174,7 +174,7 @@ export async function commandWithProgress(
   );
 }
 
-export async function terraformCommand(
+async function terraformCommand(
   command: string,
   client: LanguageClient,
   reporter: TelemetryReporter,
@@ -214,8 +214,6 @@ export async function terraformCommand(
   }
 
   const fullCommand = `terraform-ls.terraform.${command}`;
-
-  await client.onReady();
 
   return execWorkspaceLSCommand<void>(fullCommand, selectedModule, client, reporter);
 }
