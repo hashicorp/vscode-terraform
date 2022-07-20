@@ -80,98 +80,56 @@ export async function moduleProviders(
   return response;
 }
 
-export async function initCurrentDirectoryCommandWithProgress(client: LanguageClient, reporter: TelemetryReporter) {
-  return await vscode.window.withProgress(
-    {
-      location: vscode.ProgressLocation.Notification,
-      cancellable: true,
-      title: 'Terraform Init Current Directory',
-    },
-    async (progress) => {
-      try {
-        progress.report({ message: 'Waiting for directory choice', increment: 10 });
-        await initCurrentDirectoryCommand(client, reporter);
-        progress.report({ message: 'Done', increment: 90 });
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
-    },
-  );
-}
-
 export async function initCurrentDirectoryCommand(client: LanguageClient, reporter: TelemetryReporter) {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  const selected = await vscode.window.showOpenDialog({
-    canSelectFiles: false,
-    canSelectFolders: true,
-    canSelectMany: false,
-    title: 'Choose which workspace to initialize with terraform init',
-    defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
-    openLabel: 'Initialize',
-  });
-  if (selected === undefined) {
-    return;
+  try {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    const selected = await vscode.window.showOpenDialog({
+      canSelectFiles: false,
+      canSelectFolders: true,
+      canSelectMany: false,
+      title: 'Choose which workspace to initialize with terraform init',
+      defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
+      openLabel: 'Initialize',
+    });
+    if (selected === undefined) {
+      return;
+    }
+
+    const moduleUri = selected[0];
+    const command = `terraform-ls.terraform.init`;
+
+    return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
+  } catch (error) {
+    if (error instanceof Error) {
+      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+    } else if (typeof error === 'string') {
+      vscode.window.showErrorMessage(error);
+    }
   }
-
-  const moduleUri = selected[0];
-  const command = `terraform-ls.terraform.init`;
-
-  return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
 }
 
-export async function initCommandWithProgress(client: LanguageClient, reporter: TelemetryReporter) {
-  return await vscode.window.withProgress(
-    {
-      location: vscode.ProgressLocation.Notification,
-      cancellable: true,
-      title: 'Terraform Init',
-    },
-    async (progress) => {
-      progress.report({ message: 'Starting', increment: 10 });
-      try {
-        await terraformCommand('init', client, reporter);
-        progress.report({ message: 'Done', increment: 90 });
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
-    },
-  );
+export async function initCommand(client: LanguageClient, reporter: TelemetryReporter) {
+  try {
+    await terraformCommand('init', client, reporter);
+  } catch (error) {
+    if (error instanceof Error) {
+      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+    } else if (typeof error === 'string') {
+      vscode.window.showErrorMessage(error);
+    }
+  }
 }
 
-export async function commandWithProgress(
-  command: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-  useShell = false,
-) {
-  return await vscode.window.withProgress(
-    {
-      location: vscode.ProgressLocation.Notification,
-      cancellable: true,
-      title: `Terraform ${command}`,
-    },
-    async (progress) => {
-      progress.report({ message: 'Starting', increment: 10 });
-      try {
-        await terraformCommand(command, client, reporter, useShell);
-        progress.report({ message: 'Done', increment: 90 });
-      } catch (error) {
-        if (error instanceof Error) {
-          vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-        } else if (typeof error === 'string') {
-          vscode.window.showErrorMessage(error);
-        }
-      }
-    },
-  );
+export async function command(command: string, client: LanguageClient, reporter: TelemetryReporter, useShell = false) {
+  try {
+    await terraformCommand(command, client, reporter, useShell);
+  } catch (error) {
+    if (error instanceof Error) {
+      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+    } else if (typeof error === 'string') {
+      vscode.window.showErrorMessage(error);
+    }
+  }
 }
 
 async function terraformCommand(
@@ -234,6 +192,7 @@ async function execWorkspaceLSCommand<T>(
   const params: ExecuteCommandParams = {
     command: command,
     arguments: [`uri=${moduleUri}`],
+    workDoneToken: 'command',
   };
 
   reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });

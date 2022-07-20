@@ -10,6 +10,7 @@ import {
   StaticFeature,
   CloseAction,
   ErrorAction,
+  WorkDoneProgress,
 } from 'vscode-languageclient/node';
 import { getInitializationOptions, getServerOptions } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
@@ -30,6 +31,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-vars' },
 ];
 export const outputChannel = vscode.window.createOutputChannel(brand);
+const commandStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
@@ -165,6 +167,26 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       reporter.sendTelemetryEvent('stopClient');
     }
   });
+  client.onReady().then(() => {
+    client.onProgress(WorkDoneProgress.type, 'command', (notification) => {
+      console.log(notification);
+      switch (notification.kind) {
+        case 'begin':
+          commandStatus.text = notification.title;
+          commandStatus.show();
+          break;
+        case 'report':
+          commandStatus.text = `$(sync~spin) ${notification.message}`;
+          break;
+        case 'end':
+          commandStatus.text = notification.message ?? '';
+          commandStatus.hide();
+          break;
+        default:
+          break;
+      }
+    });
+  });
 
   const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client, reporter);
   const moduleCallsDataProvider = new ModuleCallsDataProvider(context, client, reporter);
@@ -187,19 +209,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      return await terraform.initCommandWithProgress(client, reporter);
+      return await terraform.initCommand(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.init', async () => {
-      return await terraform.initCurrentDirectoryCommandWithProgress(client, reporter);
+      return await terraform.initCurrentDirectoryCommand(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraform.commandWithProgress('apply', client, reporter, true);
+      await terraform.command('apply', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraform.commandWithProgress('plan', client, reporter, true);
+      await terraform.command('plan', client, reporter, true);
     }),
     vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraform.commandWithProgress('validate', client, reporter);
+      await terraform.command('validate', client, reporter);
     }),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
