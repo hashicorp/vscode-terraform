@@ -1,18 +1,11 @@
-import TelemetryReporter from '@vscode/extension-telemetry';
-import { LanguageClient as clientOrg } from 'vscode-languageclient/node';
-// import { LanguageClient } from 'vscode-languageclient/node';
-import * as terraform from '../../terraform';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
 import { getDocUri, open, testFolderPath } from '../helper';
+import * as terraform from '../../terraform';
 
-jest.mock('@vscode/extension-telemetry');
-jest.mock('vscode-languageclient/node');
-
-const report = jest.mocked(TelemetryReporter);
-const client = jest.mocked(clientOrg);
-// const client = jest.mocked(LanguageClient);
+import { client } from './mocks/client';
+import { reporter } from './mocks/reporter';
 
 suite('moduleCallers', () => {
   teardown(async () => {
@@ -24,7 +17,7 @@ suite('moduleCallers', () => {
     await open(documentUri);
 
     const moduleUri = Utils.dirname(documentUri).toString();
-    const response = await terraform.moduleCallers(moduleUri, client, report);
+    const response = await terraform.moduleCallers(moduleUri, client, reporter);
     assert.ok(response);
 
     assert.strictEqual(response.moduleCallers.length, 1);
