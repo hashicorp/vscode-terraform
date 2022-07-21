@@ -31,7 +31,6 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-vars' },
 ];
 export const outputChannel = vscode.window.createOutputChannel(brand);
-const commandStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
@@ -166,26 +165,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     if (event.newState === State.Stopped) {
       reporter.sendTelemetryEvent('stopClient');
     }
-  });
-  client.onReady().then(() => {
-    client.onProgress(WorkDoneProgress.type, 'command', (notification) => {
-      console.log(notification);
-      switch (notification.kind) {
-        case 'begin':
-          commandStatus.text = notification.title;
-          commandStatus.show();
-          break;
-        case 'report':
-          commandStatus.text = `$(sync~spin) ${notification.message}`;
-          break;
-        case 'end':
-          commandStatus.text = notification.message ?? '';
-          commandStatus.hide();
-          break;
-        default:
-          break;
-      }
-    });
   });
 
   const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client, reporter);

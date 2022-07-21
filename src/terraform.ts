@@ -192,7 +192,6 @@ async function execWorkspaceLSCommand<T>(
   const params: ExecuteCommandParams = {
     command: command,
     arguments: [`uri=${moduleUri}`],
-    workDoneToken: 'command',
   };
 
   reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
