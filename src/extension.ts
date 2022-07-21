@@ -188,10 +188,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
     vscode.commands.registerCommand('terraform.init', async () => {
-      return await terraform.initAskUserCommand(client, reporter);
+      await terraform.initAskUserCommand(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      return await terraform.initCurrentOpenFileCommand(client, reporter);
+      await terraform.initCurrentOpenFileCommand(client, reporter);
     }),
     vscode.commands.registerCommand('terraform.apply', async () => {
       await terraform.command('apply', client, reporter, true);
