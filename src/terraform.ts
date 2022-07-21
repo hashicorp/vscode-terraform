@@ -80,7 +80,7 @@ export async function moduleProviders(
   return response;
 }
 
-export async function initCurrentDirectoryCommand(client: LanguageClient, reporter: TelemetryReporter) {
+export async function initAskUserCommand(client: LanguageClient, reporter: TelemetryReporter) {
   try {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     const selected = await vscode.window.showOpenDialog({
@@ -108,7 +108,7 @@ export async function initCurrentDirectoryCommand(client: LanguageClient, report
   }
 }
 
-export async function initCommand(client: LanguageClient, reporter: TelemetryReporter) {
+export async function initCurrentOpenFileCommand(client: LanguageClient, reporter: TelemetryReporter) {
   try {
     await terraformCommand('init', client, reporter);
   } catch (error) {
