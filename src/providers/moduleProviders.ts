@@ -5,8 +5,6 @@ import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-enable @typescript-eslint/naming-convention */
 
 class ModuleProviderItem extends vscode.TreeItem {
   constructor(

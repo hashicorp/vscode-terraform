@@ -101,7 +101,7 @@ export async function initAskUserCommand(client: LanguageClient, reporter: Telem
     return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
   } catch (error) {
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
     }
@@ -113,7 +113,7 @@ export async function initCurrentOpenFileCommand(client: LanguageClient, reporte
     await terraformCommand('initCurrent', client, reporter);
   } catch (error) {
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
     }
@@ -125,7 +125,7 @@ export async function command(command: string, client: LanguageClient, reporter:
     await terraformCommand(command, client, reporter, useShell);
   } catch (error) {
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
     }
