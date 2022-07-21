@@ -110,7 +110,7 @@ export async function initAskUserCommand(client: LanguageClient, reporter: Telem
 
 export async function initCurrentOpenFileCommand(client: LanguageClient, reporter: TelemetryReporter) {
   try {
-    await terraformCommand('init', client, reporter);
+    await terraformCommand('initCurrent', client, reporter);
   } catch (error) {
     if (error instanceof Error) {
       vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
@@ -168,6 +168,8 @@ async function terraformCommand(
       vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
     terminal.sendText(terraformCommand);
     terminal.show();
+
+    reporter.sendTelemetryEvent('execShellCommand', { command: command });
     return;
   }
 
@@ -184,6 +186,15 @@ async function execWorkspaceLSCommand<T>(
 ): Promise<T> {
   await client.onReady();
 
+  // record whether we use terraform.init or terraform.initcurrent vscode commands
+  // this is hacky, but better than propagating down another parameter just to handle
+  // which init command we used
+  if (command === 'terraform-ls.terraform.initCurrent') {
+    reporter.sendTelemetryEvent('execWorkspaceCommand', { command: command });
+    // need to change to terraform-ls command after detection
+    command = 'terraform-ls.terraform.init';
+  }
+
   const commandSupported = clientSupportsCommand(client.initializeResult, command);
   if (!commandSupported) {
     throw new Error(`${command} not supported by this terraform-ls version`);
@@ -193,8 +204,6 @@ async function execWorkspaceLSCommand<T>(
     command: command,
     arguments: [`uri=${moduleUri}`],
   };
-
-  reporter.sendTelemetryEvent('execWorkspaceCommand', { command: params.command });
 
   return client.sendRequest<ExecuteCommandParams, T, void>(ExecuteCommandRequest.type, params);
 }
