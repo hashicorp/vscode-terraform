@@ -11,8 +11,8 @@ export interface ModuleCaller {
 }
 
 export interface ModuleCallersResponse {
-  version: number;
-  moduleCallers: ModuleCaller[];
+  v: number;
+  callers: ModuleCaller[];
 }
 
 export interface ModuleCall {
@@ -147,7 +147,7 @@ async function terraformCommand(
   const moduleUri = Utils.dirname(textEditor.document.uri);
   const response = await moduleCallers(moduleUri.toString(), client, reporter);
 
-  const selectedModule = await getSelectedModule(moduleUri, response.moduleCallers);
+  const selectedModule = await getSelectedModule(moduleUri, response.callers);
   if (selectedModule === undefined) {
     return;
   }
