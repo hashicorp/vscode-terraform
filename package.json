@@ -335,7 +335,7 @@
             },
             "default": [],
             "description": "Per-workspace list of module directories for the language server to read",
-            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
+            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release. Add a folder/path to your workspace instead, if you wish it to be indexed."
           },
           "terraform.languageServer.excludeRootModules": {
             "scope": "machine",
@@ -345,9 +345,28 @@
             },
             "default": [],
             "description": "Per-workspace list of module directories for the language server to exclude",
-            "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
+            "deprecationMessage": "Moved: Use `#terraform.languageServer.indexing.ignorePaths#` instead."
+          },
+          "terraform.languageServer.indexing.ignorePaths": {
+            "scope": "machine",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of paths for the language server to ignore when indexing files"
           },
           "terraform.languageServer.ignoreDirectoryNames": {
+            "scope": "machine",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Per-workspace list of directory names for the language server to ignore when indexing files",
+            "deprecationMessage": "Moved: Use `#terraform.languageServer.indexing.ignoreDirectoryNames#` instead."
+          },
+          "terraform.languageServer.indexing.ignoreDirectoryNames": {
             "scope": "machine",
             "type": "array",
             "items": {
@@ -392,7 +411,7 @@
             },
             "default": [],
             "description": "Per-workspace list of module directories for the language server to exclude",
-            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.excludeRootModules#` instead"
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.indexing.ignorePaths#` instead"
           },
           "terraform-ls.ignoreDirectoryNames": {
             "scope": "window",
@@ -402,7 +421,7 @@
             },
             "default": [],
             "description": "Per-workspace list of directory names for the language server to ignore when indexing files",
-            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.ignoreDirectoryNames#` instead"
+            "markdownDeprecationMessage": "Moved: Use `#terraform.languageServer.indexing.ignoreDirectoryNames#` instead"
           }
         }
       },

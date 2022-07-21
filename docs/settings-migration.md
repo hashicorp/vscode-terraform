@@ -69,7 +69,7 @@ The `terraform-ls.terraformExec` settings have been moved to the `terraform` sec
 </tr>
 </table>
 
-All settings previously under the `terraform-ls` section have been moved to the `terraform` section:
+All settings previously under the `terraform-ls` section have been moved to the `terraform` section and a new `indexing` subsection:
 
 <table>
 <tr><td>Old</td><td>New</td></tr>
@@ -87,8 +87,8 @@ All settings previously under the `terraform-ls` section have been moved to the 
 
 ```json
 "terraform.languageServer.rootModules": [],
-"terraform.languageServer.excludeRootModules": [],
-"terraform.languageServer.ignoreDirectoryNames": []
+"terraform.languageServer.indexing.ignorePaths": [],
+"terraform.languageServer.indexing.ignoreDirectoryNames": []
 ```
 
 </td>

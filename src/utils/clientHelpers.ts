@@ -49,37 +49,61 @@ export async function getServerOptions(lsPath: ServerPath): Promise<ServerOption
   return serverOptions;
 }
 
+interface InitializationOptions {
+  indexing?: IndexingOptions;
+  experimentalFeatures?: ExperimentalFeatures;
+  ignoreSingleFileWarning?: boolean;
+  terraform?: TerraformOptions;
+}
+
+interface TerraformOptions {
+  path: string;
+  timeout: string;
+  logFilePath: string;
+}
+
+interface IndexingOptions {
+  ignoreDirectoryNames: string[];
+  ignorePaths: string[];
+}
+
+interface ExperimentalFeatures {
+  validateOnSave: boolean;
+  prefillRequiredFields: boolean;
+}
+
 export function getInitializationOptions() {
   /*
     This is basically a set of settings masquerading as a function. The intention
     here is to make room for this to be added to a configuration builder when
     we tackle #791
   */
-  const terraformExecPath = config('terraform').get<string>('languageServer.terraform.path', '');
-  const terraformExecTimeout = config('terraform').get<string>('languageServer.terraform.timeout', '');
-  const terraformLogFilePath = config('terraform').get<string>('languageServer.terraform.logFilePath', '');
-  const ignoreDirectoryNames = config('terraform').get<string[]>('languageServer.ignoreDirectoryNames', []);
+  const terraform = config('terraform').get<TerraformOptions>('languageServer.terraform', {
+    path: '',
+    timeout: '',
+    logFilePath: '',
+  });
+  const indexing = config('terraform').get<IndexingOptions>('languageServer.indexing', {
+    ignoreDirectoryNames: [],
+    ignorePaths: [],
+  });
   const ignoreSingleFileWarning = config('terraform').get<boolean>('languageServer.ignoreSingleFileWarning', false);
-  const experimentalFeatures = config('terraform').get('experimentalFeatures');
+  const experimentalFeatures = config('terraform').get<ExperimentalFeatures>('experimentalFeatures');
 
   // deprecated
   const rootModulePaths = config('terraform').get<string[]>('languageServer.rootModules', []);
-  const excludeModulePaths = config('terraform').get<string[]>('languageServer.excludeRootModules', []);
-  if (rootModulePaths.length > 0 && excludeModulePaths.length > 0) {
+  if (rootModulePaths.length > 0 && indexing.ignorePaths.length > 0) {
     throw new Error(
-      'Only one of rootModules and excludeRootModules can be set at the same time, please remove the conflicting config and reload',
+      'Only one of rootModules and indexing.ignorePaths can be set at the same time, please remove the conflicting config and reload',
     );
   }
 
-  const initializationOptions = {
+  const initializationOptions: InitializationOptions = {
     experimentalFeatures,
     ignoreSingleFileWarning,
-    ...(terraformExecPath.length > 0 && { terraformExecPath }),
-    ...(terraformExecTimeout.length > 0 && { terraformExecTimeout }),
-    ...(terraformLogFilePath.length > 0 && { terraformLogFilePath }),
+    terraform,
     ...(rootModulePaths.length > 0 && { rootModulePaths }),
-    ...(excludeModulePaths.length > 0 && { excludeModulePaths }),
-    ...(ignoreDirectoryNames.length > 0 && { ignoreDirectoryNames }),
+    indexing,
   };
 
   return initializationOptions;
