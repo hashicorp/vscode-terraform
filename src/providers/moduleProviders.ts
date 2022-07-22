@@ -1,26 +1,9 @@
+import * as terraform from '../terraform';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
-import { ExecuteCommandParams, ExecuteCommandRequest } from 'vscode-languageclient';
-
 import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
-import { clientSupportsCommand } from '../utils/clientHelpers';
-
-/* eslint-disable @typescript-eslint/naming-convention */
-interface ModuleProvidersResponse {
-  v: number;
-  provider_requirements: {
-    [provider: string]: {
-      display_name: string;
-      version_constraint?: string;
-      docs_link?: string;
-    };
-  };
-  installed_providers: {
-    [provider: string]: string;
-  };
-}
-/* eslint-enable @typescript-eslint/naming-convention */
+import TelemetryReporter from '@vscode/extension-telemetry';
 
 class ModuleProviderItem extends vscode.TreeItem {
   constructor(
@@ -46,7 +29,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
-  constructor(ctx: vscode.ExtensionContext, private client: LanguageClient) {
+  constructor(ctx: vscode.ExtensionContext, private client: LanguageClient, private reporter: TelemetryReporter) {
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
@@ -100,35 +83,25 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     if (this.client === undefined) {
       return [];
     }
-    await this.client.onReady();
 
-    const commandSupported = clientSupportsCommand(this.client.initializeResult, 'terraform-ls.module.providers');
-    if (!commandSupported) {
+    try {
+      const response = await terraform.moduleProviders(documentURI.toString(), this.client, this.reporter);
+      if (response === null) {
+        return [];
+      }
+
+      return Object.entries(response.provider_requirements).map(
+        ([provider, details]) =>
+          new ModuleProviderItem(
+            provider,
+            details.display_name,
+            details.version_constraint,
+            response.installed_providers[provider],
+            details.docs_link,
+          ),
+      );
+    } catch {
       return [];
     }
-
-    const params: ExecuteCommandParams = {
-      command: `terraform-ls.module.providers`,
-      arguments: [`uri=${documentURI}`],
-    };
-
-    const response = await this.client.sendRequest<ExecuteCommandParams, ModuleProvidersResponse, void>(
-      ExecuteCommandRequest.type,
-      params,
-    );
-    if (response === null) {
-      return [];
-    }
-
-    return Object.entries(response.provider_requirements).map(
-      ([provider, details]) =>
-        new ModuleProviderItem(
-          provider,
-          details.display_name,
-          details.version_constraint,
-          response.installed_providers[provider],
-          details.docs_link,
-        ),
-    );
   }
 }
