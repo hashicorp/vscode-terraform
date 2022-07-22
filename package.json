@@ -293,14 +293,14 @@
           },
           "terraform.languageServer.path": {
             "order": "1",
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "string",
             "default": "",
             "description": "Path to the Terraform Language Server binary (optional)"
           },
           "terraform.languageServer.args": {
             "order": "2",
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "array",
             "items": {
               "type": "string"
@@ -316,7 +316,7 @@
               "number",
               null
             ],
-            "scope": "machine-overridable",
+            "scope": "machine",
             "default": null,
             "markdownDescription": "Language server TCP port to connect to. This is not compatible with `#terraform.languageServer.path#`. This is used when you want the extension to connect via TCP to an already running language server process."
           },
@@ -412,19 +412,19 @@
         "properties": {
           "terraform.languageServer.terraform.path": {
             "order": 0,
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "string",
             "description": "Path to the Terraform binary used by the Terraform Language Server"
           },
           "terraform.languageServer.terraform.timeout": {
             "order": 1,
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "string",
             "description": "Overrides Terraform execution timeout (e.g. 30s) used by the Terraform Language Server"
           },
           "terraform.languageServer.terraform.logFilePath": {
             "order": 2,
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "string",
             "markdownDescription": "Path to a file (`TF_LOG_PATH`) for Terraform executions to be logged used by the the Terraform Language Server. Support for variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varName}}`"
           }
