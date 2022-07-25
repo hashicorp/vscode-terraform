@@ -328,7 +328,7 @@
             "description": "Enable warning when opening a single Terraform file instead of a Terraform folder. Enabling this will prevent the message being sent"
           },
           "terraform.languageServer.rootModules": {
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "array",
             "items": {
               "type": "machine"
@@ -338,7 +338,7 @@
             "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform.languageServer.excludeRootModules": {
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "array",
             "items": {
               "type": "string"
@@ -348,7 +348,7 @@
             "deprecationMessage": "Deprecated: This setting is not used by the extension and will be removed in a future release"
           },
           "terraform.languageServer.ignoreDirectoryNames": {
-            "scope": "machine-overridable",
+            "scope": "machine",
             "type": "array",
             "items": {
               "type": "string"
