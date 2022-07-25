@@ -1,3 +1,4 @@
+import * as lsStatus from './status/terraformls';
 import * as terraform from './terraform';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
@@ -50,6 +51,39 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // Subscriptions
   context.subscriptions.push(
     new GenerateBugReportCommand(context),
+    vscode.commands.registerCommand('terraform.restartLanguageServer', async () => {
+      vscode.commands.executeCommand('workbench.action.reloadWindow');
+    }),
+    vscode.commands.registerCommand('terraform.showLanguageServerLogs', async () => {
+      outputChannel.show();
+    }),
+    vscode.commands.registerCommand('terraform.languageServer.commands', async () => {
+      await vscode.window
+        .showQuickPick([
+          {
+            label: 'Restart Language Server',
+            command: 'terraform.restartLanguageServer',
+          },
+          {
+            label: 'Show Language Server Logs',
+            command: 'terraform.showLanguageServerLogs',
+          },
+          {
+            label: 'Enable Language Server',
+            command: 'terraform.enableLanguageServer',
+          },
+          {
+            label: 'Disable Language Server',
+            command: 'terraform.disableLanguageServer',
+          },
+        ])
+        .then((option) => {
+          if (!option || !option.command || option.command.length === 0) {
+            return;
+          }
+          vscode.commands.executeCommand(option.command);
+        });
+    }),
     vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
       if (config('terraform').get('languageServer.enable') === true) {
         return startLanguageServer(context);
@@ -160,9 +194,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   client = new LanguageClient(id, serverOptions, clientOptions);
   client.onDidChangeState((event) => {
-    console.log(`Client: ${State[event.oldState]} --> ${State[event.newState]}`);
-    if (event.newState === State.Stopped) {
-      reporter.sendTelemetryEvent('stopClient');
+    outputChannel.appendLine(`Client: ${State[event.oldState]} --> ${State[event.newState]}`);
+
+    switch (event.newState) {
+      case State.Starting:
+        lsStatus.setLanguageServerStarting();
+        break;
+      case State.Running:
+        lsStatus.setLanguageServerRunning();
+        break;
+      case State.Stopped:
+        lsStatus.setLanguageServerStopped();
+        reporter.sendTelemetryEvent('stopClient');
+        break;
     }
   });
 
@@ -230,12 +274,15 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
     if (initializeResult !== undefined) {
       const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
+      lsStatus.setVersion(initializeResult.serverInfo?.version ?? '');
     }
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      lsStatus.setLanguageServerState(error.message, false, vscode.LanguageStatusSeverity.Error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
+      lsStatus.setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
       vscode.window.showErrorMessage(error);
     }
   }
