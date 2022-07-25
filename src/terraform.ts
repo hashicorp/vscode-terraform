@@ -1,6 +1,12 @@
+import * as tfStatus from './status/terraform';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
-import { ExecuteCommandParams, ExecuteCommandRequest, LanguageClient } from 'vscode-languageclient/node';
+import {
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
+  LanguageClient,
+  WorkDoneProgress,
+} from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
 import { getActiveTextEditor } from './utils/vscode';
 import { clientSupportsCommand } from './utils/clientHelpers';
@@ -10,6 +16,12 @@ export interface ModuleCaller {
   uri: string;
 }
 
+export interface TerraformInfoResponse {
+  v: number;
+  required_version: string;
+  discovered_version: string;
+  discovered_path: string;
+}
 export interface ModuleCallersResponse {
   v: number;
   callers: ModuleCaller[];
@@ -43,6 +55,18 @@ interface ModuleProvidersResponse {
   };
 }
 /* eslint-enable @typescript-eslint/naming-convention */
+
+export async function terraformVersion(
+  moduleUri: string,
+  client: LanguageClient,
+  reporter: TelemetryReporter,
+): Promise<TerraformInfoResponse> {
+  const command = 'terraform-ls.module.terraform';
+
+  const response = await execWorkspaceLSCommand<TerraformInfoResponse>(command, moduleUri, client, reporter);
+
+  return response;
+}
 
 export async function moduleCallers(
   moduleUri: string,

@@ -1,3 +1,4 @@
+import * as tfStatus from './status/terraform';
 import * as terraform from './terraform';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
@@ -206,6 +207,16 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   );
 
   await startLanguageServer(context);
+
+  /*
+   In the future, we can hook this to onDidChange or a similar handler, but currently
+   we only detect Terraform versions at start inside terraform-ls, so it is sufficient to ask once here
+  */
+  const workspaces = vscode.workspace.workspaceFolders;
+  if (workspaces !== undefined) {
+    const response = await terraform.terraformVersion(workspaces[0].uri.toString(), client, reporter);
+    tfStatus.setTerraformVersion(response.discovered_version);
+  }
 }
 
 export async function deactivate(): Promise<void> {
