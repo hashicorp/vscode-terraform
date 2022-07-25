@@ -10,7 +10,6 @@ import {
   StaticFeature,
   CloseAction,
   ErrorAction,
-  WorkDoneProgress,
 } from 'vscode-languageclient/node';
 import { getInitializationOptions, getServerOptions } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
