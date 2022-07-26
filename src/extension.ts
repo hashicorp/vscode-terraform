@@ -153,11 +153,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 }
 
 export async function deactivate(): Promise<void> {
-  if (client === undefined) {
-    return;
-  }
-
-  return client.stop();
+  stopLanguageServer();
 }
 
 async function startLanguageServer(ctx: vscode.ExtensionContext) {
