@@ -99,48 +99,23 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     new TerraformCommands(client, reporter),
   );
 
-  await startLanguageServer();
-}
-
-export async function deactivate(): Promise<void> {
-  stopLanguageServer();
-
-  reporter.dispose();
-}
-
-async function startLanguageServer() {
   try {
     console.log('Starting client');
 
-    await client.start();
-
     reporter.sendTelemetryEvent('startClient');
-
-    const initializeResult = client.initializeResult;
-    if (initializeResult !== undefined) {
-      const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-      console.log(`Multi-folder support: ${multiFoldersSupported}`);
-    }
+    return client.start();
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
     }
   }
 }
 
-async function stopLanguageServer() {
-  try {
-    await client.stop();
-    await client.dispose();
-  } catch (error) {
-    console.log(error); // for test failure reporting
-    if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
-    } else if (typeof error === 'string') {
-      vscode.window.showErrorMessage(error);
-    }
-  }
+export async function deactivate(): Promise<void> {
+  reporter.dispose();
+
+  return client.stop();
 }
