@@ -663,7 +663,7 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
-    "vscode-languageclient": "^7.0.0",
+    "vscode-languageclient": "^8.0.2",
     "vscode-uri": "^3.0.2",
     "which": "^2.0.2"
   },
