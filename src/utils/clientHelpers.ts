@@ -49,66 +49,6 @@ export async function getServerOptions(lsPath: ServerPath): Promise<ServerOption
   return serverOptions;
 }
 
-interface InitializationOptions {
-  indexing?: IndexingOptions;
-  experimentalFeatures?: ExperimentalFeatures;
-  ignoreSingleFileWarning?: boolean;
-  terraform?: TerraformOptions;
-}
-
-interface TerraformOptions {
-  path: string;
-  timeout: string;
-  logFilePath: string;
-}
-
-interface IndexingOptions {
-  ignoreDirectoryNames: string[];
-  ignorePaths: string[];
-}
-
-interface ExperimentalFeatures {
-  validateOnSave: boolean;
-  prefillRequiredFields: boolean;
-}
-
-export function getInitializationOptions() {
-  /*
-    This is basically a set of settings masquerading as a function. The intention
-    here is to make room for this to be added to a configuration builder when
-    we tackle #791
-  */
-  const terraform = config('terraform').get<TerraformOptions>('languageServer.terraform', {
-    path: '',
-    timeout: '',
-    logFilePath: '',
-  });
-  const indexing = config('terraform').get<IndexingOptions>('languageServer.indexing', {
-    ignoreDirectoryNames: [],
-    ignorePaths: [],
-  });
-  const ignoreSingleFileWarning = config('terraform').get<boolean>('languageServer.ignoreSingleFileWarning', false);
-  const experimentalFeatures = config('terraform').get<ExperimentalFeatures>('experimentalFeatures');
-
-  // deprecated
-  const rootModulePaths = config('terraform').get<string[]>('languageServer.rootModules', []);
-  if (rootModulePaths.length > 0 && indexing.ignorePaths.length > 0) {
-    throw new Error(
-      'Only one of rootModules and indexing.ignorePaths can be set at the same time, please remove the conflicting config and reload',
-    );
-  }
-
-  const initializationOptions: InitializationOptions = {
-    experimentalFeatures,
-    ignoreSingleFileWarning,
-    terraform,
-    ...(rootModulePaths.length > 0 && { rootModulePaths }),
-    indexing,
-  };
-
-  return initializationOptions;
-}
-
 export function clientSupportsCommand(initializeResult: InitializeResult | undefined, cmdName: string): boolean {
   if (!initializeResult) {
     return false;
