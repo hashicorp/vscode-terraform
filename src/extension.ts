@@ -1,4 +1,3 @@
-import * as terraform from './terraform';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
@@ -16,13 +15,15 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, getScope } from './utils/vscode';
+import { config } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
 import { getInitializationOptions, migrateLegacySettings, previewExtensionPresent } from './settings';
+import { TerraformLSCommands } from './commands/terraformls';
+import { TerraformCommands } from './commands/terraform';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -46,38 +47,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   await migrateLegacySettings(context);
-
-  // Subscriptions
-  context.subscriptions.push(
-    new GenerateBugReportCommand(context),
-    vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
-      if (config('terraform').get('languageServer.enable') === true) {
-        return startLanguageServer(context);
-      }
-
-      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer.enable');
-
-      await config('terraform').update('languageServer.enable', true, scope);
-    }),
-    vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
-      if (config('terraform').get('languageServer.enable') === false) {
-        return stopLanguageServer();
-      }
-
-      const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer.enable');
-
-      await config('terraform').update('languageServer.enable', false, scope);
-    }),
-    vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
-      if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
-        const reloadMsg = 'Reload VSCode window to apply language server changes';
-        const selected = await vscode.window.showInformationMessage(reloadMsg, 'Reload');
-        if (selected === 'Reload') {
-          vscode.commands.executeCommand('workbench.action.reloadWindow');
-        }
-      }
-    }),
-  );
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
@@ -186,21 +155,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
-    vscode.commands.registerCommand('terraform.init', async () => {
-      await terraform.initAskUserCommand(client, reporter);
-    }),
-    vscode.commands.registerCommand('terraform.initCurrent', async () => {
-      await terraform.initCurrentOpenFileCommand(client, reporter);
-    }),
-    vscode.commands.registerCommand('terraform.apply', async () => {
-      await terraform.command('apply', client, reporter, true);
-    }),
-    vscode.commands.registerCommand('terraform.plan', async () => {
-      await terraform.command('plan', client, reporter, true);
-    }),
-    vscode.commands.registerCommand('terraform.validate', async () => {
-      await terraform.command('validate', client, reporter);
-    }),
+    new GenerateBugReportCommand(context),
+    new TerraformLSCommands(),
+    new TerraformCommands(client, reporter),
     vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
     vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
   );
