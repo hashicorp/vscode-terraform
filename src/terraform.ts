@@ -201,6 +201,7 @@ async function execWorkspaceLSCommand<T>(
   const params: ExecuteCommandParams = {
     command: command,
     arguments: [`uri=${moduleUri}`],
+    workDoneToken: command,
   };
 
   return client.sendRequest<ExecuteCommandParams, T, void>(ExecuteCommandRequest.type, params);
