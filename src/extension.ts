@@ -135,13 +135,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
   });
 
-  const moduleProvidersDataProvider = new ModuleProvidersDataProvider(context, client, reporter);
-  const moduleCallsDataProvider = new ModuleCallsDataProvider(context, client, reporter);
-
   const features: StaticFeature[] = [
     new CustomSemanticTokens(client, manifest),
-    new ModuleProvidersFeature(client, moduleProvidersDataProvider),
-    new ModuleCallsFeature(client, moduleCallsDataProvider),
+    new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client, reporter)),
+    new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client, reporter)),
   ];
   if (vscode.env.isTelemetryEnabled) {
     features.push(new TelemetryFeature(client, reporter));
@@ -158,8 +155,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     new GenerateBugReportCommand(context),
     new TerraformLSCommands(),
     new TerraformCommands(client, reporter),
-    vscode.window.registerTreeDataProvider('terraform.modules', moduleCallsDataProvider),
-    vscode.window.registerTreeDataProvider('terraform.providers', moduleProvidersDataProvider),
   );
 
   await startLanguageServer(context);
