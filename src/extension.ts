@@ -6,8 +6,6 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   State,
-  CloseAction,
-  ErrorAction,
 } from 'vscode-languageclient/node';
 import { getServerOptions } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
@@ -23,6 +21,7 @@ import { ModuleCallsFeature } from './features/moduleCalls';
 import { getInitializationOptions, migrateLegacySettings, previewExtensionPresent } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
+import { ExtensionErrorHandler } from './handlers/errorHandler';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -60,6 +59,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const initializationOptions = getInitializationOptions();
 
+  const errorHandler = new ExtensionErrorHandler(outputChannel);
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
     synchronize: {
@@ -73,55 +73,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       reporter.sendTelemetryException(error);
       return false;
     },
-    errorHandler: {
-      error: (error, message, count) => {
-        vscode.window.showErrorMessage(
-          `Terraform LS connection error: (${count})\n${error.message}\n${message?.jsonrpc}`,
-        );
-
-        return ErrorAction.Continue;
-      },
-      closed: () => {
-        outputChannel.appendLine(
-          `Failure to start terraform-ls. Please check your configuration settings and reload this window`,
-        );
-
-        vscode.window
-          .showErrorMessage(
-            'Failure to start terraform-ls. Please check your configuration settings and reload this window',
-            {
-              detail: '',
-              modal: false,
-            },
-            { title: 'Open Settings' },
-            { title: 'Open Logs' },
-            { title: 'More Info' },
-          )
-          .then(async (choice) => {
-            if (choice === undefined) {
-              return;
-            }
-
-            switch (choice.title) {
-              case 'Open Logs':
-                outputChannel.show();
-                break;
-              case 'Open Settings':
-                await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hashicorp.terraform');
-                break;
-              case 'More Info':
-                await vscode.commands.executeCommand(
-                  'vscode.open',
-                  vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform#troubleshooting'),
-                );
-                break;
-            }
-          });
-
-        // Tell VS Code to stop attempting to start
-        return CloseAction.DoNotRestart;
-      },
-    },
+    errorHandler: errorHandler,
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
   };
