@@ -58,7 +58,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const initializationOptions = getInitializationOptions();
 
-  const errorHandler = new ExtensionErrorHandler(outputChannel);
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
     synchronize: {
@@ -72,7 +71,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       reporter.sendTelemetryException(error);
       return false;
     },
-    errorHandler: errorHandler,
+    errorHandler: new ExtensionErrorHandler(outputChannel),
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
   };

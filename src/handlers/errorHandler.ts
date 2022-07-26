@@ -1,14 +1,24 @@
 import * as vscode from 'vscode';
-import { CloseAction, ErrorAction, ErrorHandler, Message } from 'vscode-languageclient';
+import {
+  CloseAction,
+  ErrorAction,
+  ErrorHandler,
+  ErrorHandlerResult,
+  CloseHandlerResult,
+  Message,
+} from 'vscode-languageclient';
 
 export class ExtensionErrorHandler implements ErrorHandler {
   constructor(private outputChannel: vscode.OutputChannel) {}
-  error(error: Error, message: Message | undefined, count: number | undefined): ErrorAction {
+
+  error(error: Error, message: Message | undefined, count: number | undefined): ErrorHandlerResult {
     vscode.window.showErrorMessage(`Terraform LS connection error: (${count})\n${error.message}\n${message?.jsonrpc}`);
 
-    return ErrorAction.Continue;
+    return {
+      action: ErrorAction.Continue,
+    };
   }
-  closed(): CloseAction {
+  closed(): CloseHandlerResult {
     this.outputChannel.appendLine(
       `Failure to start terraform-ls. Please check your configuration settings and reload this window`,
     );
@@ -46,6 +56,8 @@ export class ExtensionErrorHandler implements ErrorHandler {
       });
 
     // Tell VS Code to stop attempting to start
-    return CloseAction.DoNotRestart;
+    return {
+      action: CloseAction.DoNotRestart,
+    };
   }
 }
