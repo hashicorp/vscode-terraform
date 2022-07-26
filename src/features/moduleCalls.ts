@@ -18,6 +18,8 @@ export class ModuleCallsFeature implements StaticFeature {
   }
 
   public async initialize(capabilities: ServerCapabilities): Promise<void> {
+    this.disposables.push(vscode.window.registerTreeDataProvider('terraform.modules', this.view));
+
     if (!capabilities.experimental?.refreshModuleCalls) {
       console.log('Server does not support client.refreshModuleCalls');
       return;
