@@ -6,7 +6,6 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   State,
-  StaticFeature,
   CloseAction,
   ErrorAction,
 } from 'vscode-languageclient/node';
@@ -39,7 +38,6 @@ let client: LanguageClient;
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
-  context.subscriptions.push(reporter);
 
   if (previewExtensionPresent(context.extension.id)) {
     reporter.sendTelemetryEvent('previewExtensionPresentWithStable');
@@ -154,11 +152,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 }
 
 export async function deactivate(): Promise<void> {
-  if (client === undefined) {
-    return;
-  }
+  stopLanguageServer();
 
-  return client.stop();
+  reporter.dispose();
 }
 
 async function startLanguageServer(ctx: vscode.ExtensionContext) {
