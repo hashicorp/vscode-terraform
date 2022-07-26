@@ -6,7 +6,6 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   State,
-  StaticFeature,
   CloseAction,
   ErrorAction,
 } from 'vscode-languageclient/node';
@@ -135,20 +134,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
   });
 
-  const features: StaticFeature[] = [
+  client.registerFeatures([
     new CustomSemanticTokens(client, manifest),
     new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client, reporter)),
     new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client, reporter)),
-  ];
-  if (vscode.env.isTelemetryEnabled) {
-    features.push(new TelemetryFeature(client, reporter));
-  }
-  const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount');
-  if (codeLensReferenceCount) {
-    features.push(new ShowReferencesFeature(client));
-  }
-
-  client.registerFeatures(features);
+    new TelemetryFeature(client, reporter),
+    new ShowReferencesFeature(client),
+  ]);
 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(
