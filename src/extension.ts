@@ -100,7 +100,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     new TerraformCommands(client, reporter),
   );
 
-  await startLanguageServer(context);
+  await startLanguageServer();
 }
 
 export async function deactivate(): Promise<void> {
@@ -109,13 +109,11 @@ export async function deactivate(): Promise<void> {
   reporter.dispose();
 }
 
-async function startLanguageServer(ctx: vscode.ExtensionContext) {
+async function startLanguageServer() {
   try {
     console.log('Starting client');
 
-    ctx.subscriptions.push(client.start());
-
-    await client.onReady();
+    await client.start();
 
     reporter.sendTelemetryEvent('startClient');
 
@@ -136,7 +134,8 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
 
 async function stopLanguageServer() {
   try {
-    await client?.stop();
+    await client.stop();
+    await client.dispose();
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
