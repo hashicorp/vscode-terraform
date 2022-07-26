@@ -79,7 +79,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }),
   );
 
-  if (!enabled()) {
+  if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
     return;
   }
@@ -252,8 +252,4 @@ async function stopLanguageServer() {
       vscode.window.showErrorMessage(error);
     }
   }
-}
-
-function enabled(): boolean {
-  return config('terraform').get('languageServer.enable', false);
 }
