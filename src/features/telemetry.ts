@@ -1,6 +1,14 @@
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { BaseLanguageClient, ClientCapabilities, StaticFeature } from 'vscode-languageclient';
+import {
+  BaseLanguageClient,
+  ClientCapabilities,
+  DocumentSelector,
+  FeatureState,
+  InitializeParams,
+  ServerCapabilities,
+  StaticFeature,
+} from 'vscode-languageclient';
 
 import { ExperimentalClientCapabilities } from './types';
 
@@ -16,6 +24,20 @@ export class TelemetryFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
   constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
+
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: DocumentSelector | undefined) => void)
+    | undefined;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {

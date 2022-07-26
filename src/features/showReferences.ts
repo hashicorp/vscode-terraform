@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import {
   BaseLanguageClient,
   ClientCapabilities,
+  DocumentSelector,
+  FeatureState,
+  InitializeParams,
   ReferenceContext,
   ReferencesRequest,
   ServerCapabilities,
@@ -27,6 +30,20 @@ export class ShowReferencesFeature implements StaticFeature {
   private registeredCommands: vscode.Disposable[] = [];
 
   constructor(private _client: BaseLanguageClient) {}
+
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: DocumentSelector | undefined) => void)
+    | undefined;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {
