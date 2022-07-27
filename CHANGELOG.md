@@ -3,7 +3,7 @@
 BREAKING CHANGES:
 
  - Raise minimum VS Code version from 1.61.1 to 1.65.2 ([#1176](https://github.com/hashicorp/vscode-terraform/pull/1176))
- - Improve Extension Settings to follow VS Code setting naming conventions ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156))
+ - Improve [extension settings](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) to follow VS Code setting naming conventions and align better with the naming convention of language server settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
 
 BUG FIXES:
 
