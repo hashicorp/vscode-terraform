@@ -18,7 +18,7 @@ ENHANCEMENTS:
 
 INTERNAL:
 
- - Scope languageServer enablement commands [#1178](https://github.com/hashicorp/vscode-terraform/pull/1178))
+ - Only show language server related commands when they're relevant [#1178](https://github.com/hashicorp/vscode-terraform/pull/1178))
  - Refactor Terraform Execution API [#1185](https://github.com/hashicorp/vscode-terraform/pull/1185))
  - Bump @hashicorp/js-releases from 1.5.1 to 1.6.0 ([#1144](https://github.com/hashicorp/vscode-terraform/pull/1144))
 
