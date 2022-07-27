@@ -15,10 +15,10 @@ ENHANCEMENTS:
  - Set proper scope for machine based settings ([#1164](https://github.com/hashicorp/vscode-terraform/pull/1164))
  - Introduce support for LSP over TCP, with port configurable via `terraform.languageServer.tcp.port` ([#755](https://github.com/hashicorp/vscode-terraform/pull/755))
  - New Terraform View side bar ([#1171](https://github.com/hashicorp/vscode-terraform/pull/1171))
+ - Only show language server related commands when they're relevant [#1178](https://github.com/hashicorp/vscode-terraform/pull/1178))
 
 INTERNAL:
 
- - Only show language server related commands when they're relevant [#1178](https://github.com/hashicorp/vscode-terraform/pull/1178))
  - Refactor Terraform Execution API [#1185](https://github.com/hashicorp/vscode-terraform/pull/1185))
  - Bump @hashicorp/js-releases from 1.5.1 to 1.6.0 ([#1144](https://github.com/hashicorp/vscode-terraform/pull/1144))
 
