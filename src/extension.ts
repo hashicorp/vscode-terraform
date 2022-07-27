@@ -29,7 +29,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
 ];
-export const outputChannel = vscode.window.createOutputChannel(brand);
+const outputChannel = vscode.window.createOutputChannel(brand);
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
@@ -54,7 +54,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   if (lsPath.hasCustomBinPath()) {
     reporter.sendTelemetryEvent('usePathToBinary');
   }
-  const serverOptions = await getServerOptions(lsPath);
+  const serverOptions = await getServerOptions(lsPath, outputChannel);
 
   const initializationOptions = getInitializationOptions();
 
