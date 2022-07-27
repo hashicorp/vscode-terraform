@@ -15,7 +15,7 @@
   "engines": {
     "npm": "~8.X",
     "node": "~16.X",
-    "vscode": "^1.65.2"
+    "vscode": "^1.67.2"
   },
   "langServer": {
     "version": "0.28.1"
