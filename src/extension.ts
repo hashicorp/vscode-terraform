@@ -332,8 +332,8 @@ async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
 
   // This simultaneously moves terraform-ls to terraform as well as migrate setting names
   await migrate('terraform-ls', 'rootModules', 'languageServer.rootModules');
-  await migrate('terraform-ls', 'excludeRootModules', 'languageServer.excludeRootModules');
-  await migrate('terraform-ls', 'ignoreDirectoryNames', 'languageServer.ignoreDirectoryNames');
+  await migrate('terraform-ls', 'excludeRootModules', 'languageServer.indexing.ignorePaths');
+  await migrate('terraform-ls', 'ignoreDirectoryNames', 'languageServer.indexing.ignoreDirectoryNames');
   await migrate('terraform-ls', 'terraformExecPath', 'languageServer.terraform.path');
   await migrate('terraform-ls', 'terraformExecTimeout', 'languageServer.terraform.timeout');
   await migrate('terraform-ls', 'terraformLogFilePath', 'languageServer.terraform.logFilePath');
