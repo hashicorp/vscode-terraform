@@ -214,6 +214,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const editor = getActiveTextEditor();
   if (editor !== undefined) {
     terraform.getTerraformVersion(editor.document.uri, client, reporter);
+  } else {
+    const workspaces = vscode.workspace.workspaceFolders;
+    if (workspaces !== undefined) {
+      terraform.getTerraformVersion(workspaces[0].uri, client, reporter);
+    }
   }
 }
 
