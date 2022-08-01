@@ -1,4 +1,3 @@
-import * as tfStatus from './status/terraform';
 import * as terraform from './terraform';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
@@ -17,7 +16,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, deleteSetting, getScope, migrate, warnIfMigrate } from './utils/vscode';
+import { config, deleteSetting, getActiveTextEditor, getScope, migrate, warnIfMigrate } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -212,10 +211,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
    In the future, we can hook this to onDidChange or a similar handler, but currently
    we only detect Terraform versions at start inside terraform-ls, so it is sufficient to ask once here
   */
-  const workspaces = vscode.workspace.workspaceFolders;
-  if (workspaces !== undefined) {
-    const response = await terraform.terraformVersion(workspaces[0].uri.toString(), client, reporter);
-    tfStatus.setTerraformVersion(response.discovered_version);
+  const editor = getActiveTextEditor();
+  if (editor !== undefined) {
+    terraform.getTerraformVersion(editor.document.uri, client, reporter);
   }
 }
 

@@ -56,6 +56,27 @@ interface ModuleProvidersResponse {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
+export async function getTerraformVersion(
+  moduleUri: vscode.Uri,
+  client: LanguageClient,
+  reporter: TelemetryReporter,
+): Promise<void> {
+  try {
+    const moduleDir = Utils.dirname(moduleUri);
+
+    const response = await terraformVersion(moduleDir.toString(), client, reporter);
+    tfStatus.setTerraformVersion(response.discovered_version);
+  } catch (error) {
+    let message = 'Error requesting terraform version from terraform-ls';
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === 'string') {
+      message = error;
+    }
+
+    vscode.window.showErrorMessage(message);
+  }
+}
 export async function terraformVersion(
   moduleUri: string,
   client: LanguageClient,
