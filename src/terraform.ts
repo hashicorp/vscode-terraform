@@ -20,8 +20,8 @@ export interface TerraformInfoResponse {
   v: number;
   required_version: string;
   discovered_version: string;
-  discovered_path: string;
 }
+
 export interface ModuleCallersResponse {
   v: number;
   callers: ModuleCaller[];
