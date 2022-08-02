@@ -16,14 +16,13 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, deleteSetting, getActiveTextEditor, getScope, migrate, warnIfMigrate } from './utils/vscode';
+import { config, deleteSetting, getScope, migrate, warnIfMigrate } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
 import { TerraformVersionFeature } from './features/terraformVersion';
-import { report } from 'process';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
