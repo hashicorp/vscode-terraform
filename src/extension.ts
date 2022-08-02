@@ -22,6 +22,8 @@ import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
+import { TerraformVersionFeature } from './features/terraformVersion';
+import { report } from 'process';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -173,6 +175,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     new CustomSemanticTokens(client, manifest),
     new ModuleProvidersFeature(client, moduleProvidersDataProvider),
     new ModuleCallsFeature(client, moduleCallsDataProvider),
+    new TerraformVersionFeature(client, reporter),
   ];
   if (vscode.env.isTelemetryEnabled) {
     features.push(new TelemetryFeature(client, reporter));
@@ -206,20 +209,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   );
 
   await startLanguageServer(context);
-
-  /*
-   In the future, we can hook this to onDidChange or a similar handler, but currently
-   we only detect Terraform versions at start inside terraform-ls, so it is sufficient to ask once here
-  */
-  const editor = getActiveTextEditor();
-  if (editor !== undefined) {
-    terraform.getTerraformVersion(editor.document.uri, client, reporter);
-  } else {
-    const workspaces = vscode.workspace.workspaceFolders;
-    if (workspaces !== undefined) {
-      terraform.getTerraformVersion(workspaces[0].uri, client, reporter);
-    }
-  }
 }
 
 export async function deactivate(): Promise<void> {
