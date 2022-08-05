@@ -7,6 +7,7 @@ import {
   ServerCapabilities,
   StaticFeature,
 } from 'vscode-languageclient';
+import { config } from '../utils/vscode';
 
 import { ExperimentalClientCapabilities } from './types';
 
@@ -36,6 +37,11 @@ export class ShowReferencesFeature implements StaticFeature {
 
   public initialize(capabilities: ServerCapabilities): void {
     if (!capabilities.experimental?.referenceCountCodeLens) {
+      return;
+    }
+
+    const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount', false);
+    if (codeLensReferenceCount === false) {
       return;
     }
 

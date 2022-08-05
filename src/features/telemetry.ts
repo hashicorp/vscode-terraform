@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { BaseLanguageClient, ClientCapabilities, StaticFeature } from 'vscode-languageclient';
 
@@ -12,16 +13,9 @@ type TelemetryEvent = {
 };
 
 export class TelemetryFeature implements StaticFeature {
-  constructor(private client: BaseLanguageClient, reporter: TelemetryReporter) {
-    this.client.onTelemetry((event: TelemetryEvent) => {
-      if (event.v !== TELEMETRY_VERSION) {
-        console.log(`unsupported telemetry event: ${event}`);
-        return;
-      }
+  private disposables: vscode.Disposable[] = [];
 
-      reporter.sendRawTelemetryEvent(event.name, event.properties);
-    });
-  }
+  constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {
@@ -31,10 +25,23 @@ export class TelemetryFeature implements StaticFeature {
   }
 
   public initialize(): void {
-    return;
+    if (vscode.env.isTelemetryEnabled === false) {
+      return;
+    }
+
+    this.disposables.push(
+      this.client.onTelemetry((event: TelemetryEvent) => {
+        if (event.v !== TELEMETRY_VERSION) {
+          console.log(`unsupported telemetry event: ${event}`);
+          return;
+        }
+
+        this.reporter.sendRawTelemetryEvent(event.name, event.properties);
+      }),
+    );
   }
 
   public dispose(): void {
-    return;
+    this.disposables.forEach((d: vscode.Disposable) => d.dispose());
   }
 }
