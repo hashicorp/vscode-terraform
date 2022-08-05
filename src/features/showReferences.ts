@@ -40,7 +40,7 @@ export class ShowReferencesFeature implements StaticFeature {
       return;
     }
 
-    const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount');
+    const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount', false);
     if (codeLensReferenceCount === false) {
       return;
     }
