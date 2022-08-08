@@ -87,26 +87,6 @@ INTERNAL:
  - Add CODEOWNERS file ([#1038](https://github.com/hashicorp/vscode-terraform/pull/1038))
  - Fix LANGUAGE_SERVER_VERSION test in preview script ([#1034](https://github.com/hashicorp/vscode-terraform/pull/1034))
  - Github Release Notes Generator file ([#1051](https://github.com/hashicorp/vscode-terraform/pull/1051))
- - Bump minimist from 1.2.5 to 1.2.6 ([#1009](https://github.com/hashicorp/vscode-terraform/pull/1009))
- - Bump @typescript-eslint/parser from 5.15.0 to 5.16.0 ([#1008](https://github.com/hashicorp/vscode-terraform/pull/1008))
- - Bump @typescript-eslint/eslint-plugin from 5.15.0 to 5.16.0 ([#1007](https://github.com/hashicorp/vscode-terraform/pull/1007))
- - Bump ts-jest from 27.1.3 to 27.1.4 ([#1011](https://github.com/hashicorp/vscode-terraform/pull/1011))
- - Bump eslint from 8.11.0 to 8.12.0 ([#1014](https://github.com/hashicorp/vscode-terraform/pull/1014))
- - Bump prettier from 2.6.0 to 2.6.1 ([#1016](https://github.com/hashicorp/vscode-terraform/pull/1016))
- - Bump esbuild from 0.14.27 to 0.14.28 ([#1015](https://github.com/hashicorp/vscode-terraform/pull/1015))
- - Bump typescript from 4.6.2 to 4.6.3 ([#1012](https://github.com/hashicorp/vscode-terraform/pull/1012))
- - Bump @typescript-eslint/parser from 5.16.0 to 5.17.0 ([#1017](https://github.com/hashicorp/vscode-terraform/pull/1017))
- - Bump @typescript-eslint/eslint-plugin from 5.16.0 to 5.17.0 ([#1018](https://github.com/hashicorp/vscode-terraform/pull/1018))
- - Bump actions/download-artifact from 2 to 3 ([#1043](https://github.com/hashicorp/vscode-terraform/pull/1043))
- - Bump actions/upload-artifact from 2 to 3 ([#1044](https://github.com/hashicorp/vscode-terraform/pull/1044))
- - Bump esbuild from 0.14.28 to 0.14.36 ([#1047](https://github.com/hashicorp/vscode-terraform/pull/1047))
- - Bump @typescript-eslint/parser from 5.17.0 to 5.19.0 ([#1046](https://github.com/hashicorp/vscode-terraform/pull/1046))
- - Bump @typescript-eslint/eslint-plugin from 5.17.0 to 5.19.0 ([#1045](https://github.com/hashicorp/vscode-terraform/pull/1045))
- - Bump prettier from 2.6.1 to 2.6.2 ([#1026](https://github.com/hashicorp/vscode-terraform/pull/1026))
- - Bump @types/vscode from 1.65.0 to 1.66.0 ([#1023](https://github.com/hashicorp/vscode-terraform/pull/1023))
- - Bump eslint from 8.12.0 to 8.13.0 ([#1054](https://github.com/hashicorp/vscode-terraform/pull/1054))
- - Bump @types/chai from 4.3.0 to 4.3.1 ([#1053](https://github.com/hashicorp/vscode-terraform/pull/1053))
- - Bump @types/node from 16.11.26 to 16.11.27 ([#1055](https://github.com/hashicorp/vscode-terraform/pull/1055))
  - Bump terraform-ls from 0.26.0 to 0.27.0 ([#1060](https://github.com/hashicorp/vscode-terraform/pull/1060))
 
 ## [2.21.0] (2022-03-21)
@@ -130,8 +110,7 @@ BUG FIXES:
 
 INTERNAL:
 
- - Bump language server to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) ([#1002](https://github.com/hashicorp/vscode-terraform/pull/1002))
- - Bump prettier from 2.5.1 to 2.6.0 ([#998](https://github.com/hashicorp/vscode-terraform/pull/998))
+ - Bump terraform-ls to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) ([#1002](https://github.com/hashicorp/vscode-terraform/pull/1002))
  - Bump @hashicorp/js-releases from 1.4.0 to 1.5.1 ([#1001](https://github.com/hashicorp/vscode-terraform/pull/1001))
  - Bump @vscode/extension-telemetry from 0.4.9 to 0.4.10 ([#1003](https://github.com/hashicorp/vscode-terraform/pull/1003))
 
@@ -542,7 +521,9 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.23.0...main
+[2.23.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.22.0...v2.23.0
+[2.22.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...v2.22.0
 [2.21.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.1...v2.21.0
 [2.20.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...v2.20.1
 [2.20.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...v2.20.0
