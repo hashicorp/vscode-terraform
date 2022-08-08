@@ -1,4 +1,4 @@
-## [2.23.1] (Unreleased)
+## [2.24.0] (Unreleased)
 
 BREAKING CHANGES:
 
