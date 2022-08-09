@@ -25,10 +25,14 @@ const VSCODE_SHOW_REFERENCES = 'editor.action.showReferences';
 
 export class ShowReferencesFeature implements StaticFeature {
   private registeredCommands: vscode.Disposable[] = [];
+  private isEnabled = config('terraform').get<boolean>('codelens.referenceCount', false);
 
   constructor(private _client: BaseLanguageClient) {}
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
+    if (this.isEnabled === false) {
+      return;
+    }
     if (!capabilities['experimental']) {
       capabilities['experimental'] = {};
     }
@@ -40,8 +44,7 @@ export class ShowReferencesFeature implements StaticFeature {
       return;
     }
 
-    const codeLensReferenceCount = config('terraform').get<boolean>('codelens.referenceCount', false);
-    if (codeLensReferenceCount === false) {
+    if (this.isEnabled === false) {
       return;
     }
 
