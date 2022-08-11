@@ -1,21 +1,50 @@
-## [2.23.1] (Unreleased)
+## [2.24.0] (Unreleased)
 
 BREAKING CHANGES:
 
  - Raise minimum VS Code version from 1.61.1 to 1.65.2 ([#1176](https://github.com/hashicorp/vscode-terraform/pull/1176))
- - Improve [extension settings](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) to follow VS Code setting naming conventions and align better with the naming convention of language server settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Add migration wizard to aid migrating [extension settings](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) to follow VS Code setting naming conventions and align better with the naming convention of language server settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform.languageServer`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md)  block has been extracted out to individual settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform.languageServer.external`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.enable` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform.languageServer.pathToBinary`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.path` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform-ls.terraformExecPath`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.terraform.path` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform-ls.terraformExecTimeout`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.terraform.timeout` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform-ls.terraformExecLogFilePath`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.terraform.logFilePath` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform-ls.rootModules`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been deprecated and is ignored. Users should instead leverage the VS Code workspace functionality and add the folder to a workspace to be indexed ([#1003](https://github.com/hashicorp/terraform-ls/pull/1003))
+ - Setting [`terraform-ls.excludeModulePaths`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.indexing.ignorePaths` ([#1003](https://github.com/hashicorp/terraform-ls/pull/1003))
+ - Setting [`terraform-ls.ignoreDirectoryNames`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.indexing.ignoreDirectoryNames` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Setting [`terraform.experimentalFeatures`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) setting block has been extracted out to individual settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Set proper scope for machine based extension settings ([#1164](https://github.com/hashicorp/vscode-terraform/pull/1164))
+
+ENHANCEMENTS:
+
+ - Use dark extension icon for preview extension ([#1143](https://github.com/hashicorp/vscode-terraform/pull/1143))
+ - Introduce support for extension connecting to LSP over TCP, with port configurable via `terraform.languageServer.tcp.port` ([#755](https://github.com/hashicorp/vscode-terraform/pull/755))
+ - New Terraform View side bar ([#1171](https://github.com/hashicorp/vscode-terraform/pull/1171))
+ - Only show language server related commands when they're relevant ([#1178](https://github.com/hashicorp/vscode-terraform/pull/1178))
+ - Replace internal watcher (used for watching changes in installed plugins and modules) with LSP dynamic capability registration & `workspace/didChangeWatchedFiles`. This should lead to improved performance in most cases. ([terraform-ls#953](https://github.com/hashicorp/terraform-ls/pull/953))
+ - Provide completion, hover and docs links for uninitialized Registry modules ([terraform-ls#924](https://github.com/hashicorp/terraform-ls/pull/924))
+ - Provide basic IntelliSense (except for diagnostics) for hidden `*.tf` files ([terraform-ls#971](https://github.com/hashicorp/terraform-ls/pull/971))
+ - Introduce v1.1 `terraform` `cloud` block ([terraform-schema#117](https://github.com/hashicorp/terraform-schema/pull/117))
+ - Introduce v1.1 `moved` block ([terraform-schema#121](https://github.com/hashicorp/terraform-schema/pull/121))
+ - Introduce v1.2 `lifecycle` conditions ([terraform-schema#115](https://github.com/hashicorp/terraform-schema/pull/115))
+ - Introduce v1.2 `lifecycle` `replace_triggered_by` ([terraform-schema#123](https://github.com/hashicorp/terraform-schema/pull/123))
+ - Use `module` declarations from parsed configuration as source of truth for `module.calls` ([terraform-ls#987](https://github.com/hashicorp/terraform-ls/pull/987))
+ - Index uninitialized modules ([terraform-ls#997](https://github.com/hashicorp/terraform-ls/pull/997))
+ - Recognize inputs and outputs of uninitialized local modules ([terraform-ls#598](https://github.com/hashicorp/terraform-ls/issues/598))
+ - Enable go to module output declaration from reference ([terraform-ls#1007](https://github.com/hashicorp/terraform-ls/issues/1007))
+ - New option [`indexing.ignorePaths`](https://github.com/hashicorp/terraform-ls/blob/v0.29.0/docs/SETTINGS.md#ignorepaths-string) was introduced ([terraform-ls#1003](https://github.com/hashicorp/terraform-ls/pull/1003), [terraform-ls#1010](https://github.com/hashicorp/terraform-ls/pull/1010))
+ - Introduce `module.terraform` custom LSP command to expose Terraform requirements & version ([terraform-ls#1016](https://github.com/hashicorp/terraform-ls/pull/1016))
+ - Avoid obtaining schema via Terraform CLI if the same version is already cached (based on plugin lock file) ([terraform-ls#1014](https://github.com/hashicorp/terraform-ls/pull/1014))
+ - Complete module source and version attributes for local and registry modules ([#1024](https://github.com/hashicorp/terraform-ls/pull/1024))
 
 BUG FIXES:
 
  - Ensure extension is installed in remote contexts automatically ([#1163](https://github.com/hashicorp/vscode-terraform/pull/1163))
-
-ENHANCEMENTS:
-
- - Use dark extension icon for preview ([#1143](https://github.com/hashicorp/vscode-terraform/pull/1143))
- - Set proper scope for machine based settings ([#1164](https://github.com/hashicorp/vscode-terraform/pull/1164))
- - Introduce support for LSP over TCP, with port configurable via `terraform.languageServer.tcp.port` ([#755](https://github.com/hashicorp/vscode-terraform/pull/755))
- - New Terraform View side bar ([#1171](https://github.com/hashicorp/vscode-terraform/pull/1171))
- - Only show language server related commands when they're relevant [#1178](https://github.com/hashicorp/vscode-terraform/pull/1178))
+ - Return partially parsed metadata from `module.providers` ([terraform-ls#951](https://github.com/hashicorp/terraform-ls/pull/951))
+ - Avoid ignoring hidden `*.tfvars` files ([terraform-ls#968](https://github.com/hashicorp/terraform-ls/pull/968))
+ - Avoid crash on invalid URIs ([terraform-ls#969](https://github.com/hashicorp/terraform-ls/pull/969))
+ - Avoid crash on invalid provider name ([terraform-ls#1030](https://github.com/hashicorp/terraform-ls/pull/1030))
 
 INTERNAL:
 
@@ -87,26 +116,6 @@ INTERNAL:
  - Add CODEOWNERS file ([#1038](https://github.com/hashicorp/vscode-terraform/pull/1038))
  - Fix LANGUAGE_SERVER_VERSION test in preview script ([#1034](https://github.com/hashicorp/vscode-terraform/pull/1034))
  - Github Release Notes Generator file ([#1051](https://github.com/hashicorp/vscode-terraform/pull/1051))
- - Bump minimist from 1.2.5 to 1.2.6 ([#1009](https://github.com/hashicorp/vscode-terraform/pull/1009))
- - Bump @typescript-eslint/parser from 5.15.0 to 5.16.0 ([#1008](https://github.com/hashicorp/vscode-terraform/pull/1008))
- - Bump @typescript-eslint/eslint-plugin from 5.15.0 to 5.16.0 ([#1007](https://github.com/hashicorp/vscode-terraform/pull/1007))
- - Bump ts-jest from 27.1.3 to 27.1.4 ([#1011](https://github.com/hashicorp/vscode-terraform/pull/1011))
- - Bump eslint from 8.11.0 to 8.12.0 ([#1014](https://github.com/hashicorp/vscode-terraform/pull/1014))
- - Bump prettier from 2.6.0 to 2.6.1 ([#1016](https://github.com/hashicorp/vscode-terraform/pull/1016))
- - Bump esbuild from 0.14.27 to 0.14.28 ([#1015](https://github.com/hashicorp/vscode-terraform/pull/1015))
- - Bump typescript from 4.6.2 to 4.6.3 ([#1012](https://github.com/hashicorp/vscode-terraform/pull/1012))
- - Bump @typescript-eslint/parser from 5.16.0 to 5.17.0 ([#1017](https://github.com/hashicorp/vscode-terraform/pull/1017))
- - Bump @typescript-eslint/eslint-plugin from 5.16.0 to 5.17.0 ([#1018](https://github.com/hashicorp/vscode-terraform/pull/1018))
- - Bump actions/download-artifact from 2 to 3 ([#1043](https://github.com/hashicorp/vscode-terraform/pull/1043))
- - Bump actions/upload-artifact from 2 to 3 ([#1044](https://github.com/hashicorp/vscode-terraform/pull/1044))
- - Bump esbuild from 0.14.28 to 0.14.36 ([#1047](https://github.com/hashicorp/vscode-terraform/pull/1047))
- - Bump @typescript-eslint/parser from 5.17.0 to 5.19.0 ([#1046](https://github.com/hashicorp/vscode-terraform/pull/1046))
- - Bump @typescript-eslint/eslint-plugin from 5.17.0 to 5.19.0 ([#1045](https://github.com/hashicorp/vscode-terraform/pull/1045))
- - Bump prettier from 2.6.1 to 2.6.2 ([#1026](https://github.com/hashicorp/vscode-terraform/pull/1026))
- - Bump @types/vscode from 1.65.0 to 1.66.0 ([#1023](https://github.com/hashicorp/vscode-terraform/pull/1023))
- - Bump eslint from 8.12.0 to 8.13.0 ([#1054](https://github.com/hashicorp/vscode-terraform/pull/1054))
- - Bump @types/chai from 4.3.0 to 4.3.1 ([#1053](https://github.com/hashicorp/vscode-terraform/pull/1053))
- - Bump @types/node from 16.11.26 to 16.11.27 ([#1055](https://github.com/hashicorp/vscode-terraform/pull/1055))
  - Bump terraform-ls from 0.26.0 to 0.27.0 ([#1060](https://github.com/hashicorp/vscode-terraform/pull/1060))
 
 ## [2.21.0] (2022-03-21)
@@ -130,8 +139,7 @@ BUG FIXES:
 
 INTERNAL:
 
- - Bump language server to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) ([#1002](https://github.com/hashicorp/vscode-terraform/pull/1002))
- - Bump prettier from 2.5.1 to 2.6.0 ([#998](https://github.com/hashicorp/vscode-terraform/pull/998))
+ - Bump terraform-ls to [`v0.26.0`](https://github.com/hashicorp/terraform-ls/releases/tag/v0.26.0) ([#1002](https://github.com/hashicorp/vscode-terraform/pull/1002))
  - Bump @hashicorp/js-releases from 1.4.0 to 1.5.1 ([#1001](https://github.com/hashicorp/vscode-terraform/pull/1001))
  - Bump @vscode/extension-telemetry from 0.4.9 to 0.4.10 ([#1003](https://github.com/hashicorp/vscode-terraform/pull/1003))
 
@@ -542,7 +550,10 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...main
+[2.24.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.23.0...v2.24.0
+[2.23.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.22.0...v2.23.0
+[2.22.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...v2.22.0
 [2.21.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.1...v2.21.0
 [2.20.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...v2.20.1
 [2.20.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...v2.20.0
