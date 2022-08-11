@@ -36,6 +36,7 @@ ENHANCEMENTS:
  - New option [`indexing.ignorePaths`](https://github.com/hashicorp/terraform-ls/blob/v0.29.0/docs/SETTINGS.md#ignorepaths-string) was introduced ([terraform-ls#1003](https://github.com/hashicorp/terraform-ls/pull/1003), [terraform-ls#1010](https://github.com/hashicorp/terraform-ls/pull/1010))
  - Introduce `module.terraform` custom LSP command to expose Terraform requirements & version ([terraform-ls#1016](https://github.com/hashicorp/terraform-ls/pull/1016))
  - Avoid obtaining schema via Terraform CLI if the same version is already cached (based on plugin lock file) ([terraform-ls#1014](https://github.com/hashicorp/terraform-ls/pull/1014))
+ - Complete module source and version attributes for local and registry modules ([#1024](https://github.com/hashicorp/terraform-ls/pull/1024))
 
 BUG FIXES:
 
