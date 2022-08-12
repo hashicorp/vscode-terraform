@@ -4,4 +4,5 @@ out/
 package-lock.json
 node_modules/
 .vscode-test/
+.vscode-test-web/
 language-configuration.json

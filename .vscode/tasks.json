@@ -1,54 +1,46 @@
 {
   "version": "2.0.0",
   "tasks": [
-		{
-			"type": "npm",
-			"script": "watch",
-			"problemMatcher": "$ts-webpack-watch",
-			"isBackground": true,
-			"presentation": {
-				"reveal": "never",
-				"group": "watchers"
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		},
-		{
-			"type": "npm",
-			"script": "watch:tests",
-			"problemMatcher": "$tsc-watch",
-			"isBackground": true,
-			"presentation": {
-				"reveal": "never",
-				"group": "watchers"
-			},
-			"group": "build"
-		},
+    {
+      "type": "npm",
+      "script": "watch",
+      "problemMatcher": "$ts-webpack-watch",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never",
+        "group": "watchers"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
     {
       "type": "process",
       "label": "terraformInit",
-			"isBackground": true,
+      "isBackground": true,
       "command": "terraform",
       "args": ["init"],
       "options": {
         "cwd": "${workspaceFolder}/testFixture"
       },
       "presentation": {
-				"reveal": "never",
-				"group": "watchers"
+        "reveal": "never",
+        "group": "watchers"
       },
-			"group": "build",
+      "group": "build"
     },
-		{
-			"label": "tasks: watch-tests",
-			"dependsOn": [
-				"npm: watch",
-				"npm: watch:tests",
-        "terraformInit"
-			],
-			"problemMatcher": []
-		}
+    {
+      "label": "tasks: watch-tests",
+      "dependsOn": ["npm: watch", "terraformInit"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Run (vscode.dev)",
+      "group": "test",
+      "dependsOn": ["npm: web:serve", "npm: web:tunnel"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
   ]
 }

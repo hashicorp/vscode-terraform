@@ -43,7 +43,6 @@ jobs:
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     timeout-minutes: 3
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -54,6 +53,8 @@ jobs:
         run: npm ci
       - name: unit test
         run: npm run test:unit
+      - name: web unit
+        run: npm run test:unit:web
 
   test:
     strategy:
@@ -87,6 +88,8 @@ jobs:
         with:
           terraform_wrapper: false
           terraform_version: '~1.0'
+      - name: Terraform version
+        run: terraform version
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests

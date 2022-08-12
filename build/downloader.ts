@@ -129,7 +129,9 @@ async function downloadSyntax(info: ExtensionInfo) {
   }
   const content = await got({ url }).text();
   fs.writeFileSync(fpath, content);
-  console.log(`Download completed: ${fpath}`);
+  if (process.env.downloader_log === 'true') {
+    console.log(`Download completed: ${fpath}`);
+  }
 }
 
 async function run(platform: string, architecture: string) {
@@ -137,6 +139,7 @@ async function run(platform: string, architecture: string) {
   if (process.env.downloader_log === 'true') {
     console.log(extInfo);
   }
+
   await downloadLanguageServer(platform, architecture, extInfo);
   await downloadSyntax(extInfo);
 }
@@ -144,18 +147,12 @@ async function run(platform: string, architecture: string) {
 let os = process.platform.toString();
 let arch = process.arch;
 
-// ls_target=linux_amd64 npm run package -- --target=linux-x64
+// ls_target=linux_amd64 npm install
+//  or
+// ls_target=web npm run download:artifacts
 const lsTarget = process.env.ls_target;
 if (lsTarget !== undefined) {
   const tgt = lsTarget.split('_');
-  os = tgt[0];
-  arch = tgt[1];
-}
-
-// npm run download:ls --target=darwin-x64
-const target = process.env.npm_config_target;
-if (target !== undefined) {
-  const tgt = target.split('-');
   os = tgt[0];
   arch = tgt[1];
 }

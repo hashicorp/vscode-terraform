@@ -9,7 +9,7 @@
   "files.trimTrailingWhitespace": true,
 
   "files.exclude": {
-    "out": true
+    "out": false
   },
   "search.exclude": {
     "node_modules": true,
