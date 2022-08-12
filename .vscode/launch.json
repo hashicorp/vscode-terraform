@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Client",
+      "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "preLaunchTask": "npm: watch"
+      "preLaunchTask": "${defaultBuildTask}"
     },
     {
       "name": "Run Extension Tests",
@@ -20,7 +20,7 @@
         "${workspaceFolder}/testFixture"
       ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "terraformInitAndWatch"
+      "preLaunchTask": "tasks: watch-tests"
     }
   ]
 }
