@@ -62,8 +62,12 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
   const buildDir = path.basename(cwd);
   const repoDir = cwd.replace(buildDir, '');
   const installPath = path.join(repoDir, 'bin');
-  if (fs.existsSync(installPath)) {
-    console.log(`bin path exists at ${installPath}. Exiting`);
+  const filename = process.platform === 'win32' ? 'terraform-ls.exe' : 'terraform-ls';
+  const filePath = path.join(installPath, filename);
+  if (fs.existsSync(filePath)) {
+    if (process.env.downloader_log === 'true') {
+      console.log(`Terraform LS exists at ${filePath}. Exiting`);
+    }
     return;
   }
 
@@ -84,7 +88,9 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
     throw new Error(`Install error: no matching terraform-ls binary for  ${os}/${arch}`);
   }
 
-  console.log(build);
+  if (process.env.downloader_log === 'true') {
+    console.log(build);
+  }
 
   const zipfile = path.resolve(installPath, `terraform-ls_v${release.version}.zip`);
   await release.download(build.url, zipfile, userAgent);
@@ -101,8 +107,6 @@ async function downloadSyntax(info: ExtensionInfo) {
 
   const productName = info.name.replace('-preview', '');
   const fileName = `${productName}.tmGrammar.json`;
-  const url = `https://github.com/hashicorp/syntax/releases/download/${release}/${fileName}`;
-  console.log(`Downloading: ${url}`);
 
   const cwd = path.resolve(__dirname);
   const buildDir = path.basename(cwd);
@@ -110,11 +114,19 @@ async function downloadSyntax(info: ExtensionInfo) {
   const installPath = path.join(repoDir, 'syntaxes');
 
   const fpath = path.join(installPath, fileName);
-  if (fs.existsSync(installPath)) {
-    fs.rmSync(installPath, { recursive: true, force: true });
+  if (fs.existsSync(fpath)) {
+    if (process.env.downloader_log === 'true') {
+      console.log(`Syntax path exists at ${fpath}. Exiting`);
+    }
+    return;
   }
+
   fs.mkdirSync(installPath);
 
+  const url = `https://github.com/hashicorp/syntax/releases/download/${release}/${fileName}`;
+  if (process.env.downloader_log === 'true') {
+    console.log(`Downloading: ${url}`);
+  }
   const content = await got({ url }).text();
   fs.writeFileSync(fpath, content);
   console.log(`Download completed: ${fpath}`);
@@ -122,7 +134,9 @@ async function downloadSyntax(info: ExtensionInfo) {
 
 async function run(platform: string, architecture: string) {
   const extInfo = getExtensionInfo();
-  console.log(extInfo);
+  if (process.env.downloader_log === 'true') {
+    console.log(extInfo);
+  }
   await downloadLanguageServer(platform, architecture, extInfo);
   await downloadSyntax(extInfo);
 }
