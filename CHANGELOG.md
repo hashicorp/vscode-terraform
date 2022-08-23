@@ -3,7 +3,7 @@
 BREAKING CHANGES:
 
  - Raise minimum VS Code version from 1.61.1 to 1.65.2 ([#1176](https://github.com/hashicorp/vscode-terraform/pull/1176))
- - Add migration wizard to aid migrating [extension settings](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) to follow VS Code setting naming conventions and align better with the naming convention of language server settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
+ - Add migration wizard to aid migrating [extension settings](https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/docs/settings-migration.md) to follow VS Code setting naming conventions and align better with the naming convention of language server settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
  - Setting [`terraform.languageServer`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md)  block has been extracted out to individual settings ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
  - Setting [`terraform.languageServer.external`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.enable` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
  - Setting [`terraform.languageServer.pathToBinary`](https://github.com/hashicorp/vscode-terraform/blob/v2.23.1/docs/settings-migration.md) has been renamed to `terraform.languageServer.path` ([#1156](https://github.com/hashicorp/vscode-terraform/pull/1156), [#1193](https://github.com/hashicorp/vscode-terraform/pull/1193))
@@ -50,6 +50,9 @@ INTERNAL:
 
  - Refactor Terraform Execution API [#1185](https://github.com/hashicorp/vscode-terraform/pull/1185))
  - Bump @hashicorp/js-releases from 1.5.1 to 1.6.0 ([#1144](https://github.com/hashicorp/vscode-terraform/pull/1144))
+ - indexer: refactor & improve/cleanup error handling ([terraform-ls#988](https://github.com/hashicorp/terraform-ls/pull/988))
+ - indexer/walker: Avoid running jobs where not needed ([terraform-ls#1006](https://github.com/hashicorp/terraform-ls/pull/1006))
+ - job: introduce explicit priority for jobs ([terraform-ls#977](https://github.com/hashicorp/terraform-ls/pull/977))
 
 ## [2.23.0] (2022-06-09)
 
