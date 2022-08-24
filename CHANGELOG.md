@@ -1,4 +1,4 @@
-## [2.24.1] (2022-08-23)
+## [2.24.1] (2022-08-24)
 
 ENHANCEMENTS:
 
@@ -9,7 +9,7 @@ BUG FIXES:
  - Fix panic on obtaining provider schemas ([terraform-ls#1048](https://github.com/hashicorp/terraform-ls/pull/1048))
  - Use correct ldflag (versionPrerelease) when compiling LS ([terraform-ls#1043](https://github.com/hashicorp/terraform-ls/pull/1043))
 
-## [2.24.0] (2022-08-24)
+## [2.24.0] (2022-08-23)
 
 BREAKING CHANGES:
 
