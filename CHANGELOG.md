@@ -1,4 +1,15 @@
-## [2.24.0] (Unreleased)
+## [2.24.1] (2022-08-24)
+
+ENHANCEMENTS:
+
+ - Add link to post explaining vim plugin installation ([terraform-ls#1044](https://github.com/hashicorp/terraform-ls/pull/1044))
+
+BUG FIXES:
+
+ - Fix panic on obtaining provider schemas ([terraform-ls#1048](https://github.com/hashicorp/terraform-ls/pull/1048))
+ - Use correct ldflag (versionPrerelease) when compiling LS ([terraform-ls#1043](https://github.com/hashicorp/terraform-ls/pull/1043))
+
+## [2.24.0] (2022-08-23)
 
 BREAKING CHANGES:
 
@@ -553,7 +564,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...main
+[2.24.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...v2.24.1
 [2.24.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.23.0...v2.24.0
 [2.23.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.22.0...v2.23.0
 [2.22.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...v2.22.0
