@@ -1,14 +1,18 @@
+import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 import { CloseAction, ErrorAction, ErrorHandler, Message } from 'vscode-languageclient';
 
 export class ExtensionErrorHandler implements ErrorHandler {
-  constructor(private outputChannel: vscode.OutputChannel) {}
+  constructor(private outputChannel: vscode.OutputChannel, private reporter: TelemetryReporter) {}
   error(error: Error, message: Message | undefined, count: number | undefined) {
     vscode.window.showErrorMessage(`Terraform LS connection error: (${count})\n${error.message}\n${message?.jsonrpc}`);
+
+    this.reporter.sendTelemetryException(error);
 
     return ErrorAction.Continue;
   }
   closed() {
+    this.reporter.sendTelemetryException(new Error('Failure to start terraform-ls'));
     this.outputChannel.appendLine(
       `Failure to start terraform-ls. Please check your configuration settings and reload this window`,
     );
