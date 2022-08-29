@@ -59,7 +59,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const initializationOptions = getInitializationOptions();
 
-  const errorHandler = new ExtensionErrorHandler(outputChannel);
+  const errorHandler = new ExtensionErrorHandler(outputChannel, reporter);
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
     synchronize: {
@@ -126,9 +126,11 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      reporter.sendTelemetryException(error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
+      reporter.sendTelemetryException(new Error(error));
     }
   }
 }
@@ -139,9 +141,11 @@ async function stopLanguageServer() {
   } catch (error) {
     console.log(error); // for test failure reporting
     if (error instanceof Error) {
-      vscode.window.showErrorMessage(error instanceof Error ? error.message : error);
+      reporter.sendTelemetryException(error);
+      vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       vscode.window.showErrorMessage(error);
+      reporter.sendTelemetryException(new Error(error));
     }
   }
 }
