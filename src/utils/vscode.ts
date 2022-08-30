@@ -1,3 +1,4 @@
+import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
@@ -160,3 +161,47 @@ export function isTerraformFile(document?: vscode.TextDocument): boolean {
   // be safe and default to false
   return false;
 }
+
+export async function handleInvalidWSLUrl(error: Error, ctx: vscode.ExtensionContext, reporter: TelemetryReporter) {
+  if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
+    return;
+  }
+
+  const wslerr = new InvalidWSLUriError(error.message);
+  reporter.sendTelemetryException(wslerr);
+
+  const messageText =
+    'It looks like you opened a WSL url using a Windows UNC path' +
+    ' not in the Remote WSL extension. Would you like to reopen this folder' +
+    ' in the WSL Extension?';
+
+  const choice = await vscode.window.showErrorMessage(
+    messageText,
+    {
+      detail: messageText,
+      modal: false,
+    },
+    { title: 'Reopen Folder in WSL' },
+    { title: 'More Info' },
+    { title: 'Supress' },
+  );
+  if (choice === undefined) {
+    return;
+  }
+
+  switch (choice.title) {
+    case 'Suppress':
+      ctx.globalState.update('terraform.disableWSLNotification', true);
+      break;
+    case 'Reopen Folder in WSL':
+      await vscode.commands.executeCommand('remote-wsl.reopenInWSL');
+      break;
+    case 'More Info':
+      await vscode.commands.executeCommand(
+        'vscode.open',
+        vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/docs/remote-extension-usage.md'),
+      );
+  }
+}
+
+class InvalidWSLUriError extends Error {}

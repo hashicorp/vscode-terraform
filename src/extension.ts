@@ -2,8 +2,10 @@ import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
   DocumentSelector,
+  InitializeError,
   LanguageClient,
   LanguageClientOptions,
+  ResponseError,
   RevealOutputChannelOn,
   State,
 } from 'vscode-languageclient/node';
@@ -12,7 +14,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config } from './utils/vscode';
+import { config, handleInvalidWSLUrl } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -22,6 +24,7 @@ import { getInitializationOptions, migrateLegacySettings, previewExtensionPresen
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import { ExtensionErrorHandler } from './handlers/errorHandler';
+import { report } from 'process';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -69,8 +72,25 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       ],
     },
     initializationOptions: initializationOptions,
-    initializationFailedHandler: (error) => {
-      reporter.sendTelemetryException(error);
+    initializationFailedHandler: (error: ResponseError<InitializeError>) => {
+      let message = '';
+      let err = new Error();
+
+      if (error instanceof Error) {
+        message = error.message;
+        err = error;
+      } else if (typeof error === 'string') {
+        message = error;
+        err = new Error(error);
+      }
+
+      if (message.startsWith('Unsupported WSLPATH')) {
+        // handled in startLanguageServer()
+      } else {
+        vscode.window.showErrorMessage(message);
+        reporter.sendTelemetryException(err);
+      }
+
       return false;
     },
     errorHandler: errorHandler,
@@ -125,13 +145,8 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
     }
   } catch (error) {
     console.log(error); // for test failure reporting
-    if (error instanceof Error) {
-      reporter.sendTelemetryException(error);
-      vscode.window.showErrorMessage(error.message);
-    } else if (typeof error === 'string') {
-      vscode.window.showErrorMessage(error);
-      reporter.sendTelemetryException(new Error(error));
-    }
+
+    await handleLSError(error, ctx);
   }
 }
 
@@ -147,5 +162,25 @@ async function stopLanguageServer() {
       vscode.window.showErrorMessage(error);
       reporter.sendTelemetryException(new Error(error));
     }
+  }
+}
+
+async function handleLSError(error: unknown, ctx: vscode.ExtensionContext) {
+  let message = '';
+  let err = new Error();
+
+  if (error instanceof Error) {
+    message = error.message;
+    err = error;
+  } else if (typeof error === 'string') {
+    message = error;
+    err = new Error(error);
+  }
+
+  if (message.startsWith('Unsupported WSLPATH')) {
+    await handleInvalidWSLUrl(err, ctx, reporter);
+  } else {
+    vscode.window.showErrorMessage(message);
+    reporter.sendTelemetryException(err);
   }
 }
