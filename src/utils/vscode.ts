@@ -163,8 +163,6 @@ export function isTerraformFile(document?: vscode.TextDocument): boolean {
   return false;
 }
 
-class InvalidWSLUriError extends Error {}
-
 export async function handleLanguageClientStart(
   error: unknown,
   ctx: vscode.ExtensionContext,
@@ -173,10 +171,13 @@ export async function handleLanguageClientStart(
   let message = 'Unknown Error';
   if (error instanceof ResponseError<InitializeError>) {
     message = error.data;
+    reporter.sendTelemetryException(error);
   } else if (error instanceof Error) {
     message = error.message;
+    reporter.sendTelemetryException(error);
   } else if (typeof error === 'string') {
     message = error;
+    reporter.sendTelemetryException(new Error(error));
   }
 
   if (message.startsWith('INVALID_URI_WSL')) {
@@ -184,9 +185,6 @@ export async function handleLanguageClientStart(
     if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
       return;
     }
-
-    const wslerr = new InvalidWSLUriError(message);
-    reporter.sendTelemetryException(wslerr);
 
     const messageText =
       'It looks like you opened a WSL url using a Windows UNC path' +
@@ -209,12 +207,15 @@ export async function handleLanguageClientStart(
 
     switch (choice.title) {
       case 'Suppress':
+        reporter.sendTelemetryEvent('disableWSLNotification');
         ctx.globalState.update('terraform.disableWSLNotification', true);
         break;
       case 'Reopen Folder in WSL':
+        reporter.sendTelemetryEvent('reopenInWSL');
         await vscode.commands.executeCommand('remote-wsl.reopenInWSL');
         break;
       case 'More Info':
+        reporter.sendTelemetryEvent('wslMoreInfo');
         await vscode.commands.executeCommand(
           'vscode.open',
           vscode.Uri.parse(
@@ -224,6 +225,5 @@ export async function handleLanguageClientStart(
     }
   } else {
     vscode.window.showErrorMessage(message);
-    reporter.sendTelemetryException(typeof error === 'string' ? new Error(error) : new Error());
   }
 }

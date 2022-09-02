@@ -2,10 +2,8 @@ import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
   DocumentSelector,
-  InitializeError,
   LanguageClient,
   LanguageClientOptions,
-  ResponseError,
   RevealOutputChannelOn,
   State,
 } from 'vscode-languageclient/node';
@@ -24,8 +22,6 @@ import { getInitializationOptions, migrateLegacySettings, previewExtensionPresen
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import { ExtensionErrorHandler } from './handlers/errorHandler';
-import { report } from 'process';
-import { strict } from 'assert';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
