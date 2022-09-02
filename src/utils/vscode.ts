@@ -1,5 +1,6 @@
 import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
+import { InitializeError, ResponseError } from 'vscode-languageclient';
 
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(section, scope);
@@ -162,46 +163,65 @@ export function isTerraformFile(document?: vscode.TextDocument): boolean {
   return false;
 }
 
-export async function handleInvalidWSLUrl(error: Error, ctx: vscode.ExtensionContext, reporter: TelemetryReporter) {
-  if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
-    return;
+class InvalidWSLUriError extends Error {}
+
+export async function handleLanguageClientStart(
+  error: unknown,
+  ctx: vscode.ExtensionContext,
+  reporter: TelemetryReporter,
+) {
+  let message = 'Unknown Error';
+  if (error instanceof ResponseError<InitializeError>) {
+    message = error.data;
+  } else if (error instanceof Error) {
+    message = error.message;
+  } else if (typeof error === 'string') {
+    message = error;
   }
 
-  const wslerr = new InvalidWSLUriError(error.message);
-  reporter.sendTelemetryException(wslerr);
+  if (message.startsWith('INVALID_URI_WSL')) {
+    // handle in startLanguageServer()
+    if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
+      return;
+    }
 
-  const messageText =
-    'It looks like you opened a WSL url using a Windows UNC path' +
-    ' not in the Remote WSL extension. Would you like to reopen this folder' +
-    ' in the WSL Extension?';
+    const wslerr = new InvalidWSLUriError(message);
+    reporter.sendTelemetryException(wslerr);
 
-  const choice = await vscode.window.showErrorMessage(
-    messageText,
-    {
-      detail: messageText,
-      modal: false,
-    },
-    { title: 'Reopen Folder in WSL' },
-    { title: 'More Info' },
-    { title: 'Supress' },
-  );
-  if (choice === undefined) {
-    return;
-  }
+    const messageText =
+      'It looks like you opened a WSL url using a Windows UNC path' +
+      ' outside of the Remote WSL extension. The HashiCorp Terraform Extension cannot work with this URL. Would you like to reopen this folder' +
+      ' in the WSL Extension?';
 
-  switch (choice.title) {
-    case 'Suppress':
-      ctx.globalState.update('terraform.disableWSLNotification', true);
-      break;
-    case 'Reopen Folder in WSL':
-      await vscode.commands.executeCommand('remote-wsl.reopenInWSL');
-      break;
-    case 'More Info':
-      await vscode.commands.executeCommand(
-        'vscode.open',
-        vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/docs/remote-extension-usage.md'),
-      );
+    const choice = await vscode.window.showErrorMessage(
+      messageText,
+      {
+        detail: messageText,
+        modal: false,
+      },
+      { title: 'Reopen Folder in WSL' },
+      { title: 'More Info' },
+      { title: 'Supress' },
+    );
+    if (choice === undefined) {
+      return;
+    }
+
+    switch (choice.title) {
+      case 'Suppress':
+        ctx.globalState.update('terraform.disableWSLNotification', true);
+        break;
+      case 'Reopen Folder in WSL':
+        await vscode.commands.executeCommand('remote-wsl.reopenInWSL');
+        break;
+      case 'More Info':
+        await vscode.commands.executeCommand(
+          'vscode.open',
+          vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/docs/remote-extension-usage.md'),
+        );
+    }
+  } else {
+    vscode.window.showErrorMessage(message);
+    reporter.sendTelemetryException(typeof error === 'string' ? new Error(error) : new Error());
   }
 }
-
-class InvalidWSLUriError extends Error {}
