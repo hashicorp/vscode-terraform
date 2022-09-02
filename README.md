@@ -163,6 +163,14 @@ To provide the extension with an up-to-date schema for the Terraform providers u
 1. Open any folder or VS Code workspace containing Terraform files. 
 1. Open the Command Palette and run `Terraform: init current folder` or perform a `terraform init` from the terminal.
 
+### Remote Extension support
+
+The Visual Studio Code [Remote - WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) lets you use the Windows Subsystem for Linux (WSL) as your full-time development environment right from VS Code. You can author Terraform configuration files in a Linux-based environment, use Linux-specific toolchains and utilities from the comfort of Windows.
+
+The Remote WSL extension runs the [HashiCorp Extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) and other extensions directly in WSL so you can edit files located in WSL or the mounted Windows filesystem (for example /mnt/c) without worrying about pathing issues, binary compatibility, or other cross-OS challenges.
+
+For a detailed walkthrough for how to get started using WSL and VS Code, see https://code.visualstudio.com/docs/remote/wsl-tutorial.
+
 ## Configuration
 
 The extension does not require any initial configuration and should work out of the box. To take advantage of additional VS Code features or experimental extension features you can configure settings to customize behavior.

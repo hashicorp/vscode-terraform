@@ -217,7 +217,9 @@ export async function handleLanguageClientStart(
       case 'More Info':
         await vscode.commands.executeCommand(
           'vscode.open',
-          vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/docs/remote-extension-usage.md'),
+          vscode.Uri.parse(
+            'https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/README.md#remote-extension-support',
+          ),
         );
     }
   } else {
