@@ -180,7 +180,7 @@ export async function handleLanguageClientStart(
     reporter.sendTelemetryException(new Error(error));
   }
 
-  if (message.startsWith('INVALID_URI_WSL')) {
+  if (message === 'INVALID_URI_WSL') {
     // handle in startLanguageServer()
     if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
       return;
@@ -188,7 +188,8 @@ export async function handleLanguageClientStart(
 
     const messageText =
       'It looks like you opened a WSL url using a Windows UNC path' +
-      ' outside of the Remote WSL extension. The HashiCorp Terraform Extension cannot work with this URL. Would you like to reopen this folder' +
+      ' outside of the [Remote WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl).' +
+      ' The HashiCorp Terraform Extension works seamlessly with the Remote WSL Extension, but cannot work with this URL. Would you like to reopen this folder' +
       ' in the WSL Extension?';
 
     const choice = await vscode.window.showErrorMessage(
