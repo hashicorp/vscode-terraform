@@ -142,9 +142,27 @@ Syntax highlighting targets Terraform v1.0 and greater. Highlighting 0.12-0.15 c
 
 ### VS Code Workspace support
 
-It is a common pattern to have separate folders containing related Terraform configuration that are not contained under one root folder. For example, you have a main Terraform folder containing the configuration for a single application and several module folders containing encapsulated code for configuring different parts of component pieces. You could open each folder in a separate VS Code window, and bounce between each window to author your changes.
+It is a common pattern to have separate folders containing related Terraform configuration that are not contained under one root folder. For example, you have a main Terraform folder containing the configuration for a single application and several module folders containing encapsulated code for configuring different parts of component pieces.
 
-A better approach is to use [VS Code Workspaces](https://code.visualstudio.com/docs/editor/workspaces). Using our example above, open the main Terraform folder first, then use Add Folder to workspace to add the dependent module folders. A single VS Code window is used and all Terraform files are available to author your changes. This uses a single terraform-ls process that has an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across your project.
+You can work with these separate project folders in a single VS Code window using a [VS Code Multi-root Workspace](https://code.visualstudio.com/docs/editor/multi-root-workspaces). Each folder that is added to the workspace is automatically parsed and indexed by the Terraform Extension using a single terraform-ls process. This provides an understanding of your entire project, allowing you to use features like `Go to Symbol` and `Reference counts` across all of your configuration.
+
+Using our example above, open the main Terraform folder first, then use `Add Folder to workspace` to add the dependent module folders.
+
+![](docs/add-root-folder.png)
+
+Alternately, you can use the command line:
+
+```bash
+> code main_project module1 module2
+```
+
+Or you can add folders to an existing workspace:
+
+```bash
+> code --add /some/path/to/module3
+```
+
+[VS Code Multi-Root workspace files](https://code.visualstudio.com/docs/editor/multi-root-workspaces#_workspace-file) can be saved to disk and re-used and shared with your team.
 
 ### Single file support
 
@@ -256,23 +274,13 @@ This will create diagnostics for any elements that fail validation. You can also
 
 ### Multiple Workspaces
 
-If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
+If you have multiple root modules in your workspace, you can configure the VS Code to index them by [adding folders to your workspace](https://code.visualstudio.com/docs/editor/multi-root-workspaces#_adding-folders): 
 
-```json
-"terraform.languageServer.rootModules": [
-  "/module1",
-  "/module2"
-]
+```bash
+> code folder1 folder2
 ```
 
-If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
-
-```json
-"terraform.languageServer.excludeRootModules": [
-  "/module3",
-  "/module4"
-]
-```
+Please read the [VS Code Workspace support usage](#vs-code-workspace-support) section for more detailed information.
 
 If you want to automatically ignore certain directories when terraform-ls indexes files, add the folder names to this setting:
 
