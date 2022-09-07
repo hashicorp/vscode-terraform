@@ -1,3 +1,18 @@
+## [2.24.2] (2022-09-07)
+
+ENHANCEMENTS
+
+- Ask user to use Remote WSL Extension when using WSL UNC Paths [#1219](https://github.com/hashicorp/vscode-terraform/pull/1219)
+
+BUG FIXES:
+
+ - fix: Improve IntelliSense accuracy by tracking provider schema versions (bug introduced in 2.24.0) ([terraform-ls#1060](https://github.com/hashicorp/terraform-ls/pull/1060))
+ - Don't query the Terraform Registry for module sources starting with `.` in completion ([terraform-ls#1062](https://github.com/hashicorp/terraform-ls/pull/1062))
+ - fix race condition (panic) in schema merging ([terraform-schema#137](https://github.com/hashicorp/terraform-schema/pull/137))
+INTERNAL
+
+- Improve error telemetry [#1215](https://github.com/hashicorp/vscode-terraform/pull/1215)
+
 ## [2.24.1] (2022-08-24)
 
 ENHANCEMENTS:
@@ -564,7 +579,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.2...main
+[2.24.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...v2.24.2
 [2.24.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...v2.24.1
 [2.24.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.23.0...v2.24.0
 [2.23.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.22.0...v2.23.0
