@@ -12,7 +12,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config } from './utils/vscode';
+import { config, handleLanguageClientStart } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -69,8 +69,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       ],
     },
     initializationOptions: initializationOptions,
-    initializationFailedHandler: (error) => {
-      reporter.sendTelemetryException(error);
+    initializationFailedHandler: () => {
       return false;
     },
     errorHandler: errorHandler,
@@ -124,14 +123,7 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
     }
   } catch (error) {
-    console.log(error); // for test failure reporting
-    if (error instanceof Error) {
-      reporter.sendTelemetryException(error);
-      vscode.window.showErrorMessage(error.message);
-    } else if (typeof error === 'string') {
-      vscode.window.showErrorMessage(error);
-      reporter.sendTelemetryException(new Error(error));
-    }
+    await handleLanguageClientStart(error, ctx, reporter);
   }
 }
 

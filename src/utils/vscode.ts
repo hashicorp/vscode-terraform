@@ -1,4 +1,6 @@
+import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
+import { InitializeError, ResponseError } from 'vscode-languageclient';
 
 export function config(section: string, scope?: vscode.ConfigurationScope): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(section, scope);
@@ -159,4 +161,70 @@ export function isTerraformFile(document?: vscode.TextDocument): boolean {
 
   // be safe and default to false
   return false;
+}
+
+export async function handleLanguageClientStart(
+  error: unknown,
+  ctx: vscode.ExtensionContext,
+  reporter: TelemetryReporter,
+) {
+  let message = 'Unknown Error';
+  if (error instanceof ResponseError<InitializeError>) {
+    message = error.data;
+    reporter.sendTelemetryException(error);
+  } else if (error instanceof Error) {
+    message = error.message;
+    reporter.sendTelemetryException(error);
+  } else if (typeof error === 'string') {
+    message = error;
+    reporter.sendTelemetryException(new Error(error));
+  }
+
+  if (message === 'INVALID_URI_WSL') {
+    // handle in startLanguageServer()
+    if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
+      return;
+    }
+
+    const messageText =
+      'It looks like you opened a WSL url using a Windows UNC path' +
+      ' outside of the [Remote WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl).' +
+      ' The HashiCorp Terraform Extension works seamlessly with the Remote WSL Extension, but cannot work with this URL. Would you like to reopen this folder' +
+      ' in the WSL Extension?';
+
+    const choice = await vscode.window.showErrorMessage(
+      messageText,
+      {
+        detail: messageText,
+        modal: false,
+      },
+      { title: 'Reopen Folder in WSL' },
+      { title: 'More Info' },
+      { title: 'Supress' },
+    );
+    if (choice === undefined) {
+      return;
+    }
+
+    switch (choice.title) {
+      case 'Suppress':
+        reporter.sendTelemetryEvent('disableWSLNotification');
+        ctx.globalState.update('terraform.disableWSLNotification', true);
+        break;
+      case 'Reopen Folder in WSL':
+        reporter.sendTelemetryEvent('reopenInWSL');
+        await vscode.commands.executeCommand('remote-wsl.reopenInWSL');
+        break;
+      case 'More Info':
+        reporter.sendTelemetryEvent('wslMoreInfo');
+        await vscode.commands.executeCommand(
+          'vscode.open',
+          vscode.Uri.parse(
+            'https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/README.md#remote-extension-support',
+          ),
+        );
+    }
+  } else {
+    vscode.window.showErrorMessage(message);
+  }
 }
