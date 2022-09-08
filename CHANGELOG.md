@@ -1,3 +1,10 @@
+## [Unreleased]
+
+INTERNAL
+
+- Reduce duplicate error telemetry [#1230](https://github.com/hashicorp/vscode-terraform/pull/1230)
+
+
 ## [2.24.2] (2022-09-07)
 
 ENHANCEMENTS
@@ -9,6 +16,7 @@ BUG FIXES:
  - fix: Improve IntelliSense accuracy by tracking provider schema versions (bug introduced in 2.24.0) ([terraform-ls#1060](https://github.com/hashicorp/terraform-ls/pull/1060))
  - Don't query the Terraform Registry for module sources starting with `.` in completion ([terraform-ls#1062](https://github.com/hashicorp/terraform-ls/pull/1062))
  - fix race condition (panic) in schema merging ([terraform-schema#137](https://github.com/hashicorp/terraform-schema/pull/137))
+
 INTERNAL
 
 - Improve error telemetry [#1215](https://github.com/hashicorp/vscode-terraform/pull/1215)
