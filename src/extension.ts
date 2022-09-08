@@ -12,7 +12,7 @@ import { GenerateBugReportCommand } from './commands/generateBugReport';
 import { ModuleCallsDataProvider } from './providers/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/moduleProviders';
 import { ServerPath } from './utils/serverPath';
-import { config, handleLanguageClientStart } from './utils/vscode';
+import { config, handleLanguageClientStart as handleLanguageClientStartError } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
@@ -123,7 +123,7 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
     }
   } catch (error) {
-    await handleLanguageClientStart(error, ctx, reporter);
+    await handleLanguageClientStartError(error, ctx, reporter);
   }
 }
 
