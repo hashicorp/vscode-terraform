@@ -12,7 +12,6 @@ export class ExtensionErrorHandler implements ErrorHandler {
     return ErrorAction.Continue;
   }
   closed() {
-    this.reporter.sendTelemetryException(new Error('Failure to start terraform-ls'));
     this.outputChannel.appendLine(
       `Failure to start terraform-ls. Please check your configuration settings and reload this window`,
     );

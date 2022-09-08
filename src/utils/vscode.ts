@@ -163,7 +163,7 @@ export function isTerraformFile(document?: vscode.TextDocument): boolean {
   return false;
 }
 
-export async function handleLanguageClientStart(
+export async function handleLanguageClientStartError(
   error: unknown,
   ctx: vscode.ExtensionContext,
   reporter: TelemetryReporter,
