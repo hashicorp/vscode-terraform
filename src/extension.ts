@@ -46,6 +46,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   await migrateLegacySettings(context);
 
+  // always register commands needed to control terraform-ls
+  context.subscriptions.push(new TerraformLSCommands());
+
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
     return;
@@ -94,11 +97,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   ]);
 
   // these need the LS to function, so are only registered if enabled
-  context.subscriptions.push(
-    new GenerateBugReportCommand(context),
-    new TerraformLSCommands(),
-    new TerraformCommands(client, reporter),
-  );
+  context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter));
 
   await startLanguageServer(context);
 }
