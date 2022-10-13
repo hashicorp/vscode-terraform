@@ -1,15 +1,26 @@
-## [Unreleased]
+## [2.24.3] (2022-10-13)
 
-INTERNAL
+ENHANCEMENTS:
 
-- Reduce duplicate error telemetry [#1230](https://github.com/hashicorp/vscode-terraform/pull/1230)
+ - Significantly reduce the memory footprint of the language server by 85% to 98% for most users ([terraform-ls#1071](https://github.com/hashicorp/terraform-ls/pull/1071))
+
+BUG FIXES:
+
+ - Fix enable terraform-ls after disabling [#1238](https://github.com/hashicorp/vscode-terraform/pull/1238)
+ - fix: Enable IntelliSense for resources & data sources whose name match the provider (e.g. `data`) ([terraform-ls#1072](https://github.com/hashicorp/terraform-ls/pull/1072))
+ - fix: avoid infinite recursion (surfaced as crash with "goroutine stack exceeds 1000000000-byte limit" message) ([terraform-ls#1084](https://github.com/hashicorp/terraform-ls/pull/1084))
+ - fix: race condition in terraform-schema (surfaced as crash with "fatal error: concurrent map read and map write" message) ([terraform-ls#1086](https://github.com/hashicorp/terraform-ls/pull/1086))
+
+INTERNAL:
+
+ - Reduce duplicate error telemetry [#1230](https://github.com/hashicorp/vscode-terraform/pull/1230)
 
 
 ## [2.24.2] (2022-09-07)
 
-ENHANCEMENTS
+ENHANCEMENTS:
 
-- Ask user to use Remote WSL Extension when using WSL UNC Paths [#1219](https://github.com/hashicorp/vscode-terraform/pull/1219)
+ - Ask user to use Remote WSL Extension when using WSL UNC Paths [#1219](https://github.com/hashicorp/vscode-terraform/pull/1219)
 
 BUG FIXES:
 
@@ -17,7 +28,7 @@ BUG FIXES:
  - Don't query the Terraform Registry for module sources starting with `.` in completion ([terraform-ls#1062](https://github.com/hashicorp/terraform-ls/pull/1062))
  - fix race condition (panic) in schema merging ([terraform-schema#137](https://github.com/hashicorp/terraform-schema/pull/137))
 
-INTERNAL
+INTERNAL:
 
 - Improve error telemetry [#1215](https://github.com/hashicorp/vscode-terraform/pull/1215)
 
@@ -587,7 +598,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.2...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.3...main
+[2.24.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.2...v2.24.3
 [2.24.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...v2.24.2
 [2.24.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...v2.24.1
 [2.24.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.23.0...v2.24.0
