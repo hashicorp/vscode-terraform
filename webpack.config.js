@@ -114,6 +114,7 @@ const webExtensionConfig = {
     new webpack.ProvidePlugin({
       process: 'process/browser', // provide a shim for the global `process` variable
     }),
+    new webpack.WatchIgnorePlugin({ paths: [/\.*\.js/] }),
   ],
   externals: {
     // modules added here also need to be added in the .vscodeignore file
