@@ -63,10 +63,9 @@ jobs:
         run: npm ci
         env:
           npm_config_arch: ${{ matrix.npm_config_arch }}
+          ls_target: ${{ matrix.ls_target }}
       - name: Package VSIX
         run: npm run package -- --target=${{ matrix.vsce_target }}
-        env:
-          ls_target: ${{ matrix.ls_target }}
       - name: Upload vsix as artifact
         uses: actions/upload-artifact@v3
         with:

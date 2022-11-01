@@ -1,14 +1,13 @@
 .github
 .vscode
 .vscode-test
+.vscode-test-web
 build/
 docs/
 lsp/
 node_modules/
 src/
 **/__mocks__
-out/*.test.*
-out/test/
 testFixture/
 .editorconfig
 .eslintignore

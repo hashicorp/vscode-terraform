@@ -10,3 +10,4 @@ lsp/
 testFixture/.terraform.lock.hcl
 testFixture/.vscode
 .terraform/
+.vscode-test-web

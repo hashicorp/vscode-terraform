@@ -2,11 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Client",
+      "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "${defaultBuildTask}"
+    },
+    {
+      "name": "Run Web Extension ",
+      "type": "pwa-extensionHost",
+      "debugWebWorkerHost": true,
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentKind=web"],
+      "outFiles": ["${workspaceFolder}/out/web/**/*.js"],
       "preLaunchTask": "npm: watch"
     },
     {
@@ -20,7 +29,21 @@
         "${workspaceFolder}/testFixture"
       ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "terraformInitAndWatch"
+      "preLaunchTask": "tasks: watch-tests"
+    },
+    {
+      "name": "Run Web Extension Tests",
+      "type": "extensionHost",
+      "debugWebWorkerHost": true,
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionDevelopmentKind=web",
+        "--extensionTestsPath=${workspaceFolder}/out/web/test/integration/index",
+        "${workspaceFolder}/testFixture"
+      ],
+      "outFiles": ["${workspaceFolder}/out/web/**/*.js"],
+      "preLaunchTask": "npm: watch"
     }
   ]
 }
