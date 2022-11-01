@@ -13,6 +13,7 @@ suite('completion', () => {
       new vscode.CompletionItem('data', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('module', vscode.CompletionItemKind.Class),
+      new vscode.CompletionItem('moved', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('output', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('provider', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('resource', vscode.CompletionItemKind.Class),
