@@ -14,6 +14,9 @@ jobs:
     strategy:
       matrix:
         include:
+          - vsce_target: web
+            ls_target: web_noop
+            npm_config_arch: x64
           - vsce_target: win32-x64
             ls_target: windows_amd64
             npm_config_arch: x64
