@@ -140,8 +140,14 @@ async function run(platform: string, architecture: string) {
     console.log(extInfo);
   }
 
-  await downloadLanguageServer(platform, architecture, extInfo);
   await downloadSyntax(extInfo);
+
+  // we don't download ls for web platforms
+  if (os === 'web') {
+    return;
+  }
+
+  await downloadLanguageServer(platform, architecture, extInfo);
 }
 
 let os = process.platform.toString();
@@ -149,7 +155,7 @@ let arch = process.arch;
 
 // ls_target=linux_amd64 npm install
 //  or
-// ls_target=web npm run download:artifacts
+// ls_target=web_noop npm run download:artifacts
 const lsTarget = process.env.ls_target;
 if (lsTarget !== undefined) {
   const tgt = lsTarget.split('_');
