@@ -1,3 +1,15 @@
+## [2.25.0] (2022-11-14)
+
+ENHANCEMENTS:
+
+ - Publish Terrafor Web Extension by [#1210](https://github.com/hashicorp/vscode-terraform/pull/1210)
+
+INTERNAL:
+
+ - Use `npm ci` for installing dependencies inside CI [#1257](https://github.com/hashicorp/vscode-terraform/pull/1257)
+ - Enable publishing web extensions [#1262](https://github.com/hashicorp/vscode-terraform/pull/1262)
+ - [COMPLIANCE] Update MPL 2.0 LICENSE [#1247](https://github.com/hashicorp/vscode-terraform/pull/1247)
+
 ## [2.24.3] (2022-10-13)
 
 ENHANCEMENTS:
@@ -598,7 +610,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.3...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.0...main
+[2.25.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.3...v2.25.0
 [2.24.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.2...v2.24.3
 [2.24.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...v2.24.2
 [2.24.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...v2.24.1
