@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 jobs:
   build:
@@ -47,19 +47,18 @@ jobs:
         uses: actions/checkout@v3
       - name: Read extension version
         id: ext-version
-        run: |
-          content=`cat ./package.json | jq -r .version`
-          echo "::set-output name=content::$content"
+        run: echo "VERSION=$(cat ./package.json | jq -r .version)" >> $GITHUB_OUTPUT
       - name: Ensure version matches with tag
-        if: ${{ github.ref != format('refs/tags/v{0}', steps.ext-version.outputs.content) }}
+        if: ${{ github.ref != format('refs/tags/v{0}', steps.ext-version.outputs.VERSION) }}
         run: |
           echo "Version mismatch!"
           echo "Received ref: ${{ github.ref }}"
-          echo "Expected ref: refs/tags/v${{ steps.ext-version.outputs.content }}"
+          echo "Expected ref: refs/tags/v${{ steps.ext-version.outputs.VERSION }}"
           exit 1
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
       - name: Install dependencies
         run: npm ci
         env:

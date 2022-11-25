@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       langserver:
-        description: 'The terraform-ls version to use. If not specified will use version in package.json'
+        description: "The terraform-ls version to use. If not specified will use version in package.json"
         required: false
         type: string
 
@@ -54,12 +54,8 @@ jobs:
           ./build/preview
         env:
           LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
-      - name: Read extension version
-        id: ext-version
-        run: |
-          content=`cat ./package.json | jq -r .version`
-          echo "::set-output name=content::$content"
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
       - name: Install dependencies
