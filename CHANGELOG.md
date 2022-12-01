@@ -1,4 +1,4 @@
-## [2.26.0] (Unreleased)
+## [2.25.1] (2022-12-01)
 
 ENHANCEMENTS:
 
