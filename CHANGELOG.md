@@ -1,3 +1,9 @@
+## [2.25.2] (Unreleased)
+
+BUG FIXES:
+
+ - Improve attribute name matching ([syntax#49](https://github.com/hashicorp/syntax/pull/49))
+
 ## [2.25.1] (2022-12-01)
 
 ENHANCEMENTS:
