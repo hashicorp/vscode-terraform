@@ -82,7 +82,7 @@ jobs:
     needs: build
     if: success()
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # https://github.com/actions/download-artifact/releases/tag/v3.0.1
       - name: Publish Preview Extension
         run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
