@@ -47,7 +47,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # https://github.com/actions/checkout/releases/tag/v3.2.0
       - name: Set preview in package.json
         id: set-preview
         run: |
