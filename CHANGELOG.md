@@ -1,4 +1,4 @@
-## [2.25.2] (Unreleased)
+## [2.25.2] (2022-12-15)
 
 BUG FIXES:
 
@@ -631,7 +631,9 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.2...main
+[2.25.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.1...v2.25.2
+[2.25.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.0...v2.25.1
 [2.25.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.3...v2.25.0
 [2.24.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.2...v2.24.3
 [2.24.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...v2.24.2
