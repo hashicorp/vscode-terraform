@@ -47,7 +47,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # https://github.com/actions/checkout/releases/tag/v3.2.0
       - name: Set preview in package.json
         id: set-preview
         run: |
@@ -55,7 +55,7 @@ jobs:
         env:
           LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # https://github.com/actions/setup-node/releases/tag/v3.5.1
         with:
           node-version-file: ".nvmrc"
       - name: Install dependencies
@@ -66,7 +66,7 @@ jobs:
       - name: Package VSIX
         run: npm run package -- --target=${{ matrix.vsce_target }}
       - name: Upload vsix as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # https://github.com/actions/upload-artifact/releases/tag/v3.1.1
         with:
           name: ${{ matrix.vsce_target }}
           path: "*.vsix"
@@ -82,7 +82,7 @@ jobs:
     needs: build
     if: success()
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # https://github.com/actions/download-artifact/releases/tag/v3.0.1
       - name: Publish Preview Extension
         run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
