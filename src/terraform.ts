@@ -42,7 +42,25 @@ interface ModuleProvidersResponse {
     [provider: string]: string;
   };
 }
+
+export interface TerraformInfoResponse {
+  v: number;
+  required_version: string;
+  discovered_version: string;
+}
 /* eslint-enable @typescript-eslint/naming-convention */
+
+export async function terraformVersion(
+  moduleUri: string,
+  client: LanguageClient,
+  reporter: TelemetryReporter,
+): Promise<TerraformInfoResponse> {
+  const command = 'terraform-ls.module.terraform';
+
+  const response = await execWorkspaceLSCommand<TerraformInfoResponse>(command, moduleUri, client, reporter);
+
+  return response;
+}
 
 export async function moduleCallers(
   moduleUri: string,
