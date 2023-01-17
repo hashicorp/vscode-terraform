@@ -648,7 +648,7 @@
     "compile": "webpack",
     "compile:test": "tsc -p ./",
     "compile:prod": "webpack --mode production --devtool hidden-source-map",
-    "watch": "webpack --watch",
+    "watch": "webpack --watch --mode development",
     "web": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./testFixture",
     "web:serve": "npx serve --cors -l 5001",
     "web:tunnel": "npx localtunnel -p 5001",
