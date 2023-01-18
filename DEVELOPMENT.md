@@ -139,6 +139,6 @@ Windows  | windows_386   | win32_ia32    | ✅
 Windows  | windows_amd64 | win32_x64     | ✅
 Windows  | windows_arm64 | win32_arm64   | ✅
 
-This will run several chained commands which will download the specified version of terraform-ls, minify the extension using esbuild, and package the extension using vsce into a VSIX.
+This will run several chained commands which will download the specified version of terraform-ls, minify the extension using Webpack, and package the extension using vsce into a VSIX.
 
 > You can run `npm run package` without paramaters, but this will not produce a platform specific extension.
