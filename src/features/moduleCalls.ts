@@ -1,5 +1,12 @@
 import * as vscode from 'vscode';
-import { BaseLanguageClient, ClientCapabilities, ServerCapabilities, StaticFeature } from 'vscode-languageclient';
+import {
+  BaseLanguageClient,
+  ClientCapabilities,
+  FeatureState,
+  InitializeParams,
+  ServerCapabilities,
+  StaticFeature,
+} from 'vscode-languageclient';
 import { ModuleCallsDataProvider } from '../providers/moduleCalls';
 import { ExperimentalClientCapabilities } from './types';
 
@@ -9,6 +16,18 @@ export class ModuleCallsFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
   constructor(private client: BaseLanguageClient, private view: ModuleCallsDataProvider) {}
+
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: vscode.DocumentSelector | undefined) => void)
+    | undefined;
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {
@@ -24,8 +43,6 @@ export class ModuleCallsFeature implements StaticFeature {
       console.log('Server does not support client.refreshModuleCalls');
       return;
     }
-
-    await this.client.onReady();
 
     const d = this.client.onRequest(CLIENT_MODULE_CALLS_CMD_ID, () => {
       this.view?.refresh();

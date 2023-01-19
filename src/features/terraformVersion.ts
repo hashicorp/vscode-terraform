@@ -1,6 +1,12 @@
 import * as vscode from 'vscode';
 import * as terraform from '../terraform';
-import { ClientCapabilities, ServerCapabilities, StaticFeature } from 'vscode-languageclient';
+import {
+  ClientCapabilities,
+  FeatureState,
+  InitializeParams,
+  ServerCapabilities,
+  StaticFeature,
+} from 'vscode-languageclient';
 import { getActiveTextEditor } from '../utils/vscode';
 import { ExperimentalClientCapabilities } from './types';
 import { Utils } from 'vscode-uri';
@@ -36,6 +42,18 @@ export class TerraformVersionFeature implements StaticFeature {
     this.disposables.push(this.requiredVersion);
   }
 
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: vscode.DocumentSelector | undefined) => void)
+    | undefined;
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
+
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     capabilities.experimental = capabilities.experimental || {};
     capabilities.experimental.refreshTerraformVersionCommandId = this.clientTerraformVersionCommandId;
@@ -46,8 +64,6 @@ export class TerraformVersionFeature implements StaticFeature {
       this.outputChannel.appendLine("Server doesn't support client.refreshTerraformVersion");
       return;
     }
-
-    await this.client.onReady();
 
     const handler = this.client.onRequest(this.clientTerraformVersionCommandId, async () => {
       const editor = getActiveTextEditor();

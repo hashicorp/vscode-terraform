@@ -202,8 +202,6 @@ async function execWorkspaceLSCommand<T>(
   client: LanguageClient,
   reporter: TelemetryReporter,
 ): Promise<T> {
-  await client.onReady();
-
   // record whether we use terraform.init or terraform.initcurrent vscode commands
   // this is hacky, but better than propagating down another parameter just to handle
   // which init command we used

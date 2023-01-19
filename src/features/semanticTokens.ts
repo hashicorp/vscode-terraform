@@ -1,4 +1,12 @@
-import { BaseLanguageClient, ClientCapabilities, ServerCapabilities, StaticFeature } from 'vscode-languageclient';
+import {
+  BaseLanguageClient,
+  ClientCapabilities,
+  DocumentSelector,
+  FeatureState,
+  InitializeParams,
+  ServerCapabilities,
+  StaticFeature,
+} from 'vscode-languageclient';
 
 export interface PartialManifest {
   contributes: {
@@ -13,6 +21,18 @@ interface ObjectWithId {
 
 export class CustomSemanticTokens implements StaticFeature {
   constructor(private _client: BaseLanguageClient, private manifest: PartialManifest) {}
+
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: DocumentSelector | undefined) => void)
+    | undefined;
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
 
   public fillClientCapabilities(capabilities: ClientCapabilities): void {
     if (!capabilities.textDocument || !capabilities.textDocument.semanticTokens) {

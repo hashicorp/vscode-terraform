@@ -1,6 +1,13 @@
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { BaseLanguageClient, ClientCapabilities, StaticFeature } from 'vscode-languageclient';
+import {
+  BaseLanguageClient,
+  ClientCapabilities,
+  FeatureState,
+  InitializeParams,
+  ServerCapabilities,
+  StaticFeature,
+} from 'vscode-languageclient';
 
 import { ExperimentalClientCapabilities } from './types';
 
@@ -16,6 +23,18 @@ export class TelemetryFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
   constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
+
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: vscode.DocumentSelector | undefined) => void)
+    | undefined;
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!capabilities['experimental']) {

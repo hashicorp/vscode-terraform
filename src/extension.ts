@@ -1,9 +1,14 @@
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
+  CloseAction,
   DocumentSelector,
+  ErrorAction,
+  InitializeError,
   LanguageClient,
   LanguageClientOptions,
+  Message,
+  ResponseError,
   RevealOutputChannelOn,
   State,
 } from 'vscode-languageclient/node';
@@ -21,7 +26,6 @@ import { ModuleCallsFeature } from './features/moduleCalls';
 import { getInitializationOptions, migrateLegacySettings, previewExtensionPresent } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
-import { ExtensionErrorHandler } from './handlers/errorHandler';
 import { TerraformVersionFeature } from './features/terraformVersion';
 
 const id = 'terraform';
@@ -34,6 +38,8 @@ const outputChannel = vscode.window.createOutputChannel(brand);
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
+let initializationError: ResponseError<InitializeError> | undefined = undefined;
+let crashCount = 0;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;
@@ -63,7 +69,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const initializationOptions = getInitializationOptions();
 
-  const errorHandler = new ExtensionErrorHandler(outputChannel, reporter);
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
     synchronize: {
@@ -72,13 +77,92 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tfvars'),
       ],
     },
-    initializationOptions: initializationOptions,
-    initializationFailedHandler: () => {
-      return false;
-    },
-    errorHandler: errorHandler,
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
+    initializationOptions: initializationOptions,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    initializationFailedHandler: (error: ResponseError<InitializeError> | Error | any) => {
+      initializationError = error;
+
+      reporter.sendTelemetryException(error);
+
+      let msg = 'Failure to start terraform-ls. Please check your configuration settings and reload this window';
+
+      const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
+      if (serverArgs[0] !== 'serve') {
+        msg =
+          'Failure to start terraform-ls. You need at least a "serve" argument in languageServer.args array. Please check your configuration settings and reload this window';
+      }
+
+      // more pre-flight checks
+
+      vscode.window
+        .showErrorMessage(
+          msg,
+          {
+            detail: '',
+            modal: false,
+          },
+          { title: 'Open Settings' },
+          { title: 'Open Logs' },
+          { title: 'More Info' },
+        )
+        .then(async (choice) => {
+          if (choice === undefined) {
+            return;
+          }
+
+          switch (choice.title) {
+            case 'Open Logs':
+              outputChannel.show();
+              break;
+            case 'Open Settings':
+              await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hashicorp.terraform');
+              break;
+            case 'More Info':
+              await vscode.commands.executeCommand(
+                'vscode.open',
+                vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform#troubleshooting'),
+              );
+              break;
+          }
+        });
+
+      return false;
+    },
+    errorHandler: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      error: (_error: Error, _message: Message, _count: number) => {
+        return {
+          message: '', // this ensures duplicate message windows are not raised
+          action: ErrorAction.Shutdown,
+        };
+      },
+      closed: () => {
+        if (initializationError !== undefined) {
+          // this error is being handled by initializationHandler
+          return {
+            message: '',
+            action: CloseAction.DoNotRestart,
+          };
+        }
+
+        // restart at least once in order for initializationError to be populated
+        crashCount = crashCount + 1;
+        if (crashCount <= 1) {
+          return {
+            message: '', // suppresses error popups
+            action: CloseAction.Restart,
+          };
+        }
+
+        // this is not an intialization error, so we don't know what went wrong yet
+        return {
+          message: 'Failure to start terraform-ls. Please check your configuration settings and reload this window',
+          action: CloseAction.DoNotRestart,
+        };
+      },
+    },
   };
 
   client = new LanguageClient(id, serverOptions, clientOptions);
@@ -101,20 +185,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // these need the LS to function, so are only registered if enabled
   context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter));
 
-  await startLanguageServer(context);
-}
-
-export async function deactivate(): Promise<void> {
-  stopLanguageServer();
-}
-
-async function startLanguageServer(ctx: vscode.ExtensionContext) {
   try {
     console.log('Starting client');
 
-    ctx.subscriptions.push(client.start());
-
-    await client.onReady();
+    await client.start();
 
     reporter.sendTelemetryEvent('startClient');
 
@@ -124,11 +198,11 @@ async function startLanguageServer(ctx: vscode.ExtensionContext) {
       console.log(`Multi-folder support: ${multiFoldersSupported}`);
     }
   } catch (error) {
-    await handleLanguageClientStartError(error, ctx, reporter);
+    await handleLanguageClientStartError(error, context, reporter);
   }
 }
 
-async function stopLanguageServer() {
+export async function deactivate(): Promise<void> {
   try {
     await client?.stop();
   } catch (error) {
@@ -137,8 +211,8 @@ async function stopLanguageServer() {
       reporter.sendTelemetryException(error);
       vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
-      vscode.window.showErrorMessage(error);
       reporter.sendTelemetryException(new Error(error));
+      vscode.window.showErrorMessage(error);
     }
   }
 }

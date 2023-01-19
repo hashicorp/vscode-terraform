@@ -170,8 +170,8 @@ export async function handleLanguageClientStartError(
 ) {
   let message = 'Unknown Error';
   if (error instanceof ResponseError<InitializeError>) {
-    message = error.data;
-    reporter.sendTelemetryException(error);
+    // handled in initializationFailedHandler
+    return;
   } else if (error instanceof Error) {
     message = error.message;
     reporter.sendTelemetryException(error);
@@ -225,6 +225,6 @@ export async function handleLanguageClientStartError(
         );
     }
   } else {
-    vscode.window.showErrorMessage(message);
+    await vscode.window.showErrorMessage(message);
   }
 }

@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import {
   BaseLanguageClient,
   ClientCapabilities,
+  DocumentSelector,
+  FeatureState,
+  InitializeParams,
   ReferenceContext,
   ReferencesRequest,
   ServerCapabilities,
@@ -28,6 +31,18 @@ export class ShowReferencesFeature implements StaticFeature {
   private isEnabled = config('terraform').get<boolean>('codelens.referenceCount', false);
 
   constructor(private _client: BaseLanguageClient) {}
+
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+
+  preInitialize?:
+    | ((capabilities: ServerCapabilities<any>, documentSelector: DocumentSelector | undefined) => void)
+    | undefined;
+
+  getState(): FeatureState {
+    return {
+      kind: 'static',
+    };
+  }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (this.isEnabled === false) {
