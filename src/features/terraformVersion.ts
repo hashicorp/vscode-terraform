@@ -50,7 +50,7 @@ export class TerraformVersionFeature implements StaticFeature {
 
       try {
         const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
-        this.terraformStatus.text = response.discovered_version;
+        this.terraformStatus.text = response.discovered_version || 'N/A';
       } catch (error) {
         let message = 'Unknown Error';
         if (error instanceof Error) {

@@ -45,8 +45,8 @@ interface ModuleProvidersResponse {
 
 export interface TerraformInfoResponse {
   v: number;
-  required_version: string;
-  discovered_version: string;
+  required_version?: string;
+  discovered_version?: string;
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
