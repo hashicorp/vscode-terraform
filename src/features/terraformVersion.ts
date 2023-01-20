@@ -12,7 +12,11 @@ export class TerraformVersionFeature implements StaticFeature {
 
   private clientTerraformVersionCommandId = 'client.refreshTerraformVersion';
 
-  private terraformStatus = vscode.languages.createLanguageStatusItem('terraform.status', [
+  private installedVersion = vscode.languages.createLanguageStatusItem('terraform.installedVersion', [
+    { language: 'terraform' },
+    { language: 'terraform-vars' },
+  ]);
+  private requiredVersion = vscode.languages.createLanguageStatusItem('terraform.requiredVersion', [
     { language: 'terraform' },
     { language: 'terraform-vars' },
   ]);
@@ -22,9 +26,14 @@ export class TerraformVersionFeature implements StaticFeature {
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
   ) {
-    this.terraformStatus.name = 'Terraform';
-    this.terraformStatus.detail = 'Terraform Version';
-    this.disposables.push(this.terraformStatus);
+    this.installedVersion.name = 'TerraformInstalledVersion';
+    this.installedVersion.detail = 'Installed Version';
+
+    this.requiredVersion.name = 'TerraformRequiredVersion';
+    this.requiredVersion.detail = 'Required Version';
+
+    this.disposables.push(this.installedVersion);
+    this.disposables.push(this.requiredVersion);
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
@@ -50,7 +59,8 @@ export class TerraformVersionFeature implements StaticFeature {
 
       try {
         const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
-        this.terraformStatus.text = response.discovered_version || 'N/A';
+        this.installedVersion.text = response.discovered_version || 'N/A';
+        this.requiredVersion.text = response.required_version || 'N/A';
       } catch (error) {
         let message = 'Unknown Error';
         if (error instanceof Error) {
