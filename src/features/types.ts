@@ -7,5 +7,6 @@ export interface ExperimentalClientCapabilities {
     showReferencesCommandId?: string;
     refreshModuleProvidersCommandId?: string;
     refreshModuleCallsCommandId?: string;
+    refreshTerraformVersionCommandId?: string;
   };
 }
