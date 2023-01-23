@@ -59,8 +59,8 @@ export class TerraformVersionFeature implements StaticFeature {
 
       try {
         const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
-        this.installedVersion.text = response.discovered_version || 'N/A';
-        this.requiredVersion.text = response.required_version || 'N/A';
+        this.installedVersion.text = response.discovered_version || 'unknown';
+        this.requiredVersion.text = response.required_version || 'any';
       } catch (error) {
         let message = 'Unknown Error';
         if (error instanceof Error) {
