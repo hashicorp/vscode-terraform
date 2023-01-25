@@ -61,7 +61,7 @@ jobs:
       fail-fast: false
       matrix:
         vscode:
-          - '1.67.0'
+          - '1.67.2'
           - 'insiders'
           - 'stable'
         os:
