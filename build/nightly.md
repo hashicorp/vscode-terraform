@@ -1,4 +1,4 @@
-# Terraform Preivew Visual Studio Code Extension
+# Terraform Preview Visual Studio Code Extension
 
 > ### **ATTENTION: This is the *preview* version of the [VS Code Terraform extension](https://github.com/golang/vscode-terraform), used for early feedback and testing.**
 > It is contains previews of new features and bug fixes that are still under review or test. Therefore, this extension can be broken or unstable at times. If you are looking for the stable version,
