@@ -17,12 +17,6 @@ export class ModuleProvidersFeature implements StaticFeature {
 
   constructor(private client: BaseLanguageClient, private view: ModuleProvidersDataProvider) {}
 
-  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
-
-  preInitialize?:
-    | ((capabilities: ServerCapabilities<any>, documentSelector: vscode.DocumentSelector | undefined) => void)
-    | undefined;
-
   getState(): FeatureState {
     return {
       kind: 'static',

@@ -42,12 +42,6 @@ export class TerraformVersionFeature implements StaticFeature {
     this.disposables.push(this.requiredVersion);
   }
 
-  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
-
-  preInitialize?:
-    | ((capabilities: ServerCapabilities<any>, documentSelector: vscode.DocumentSelector | undefined) => void)
-    | undefined;
-
   getState(): FeatureState {
     return {
       kind: 'static',

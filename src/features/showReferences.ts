@@ -32,12 +32,6 @@ export class ShowReferencesFeature implements StaticFeature {
 
   constructor(private _client: BaseLanguageClient) {}
 
-  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
-
-  preInitialize?:
-    | ((capabilities: ServerCapabilities<any>, documentSelector: DocumentSelector | undefined) => void)
-    | undefined;
-
   getState(): FeatureState {
     return {
       kind: 'static',

@@ -24,12 +24,6 @@ export class TelemetryFeature implements StaticFeature {
 
   constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
 
-  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
-
-  preInitialize?:
-    | ((capabilities: ServerCapabilities<any>, documentSelector: vscode.DocumentSelector | undefined) => void)
-    | undefined;
-
   getState(): FeatureState {
     return {
       kind: 'static',

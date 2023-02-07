@@ -22,12 +22,6 @@ interface ObjectWithId {
 export class CustomSemanticTokens implements StaticFeature {
   constructor(private _client: BaseLanguageClient, private manifest: PartialManifest) {}
 
-  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
-
-  preInitialize?:
-    | ((capabilities: ServerCapabilities<any>, documentSelector: DocumentSelector | undefined) => void)
-    | undefined;
-
   getState(): FeatureState {
     return {
       kind: 'static',
