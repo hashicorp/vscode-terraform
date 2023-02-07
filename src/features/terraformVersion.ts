@@ -1,12 +1,6 @@
 import * as vscode from 'vscode';
 import * as terraform from '../terraform';
-import {
-  ClientCapabilities,
-  FeatureState,
-  InitializeParams,
-  ServerCapabilities,
-  StaticFeature,
-} from 'vscode-languageclient';
+import { ClientCapabilities, FeatureState, ServerCapabilities, StaticFeature } from 'vscode-languageclient';
 import { getActiveTextEditor } from '../utils/vscode';
 import { ExperimentalClientCapabilities } from './types';
 import { Utils } from 'vscode-uri';

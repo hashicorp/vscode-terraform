@@ -2,9 +2,7 @@ import * as vscode from 'vscode';
 import {
   BaseLanguageClient,
   ClientCapabilities,
-  DocumentSelector,
   FeatureState,
-  InitializeParams,
   ReferenceContext,
   ReferencesRequest,
   ServerCapabilities,

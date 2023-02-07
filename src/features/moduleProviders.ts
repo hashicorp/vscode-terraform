@@ -3,7 +3,6 @@ import {
   BaseLanguageClient,
   ClientCapabilities,
   FeatureState,
-  InitializeParams,
   ServerCapabilities,
   StaticFeature,
 } from 'vscode-languageclient';

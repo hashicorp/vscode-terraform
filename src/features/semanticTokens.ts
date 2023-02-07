@@ -1,9 +1,7 @@
 import {
   BaseLanguageClient,
   ClientCapabilities,
-  DocumentSelector,
   FeatureState,
-  InitializeParams,
   ServerCapabilities,
   StaticFeature,
 } from 'vscode-languageclient';
