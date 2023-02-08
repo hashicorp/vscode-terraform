@@ -91,10 +91,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
       if (serverArgs[0] !== 'serve') {
         msg =
-          'Failure to start terraform-ls. You need at least a "serve" argument in languageServer.args array. Please check your configuration settings and reload this window';
+          'You need at least a "serve" argument in the `terraform.languageServer.args` setting. Please check your configuration settings and reload this window';
       }
-
-      // more pre-flight checks
 
       vscode.window
         .showErrorMessage(
