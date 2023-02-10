@@ -94,6 +94,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           'You need at least a "serve" argument in the `terraform.languageServer.args` setting. Please check your configuration settings and reload this window';
       }
 
+      outputChannel.appendLine(msg);
+
       vscode.window
         .showErrorMessage(
           msg,
@@ -130,16 +132,20 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     },
     errorHandler: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      error: (_error: Error, _message: Message, _count: number) => {
+      error: (error: Error, message: Message, count: number) => {
         return {
-          message: '', // this ensures duplicate message windows are not raised
+          message: `Terraform LS connection error: (${count ?? 0})\n${error?.message}\n${message?.jsonrpc}`,
           action: ErrorAction.Shutdown,
         };
       },
       closed: () => {
         if (initializationError !== undefined) {
           // this error is being handled by initializationHandler
+          outputChannel.appendLine('Initialization error handled by handler');
           return {
+            // this will log an empty line in outputchannel
+            // but not pop an error dialog to user so we can
+            // pop a custom error later
             message: '',
             action: CloseAction.DoNotRestart,
           };
@@ -148,13 +154,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         // restart at least once in order for initializationError to be populated
         crashCount = crashCount + 1;
         if (crashCount <= 1) {
+          outputChannel.appendLine('Server has failed. Restarting');
           return {
-            message: '', // suppresses error popups
+            // message: '', // suppresses error popups
             action: CloseAction.Restart,
           };
         }
 
         // this is not an intialization error, so we don't know what went wrong yet
+        // write to log and stop attempting to restart server
+        // initializationFailedHandler will handle showing an error to user
+        outputChannel.appendLine(
+          'Failure to start terraform-ls. Please check your configuration settings and reload this window',
+        );
         return {
           message: 'Failure to start terraform-ls. Please check your configuration settings and reload this window',
           action: CloseAction.DoNotRestart,
@@ -165,7 +177,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   client = new LanguageClient(id, serverOptions, clientOptions);
   client.onDidChangeState((event) => {
-    console.log(`Client: ${State[event.oldState]} --> ${State[event.newState]}`);
+    outputChannel.appendLine(`Client: ${State[event.oldState]} --> ${State[event.newState]}`);
     if (event.newState === State.Stopped) {
       reporter.sendTelemetryEvent('stopClient');
     }
@@ -184,7 +196,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter));
 
   try {
-    console.log('Starting client');
+    outputChannel.appendLine('Starting client');
 
     await client.start();
 
@@ -193,7 +205,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     const initializeResult = client.initializeResult;
     if (initializeResult !== undefined) {
       const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-      console.log(`Multi-folder support: ${multiFoldersSupported}`);
+      outputChannel.appendLine(`Multi-folder support: ${multiFoldersSupported}`);
     }
   } catch (error) {
     await handleLanguageClientStartError(error, context, reporter);
@@ -204,11 +216,12 @@ export async function deactivate(): Promise<void> {
   try {
     await client?.stop();
   } catch (error) {
-    console.log(error); // for test failure reporting
     if (error instanceof Error) {
+      outputChannel.appendLine(error.message);
       reporter.sendTelemetryException(error);
       vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
+      outputChannel.appendLine(error);
       reporter.sendTelemetryException(new Error(error));
       vscode.window.showErrorMessage(error);
     }
