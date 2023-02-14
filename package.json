@@ -15,7 +15,7 @@
   "engines": {
     "npm": "~8.X",
     "node": "~16.X",
-    "vscode": "^1.65.2"
+    "vscode": "^1.67.2"
   },
   "langServer": {
     "version": "0.30.1"
@@ -666,7 +666,7 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
-    "vscode-languageclient": "^7.0.0",
+    "vscode-languageclient": "8.0.2",
     "vscode-uri": "^3.0.2",
     "which": "^2.0.2"
   },
@@ -677,7 +677,7 @@
     "@types/jest": "^27.0.3",
     "@types/mocha": "^9.1.1",
     "@types/node": "^16.11.7",
-    "@types/vscode": "^1.65.2",
+    "@types/vscode": "^1.67.2",
     "@types/webpack-env": "^1.18.0",
     "@types/which": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
