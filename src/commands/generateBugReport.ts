@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import child_process = require('child_process');
 import * as os from 'os';
 import * as vscode from 'vscode';

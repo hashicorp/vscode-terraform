@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 // imports mocha for the browser, defining the `mocha` global.
 require('mocha/mocha');
 
