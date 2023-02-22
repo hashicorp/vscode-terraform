@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import * as net from 'net';
 import * as vscode from 'vscode';
 import { Executable, InitializeResult, ServerOptions } from 'vscode-languageclient/node';
