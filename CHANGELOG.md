@@ -1,3 +1,35 @@
+## [2.26.0] (Unreleased)
+
+ENHANCEMENTS:
+
+* Add support for nested expressions and functions ([terraform-ls#1237](https://github.com/hashicorp/terraform-ls/pull/1237), [hcl-lang#232](https://github.com/hashicorp/hcl-lang/pull/232), [hcl-lang#203](https://github.com/hashicorp/hcl-lang/pull/203), [hcl-lang#199](https://github.com/hashicorp/hcl-lang/pull/199), [hcl-lang#186](https://github.com/hashicorp/hcl-lang/pull/186), [hcl-lang#185](https://github.com/hashicorp/hcl-lang/pull/185), [hcl-lang#184](https://github.com/hashicorp/hcl-lang/pull/184), )
+* Add support for function signature help in ([terraform-ls#1077](https://github.com/hashicorp/terraform-ls/pull/1077))
+* Fix remote backend tracking in ([terraform-ls#1218](https://github.com/hashicorp/terraform-ls/pull/1218))
+* Recognise new token type for function names in ([#1371](https://github.com/hashicorp/vscode-terraform/pull/1371), [terraform-ls#1233](https://github.com/hashicorp/terraform-ls/pull/1233))
+
+INTERNAL:
+
+* Add copywrite GHA ([#1347](https://github.com/hashicorp/vscode-terraform/pull/1347))
+* Bump @vscode/test-electron from 2.2.3 to 2.3.0 ([#1351](https://github.com/hashicorp/vscode-terraform/pull/1351))
+* Bump @vscode/vsce from 2.17.0 to 2.18.0 ([#1349](https://github.com/hashicorp/vscode-terraform/pull/1349))
+* Bump actions/checkout from 3.3.0 to 3.4.0 ([#1360](https://github.com/hashicorp/vscode-terraform/pull/1360))
+* Bump actions/checkout from 3.4.0 to 3.5.0 ([#1368](https://github.com/hashicorp/vscode-terraform/pull/1368))
+* Bump actions/stale from 7.0.0 to 8.0.0 ([#1366](https://github.com/hashicorp/vscode-terraform/pull/1366))
+* Bump eslint from 8.34.0 to 8.35.0 ([#1350](https://github.com/hashicorp/vscode-terraform/pull/1350))
+* Bump eslint from 8.35.0 to 8.36.0 ([#1357](https://github.com/hashicorp/vscode-terraform/pull/1357))
+* Bump eslint from 8.36.0 to 8.37.0 ([#1369](https://github.com/hashicorp/vscode-terraform/pull/1369))
+* Bump eslint-config-prettier from 8.6.0 to 8.7.0 ([#1352](https://github.com/hashicorp/vscode-terraform/pull/1352))
+* Bump eslint-config-prettier from 8.7.0 to 8.8.0 ([#1361](https://github.com/hashicorp/vscode-terraform/pull/1361))
+* Bump prettier from 2.8.4 to 2.8.5 ([#1362](https://github.com/hashicorp/vscode-terraform/pull/1362))
+* Bump prettier from 2.8.5 to 2.8.6 ([#1363](https://github.com/hashicorp/vscode-terraform/pull/1363))
+* Bump prettier from 2.8.6 to 2.8.7 ([#1367](https://github.com/hashicorp/vscode-terraform/pull/1367))
+* Bump webpack from 5.75.0 to 5.76.0 ([#1354](https://github.com/hashicorp/vscode-terraform/pull/1354))
+* Bump webpack from 5.76.0 to 5.76.1 ([#1358](https://github.com/hashicorp/vscode-terraform/pull/1358))
+* Bump webpack from 5.76.1 to 5.76.2 ([#1359](https://github.com/hashicorp/vscode-terraform/pull/1359))
+* Bump webpack from 5.76.2 to 5.76.3 ([#1365](https://github.com/hashicorp/vscode-terraform/pull/1365))
+* Bump webpack from 5.76.3 to 5.77.0 ([#1370](https://github.com/hashicorp/vscode-terraform/pull/1370))
+* Bump webpack from 5.77.0 to 5.78.0 ([#1375](https://github.com/hashicorp/vscode-terraform/pull/1375))
+
 ## [2.25.4] (2023-02-22)
 
 BUG FIXES:
