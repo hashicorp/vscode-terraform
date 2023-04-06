@@ -156,6 +156,11 @@
         "id": "hcl-typePrimitive",
         "superType": "keyword",
         "description": "Type (primitive)"
+      },
+      {
+        "id": "hcl-functionName",
+        "superType": "function",
+        "description": "Function name"
       }
     ],
     "semanticTokenScopes": [
@@ -196,6 +201,9 @@
           ],
           "hcl-typePrimitive": [
             "keyword.control"
+          ],
+          "hcl-functionName": [
+            "support.function"
           ]
         }
       }
