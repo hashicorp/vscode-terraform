@@ -1,3 +1,12 @@
+## [2.26.0] (Unreleased)
+
+ENHANCEMENTS:
+
+* Add support for nested expressions and functions ([terraform-ls#1237](https://github.com/hashicorp/terraform-ls/pull/1237), [hcl-lang#232](https://github.com/hashicorp/hcl-lang/pull/232), [hcl-lang#203](https://github.com/hashicorp/hcl-lang/pull/203), [hcl-lang#199](https://github.com/hashicorp/hcl-lang/pull/199), [hcl-lang#186](https://github.com/hashicorp/hcl-lang/pull/186), [hcl-lang#185](https://github.com/hashicorp/hcl-lang/pull/185), [hcl-lang#184](https://github.com/hashicorp/hcl-lang/pull/184), )
+* Add support for function signature help in ([terraform-ls#1077](https://github.com/hashicorp/terraform-ls/pull/1077))
+* Fix remote backend tracking in ([terraform-ls#1218](https://github.com/hashicorp/terraform-ls/pull/1218))
+* Recognise new token type for function names in ([#1371](https://github.com/hashicorp/vscode-terraform/pull/1371), [terraform-ls#1233](https://github.com/hashicorp/terraform-ls/pull/1233))
+
 ## [2.25.4] (2023-02-22)
 
 BUG FIXES:
