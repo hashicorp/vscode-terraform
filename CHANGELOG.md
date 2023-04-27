@@ -16,14 +16,14 @@ INTERNAL:
 
 BUG FIXES:
 
- - Bundle static builds of Linux binaries (again) ([terraform-ls#1193](https://github.com/hashicorp/terraform-ls/issues/1193]))
+ - Bundle static builds of Linux binaries (again) ([terraform-ls#1193](https://github.com/hashicorp/terraform-ls/issues/1193))
 
 ## [2.25.3] (2023-02-22)
 
 BUG FIXES:
 
- - Ignore inaccessible files (such as emacs backup files) ([terraform-ls#1172](https://github.com/hashicorp/terraform-ls/issues/1067]))
- - Fix crash when parsing JSON files (introduced in 2.25.0) ([hcl-lang#202](https://github.com/hashicorp/hcl-lang/pull/202]))
+ - Ignore inaccessible files (such as emacs backup files) ([terraform-ls#1172](https://github.com/hashicorp/terraform-ls/issues/1067))
+ - Fix crash when parsing JSON files (introduced in 2.25.0) ([hcl-lang#202](https://github.com/hashicorp/hcl-lang/pull/202))
  - Fix spelling of preview in readme ([#1329](https://github.com/hashicorp/vscode-terraform/pull/1329))
 
 ENHANCEMENTS:
