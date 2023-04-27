@@ -1,16 +1,26 @@
 ## [2.26.0] (2023-04-27)
 
+BUG FIXES:
+
+* When completing `LiteralValue` do not ignore `Description` & `IsDeprecated` fields ([hcl-lang#253](https://github.com/hashicorp/hcl-lang/pull/253))
+* Provide completion for `Tuple` attribute types and values ([hcl-lang#255](https://github.com/hashicorp/hcl-lang/pull/255))
+* Display `Tuple` hover data on invalid elements ([hcl-lang#254](https://github.com/hashicorp/hcl-lang/pull/254))
+* Display fully inferred type of List, Set, Tuple, Map and Object complex types ([hcl-lang#259](https://github.com/hashicorp/hcl-lang/pull/259))
+* Collect targets w/ interpolation for `Any` correctly ([hcl-lang#257](https://github.com/hashicorp/hcl-lang/pull/257))
+* Fix remote backend usage in ([terraform-ls#1218](https://github.com/hashicorp/terraform-ls/pull/1218))
+* Display completion label details even if empty by updating to gopls v0.10.0 tsprotocol.go to ([#1256](https://github.com/hashicorp/terraform-ls/pull/1256))
+
 ENHANCEMENTS:
 
+* Improve editor performance in cases where Terraform module information is unavailable due to private registries, submodules, no network, or other similiar situations ([terraform-ls#1258](https://github.com/hashicorp/terraform-ls/pull/1258))
 * Add support for nested expressions and functions ([terraform-ls#1237](https://github.com/hashicorp/terraform-ls/pull/1237), [hcl-lang#232](https://github.com/hashicorp/hcl-lang/pull/232), [hcl-lang#203](https://github.com/hashicorp/hcl-lang/pull/203), [hcl-lang#199](https://github.com/hashicorp/hcl-lang/pull/199), [hcl-lang#186](https://github.com/hashicorp/hcl-lang/pull/186), [hcl-lang#185](https://github.com/hashicorp/hcl-lang/pull/185), [hcl-lang#184](https://github.com/hashicorp/hcl-lang/pull/184), )
-* Add support for function signature help in ([terraform-ls#1077](https://github.com/hashicorp/terraform-ls/pull/1077))
-* Cache registry module errors to improve performance in cases of private registry, submodules or other similar situations resulting in module data unavailability ([terraform-ls#1258](https://github.com/hashicorp/terraform-ls/pull/1258))
-* Fix remote backend tracking in ([terraform-ls#1218](https://github.com/hashicorp/terraform-ls/pull/1218))
-* Recognise new token type for function names in ([#1371](https://github.com/hashicorp/vscode-terraform/pull/1371), [terraform-ls#1233](https://github.com/hashicorp/terraform-ls/pull/1233))
+* Add support for function signature completion, hover and more ([terraform-ls#1077](https://github.com/hashicorp/terraform-ls/pull/1077))
+* Recognise new semantic token types for function names ([#1371](https://github.com/hashicorp/vscode-terraform/pull/1371), [terraform-ls#1233](https://github.com/hashicorp/terraform-ls/pull/1233))
 
 INTERNAL:
 
 * Add copywrite GHA ([#1347](https://github.com/hashicorp/vscode-terraform/pull/1347))
+* Add TFC usage detection ([#1208](https://github.com/hashicorp/terraform-ls/pull/1208))
 
 ## [2.25.4] (2023-02-22)
 
