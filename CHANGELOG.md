@@ -13,7 +13,7 @@ BUG FIXES:
 ENHANCEMENTS:
 
 * Improve editor performance in cases where Terraform module information is unavailable due to private registries, submodules, no network, or other similiar situations ([terraform-ls#1258](https://github.com/hashicorp/terraform-ls/pull/1258))
-* Add support for nested expressions and functions ([terraform-ls#1237](https://github.com/hashicorp/terraform-ls/pull/1237), [hcl-lang#232](https://github.com/hashicorp/hcl-lang/pull/232), [hcl-lang#203](https://github.com/hashicorp/hcl-lang/pull/203), [hcl-lang#199](https://github.com/hashicorp/hcl-lang/pull/199), [hcl-lang#186](https://github.com/hashicorp/hcl-lang/pull/186), [hcl-lang#185](https://github.com/hashicorp/hcl-lang/pull/185), [hcl-lang#184](https://github.com/hashicorp/hcl-lang/pull/184), )
+* Add completion, hover and token support for nested expressions within nested objects or lists ([terraform-ls#1237](https://github.com/hashicorp/terraform-ls/pull/1237), [hcl-lang#232](https://github.com/hashicorp/hcl-lang/pull/232), [hcl-lang#203](https://github.com/hashicorp/hcl-lang/pull/203), [hcl-lang#199](https://github.com/hashicorp/hcl-lang/pull/199), [hcl-lang#186](https://github.com/hashicorp/hcl-lang/pull/186), [hcl-lang#185](https://github.com/hashicorp/hcl-lang/pull/185), [hcl-lang#184](https://github.com/hashicorp/hcl-lang/pull/184), )
 * Add support for function signature completion, hover and more ([terraform-ls#1077](https://github.com/hashicorp/terraform-ls/pull/1077))
 * Recognise new semantic token types for function names ([#1371](https://github.com/hashicorp/vscode-terraform/pull/1371), [terraform-ls#1233](https://github.com/hashicorp/terraform-ls/pull/1233))
 
