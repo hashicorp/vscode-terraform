@@ -121,10 +121,10 @@ The extension provides access to several Terraform commands through the Command 
 
 The Terraform VS Code extension bundles the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) and is a self-contained install.
 
-The extension recommends the following to be installed before use
+The extension does require the following to be installed before use:
 
-- VS Code v1.75 or higher
-- Terraform v0.12 or higher
+- VS Code v1.75 or greater
+- Terraform v0.12 or greater
 
 ## Platform Support
 
