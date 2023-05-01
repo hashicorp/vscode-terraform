@@ -459,6 +459,18 @@
         }
       },
       {
+        "title": "Terraform Cloud",
+        "order": 3,
+        "properties": {
+          "terraform.cloud.hostname": {
+            "order": 0,
+            "type": "string",
+            "description": "Terraform Cloud instance",
+            "default": "app.terraform.io"
+          }
+        }
+      },
+      {
         "title": "Experimental Features",
         "order": 4,
         "properties": {
