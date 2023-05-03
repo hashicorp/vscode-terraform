@@ -64,7 +64,7 @@ jobs:
           npm_config_arch: ${{ matrix.npm_config_arch }}
           ls_target: ${{ matrix.ls_target }}
       - name: Package VSIX
-        run: npm run package -- --target=${{ matrix.vsce_target }}
+        run: npm run package -- --pre-release --target=${{ matrix.vsce_target }}
       - name: Upload vsix as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # https://github.com/actions/upload-artifact/releases/tag/v3.1.2
         with:
@@ -84,6 +84,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
       - name: Publish Preview Extension
-        run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
+        run: npx vsce publish --pre-release --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
