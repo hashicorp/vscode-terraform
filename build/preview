@@ -13,19 +13,10 @@ if [ -z "${LANGUAGE_SERVER_VERSION:-}" ]; then
   LANGUAGE_SERVER_VERSION="$(jq -r .langServer.version package.json)"
 fi
 
-# Get existing name & description
-DISPLAY_NAME="$(jq -r .displayName package.json) (Preview)"
-DESCRIPTION="$(jq -r .description package.json) (Preview)"
-
 # set preview info in package.json
-(cat package.json | jq --arg VER $VERSION --arg LANGVER $LANGUAGE_SERVER_VERSION --arg NAME "$DISPLAY_NAME" --arg DESC "$DESCRIPTION" '
+(cat package.json | jq --arg VER $VERSION --arg LANGVER $LANGUAGE_SERVER_VERSION '
 .version=$VER |
 .langServer.version=$LANGVER |
-.preview=true |
-.name="terraform-preview" |
-.icon="assets/icons/terraform_logo_mark_dark_universal.png" |
-.displayName=$NAME |
-.description=$DESC
 ') > /tmp/package.json && mv /tmp/package.json package.json
 
 # prepend preview info to README.md
