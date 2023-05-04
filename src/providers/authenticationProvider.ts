@@ -36,7 +36,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
   constructor(private readonly secretStorage: vscode.SecretStorage, private readonly ctx: vscode.ExtensionContext) {
-    this.logger = vscode.window.createOutputChannel('HashiCorp Terraform Cloud Authentication', { log: true });
+    this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.login', async () => {
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
