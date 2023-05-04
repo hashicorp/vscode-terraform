@@ -28,7 +28,7 @@ import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
 import { ModuleCallsFeature } from './features/moduleCalls';
-import { getInitializationOptions, migrateLegacySettings, previewExtensionPresent } from './settings';
+import { getInitializationOptions, migrateLegacySettings } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import { TerraformVersionFeature } from './features/terraformVersion';
@@ -50,11 +50,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const manifest = context.extension.packageJSON;
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
-
-  if (previewExtensionPresent(context.extension.id)) {
-    reporter.sendTelemetryEvent('previewExtensionPresentWithStable');
-    return undefined;
-  }
 
   await migrateLegacySettings(context);
 

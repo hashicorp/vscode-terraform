@@ -157,24 +157,3 @@ export async function migrateLegacySettings(ctx: vscode.ExtensionContext) {
   await deleteSetting('terraform-ls', 'experimentalFeatures');
   await vscode.commands.executeCommand('workbench.action.reloadWindow');
 }
-
-export function previewExtensionPresent(currentExtensionID: string) {
-  const stable = vscode.extensions.getExtension('hashicorp.terraform');
-  const preview = vscode.extensions.getExtension('hashicorp.terraform-preview');
-
-  const msg = 'Please ensure only one is enabled or installed and reload this window';
-
-  if (currentExtensionID === 'hashicorp.terraform-preview') {
-    if (stable !== undefined) {
-      vscode.window.showErrorMessage('Terraform Preview cannot be used while Terraform Stable is also enabled.' + msg);
-      return true;
-    }
-  } else if (currentExtensionID === 'hashicorp.terraform') {
-    if (preview !== undefined) {
-      vscode.window.showErrorMessage('Terraform Stable cannot be used while Terraform Preview is also enabled.' + msg);
-      return true;
-    }
-  }
-
-  return false;
-}
