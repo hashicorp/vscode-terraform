@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       langserver:
-        description: "The terraform-ls version to use. If not specified will use version in package.json"
+        description: 'The terraform-ls version to use. If not specified will use version in package.json'
         required: false
         type: string
 
@@ -44,20 +44,20 @@ jobs:
           - vsce_target: darwin-arm64
             ls_target: darwin_arm64
             npm_config_arch: arm64
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     steps:
       - name: Check out repository
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # https://github.com/actions/checkout/releases/tag/v3.5.2
       - name: Set preview in package.json
         id: set-preview
         run: |
-          ./build/preview
+          ./build/preview.sh
         env:
           LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
       - name: Setup Node
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # https://github.com/actions/setup-node/releases/tag/v3.6.0
         with:
-          node-version-file: ".nvmrc"
+          node-version-file: '.nvmrc'
       - name: Install dependencies
         run: npm ci
         env:
@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # https://github.com/actions/upload-artifact/releases/tag/v3.1.2
         with:
           name: ${{ matrix.vsce_target }}
-          path: "*.vsix"
+          path: '*.vsix'
       - name: Check latest published version
         shell: bash
         run: |
