@@ -29,7 +29,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private logger: vscode.LogOutputChannel;
 
   // this property is used to determine if the token has been changed in another window of VS Code.
-  private currentToken: Promise<string | undefined> | undefined;
+  private currentToken: string | undefined;
   private initializedDisposable: vscode.Disposable | undefined;
 
   private _onDidChangeSessions =
@@ -157,12 +157,12 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this._onDidChangeSessions.fire({ added: [], removed: [session], changed: [] });
   }
 
-  private ensureInitialized(): void {
+  private async ensureInitialized(): Promise<void> {
     if (this.initializedDisposable !== undefined) {
       return;
     }
 
-    void this.cacheTokenFromStorage();
+    await this.cacheTokenFromStorage();
 
     this.initializedDisposable = vscode.Disposable.from(
       // This onDidChange event happens when the secret storage changes in _any window_ since
@@ -190,7 +190,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const removed: vscode.AuthenticationSession[] = [];
     const changed: vscode.AuthenticationSession[] = [];
 
-    const previousToken = await this.currentToken;
+    const previousToken = this.currentToken;
     const session = (await this.getSessions())[0];
 
     if (session?.accessToken && !previousToken) {
@@ -206,14 +206,12 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       return;
     }
 
-    void this.cacheTokenFromStorage();
+    await this.cacheTokenFromStorage();
     this._onDidChangeSessions.fire({ added: added, removed: removed, changed: changed });
   }
 
-  private cacheTokenFromStorage() {
-    this.currentToken = this.secretStorage.get(TerraformCloudAuthenticationProvider.secretKey) as Promise<
-      string | undefined
-    >;
+  private async cacheTokenFromStorage() {
+    this.currentToken = await this.secretStorage.get(TerraformCloudAuthenticationProvider.secretKey);
     return this.currentToken;
   }
 
