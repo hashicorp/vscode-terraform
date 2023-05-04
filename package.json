@@ -669,8 +669,7 @@
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
-    "check-format": "npm run prettier -- --check",
-    "preview": "ts-node ./build/preview.ts"
+    "check-format": "npm run prettier -- --check"
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
