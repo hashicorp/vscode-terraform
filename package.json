@@ -48,6 +48,7 @@
     "url": "https://github.com/hashicorp/vscode-terraform.git"
   },
   "activationEvents": [
+    "onAuthenticationRequest:terraform",
     "onView:terraform-modules",
     "workspaceContains:**/*.tf",
     "workspaceContains:**/*.tfvars"
@@ -55,6 +56,12 @@
   "main": "./out/extension",
   "browser": "./out/web/extension",
   "contributes": {
+    "authentication": [
+      {
+        "id": "terraformcloud",
+        "label": "HashiCorp Terraform Cloud"
+      }
+    ],
     "languages": [
       {
         "id": "terraform",
@@ -384,6 +391,18 @@
         }
       },
       {
+        "title": "Terraform Cloud",
+        "order": 3,
+        "properties": {
+          "terraform.cloud.hostname": {
+            "order": 0,
+            "type": "string",
+            "description": "Terraform Cloud instance",
+            "default": "app.terraform.io"
+          }
+        }
+      },
+      {
         "title": "Experimental Features",
         "order": 4,
         "properties": {
@@ -403,6 +422,10 @@
       }
     ],
     "commands": [
+      {
+        "command": "terraform.cloud.login",
+        "title": "Terraform Cloud: Login"
+      },
       {
         "command": "terraform.generateBugReport",
         "title": "Terraform: Generate Bug Report"
@@ -578,6 +601,7 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
+    "axios": "^1.4.0",
     "vscode-languageclient": "8.1.0",
     "vscode-uri": "^3.0.7",
     "which": "^3.0.1"
