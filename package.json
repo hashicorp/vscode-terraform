@@ -693,10 +693,13 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
+    "@zodios/core": "^10.9.0",
+    "@zodios/plugins": "^10.6.0",
     "axios": "^1.4.0",
     "vscode-languageclient": "8.1.0",
     "vscode-uri": "^3.0.7",
-    "which": "^3.0.1"
+    "which": "^3.0.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@hashicorp/js-releases": "^1.6.1",
