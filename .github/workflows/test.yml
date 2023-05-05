@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - f-tfc
     paths-ignore:
       - 'syntaxes/**'
       - 'tests/**'
@@ -11,6 +12,7 @@ on:
   pull_request:
     branches:
       - main
+      - f-tfc
     paths-ignore:
       - 'syntaxes/**'
       - 'tests/**'
