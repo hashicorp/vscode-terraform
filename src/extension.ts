@@ -32,6 +32,7 @@ import { getInitializationOptions, migrateLegacySettings } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import { TerraformVersionFeature } from './features/terraformVersion';
+import { TerraformCloudAuthenticationProvider } from './providers/authenticationProvider';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -55,6 +56,15 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // always register commands needed to control terraform-ls
   context.subscriptions.push(new TerraformLSCommands());
+
+  context.subscriptions.push(
+    vscode.authentication.registerAuthenticationProvider(
+      TerraformCloudAuthenticationProvider.providerID,
+      TerraformCloudAuthenticationProvider.providerLabel,
+      new TerraformCloudAuthenticationProvider(context.secrets, context),
+      { supportsMultipleAccounts: false },
+    ),
+  );
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
