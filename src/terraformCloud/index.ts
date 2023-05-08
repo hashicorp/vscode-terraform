@@ -81,6 +81,37 @@ const organizationEndpoints = makeApi([
   },
 ]);
 
+const project = z.object({
+  id: z.string(),
+  attributes: z.object({
+    name: z.string(),
+  }),
+});
+
+const projects = z.object({
+  data: z.array(project),
+});
+
+const projectEndpoints = makeApi([
+  {
+    // TODO: pagination
+    method: 'get',
+    path: '/organizations/:organization_name/projects',
+    alias: 'listProjects',
+    description: 'List projects in the organization',
+    response: projects,
+  },
+  {
+    method: 'get',
+    path: '/projects/:project_id',
+    alias: 'getProject',
+    description: 'Get details on a project',
+    response: z.object({
+      data: project,
+    }),
+  },
+]);
+
 const workspace = z.object({
   data: z.object({
     description: z.string(),
@@ -224,6 +255,7 @@ earlyApiClient.use(pluginLogger());
 export const apiClient = new Zodios(getBaseURL(), [
   ...accountEndpoints,
   ...organizationEndpoints,
+  ...projectEndpoints,
   ...workspaceEndpoints,
   ...runEndpoints,
 ]);
