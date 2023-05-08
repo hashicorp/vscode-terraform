@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import { earlyApiClient as apiClient } from '../terraformCloud';
+import { earlyApiClient } from '../terraformCloud';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -69,7 +69,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
     try {
       // TODO: replace with secretStorage.get when all session data is in secretStorage
-      const user = await apiClient.getUser({
+      const user = await earlyApiClient.getUser({
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -119,7 +119,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     try {
-      const user = await apiClient.getUser({
+      const user = await earlyApiClient.getUser({
         headers: {
           authorization: `Bearer ${token}`,
         },
