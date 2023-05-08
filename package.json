@@ -48,12 +48,9 @@
     "url": "https://github.com/hashicorp/vscode-terraform.git"
   },
   "activationEvents": [
-    "onLanguage:terraform",
-    "onLanguage:terraform-vars",
     "onView:terraform-modules",
     "workspaceContains:**/*.tf",
-    "workspaceContains:**/*.tfvars",
-    "onCommand:terraform.enableLanguageServer"
+    "workspaceContains:**/*.tfvars"
   ],
   "main": "./out/extension",
   "browser": "./out/web/extension",
