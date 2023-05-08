@@ -27,6 +27,15 @@ const paginationParams = makeParameters([
   },
 ]);
 
+const projectFilterParams = makeParameters([
+  {
+    name: 'filter[project][id]',
+    type: 'Query',
+    description: 'Restricts results to workspaces in the specific project',
+    schema: z.string().optional(),
+  },
+]);
+
 const paginationMeta = z.object({
   'current-page': z.number(),
   'page-size': z.number(),
@@ -183,7 +192,7 @@ const workspaceEndpoints = makeApi([
     alias: 'listWorkspaces',
     description: 'List workspaces in the organization',
     response: workspaces,
-    parameters: paginationParams,
+    parameters: [...paginationParams, ...projectFilterParams],
   },
   {
     method: 'get',
