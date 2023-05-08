@@ -69,12 +69,14 @@ const organizationEndpoints = makeApi([
     method: 'get',
     path: '/organizations',
     alias: 'listOrganizations',
+    description: 'List organizations of the current user',
     response: organizations,
   },
   {
     method: 'get',
     path: '/organization-memberships',
     alias: 'listOrganizationMemberships',
+    description: 'List organization memberships of the current user',
     response: organizationMemberships,
   },
 ]);
@@ -114,12 +116,14 @@ const workspaceEndpoints = makeApi([
     method: 'get',
     path: '/organizations/:organization_name/workspaces',
     alias: 'listWorkspaces',
+    description: 'List workspaces in the organization',
     response: workspaces,
   },
   {
     method: 'get',
     path: '/workspaces/:workspace_id',
     alias: 'getWorkspace',
+    description: 'Get details on a workspace',
     response: workspace,
   },
 ]);
@@ -158,12 +162,14 @@ const runEndpoints = makeApi([
     method: 'get',
     path: '/workspaces/:workspace_id/runs',
     alias: 'listRuns',
+    description: 'List Runs in a Workspace',
     response: runs,
   },
   {
     method: 'get',
     path: '/runs/:run_id',
     alias: 'getRun',
+    description: 'Show details of a specific run',
     response: run,
   },
 ]);
