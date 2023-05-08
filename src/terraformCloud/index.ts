@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { Zodios, ZodiosPlugin, makeApi } from '@zodios/core';
+import { Zodios, ZodiosPlugin, makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { pluginToken, pluginHeader } from '@zodios/plugins';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
@@ -11,6 +11,30 @@ import * as vscode from 'vscode';
 
 const defaultHostname = 'app.terraform.io';
 const basePath = '/api/v2';
+
+const paginationParams = makeParameters([
+  {
+    name: 'page[number]',
+    type: 'Query',
+    description: 'Page number',
+    schema: z.number().positive().optional(),
+  },
+  {
+    name: 'page[size]',
+    type: 'Query',
+    description: 'Count of records',
+    schema: z.number().positive().optional(),
+  },
+]);
+
+const paginationMeta = z.object({
+  'current-page': z.number(),
+  'page-size': z.number(),
+  'next-page': z.number().nullable(),
+  'prev-page': z.number().nullable(),
+  'total-count': z.number(),
+  'total-pages': z.number(),
+});
 
 const accountDetails = z.object({
   data: z.object({
@@ -43,6 +67,11 @@ const organizations = z.object({
       }),
     }),
   ),
+  meta: z
+    .object({
+      pagination: paginationMeta.optional(),
+    })
+    .optional(),
 });
 
 const organizationMemberships = z.object({
@@ -65,12 +94,12 @@ const organizationMemberships = z.object({
 
 const organizationEndpoints = makeApi([
   {
-    // TODO: pagination
     method: 'get',
     path: '/organizations',
     alias: 'listOrganizations',
     description: 'List organizations of the current user',
     response: organizations,
+    parameters: paginationParams,
   },
   {
     method: 'get',
@@ -90,16 +119,19 @@ const project = z.object({
 
 const projects = z.object({
   data: z.array(project),
+  meta: z.object({
+    pagination: paginationMeta,
+  }),
 });
 
 const projectEndpoints = makeApi([
   {
-    // TODO: pagination
     method: 'get',
     path: '/organizations/:organization_name/projects',
     alias: 'listProjects',
     description: 'List projects in the organization',
     response: projects,
+    parameters: paginationParams,
   },
   {
     method: 'get',
@@ -139,16 +171,19 @@ const workspaces = z.object({
       }),
     }),
   ),
+  meta: z.object({
+    pagination: paginationMeta,
+  }),
 });
 
 const workspaceEndpoints = makeApi([
   {
-    // TODO: pagination
     method: 'get',
     path: '/organizations/:organization_name/workspaces',
     alias: 'listWorkspaces',
     description: 'List workspaces in the organization',
     response: workspaces,
+    parameters: paginationParams,
   },
   {
     method: 'get',
@@ -185,16 +220,19 @@ const runs = z.object({
       }),
     }),
   ),
+  meta: z.object({
+    pagination: paginationMeta,
+  }),
 });
 
 const runEndpoints = makeApi([
   {
-    // TODO: pagination
     method: 'get',
     path: '/workspaces/:workspace_id/runs',
     alias: 'listRuns',
     description: 'List Runs in a Workspace',
     response: runs,
+    parameters: paginationParams,
   },
   {
     method: 'get',
