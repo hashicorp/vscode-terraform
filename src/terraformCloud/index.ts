@@ -48,7 +48,8 @@ export const apiClient = new Zodios(baseUrl, [
 ]);
 apiClient.use(jsonHeader);
 apiClient.use(userAgentHeader);
-apiClient.use(
+
+export const tokenPluginId = apiClient.use(
   pluginToken({
     getToken: async () => {
       // TODO: Consider passing it as a dependency instead of global access to make testing easier
