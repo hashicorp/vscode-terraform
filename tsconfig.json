@@ -7,7 +7,8 @@
     "rootDir": "src",
     "sourceMap": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "exclude": ["node_modules", ".vscode-test", ".vscode-test-web"]
