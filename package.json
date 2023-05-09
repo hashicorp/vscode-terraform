@@ -456,6 +456,26 @@
         "command": "terraform.providers.openDocumentation",
         "title": "Open Documentation",
         "icon": "$(book)"
+      },
+      {
+        "command": "terraform.cloud.projects.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.cloud.workspaces.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.cloud.runs.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.cloud.runs.openRunInBrowser",
+        "title": "Open Run in browser",
+        "icon": "$(globe)"
       }
     ],
     "menus": {
@@ -516,6 +536,21 @@
           "command": "terraform.initCurrent",
           "when": "view == terraform.providers",
           "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.projects.refresh",
+          "when": "view == terraform.cloud.projects",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.workspaces.refresh",
+          "when": "view == terraform.cloud.workspaces",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.runs.refresh",
+          "when": "view == terraform.cloud.runs",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -526,6 +561,11 @@
         {
           "command": "terraform.providers.openDocumentation",
           "when": "view == terraform.providers && viewItem == moduleProviderHasDocs"
+        },
+        {
+          "command": "terraform.cloud.runs.openRunInBrowser",
+          "when": "view == terraform.cloud.runs",
+          "group": "inline"
         }
       ]
     },
@@ -539,6 +579,20 @@
           "id": "terraform.modules",
           "name": "Module Calls"
         }
+      ],
+      "terraform-cloud":[
+        {
+          "id": "terraform.cloud.projects",
+          "name": "Projects"
+        },
+        {
+          "id": "terraform.cloud.workspaces",
+          "name": "Workspaces"
+        },
+        {
+          "id": "terraform.cloud.runs",
+          "name": "Runs"
+        }
       ]
     },
     "viewsContainers": {
@@ -546,6 +600,11 @@
         {
           "id": "terraform",
           "title": "HashiCorp Terraform",
+          "icon": "assets/icons/terraform.svg"
+        },
+        {
+          "id": "terraform-cloud",
+          "title": "HashiCorp Terraform Cloud",
           "icon": "assets/icons/terraform.svg"
         }
       ]
@@ -558,6 +617,18 @@
       {
         "view": "terraform.modules",
         "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get' or update your language server version."
+      },
+      {
+        "view":"terraform.cloud.projects",
+        "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
+      },
+      {
+        "view":"terraform.cloud.workspaces",
+        "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
+      },
+      {
+        "view":"terraform.cloud.runs",
+        "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
       }
     ]
   },
