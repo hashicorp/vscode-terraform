@@ -385,18 +385,6 @@
         }
       },
       {
-        "title": "Terraform Cloud",
-        "order": 3,
-        "properties": {
-          "terraform.cloud.hostname": {
-            "order": 0,
-            "type": "string",
-            "description": "Terraform Cloud instance",
-            "default": "app.terraform.io"
-          }
-        }
-      },
-      {
         "title": "Experimental Features",
         "order": 4,
         "properties": {
@@ -595,10 +583,13 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
+    "@zodios/core": "^10.9.0",
+    "@zodios/plugins": "^10.6.0",
     "axios": "^1.4.0",
     "vscode-languageclient": "8.1.0",
     "vscode-uri": "^3.0.7",
-    "which": "^3.0.1"
+    "which": "^3.0.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@hashicorp/js-releases": "^1.6.1",
@@ -624,6 +615,7 @@
     "got": "^11.8.3",
     "jest": "^29.5.0",
     "mocha": "^10.2.0",
+    "msw": "^1.2.1",
     "prettier": "^2.8.8",
     "process": "^0.11.10",
     "ts-jest": "^29.1.0",
