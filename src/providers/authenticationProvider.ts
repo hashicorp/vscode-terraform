@@ -4,7 +4,8 @@
  */
 
 import * as vscode from 'vscode';
-import { getUser } from './tfc';
+import axios from 'axios';
+import { earlyApiClient } from '../terraformCloud';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -67,9 +68,12 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this.logger.info('Got stored sessions!');
 
     try {
-      // temporary TFC access method here
-      // will be replaced by TFC REST API wrapper
-      const user = await getUser(token);
+      // TODO: replace with secretStorage.get when all session data is in secretStorage
+      const user = await earlyApiClient.getUser({
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
       this.logger.info('Got user info');
 
       return token
@@ -115,9 +119,11 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     try {
-      // temporary TFC access method here
-      // will be replaced by TFC REST API wrapper
-      const user = await getUser(token);
+      const user = await earlyApiClient.getUser({
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
 
       // Don't set `currentToken` here, since we want to fire the proper events in the `checkForUpdates` call
       await this.secretStorage.store(TerraformCloudAuthenticationProvider.secretKey, token);
@@ -132,7 +138,10 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       // label is what is display in the UI
       return session;
     } catch (error) {
-      if (error instanceof Error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        vscode.window.showErrorMessage('Invalid token supplied, please try again');
+        return this.createSession(_scopes);
+      } else if (error instanceof Error) {
         vscode.window.showErrorMessage(error.message);
         this.logger.error(error.message);
       } else if (typeof error === 'string') {
@@ -140,7 +149,6 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         this.logger.error(error);
       }
 
-      // TODO: Handle 401 auth errors here
       throw error;
     }
   }
