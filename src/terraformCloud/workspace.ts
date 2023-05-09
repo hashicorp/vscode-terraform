@@ -8,12 +8,14 @@ import { z } from 'zod';
 import { projectFilterParams } from './filter';
 import { paginationMeta, paginationParams } from './pagination';
 
+const executionModes = z.enum(['remote', 'local', 'agent']);
+
 const workspace = z.object({
   id: z.string(),
   attributes: z.object({
     description: z.string(),
     environment: z.string(),
-    'execution-mode': z.enum(['']),
+    'execution-mode': executionModes,
     name: z.string(),
     source: z.string(),
     'updated-at': z.date(),
