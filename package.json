@@ -468,6 +468,11 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "terraform.cloud.workspaces.listAll",
+        "title": "List All Workspaces",
+        "icon": "$(book)"
+      },
+      {
         "command": "terraform.cloud.runs.refresh",
         "title": "Refresh",
         "icon": "$(refresh)"
@@ -548,6 +553,11 @@
           "group": "navigation"
         },
         {
+          "command": "terraform.cloud.workspaces.listAll",
+          "when": "view == terraform.cloud.workspaces",
+          "group": "navigation"
+        },
+        {
           "command": "terraform.cloud.runs.refresh",
           "when": "view == terraform.cloud.runs",
           "group": "navigation"
@@ -583,7 +593,8 @@
       "terraform-cloud":[
         {
           "id": "terraform.cloud.projects",
-          "name": "Projects"
+          "name": "Projects",
+          "visibility": "collapsed"
         },
         {
           "id": "terraform.cloud.workspaces",
@@ -628,7 +639,7 @@
       },
       {
         "view":"terraform.cloud.runs",
-        "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
+        "contents": "Select a Workspace to view a list of runs"
       }
     ]
   },

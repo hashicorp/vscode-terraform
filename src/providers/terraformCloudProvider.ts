@@ -62,8 +62,8 @@ export class ProjectTreeDataProvider implements vscode.TreeDataProvider<ProjectT
   }
 }
 
-export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
   private projectID = '';
@@ -80,9 +80,27 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       // call the TFC Run view with the workspaceID
       this.runDataProvider.refresh(workspaceItem);
     });
-    vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', () => {
+    vscode.commands.registerCommand('terraform.cloud.workspaces.listAll', () => {
+      this.projectID = '';
+      // TODO This refreshes the workspace list without a project filter, but still
+      // leaves the Project View 'ghost' selected on the last project selected.
+      // There isn't a 'unselect' method on TreeView, apparently by design.
+      // Following a web search trail lands on https://github.com/microsoft/vscode/issues/48754, among others
+      // We could call projectView.reveal(item, { focus: false }), but that requires implementing getParent
+      // and having both a reference to projectView as well as the ProjectItem and that seems a bridge too
+      // far at the moment.
+
       this.refresh();
       this.runDataProvider.refresh();
+    });
+    vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (item: WorkspaceTreeItem) => {
+      // A user activating this may either have selected a project to view, or not.
+      // Refresh the current list of workspaces
+      // If there is a projectID, use that, otherwise list all
+      this.refresh(this.projectID);
+      // tell the Runs view to refresh based on the select workspace
+
+      this.runDataProvider.refresh(item);
     });
     ctx.subscriptions.push(workspaceView);
   }
@@ -96,11 +114,11 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
   }
 
-  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: WorkspaceTreeItem): WorkspaceTreeItem | Thenable<WorkspaceTreeItem> {
     return element;
   }
 
-  getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
+  getChildren(element?: WorkspaceTreeItem | undefined): vscode.ProviderResult<WorkspaceTreeItem[]> {
     const organization = this.ctx.globalState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -135,7 +153,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
 
     const workspaces = response.data;
 
-    const items: vscode.TreeItem[] = [];
+    const items: WorkspaceTreeItem[] = [];
     for (let index = 0; index < workspaces.length; index++) {
       const element = workspaces[index];
       items.push(new WorkspaceTreeItem(element.attributes.name, element.id));
