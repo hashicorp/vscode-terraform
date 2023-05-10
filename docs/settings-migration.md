@@ -2,14 +2,6 @@
 
 In v2.24.0 we migrated all settings to conform to common VS Code setting naming conventions. This improves readability in the VS Code Settings UI as well as making the settings easier to discover when typing in the JSON Settings view.
 
-After v2.24.0, if there are old settings left in the User or Workspace scopes, this extension will show a prompt asking to migrate the settings. The user can either automatically migrate, ignore future warnings, open the Settings UI to manually migrate, or click a link for more information.
-
-## Automatic Migration
-
-Automatic migration uses the VS Code Settings API to update your currently settings. It respects the currently set values and migrates settings only if they are set.
-
-> WARNING: Since this process uses the VS Code Settings API, it does rewrite your Settings file. VS Code may rearrange settings or remove comments in this process. If you have comments, a special order, or other customizations please chose to migrate your settings manually.
-
 ## Manual Migration
 
 The `terraform.languageServer` setting block has been extracted out to individual settings.
