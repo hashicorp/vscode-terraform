@@ -590,7 +590,7 @@
           "name": "Module Calls"
         }
       ],
-      "terraform-cloud":[
+      "terraform-cloud": [
         {
           "id": "terraform.cloud.projects",
           "name": "Projects",
@@ -630,15 +630,15 @@
         "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get' or update your language server version."
       },
       {
-        "view":"terraform.cloud.projects",
+        "view": "terraform.cloud.projects",
         "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
       },
       {
-        "view":"terraform.cloud.workspaces",
+        "view": "terraform.cloud.workspaces",
         "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
       },
       {
-        "view":"terraform.cloud.runs",
+        "view": "terraform.cloud.runs",
         "contents": "Select a Workspace to view a list of runs"
       }
     ]
