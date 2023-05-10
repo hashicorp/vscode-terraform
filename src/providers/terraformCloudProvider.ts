@@ -5,6 +5,50 @@
 
 import * as vscode from 'vscode';
 import { apiClient } from '../terraformCloud';
+import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
+
+export class TerraformCloudFeature {
+  constructor(ctx: vscode.ExtensionContext, private statusBar: vscode.StatusBarItem) {
+    vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
+      const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
+        createIfNone: true,
+      });
+
+      if (session === undefined) {
+        return vscode.window.showErrorMessage('Must authenticate to pick an organization');
+      }
+
+      const response = await apiClient.listOrganizations();
+      const orgs = response.data;
+
+      const items: string[] = [];
+      for (let index = 0; index < orgs.length; index++) {
+        const element = orgs[index];
+        items.push(element.attributes.name);
+      }
+
+      const answer = await vscode.window.showQuickPick(items, {
+        canPickMany: false,
+        ignoreFocusOut: true,
+        placeHolder: 'Choose and organization. Hit enter to select the first organization.',
+        title: 'Welcome to Terraform Cloud',
+      });
+
+      if (answer === undefined) {
+        // TODO use default org?
+        return;
+      }
+
+      this.statusBar.text = answer;
+      this.statusBar.show();
+
+      vscode.window.showInformationMessage(`Hello ${session.account.label}! Chose ${answer} organization`);
+      ctx.globalState.update('terraform.cloud.organization', answer);
+
+      // TODO: refresh workspaces view
+    });
+  }
+}
 
 export class ProjectTreeDataProvider implements vscode.TreeDataProvider<ProjectTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | ProjectTreeItem>();

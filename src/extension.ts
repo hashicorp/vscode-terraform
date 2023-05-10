@@ -37,6 +37,7 @@ import {
   ProjectTreeDataProvider,
   WorkspaceTreeDataProvider,
   RunTreeDataProvider,
+  TerraformCloudFeature,
 } from './providers/terraformCloudProvider';
 
 const id = 'terraform';
@@ -46,6 +47,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-vars' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
+const organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
@@ -60,6 +62,17 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // always register commands needed to control terraform-ls
   context.subscriptions.push(new TerraformLSCommands());
 
+  organizationStatusBar.name = 'TFCOrganization';
+  organizationStatusBar.command = {
+    command: 'terraform.cloud.organization.picker',
+    title: 'Choose your Terraform Cloud Organization',
+    tooltip: '',
+  };
+  const org = context.workspaceState.get('terraform.cloud.organization', '');
+  if (org) {
+    organizationStatusBar.text = org;
+    organizationStatusBar.show();
+  }
   context.subscriptions.push(
     vscode.authentication.registerAuthenticationProvider(
       TerraformCloudAuthenticationProvider.providerID,
@@ -68,6 +81,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       { supportsMultipleAccounts: false },
     ),
   );
+
+  const tfcFeature = new TerraformCloudFeature(context, organizationStatusBar);
 
   const runDataProvider = new RunTreeDataProvider(context);
   const workspaceDataProvider = new WorkspaceTreeDataProvider(context, runDataProvider);

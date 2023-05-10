@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import { earlyApiClient } from '../terraformCloud';
+import { apiClient, earlyApiClient } from '../terraformCloud';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -38,12 +38,15 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
   constructor(private readonly secretStorage: vscode.SecretStorage, private readonly ctx: vscode.ExtensionContext) {
     this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
-    ctx.subscriptions.push(
+    this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.login', async () => {
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
           createIfNone: true,
         });
-        vscode.window.showInformationMessage(`Hello ${session.account.label}`);
+
+        vscode.window.showInformationMessage(`Hello ${session.account.label}!`);
+
+        await vscode.commands.executeCommand('terraform.cloud.organization.picker');
       }),
     );
   }
