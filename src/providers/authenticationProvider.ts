@@ -30,9 +30,7 @@ class InvalidToken extends Error {
 }
 
 class TerraformCloudSessionHandler {
-  private sessionKey = 'HashiCorpTerraformCloudSession';
-
-  constructor(private readonly secretStorage: vscode.SecretStorage) {}
+  constructor(private readonly secretStorage: vscode.SecretStorage, private readonly sessionKey: string) {}
 
   async get(): Promise<TerraformCloudSession | undefined> {
     const rawSession = await this.secretStorage.get(this.sessionKey);
@@ -71,24 +69,38 @@ class TerraformCloudSessionHandler {
   }
 }
 
-export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider {
+export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
   static providerLabel = 'HashiCorp Terraform Cloud';
   static providerID = 'HashiCorpTerraformCloud';
+  private sessionKey = 'HashiCorpTerraformCloudSession';
   private logger: vscode.LogOutputChannel;
   private sessionHandler: TerraformCloudSessionHandler;
+  // this property is used to determine if the session has been changed in another window of VS Code
+  // it's a promise, so we can set in the constructor where we can't execute async code
+  private sessionPromise: Promise<vscode.AuthenticationSession | undefined>;
+  private disposable: vscode.Disposable | undefined;
 
   private _onDidChangeSessions =
     new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
   constructor(private readonly secretStorage: vscode.SecretStorage, private readonly ctx: vscode.ExtensionContext) {
     this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
-    this.sessionHandler = new TerraformCloudSessionHandler(this.secretStorage);
+    this.sessionHandler = new TerraformCloudSessionHandler(this.secretStorage, this.sessionKey);
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.login', async () => {
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
           createIfNone: true,
         });
         vscode.window.showInformationMessage(`Hello ${session.account.label}`);
+      }),
+    );
+
+    this.sessionPromise = this.sessionHandler.get();
+    this.disposable = vscode.Disposable.from(
+      this.secretStorage.onDidChange((e) => {
+        if (e.key === this.sessionKey) {
+          this.checkForUpdates();
+        }
       }),
     );
   }
@@ -102,7 +114,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getSessions(scopes?: string[] | undefined): Promise<readonly vscode.AuthenticationSession[]> {
     try {
-      const session = await this.sessionHandler.get();
+      const session = await this.sessionPromise;
       return session ? [session] : [];
     } catch (error) {
       if (error instanceof Error) {
@@ -114,6 +126,10 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
   }
 
+  // This function is called after `this.getSessions` is called and only when:
+  // - `this.getSessions` returns nothing but `createIfNone` was set to `true` in `vscode.authentication.getSessions`
+  // - `vscode.authentication.getSessions` was called with `forceNewSession: true`
+  // - The end user initiates the "silent" auth flow via the Accounts menu
   async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
     // Prompt for the UAT.
     const token = await vscode.window.showInputBox({
@@ -154,6 +170,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // This function is called when the end user signs out of the account.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async removeSession(_sessionId: string): Promise<void> {
+    // TODO: check if we need clear this.sessionPromise
     const session = await this.sessionHandler.get();
     if (!session) {
       return;
@@ -164,5 +181,36 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
     // Notify VSCode's UI
     this._onDidChangeSessions.fire({ added: [], removed: [session], changed: [] });
+  }
+
+  // This is a crucial function that handles whether or not the session has changed in
+  // a different window of VS Code and sends the necessary event if it has.
+  private async checkForUpdates(): Promise<void> {
+    const previousSession = await this.sessionPromise;
+    this.sessionPromise = this.sessionHandler.get();
+    const session = await this.sessionPromise;
+
+    const added: vscode.AuthenticationSession[] = [];
+    const removed: vscode.AuthenticationSession[] = [];
+    const changed: vscode.AuthenticationSession[] = [];
+
+    if (session?.accessToken && !previousSession?.accessToken) {
+      this.logger.info('Session added');
+      added.push(session);
+    } else if (!session?.accessToken && previousSession?.accessToken) {
+      this.logger.info('Session removed');
+      removed.push(previousSession);
+    } else if (session && previousSession && session.accessToken !== previousSession.accessToken) {
+      this.logger.info('Session changed');
+      changed.push(session);
+    } else {
+      return;
+    }
+
+    this._onDidChangeSessions.fire({ added: added, removed: removed, changed: changed });
+  }
+
+  dispose() {
+    this.disposable?.dispose();
   }
 }
