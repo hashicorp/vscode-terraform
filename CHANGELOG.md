@@ -1,3 +1,17 @@
+## [2.26.1] (2023-05-11)
+
+BUG FIXES:
+
+* Fix crash on prefix completion ([hcl-lang#275](https://github.com/hashicorp/hcl-lang/pull/275))
+
+INTERNAL:
+
+* Update vscode-languageclient to `8.1.0` ([#1408](https://github.com/hashicorp/vscode-terraform/pull/1408))
+* Bump VS Code from `1.67.2` to `1.75.1` ([#1409](https://github.com/hashicorp/vscode-terraform/pull/1409))
+* Onboard to pre-release extensions ([#1412](https://github.com/hashicorp/vscode-terraform/pull/1412))
+* Remove default activation events ([#1419](https://github.com/hashicorp/vscode-terraform/pull/1419))
+* Remove legacy settings ([#1414](https://github.com/hashicorp/vscode-terraform/pull/1414))
+
 ## [2.26.0] (2023-04-27)
 
 BUG FIXES:
@@ -676,7 +690,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...main
+[2.26.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...v2.26.1
 [2.26.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.4...v2.26.0
 [2.25.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.3...v2.25.4
 [2.25.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.2...v2.25.3
