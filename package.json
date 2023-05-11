@@ -18,7 +18,7 @@
     "vscode": "^1.75.1"
   },
   "langServer": {
-    "version": "0.31.1"
+    "version": "0.31.2"
   },
   "syntax": {
     "version": "0.4.1"
