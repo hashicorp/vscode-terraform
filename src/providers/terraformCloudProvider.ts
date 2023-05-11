@@ -7,17 +7,33 @@ import * as vscode from 'vscode';
 import { apiClient } from '../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 
-export class TerraformCloudFeature {
-  constructor(ctx: vscode.ExtensionContext, private statusBar: vscode.StatusBarItem) {
+export class TerraformCloudFeature implements vscode.Disposable {
+  private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+
+  constructor(ctx: vscode.ExtensionContext) {
+    ctx.subscriptions.push(
+      vscode.authentication.registerAuthenticationProvider(
+        TerraformCloudAuthenticationProvider.providerID,
+        TerraformCloudAuthenticationProvider.providerLabel,
+        new TerraformCloudAuthenticationProvider(ctx.secrets, ctx),
+        { supportsMultipleAccounts: false },
+      ),
+    );
+
+    this.organizationStatusBar.name = 'TFCOrganization';
+    this.organizationStatusBar.command = {
+      command: 'terraform.cloud.organization.picker',
+      title: 'Choose your Terraform Cloud Organization',
+      tooltip: '',
+    };
+
+    const org = ctx.workspaceState.get('terraform.cloud.organization', '');
+    if (org) {
+      this.organizationStatusBar.text = org;
+      this.organizationStatusBar.show();
+    }
+
     vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
-      const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
-        createIfNone: true,
-      });
-
-      if (session === undefined) {
-        return vscode.window.showErrorMessage('Must authenticate to pick an organization');
-      }
-
       const response = await apiClient.listOrganizations();
       const orgs = response.data;
 
@@ -39,14 +55,45 @@ export class TerraformCloudFeature {
         return;
       }
 
-      this.statusBar.text = answer;
-      this.statusBar.show();
+      this.organizationStatusBar.text = answer;
+      this.organizationStatusBar.show();
 
-      vscode.window.showInformationMessage(`Hello ${session.account.label}! Chose ${answer} organization`);
+      vscode.window.showInformationMessage(`Chose ${answer} organization`);
       ctx.globalState.update('terraform.cloud.organization', answer);
 
       // TODO: refresh workspaces view
     });
+
+    const runDataProvider = new RunTreeDataProvider(ctx);
+    const workspaceDataProvider = new WorkspaceTreeDataProvider(ctx, runDataProvider);
+    const projectDataProvider = new ProjectTreeDataProvider(ctx, workspaceDataProvider);
+    ctx.subscriptions.push(projectDataProvider, workspaceDataProvider, runDataProvider);
+
+    const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
+      canSelectMany: false,
+      showCollapseAll: true,
+      treeDataProvider: workspaceDataProvider,
+    });
+    workspaceView.onDidChangeSelection((event) => {
+      const workspaceItem = event.selection[0] as WorkspaceTreeItem;
+
+      // call the TFC Run view with the workspaceID
+      runDataProvider.refresh(workspaceItem);
+    });
+    workspaceView.onDidChangeVisibility((event) => {
+      if (event.visible) {
+        // the view is visible so show the status bar
+        this.organizationStatusBar.show();
+      } else {
+        // hide statusbar because user isn't looking at our views
+        this.organizationStatusBar.hide();
+      }
+    });
+    ctx.subscriptions.push(workspaceView);
+  }
+
+  dispose() {
+    this.organizationStatusBar.dispose();
   }
 }
 
@@ -118,17 +165,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   private projectID = '';
 
   constructor(private ctx: vscode.ExtensionContext, private runDataProvider: RunTreeDataProvider) {
-    const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
-      canSelectMany: false,
-      showCollapseAll: true,
-      treeDataProvider: this,
-    });
-    workspaceView.onDidChangeSelection((event) => {
-      const workspaceItem = event.selection[0] as WorkspaceTreeItem;
-
-      // call the TFC Run view with the workspaceID
-      this.runDataProvider.refresh(workspaceItem);
-    });
     vscode.commands.registerCommand('terraform.cloud.workspaces.listAll', () => {
       this.projectID = '';
       // TODO This refreshes the workspace list without a project filter, but still
@@ -151,7 +187,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
 
       this.runDataProvider.refresh(item);
     });
-    ctx.subscriptions.push(workspaceView);
   }
 
   refresh(projectID?: string): void {
