@@ -43,6 +43,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
           createIfNone: true,
         });
+
         vscode.window.showInformationMessage(`Hello ${session.account.label}`);
       }),
     );
@@ -104,6 +105,40 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
     this.ensureInitialized();
 
+    vscode.window.showInformationMessage;
+    const choice = await vscode.window.showQuickPick(
+      [
+        {
+          label: 'Enter a existing Terraform Cloud User Token',
+        },
+        {
+          label: 'Open Terraform Cloud to generate a token',
+        },
+      ],
+      {
+        canPickMany: false,
+        ignoreFocusOut: true,
+        placeHolder: 'Choose a method to enter a Terraform Cloud User Token',
+        title: 'HashiCorp Terraform Authentication',
+      },
+    );
+    if (choice === undefined) {
+      throw new Error('Must login to continue');
+    }
+
+    switch (choice.label) {
+      case 'Open Terraform Cloud to generate a token':
+        await vscode.env.openExternal(
+          vscode.Uri.parse('https://app.staging.terraform.io/app/settings/tokens?source=terraform-login'),
+        );
+        break;
+      case 'Enter a existing Terraform Cloud User Token':
+        // fall down directly to token
+        break;
+      default:
+        break;
+    }
+
     // Prompt for the UAT.
     const token = await vscode.window.showInputBox({
       ignoreFocusOut: true,
@@ -112,7 +147,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       password: true,
     });
 
-    // Note: this example doesn't do any validation of the token beyond making sure it's not empty.
+    // Note: this doesn't do any validation of the token beyond making sure it's not empty.
     if (!token) {
       this.logger.error('User did not provide a UAT');
       throw new Error('UAT is required');
