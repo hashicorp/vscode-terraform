@@ -137,7 +137,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     // TODO: Change to production URL
     const terraformCloudURL = 'https://app.staging.terraform.io/app/settings/tokens?source=terraform-login';
 
-    let token: string | undefined = '';
+    let token: string | undefined;
     switch (choice.label) {
       case 'Open Terraform Cloud to generate a token':
         await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
@@ -159,15 +159,16 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         });
         break;
       case 'Use a stored Terraform Cloud User Token':
-        token = this.getTerraformCLIToken(token);
+        token = await this.getTerraformCLIToken();
         break;
       default:
         break;
     }
 
     // Note: this doesn't do any validation of the token beyond making sure it's not empty.
-    if (!token) {
+    if (token === undefined || token === '') {
       this.logger.error('User did not provide a UAT');
+      vscode.window.showErrorMessage('User did not provide a UAT');
       throw new Error('UAT is required');
     }
 
@@ -276,21 +277,35 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     return this.currentToken;
   }
 
-  private getTerraformCLIToken(token: string | undefined) {
+  private async getTerraformCLIToken() {
     // detect if stored auth token is present
     // ~/.terraform.d/credentials.tfrc.json
     const homeProfile = process.env.HOME ?? '';
     const credFilePath = path.join(homeProfile, '.terraform.d', 'credentials.tfrc.json');
+    if ((await this.pathExists(credFilePath)) === false) {
+      // TODO show error message
+      return undefined;
+    }
 
     // read and marshall json file
     const data = JSON.parse(fs.readFileSync(credFilePath, 'utf8'));
 
     // find app.terraform.io token
-    const cred = data.credentials['app.staging.terraform.io'];
-    token = cred.token;
+    try {
+      const cred = data.credentials['app.staging.terraform.io'];
+      return cred.token;
+    } catch (error) {
+      return undefined;
+    }
+  }
 
-    // return token
-    return token;
+  async pathExists(filePath: string): Promise<boolean> {
+    try {
+      await vscode.workspace.fs.stat(vscode.Uri.file(filePath));
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   dispose() {
