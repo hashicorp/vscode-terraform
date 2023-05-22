@@ -139,7 +139,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
     let token: string | undefined;
     switch (choice.label) {
-      case 'Open Terraform Cloud to generate a token':
+      case 'Open to generate a User token':
         await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
@@ -149,7 +149,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
           password: true,
         });
         break;
-      case 'Enter a existing Terraform Cloud User Token':
+      case 'Existing User Token':
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
@@ -158,7 +158,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
           password: true,
         });
         break;
-      case 'Use a stored Terraform Cloud User Token':
+      case 'Stored User Token':
         token = await this.getTerraformCLIToken();
         break;
       default:
