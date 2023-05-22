@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
 import { earlyApiClient } from '../terraformCloud';
@@ -109,7 +111,10 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const choice = await vscode.window.showQuickPick(
       [
         {
-          label: 'Enter a existing Terraform Cloud User Token',
+          label: 'Use a stored Terraform Cloud User Token',
+        },
+        {
+          label: 'Enter an existing Terraform Cloud User Token',
         },
         {
           label: 'Open Terraform Cloud to generate a token',
@@ -126,26 +131,35 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       throw new Error('Must login to continue');
     }
 
+    let token: string | undefined = '';
     switch (choice.label) {
       case 'Open Terraform Cloud to generate a token':
         await vscode.env.openExternal(
           vscode.Uri.parse('https://app.staging.terraform.io/app/settings/tokens?source=terraform-login'),
         );
+        // Prompt for the UAT.
+        token = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: 'User access token',
+          prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
+          password: true,
+        });
         break;
       case 'Enter a existing Terraform Cloud User Token':
-        // fall down directly to token
+        // Prompt for the UAT.
+        token = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: 'User access token',
+          prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
+          password: true,
+        });
+        break;
+      case 'Use a stored Terraform Cloud User Token':
+        token = this.getStoredToken(token);
         break;
       default:
         break;
     }
-
-    // Prompt for the UAT.
-    const token = await vscode.window.showInputBox({
-      ignoreFocusOut: true,
-      placeHolder: 'User access token',
-      prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
-      password: true,
-    });
 
     // Note: this doesn't do any validation of the token beyond making sure it's not empty.
     if (!token) {
@@ -256,6 +270,23 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private async cacheTokenFromStorage() {
     this.currentToken = await this.secretStorage.get(TerraformCloudAuthenticationProvider.secretKey);
     return this.currentToken;
+  }
+
+  private getStoredToken(token: string | undefined) {
+    // detect if stored auth token is present
+    // ~/.terraform.d/credentials.tfrc.json
+    const homeProfile = process.env.HOME ?? '';
+    const credFilePath = path.join(homeProfile, '.terraform.d', 'credentials.tfrc.json');
+
+    // read and marshall json file
+    const data = JSON.parse(fs.readFileSync(credFilePath, 'utf8'));
+
+    // find app.terraform.io token
+    const cred = data.credentials['app.staging.terraform.io'];
+    token = cred.token;
+
+    // return token
+    return token;
   }
 
   dispose() {
