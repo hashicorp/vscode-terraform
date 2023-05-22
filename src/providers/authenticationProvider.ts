@@ -111,32 +111,36 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const choice = await vscode.window.showQuickPick(
       [
         {
-          label: 'Use a stored Terraform Cloud User Token',
+          label: 'Stored User Token',
+          detail: 'Use a token stored in the Terraform CLI configuration file',
         },
         {
-          label: 'Enter an existing Terraform Cloud User Token',
+          label: 'Existing User Token',
+          detail: 'Enter a token manually',
         },
         {
-          label: 'Open Terraform Cloud to generate a token',
+          label: 'Open to generate a User token',
+          detail: 'Open the Terraform Cloud website to generate a new token',
         },
       ],
       {
         canPickMany: false,
         ignoreFocusOut: true,
         placeHolder: 'Choose a method to enter a Terraform Cloud User Token',
-        title: 'HashiCorp Terraform Authentication',
+        title: 'HashiCorp Terraform Cloud Authentication',
       },
     );
     if (choice === undefined) {
       throw new Error('Must login to continue');
     }
 
+    // TODO: Change to production URL
+    const terraformCloudURL = 'https://app.staging.terraform.io/app/settings/tokens?source=terraform-login';
+
     let token: string | undefined = '';
     switch (choice.label) {
       case 'Open Terraform Cloud to generate a token':
-        await vscode.env.openExternal(
-          vscode.Uri.parse('https://app.staging.terraform.io/app/settings/tokens?source=terraform-login'),
-        );
+        await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
@@ -155,7 +159,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         });
         break;
       case 'Use a stored Terraform Cloud User Token':
-        token = this.getStoredToken(token);
+        token = this.getTerraformCLIToken(token);
         break;
       default:
         break;
@@ -272,7 +276,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     return this.currentToken;
   }
 
-  private getStoredToken(token: string | undefined) {
+  private getTerraformCLIToken(token: string | undefined) {
     // detect if stored auth token is present
     // ~/.terraform.d/credentials.tfrc.json
     const homeProfile = process.env.HOME ?? '';
