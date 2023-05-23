@@ -280,19 +280,27 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     // ~/.terraform.d/credentials.tfrc.json
     const credFilePath = path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
     if ((await this.pathExists(credFilePath)) === false) {
-      // TODO show error message
       vscode.window.showErrorMessage(
         'Terraform credential file not found. Please login using the Terraform CLI and try again.',
       );
       return undefined;
     }
 
-    const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
     // read and marshall json file
-    const data = JSON.parse(Buffer.from(content).toString('utf8'));
+    let text: string;
+    try {
+      const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
+      text = Buffer.from(content).toString('utf8');
+    } catch (error) {
+      vscode.window.showErrorMessage(
+        'Failed to read configuration file. Please login using the Terraform CLI and try again',
+      );
+      return undefined;
+    }
 
     // find app.terraform.io token
     try {
+      const data = JSON.parse(text);
       const cred = data.credentials['app.staging.terraform.io'];
       return cred.token;
     } catch (error) {
