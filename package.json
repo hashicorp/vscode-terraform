@@ -456,6 +456,11 @@
         "command": "terraform.providers.openDocumentation",
         "title": "Open Documentation",
         "icon": "$(book)"
+      },
+      {
+        "command": "terraform.cloud.workspaces.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
@@ -515,6 +520,11 @@
         {
           "command": "terraform.initCurrent",
           "when": "view == terraform.providers",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.workspaces.refresh",
+          "when": "view == terraform.cloud.workspaces",
           "group": "navigation"
         }
       ],
