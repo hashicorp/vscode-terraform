@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
@@ -107,7 +107,6 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
     this.ensureInitialized();
 
-    vscode.window.showInformationMessage;
     const choice = await vscode.window.showQuickPick(
       [
         {
@@ -168,7 +167,6 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     // Note: this doesn't do any validation of the token beyond making sure it's not empty.
     if (token === undefined || token === '') {
       this.logger.error('User did not provide a UAT');
-      vscode.window.showErrorMessage('User did not provide a UAT');
       throw new Error('UAT is required');
     }
 
@@ -280,21 +278,27 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private async getTerraformCLIToken() {
     // detect if stored auth token is present
     // ~/.terraform.d/credentials.tfrc.json
-    const homeProfile = process.env.HOME ?? '';
-    const credFilePath = path.join(homeProfile, '.terraform.d', 'credentials.tfrc.json');
+    const credFilePath = path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
     if ((await this.pathExists(credFilePath)) === false) {
       // TODO show error message
+      vscode.window.showErrorMessage(
+        'Terraform credential file not found. Please login using the Terraform CLI and try again.',
+      );
       return undefined;
     }
 
+    const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
     // read and marshall json file
-    const data = JSON.parse(fs.readFileSync(credFilePath, 'utf8'));
+    const data = JSON.parse(Buffer.from(content).toString('utf8'));
 
     // find app.terraform.io token
     try {
       const cred = data.credentials['app.staging.terraform.io'];
       return cred.token;
     } catch (error) {
+      vscode.window.showErrorMessage(
+        'No token found for app.staging.terraform.io. Please login using the Terraform CLI and try again',
+      );
       return undefined;
     }
   }
