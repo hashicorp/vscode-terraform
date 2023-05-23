@@ -106,7 +106,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   }
 
   get onDidChangeSessions(): vscode.Event<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent> {
-    // TODO: What does this do?
+    // Expose our internal event emitter to the outer world
     return this._onDidChangeSessions.event;
   }
 
@@ -115,6 +115,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   async getSessions(scopes?: string[] | undefined): Promise<readonly vscode.AuthenticationSession[]> {
     try {
       const session = await this.sessionPromise;
+      this.logger.info('Successfully fetched Terraform Cloud session.');
       return session ? [session] : [];
     } catch (error) {
       if (error instanceof Error) {
@@ -170,8 +171,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // This function is called when the end user signs out of the account.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async removeSession(_sessionId: string): Promise<void> {
-    // TODO: check if we need clear this.sessionPromise
-    const session = await this.sessionHandler.get();
+    const session = await this.sessionPromise;
     if (!session) {
       return;
     }
