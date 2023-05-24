@@ -550,7 +550,7 @@
           "name": "Module Calls"
         }
       ],
-      "terraform-cloud":[
+      "terraform-cloud": [
         {
           "id": "terraform.cloud.workspaces",
           "name": "Workspaces",
