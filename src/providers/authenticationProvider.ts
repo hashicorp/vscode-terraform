@@ -92,6 +92,11 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
           createIfNone: true,
         });
         vscode.window.showInformationMessage(`Hello ${session.account.label}`);
+
+        const org = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+        if (org === '') {
+          await vscode.commands.executeCommand('terraform.cloud.organization.picker');
+        }
       }),
     );
 

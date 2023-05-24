@@ -462,6 +462,11 @@
         "command": "terraform.providers.openDocumentation",
         "title": "Open Documentation",
         "icon": "$(book)"
+      },
+      {
+        "command": "terraform.cloud.workspaces.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
@@ -522,6 +527,11 @@
           "command": "terraform.initCurrent",
           "when": "view == terraform.providers",
           "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.workspaces.refresh",
+          "when": "view == terraform.cloud.workspaces",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -545,6 +555,18 @@
           "id": "terraform.modules",
           "name": "Module Calls"
         }
+      ],
+      "terraform-cloud": [
+        {
+          "id": "terraform.cloud.workspaces",
+          "name": "Workspaces",
+          "contextualTitle": "Terraform Cloud Workspaces"
+        },
+        {
+          "id": "terraform.cloud.runs",
+          "name": "Runs",
+          "contextualTitle": "Terraform Cloud Runs"
+        }
       ]
     },
     "viewsContainers": {
@@ -553,6 +575,11 @@
           "id": "terraform",
           "title": "HashiCorp Terraform",
           "icon": "assets/icons/terraform.svg"
+        },
+        {
+          "id": "terraform-cloud",
+          "title": "HashiCorp Terraform CLoud",
+          "icon": "assets/icons/terraform-cloud.svg"
         }
       ]
     },
@@ -564,6 +591,14 @@
       {
         "view": "terraform.modules",
         "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get' or update your language server version."
+      },
+      {
+        "view": "terraform.cloud.workspaces",
+        "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
+      },
+      {
+        "view": "terraform.cloud.runs",
+        "contents": "Select a Workspace to view a list of runs"
       }
     ]
   },
