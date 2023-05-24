@@ -2,9 +2,24 @@ import * as vscode from 'vscode';
 import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
+import { apiClient } from '../terraformCloud';
 
 export class TerraformCloudFeature implements vscode.Disposable {
+  private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+
   constructor(private context: vscode.ExtensionContext) {
+    this.organizationStatusBar.name = 'TFCOrganizationBar';
+    this.organizationStatusBar.command = {
+      command: 'terraform.cloud.organization.picker',
+      title: 'Choose your Terraform Cloud Organization',
+    };
+
+    const org = this.context.workspaceState.get('terraform.cloud.organization', '');
+    if (org) {
+      this.organizationStatusBar.text = org;
+      this.organizationStatusBar.show();
+    }
+
     const runDataProvider = new RunTreeDataProvider(this.context);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
       canSelectMany: false,
@@ -45,12 +60,54 @@ export class TerraformCloudFeature implements vscode.Disposable {
     });
 
     workspaceView.onDidChangeVisibility((event) => {
-      // TODO: change visibility of other parts (like statusbar) when not looking
-      // at this panel
+      if (event.visible) {
+        // the view is visible so show the status bar
+        this.organizationStatusBar.show();
+      } else {
+        // hide statusbar because user isn't looking at our views
+        this.organizationStatusBar.hide();
+      }
     });
+
+    this.context.subscriptions.push(
+      vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
+        const response = await apiClient.listOrganizations();
+        const orgs = response.data;
+
+        const items: vscode.QuickPickItem[] = [];
+        for (let index = 0; index < orgs.length; index++) {
+          const element = orgs[index];
+          items.push({
+            label: element.attributes.name,
+          });
+        }
+
+        const answer = await vscode.window.showQuickPick(items, {
+          canPickMany: false,
+          ignoreFocusOut: true,
+          placeHolder: 'Choose an organization. Hit enter to select the first organization.',
+          title: 'Welcome to Terraform Cloud',
+        });
+
+        if (answer === undefined) {
+          // user exited without answering, so don't change
+          return;
+        }
+
+        // user chose an organization so update the statusbar and make sure its visible
+        this.organizationStatusBar.text = answer.label;
+        this.organizationStatusBar.show();
+
+        // store the organization so other parts can use it
+        this.context.workspaceState.update('terraform.cloud.organization', answer);
+
+        // refresh workspaces so they pick up the change
+        workspaceDataProvider.refresh();
+      }),
+    );
   }
 
   dispose() {
-    //
+    this.organizationStatusBar.dispose();
   }
 }

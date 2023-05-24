@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
+import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
+import axios from 'axios';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
@@ -37,32 +39,51 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       return [];
     }
 
-    const workspaceResponse = await apiClient.listWorkspaces({
-      params: {
-        organization_name: organization,
-      },
+    const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
+      createIfNone: false,
     });
 
-    const projectResponse = await apiClient.listProjects({
-      params: {
-        organization_name: organization,
-      },
-    });
-
-    const workspaces = workspaceResponse.data;
-    const projects = projectResponse.data;
-
-    const items: WorkspaceTreeItem[] = [];
-    for (let index = 0; index < workspaces.length; index++) {
-      const workspace = workspaces[index];
-
-      const project = projects.find((p) => p.id === workspace.relationships.project.data.id);
-
-      const projectName = project ? project.attributes.name : '';
-      items.push(new WorkspaceTreeItem(workspace.attributes.name, workspace.id, projectName));
+    if (session === undefined) {
+      return [];
     }
 
-    return items;
+    try {
+      const workspaceResponse = await apiClient.listWorkspaces({
+        params: {
+          organization_name: organization,
+        },
+      });
+
+      const projectResponse = await apiClient.listProjects({
+        params: {
+          organization_name: organization,
+        },
+      });
+
+      const workspaces = workspaceResponse.data;
+      const projects = projectResponse.data;
+
+      const items: WorkspaceTreeItem[] = [];
+      for (let index = 0; index < workspaces.length; index++) {
+        const workspace = workspaces[index];
+
+        const project = projects.find((p) => p.id === workspace.relationships.project.data.id);
+
+        const projectName = project ? project.attributes.name : '';
+        items.push(new WorkspaceTreeItem(workspace.attributes.name, workspace.id, projectName));
+      }
+
+      return items;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        vscode.window.showErrorMessage('Invalid token supplied, please try again');
+      } else if (error instanceof Error) {
+        vscode.window.showErrorMessage(error.message);
+      } else if (typeof error === 'string') {
+        vscode.window.showErrorMessage(error);
+      }
+      return [];
+    }
   }
 
   dispose() {
@@ -79,5 +100,9 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
   constructor(public name: string, public id: string, public projectName: string) {
     super(name, vscode.TreeItemCollapsibleState.None);
     this.description = this.projectName;
+    this.tooltip = new vscode.MarkdownString(`
+### ${this.name}
+ID: ${this.id}
+`);
   }
 }
