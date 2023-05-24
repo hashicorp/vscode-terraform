@@ -21,6 +21,14 @@ const workspace = z.object({
     'updated-at': z.date(),
     'run-failures': z.number(),
   }),
+  relationships: z.object({
+    project: z.object({
+      data: z.object({
+        id: z.string(),
+        type: z.string(),
+      }),
+    }),
+  }),
 });
 
 const workspaces = z.object({
