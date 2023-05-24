@@ -33,6 +33,7 @@ import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import { TerraformVersionFeature } from './features/terraformVersion';
 import { TerraformCloudAuthenticationProvider } from './providers/authenticationProvider';
+import { TerraformCloudFeature } from './features/terraformCloud';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -63,6 +64,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       { supportsMultipleAccounts: false },
     ),
   );
+
+  context.subscriptions.push(new TerraformCloudFeature(context));
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
