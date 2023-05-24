@@ -104,7 +104,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
         this.organizationStatusBar.show();
 
         // store the organization so other parts can use it
-        this.context.workspaceState.update('terraform.cloud.organization', answer);
+        this.context.workspaceState.update('terraform.cloud.organization', answer.label);
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();

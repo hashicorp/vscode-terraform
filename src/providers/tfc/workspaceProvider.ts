@@ -39,7 +39,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   }
 
   private async getWorkspaces() {
-    const organization = this.ctx.globalState.get('terraform.cloud.organization', '');
+    const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
     }
