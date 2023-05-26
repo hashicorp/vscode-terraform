@@ -461,6 +461,16 @@
         "command": "terraform.cloud.workspaces.refresh",
         "title": "Refresh",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.cloud.runs.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "terraform.cloud.run.view",
+        "title": "View Run",
+        "icon": "$(globe)"
       }
     ],
     "menus": {
@@ -504,6 +514,10 @@
         {
           "command": "terraform.providers.openDocumentation",
           "when": "false"
+        },
+        {
+          "command": "terraform.cloud.run.view",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -526,6 +540,11 @@
           "command": "terraform.cloud.workspaces.refresh",
           "when": "view == terraform.cloud.workspaces",
           "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.runs.refresh",
+          "when": "view == terraform.cloud.runs",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -536,6 +555,11 @@
         {
           "command": "terraform.providers.openDocumentation",
           "when": "view == terraform.providers && viewItem == moduleProviderHasDocs"
+        },
+        {
+          "command": "terraform.cloud.run.view",
+          "when": "view == terraform.cloud.runs",
+          "group": "inline"
         }
       ]
     },
