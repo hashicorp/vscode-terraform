@@ -63,6 +63,8 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
   }
 
+  // TODO: Implement resolveTreeItem() to pull and display ingress attributes on hover (branch, SHA, author)
+
   private async getRuns(workspaceId: string, workspaceName: string): Promise<vscode.TreeItem[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
