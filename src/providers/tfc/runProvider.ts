@@ -121,15 +121,18 @@ export class RunTreeItem extends vscode.TreeItem {
     this.iconPath = this.getStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
     this.tooltip = new vscode.MarkdownString(`
-### ID: \`${id}\`
-
+### \`${workspaceName}\`
+#### ID: \`${id}\`
+___
 ${attributes.message}
-
- - **Status**: ${attributes.status}
- - **Trigger reason**: ${attributes['trigger-reason']}
- - **Created at**: ${attributes['created-at']}
- - **Source**: ${attributes.source}
- - **Terraform** ${attributes['terraform-version']}
+___
+| | |
+--|--
+| **Status**               | ${attributes.status}|
+| **Trigger reason** | ${attributes['trigger-reason']}|
+| **Created at**        | ${attributes['created-at']}|
+| **Source**              | ${attributes.source}|
+| **Terraform**         | ${attributes['terraform-version']}|
 `);
   }
 
