@@ -108,6 +108,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();
+        runDataProvider.refresh();
       }),
     );
   }
