@@ -39,16 +39,29 @@ const runStates = z.enum([
 
 const triggerReasons = z.enum(['unknown', 'manual', 'disabled', 'matched', 'inconclusive', 'git_tag']);
 
+const runAttributes = z.object({
+  'created-at': z.date(),
+  message: z.string(),
+  source: z.string(),
+  status: runStates,
+  'trigger-reason': triggerReasons,
+  'terraform-version': z.string(),
+});
+
+// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#get-run-details
 const run = z.object({
   id: z.string(),
-  attributes: z.object({
-    'created-at': z.date(),
-    message: z.string(),
-    source: z.string(),
-    status: runStates,
-    'trigger-reason': triggerReasons,
+  attributes: runAttributes,
+  relationships: z.object({
+    workspace: z.object({
+      data: z.object({
+        id: z.string(),
+      }),
+    }),
   }),
 });
+
+export type RunAttributes = z.infer<typeof runAttributes>;
 
 const runs = z.object({
   data: z.array(run),
