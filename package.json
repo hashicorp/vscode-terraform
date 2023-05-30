@@ -468,7 +468,7 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "terraform.cloud.run.view",
+        "command": "terraform.cloud.run.viewInBrowser",
         "title": "View Run",
         "icon": "$(globe)"
       }
@@ -516,7 +516,7 @@
           "when": "false"
         },
         {
-          "command": "terraform.cloud.run.view",
+          "command": "terraform.cloud.run.viewInBrowser",
           "when": "false"
         }
       ],
@@ -557,7 +557,7 @@
           "when": "view == terraform.providers && viewItem == moduleProviderHasDocs"
         },
         {
-          "command": "terraform.cloud.run.view",
+          "command": "terraform.cloud.run.viewInBrowser",
           "when": "view == terraform.cloud.runs",
           "group": "inline"
         }

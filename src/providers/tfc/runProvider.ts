@@ -26,7 +26,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     const baseUrl = 'https://app.staging.terraform.io/app';
 
     this.ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.cloud.run.view', (run: RunTreeItem) => {
+      vscode.commands.registerCommand('terraform.cloud.run.viewInBrowser', (run: RunTreeItem) => {
         const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
         if (orgName === '') {
           return;
