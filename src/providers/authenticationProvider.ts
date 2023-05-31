@@ -9,6 +9,9 @@ import * as vscode from 'vscode';
 import axios from 'axios';
 import { earlyApiClient } from '../terraformCloud';
 
+// TODO: replace with production URL
+const TerraformCloudHost = 'app.staging.terraform.io';
+
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
   readonly id = TerraformCloudAuthenticationProvider.providerID;
@@ -70,7 +73,6 @@ class TerraformCloudSessionHandler {
     return this.secretStorage.delete(this.sessionKey);
   }
 }
-
 export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
   static providerLabel = 'HashiCorp Terraform Cloud';
   static providerID = 'HashiCorpTerraformCloud';
@@ -298,7 +300,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     // find app.terraform.io token
     try {
       const data = JSON.parse(text);
-      const cred = data.credentials['app.staging.terraform.io'];
+      const cred = data.credentials[TerraformCloudHost];
       return cred.token;
     } catch (error) {
       vscode.window.showErrorMessage(
