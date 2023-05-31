@@ -3,9 +3,14 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+import * as os from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
 import { earlyApiClient } from '../terraformCloud';
+
+// TODO: replace with production URL
+const TerraformCloudHost = 'app.staging.terraform.io';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -68,7 +73,6 @@ class TerraformCloudSessionHandler {
     return this.secretStorage.delete(this.sessionKey);
   }
 }
-
 export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
   static providerLabel = 'HashiCorp Terraform Cloud';
   static providerID = 'HashiCorpTerraformCloud';
@@ -138,12 +142,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // - The end user initiates the "silent" auth flow via the Accounts menu
   async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
     // Prompt for the UAT.
-    const token = await vscode.window.showInputBox({
-      ignoreFocusOut: true,
-      placeHolder: 'User access token',
-      prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
-      password: true,
-    });
+    const token = await this.promptForToken();
     if (!token) {
       this.logger.error('User did not provide a UAT');
       throw new Error('UAT is required');
@@ -213,6 +212,111 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     this._onDidChangeSessions.fire({ added: added, removed: removed, changed: changed });
+  }
+
+  private async promptForToken(): Promise<string | undefined> {
+    const choice = await vscode.window.showQuickPick(
+      [
+        {
+          label: 'Stored User Token',
+          detail: 'Use a token stored in the Terraform CLI configuration file',
+        },
+        {
+          label: 'Existing User Token',
+          detail: 'Enter a token manually',
+        },
+        {
+          label: 'Open to generate a User token',
+          detail: 'Open the Terraform Cloud website to generate a new token',
+        },
+      ],
+      {
+        canPickMany: false,
+        ignoreFocusOut: true,
+        placeHolder: 'Choose a method to enter a Terraform Cloud User Token',
+        title: 'HashiCorp Terraform Cloud Authentication',
+      },
+    );
+    if (choice === undefined) {
+      return undefined;
+    }
+
+    // TODO: Change to production URL
+    const terraformCloudURL = `https://${TerraformCloudHost}/app/settings/tokens?source=vscode-terraform`;
+    let token: string | undefined;
+    switch (choice.label) {
+      case 'Open to generate a User token':
+        await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
+        // Prompt for the UAT.
+        token = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: 'User access token',
+          prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
+          password: true,
+        });
+        break;
+      case 'Existing User Token':
+        // Prompt for the UAT.
+        token = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: 'User access token',
+          prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
+          password: true,
+        });
+        break;
+      case 'Stored User Token':
+        token = await this.getTerraformCLIToken();
+        break;
+      default:
+        break;
+    }
+
+    return token;
+  }
+
+  private async getTerraformCLIToken() {
+    // detect if stored auth token is present
+    // ~/.terraform.d/credentials.tfrc.json
+    const credFilePath = path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
+    if ((await this.pathExists(credFilePath)) === false) {
+      vscode.window.showErrorMessage(
+        'Terraform credential file not found. Please login using the Terraform CLI and try again.',
+      );
+      return undefined;
+    }
+
+    // read and marshall json file
+    let text: string;
+    try {
+      const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
+      text = Buffer.from(content).toString('utf8');
+    } catch (error) {
+      vscode.window.showErrorMessage(
+        'Failed to read configuration file. Please login using the Terraform CLI and try again',
+      );
+      return undefined;
+    }
+
+    // find app.terraform.io token
+    try {
+      const data = JSON.parse(text);
+      const cred = data.credentials[TerraformCloudHost];
+      return cred.token;
+    } catch (error) {
+      vscode.window.showErrorMessage(
+        `No token found for ${TerraformCloudHost}. Please login using the Terraform CLI and try again`,
+      );
+      return undefined;
+    }
+  }
+
+  private async pathExists(filePath: string): Promise<boolean> {
+    try {
+      await vscode.workspace.fs.stat(vscode.Uri.file(filePath));
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   dispose() {
