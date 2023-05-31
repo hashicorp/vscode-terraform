@@ -242,7 +242,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     // TODO: Change to production URL
-    const terraformCloudURL = 'https://app.staging.terraform.io/app/settings/tokens?source=terraform-login';
+    const terraformCloudURL = `https://${TerraformCloudHost}/app/settings/tokens?source=terraform-login`;
     let token: string | undefined;
     switch (choice.label) {
       case 'Open to generate a User token':
@@ -304,7 +304,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       return cred.token;
     } catch (error) {
       vscode.window.showErrorMessage(
-        'No token found for app.staging.terraform.io. Please login using the Terraform CLI and try again',
+        `No token found for ${TerraformCloudHost}. Please login using the Terraform CLI and try again`,
       );
       return undefined;
     }
