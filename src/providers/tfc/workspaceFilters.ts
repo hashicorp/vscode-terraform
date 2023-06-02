@@ -72,7 +72,14 @@ export class ProjectQuickPick {
 
       picks.push(...(await createProjectItems(this.organizationName, this.quickPick.value)));
     } catch (error) {
-      picks.push({ label: `$(error) Error: ${error}`, alwaysShow: true });
+      let message = 'Failed to fetch projects';
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
+      }
+
+      picks.push({ label: `$(error) Error: ${message}`, alwaysShow: true });
       console.error(error);
     } finally {
       this.quickPick.items = picks;
