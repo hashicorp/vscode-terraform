@@ -14,7 +14,12 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
   constructor(private ctx: vscode.ExtensionContext, private runDataProvider: RunTreeDataProvider) {
-    vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', () => this.refresh());
+    this.ctx.subscriptions.push(
+      vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
+        this.refresh();
+        this.runDataProvider.refresh(workspaceItem);
+      }),
+    );
   }
 
   refresh(): void {
