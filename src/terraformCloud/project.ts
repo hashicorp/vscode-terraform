@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { makeApi } from '@zodios/core';
+import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 
@@ -14,12 +14,23 @@ const project = z.object({
   }),
 });
 
+export type Project = z.infer<typeof project>;
+
 const projects = z.object({
   data: z.array(project),
   meta: z.object({
     pagination: paginationMeta,
   }),
 });
+
+const searchQueryParams = makeParameters([
+  {
+    name: 'q',
+    type: 'Query',
+    description: ' A search query string. This query searches projects by name. This search is case-insensitive.',
+    schema: z.string().optional(),
+  },
+]);
 
 export const projectEndpoints = makeApi([
   {
@@ -28,7 +39,7 @@ export const projectEndpoints = makeApi([
     alias: 'listProjects',
     description: 'List projects in the organization',
     response: projects,
-    parameters: paginationParams,
+    parameters: [...paginationParams, ...searchQueryParams],
   },
   {
     method: 'get',
