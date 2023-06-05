@@ -16,11 +16,18 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private projectFilter: string | undefined;
 
+  // TODO: get from settings or somewhere global
+  private baseUrl = 'https://app.staging.terraform.io/app';
+
   constructor(private ctx: vscode.ExtensionContext, private runDataProvider: RunTreeDataProvider) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
         this.refresh();
         this.runDataProvider.refresh(workspaceItem);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.workspaces.viewInBrowser', (workspace: WorkspaceTreeItem) => {
+        const runURL = `${this.baseUrl}/${workspace.organization}/workspaces/${workspace.name}`;
+        vscode.env.openExternal(vscode.Uri.parse(runURL));
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => this.filterByProject()),
     );
@@ -107,7 +114,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         const project = projects.find((p) => p.id === workspace.relationships.project.data.id);
 
         const projectName = project ? project.attributes.name : '';
-        items.push(new WorkspaceTreeItem(workspace.attributes.name, workspace.id, projectName));
+
+        items.push(new WorkspaceTreeItem(workspace.attributes.name, workspace.id, projectName, organization));
       }
 
       return items;
@@ -134,7 +142,7 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
    * @param id This is the workspaceID as well as the unique ID for the treeitem
    * @param projectName The name of the project this workspace is in
    */
-  constructor(public name: string, public id: string, public projectName: string) {
+  constructor(public name: string, public id: string, public projectName: string, public organization: string) {
     super(name, vscode.TreeItemCollapsibleState.None);
     this.description = this.projectName;
     this.tooltip = new vscode.MarkdownString(`
