@@ -654,7 +654,7 @@
     "web:serve": "npx serve --cors -l 5001",
     "web:tunnel": "npx localtunnel -p 5001",
     "download:artifacts": "ts-node ./build/downloader.ts",
-    "vscode:prepublish": "npm run compile:prod",
+    "vscode:prepublish": "npm run compile:test",
     "package": "vsce package",
     "test": "npm run compile:test && node ./out/test/runTest.js",
     "test:unit": "jest",
@@ -662,7 +662,8 @@
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
-    "check-format": "npm run prettier -- --check"
+    "check-format": "npm run prettier -- --check",
+    "ui-test": "extest setup-and-run './out/ui-test/*-test.js' --extensions_dir .test-extensions"
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
@@ -705,6 +706,7 @@
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
+    "vscode-extension-tester": "^5.6.0",
     "webpack": "^5.82.0",
     "webpack-cli": "^5.1.1"
   }
