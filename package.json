@@ -612,7 +612,7 @@
         },
         {
           "id": "terraform-cloud",
-          "title": "HashiCorp Terraform CLoud",
+          "title": "HashiCorp Terraform Cloud",
           "icon": "assets/icons/terraform-cloud.svg"
         }
       ]
