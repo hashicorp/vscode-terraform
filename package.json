@@ -463,6 +463,11 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "terraform.cloud.workspaces.viewInBrowser",
+        "title": "View Workspace",
+        "icon": "$(globe)"
+      },
+      {
         "command": "terraform.cloud.runs.refresh",
         "title": "Refresh",
         "icon": "$(refresh)"
@@ -521,6 +526,10 @@
           "when": "false"
         },
         {
+          "command": "terraform.cloud.workspaces.viewInBrowser",
+          "when": "false"
+        },
+        {
           "command": "terraform.cloud.run.viewInBrowser",
           "when": "false"
         }
@@ -565,6 +574,11 @@
         {
           "command": "terraform.providers.openDocumentation",
           "when": "view == terraform.providers && viewItem == moduleProviderHasDocs"
+        },
+        {
+          "command": "terraform.cloud.workspaces.viewInBrowser",
+          "when": "view == terraform.cloud.workspaces",
+          "group": "inline"
         },
         {
           "command": "terraform.cloud.run.viewInBrowser",
