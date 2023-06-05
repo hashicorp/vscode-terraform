@@ -477,6 +477,11 @@
         "command": "terraform.cloud.run.viewInBrowser",
         "title": "View Run",
         "icon": "$(globe)"
+      },
+      {
+        "command": "terraform.cloud.workspaces.filterByProject",
+        "title": "Filter by Project",
+        "icon": "$(filter)"
       }
     ],
     "menus": {
@@ -540,6 +545,11 @@
         {
           "command": "terraform.initCurrent",
           "when": "view == terraform.providers",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.workspaces.filterByProject",
+          "when": "view == terraform.cloud.workspaces",
           "group": "navigation"
         },
         {
