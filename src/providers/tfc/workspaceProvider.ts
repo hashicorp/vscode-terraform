@@ -4,14 +4,17 @@
  */
 
 import * as vscode from 'vscode';
+import axios from 'axios';
+
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import axios from 'axios';
+import { ProjectQuickPick, ResetProjectItem } from './workspaceFilters';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
+  private projectFilter: string | undefined;
 
   constructor(private ctx: vscode.ExtensionContext, private runDataProvider: RunTreeDataProvider) {
     this.ctx.subscriptions.push(
@@ -19,11 +22,26 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         this.refresh();
         this.runDataProvider.refresh(workspaceItem);
       }),
+      vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => this.filterByProject()),
     );
   }
 
   refresh(): void {
     this.didChangeTreeData.fire();
+  }
+
+  async filterByProject(): Promise<void> {
+    // TODO! only run this if user is logged in
+    const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+    const projectQuickPick = new ProjectQuickPick(organization);
+    const project = await projectQuickPick.pick();
+
+    if (project === undefined || project instanceof ResetProjectItem) {
+      this.projectFilter = undefined;
+    } else {
+      this.projectFilter = project.description;
+    }
+    this.refresh();
   }
 
   getTreeItem(element: WorkspaceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -62,8 +80,17 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         params: {
           organization_name: organization,
         },
+        // Include query parameter only if project filter is set
+        ...(this.projectFilter && {
+          queries: {
+            'filter[project][id]': this.projectFilter,
+          },
+        }),
       });
 
+      // TODO? we could skip this request if a project filter is set,
+      // but with the addition of more filters, we could still get
+      // projects from different workspaces
       const projectResponse = await apiClient.listProjects({
         params: {
           organization_name: organization,
