@@ -9,6 +9,7 @@ import { TerraformCloudAuthenticationProvider } from '../authenticationProvider'
 import axios from 'axios';
 import { RunAttributes } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
+import { GetRunStatusIcon } from './helpers';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -120,7 +121,7 @@ export class RunTreeItem extends vscode.TreeItem {
     this.id = id;
 
     this.workspaceName = workspaceName;
-    this.iconPath = this.getStatusIcon(attributes.status);
+    this.iconPath = GetRunStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
     this.tooltip = new vscode.MarkdownString(`
 ### \`${workspaceName}\`
@@ -136,45 +137,5 @@ ___
 | **Source**              | ${attributes.source}|
 | **Terraform**         | ${attributes['terraform-version']}|
 `);
-  }
-
-  private getStatusIcon(status: string): vscode.ThemeIcon {
-    switch (status) {
-      // in progress
-      case 'pending':
-      case 'fetching':
-      case 'pre_plan_running':
-      case 'queuing':
-      case 'planning':
-      case 'cost_estimating':
-      case 'policy_checking':
-      case 'apply_queued':
-      case 'applying':
-      case 'post_plan_running':
-      case 'plan_queued':
-        return new vscode.ThemeIcon('sync~spin');
-
-      case 'fetching_completed':
-      case 'pre_plan_completed':
-      case 'planned':
-      case 'cost_estimated':
-      case 'policy_override':
-      case 'policy_checked':
-      case 'confirmed':
-      case 'post_plan_completed':
-      case 'planned_and_finished':
-        return new vscode.ThemeIcon('pass');
-      case 'policy_soft_failed':
-        return new vscode.ThemeIcon('warning');
-      case 'applied':
-        return new vscode.ThemeIcon('pass-filled');
-      case 'discarded':
-      case 'canceled':
-      case 'force_canceled':
-        return new vscode.ThemeIcon('discard');
-      case 'errored':
-        return new vscode.ThemeIcon('error');
-    }
-    return new vscode.ThemeIcon('indent');
   }
 }

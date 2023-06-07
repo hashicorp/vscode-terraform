@@ -14,3 +14,12 @@ export const projectFilterParams = makeParameters([
     schema: z.string().optional(),
   },
 ]);
+
+export const currentRunParams = makeParameters([
+  {
+    name: 'include',
+    type: 'Query',
+    description: 'Includes related resources when specified',
+    schema: z.string().optional(),
+  },
+]);

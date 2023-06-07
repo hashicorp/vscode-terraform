@@ -10,6 +10,9 @@ import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectQuickPick, ResetProjectItem } from './workspaceFilters';
+import { GetRunStatusIcon } from './helpers';
+import { Workspace } from '../../terraformCloud/workspace';
+import { RunAttributes } from '../../terraformCloud/run';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
@@ -87,12 +90,10 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         params: {
           organization_name: organization,
         },
-        // Include query parameter only if project filter is set
-        ...(this.projectFilter && {
-          queries: {
-            'filter[project][id]': this.projectFilter,
-          },
-        }),
+        queries: {
+          'filter[project][id]': this.projectFilter,
+          include: 'current_run',
+        },
       });
 
       // TODO? we could skip this request if a project filter is set,
@@ -112,10 +113,25 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         const workspace = workspaces[index];
 
         const project = projects.find((p) => p.id === workspace.relationships.project.data.id);
-
         const projectName = project ? project.attributes.name : '';
 
-        items.push(new WorkspaceTreeItem(workspace.attributes.name, workspace.id, projectName, organization));
+        const lastRunId = workspace.relationships['latest-run']?.data?.id;
+        const lastestRun = workspaceResponse.included
+          ? workspaceResponse.included.find((run) => run.id === lastRunId)
+          : undefined;
+        const link = vscode.Uri.joinPath(vscode.Uri.parse(this.baseUrl), workspace.links['self-html']);
+
+        items.push(
+          new WorkspaceTreeItem(
+            workspace.attributes.name,
+            workspace.id,
+            projectName,
+            organization,
+            workspace,
+            link,
+            lastestRun?.attributes,
+          ),
+        );
       }
 
       return items;
@@ -142,12 +158,46 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
    * @param id This is the workspaceID as well as the unique ID for the treeitem
    * @param projectName The name of the project this workspace is in
    */
-  constructor(public name: string, public id: string, public projectName: string, public organization: string) {
+  constructor(
+    public name: string,
+    public id: string,
+    public projectName: string,
+    public organization: string,
+    public workspace: Workspace,
+    public weblink: vscode.Uri,
+    public lastRun?: RunAttributes,
+  ) {
     super(name, vscode.TreeItemCollapsibleState.None);
     this.description = this.projectName;
-    this.tooltip = new vscode.MarkdownString(`
-### ${this.name}
-ID: ${this.id}
-`);
+    if (lastRun) {
+      this.iconPath = GetRunStatusIcon(lastRun.status);
+    }
+
+    const lockedTxt = this.workspace.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
+    const vscText = this.workspace.attributes['vcs-repo-identifier']
+      ? `$(source-control) [${workspace.attributes['vcs-repo-identifier']}](${workspace.attributes['vcs-repo']['repository-http-url']})`
+      : '';
+    const text = `
+## [${this.name}](${this.weblink})
+
+#### ID: *${this.id}*
+
+${lockedTxt}
+___
+| | |
+--|--
+| **Resources**         | ${workspace.attributes['resource-count']}|
+| **Terraform Version** | ${workspace.attributes['terraform-version']}|
+| **Updated at**        | ${workspace.attributes['updated-at']}|
+
+___
+| | |
+--|--
+| ${vscText} | |
+| **$(zap) Execution Mode** | ${workspace.attributes['terraform-version']}|
+| **$(gear) Auto Apply**    | ${workspace.attributes['updated-at']}|
+`;
+
+    this.tooltip = new vscode.MarkdownString(text, true);
   }
 }

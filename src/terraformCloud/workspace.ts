@@ -5,10 +5,16 @@
 
 import { makeApi } from '@zodios/core';
 import { z } from 'zod';
-import { projectFilterParams } from './filter';
+import { currentRunParams, projectFilterParams } from './filter';
 import { paginationMeta, paginationParams } from './pagination';
+import { runAttributes } from './run';
 
 const executionModes = z.enum(['remote', 'local', 'agent']);
+
+const included = z.object({
+  id: z.string(),
+  attributes: runAttributes,
+});
 
 const workspace = z.object({
   id: z.string(),
@@ -20,8 +26,22 @@ const workspace = z.object({
     source: z.string(),
     'updated-at': z.date(),
     'run-failures': z.number(),
+    'resource-count': z.number(),
+    'terraform-version': z.string(),
+    locked: z.string(),
+    'vcs-repo-identifier': z.string(),
+    'vcs-repo': z.object({
+      'repository-http-url': z.string(),
+    }),
+    'auto-apply': z.string(),
   }),
   relationships: z.object({
+    'latest-run': z.object({
+      data: z.object({
+        id: z.string(),
+        type: z.string(),
+      }),
+    }),
     project: z.object({
       data: z.object({
         id: z.string(),
@@ -29,13 +49,20 @@ const workspace = z.object({
       }),
     }),
   }),
+  links: z.object({
+    self: z.string(),
+    'self-html': z.string(),
+  }),
 });
+
+export type Workspace = z.infer<typeof workspace>;
 
 const workspaces = z.object({
   data: z.array(workspace),
   meta: z.object({
     pagination: paginationMeta,
   }),
+  included: z.array(included).optional(),
 });
 
 export const workspaceEndpoints = makeApi([
@@ -45,7 +72,7 @@ export const workspaceEndpoints = makeApi([
     alias: 'listWorkspaces',
     description: 'List workspaces in the organization',
     response: workspaces,
-    parameters: [...paginationParams, ...projectFilterParams],
+    parameters: [...paginationParams, ...projectFilterParams, ...currentRunParams],
   },
   {
     method: 'get',
