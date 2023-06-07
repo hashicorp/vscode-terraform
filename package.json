@@ -663,7 +663,7 @@
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
     "check-format": "npm run prettier -- --check",
-    "ui-test": "extest setup-and-run './out/ui-test/*-test.js' --extensions_dir .test-extensions"
+    "ui-test": "extest setup-and-run './out/ui-test/*-test.js' --code_settings settings.json --extensions_dir .test-extensions"
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",

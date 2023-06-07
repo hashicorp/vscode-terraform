@@ -49,6 +49,10 @@ let initializationError: ResponseError<InitializeError> | undefined = undefined;
 let crashCount = 0;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
+  // Set context as a global as some tests depend on it
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (global as any).testExtensionContext = context;
+
   const manifest = context.extension.packageJSON;
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
