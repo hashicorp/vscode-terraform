@@ -72,13 +72,17 @@ export function isTerraformFile(document?: vscode.TextDocument): boolean {
   return false;
 }
 
+function isInitializeError(error: unknown): error is ResponseError<InitializeError> {
+  return (error as ResponseError<InitializeError>).data?.retry !== undefined;
+}
+
 export async function handleLanguageClientStartError(
   error: unknown,
   ctx: vscode.ExtensionContext,
   reporter: TelemetryReporter,
 ) {
   let message = 'Unknown Error';
-  if (error instanceof ResponseError<InitializeError>) {
+  if (isInitializeError(error)) {
     // handled in initializationFailedHandler
     return;
   } else if (error instanceof Error) {
