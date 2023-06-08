@@ -54,9 +54,9 @@ export const tokenPluginId = apiClient.use(
     getToken: async () => {
       // TODO: Consider passing it as a dependency instead of global access to make testing easier
       const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
-        createIfNone: true,
+        createIfNone: false,
       });
-      return session.accessToken;
+      return session ? session.accessToken : undefined;
     },
   }),
 );

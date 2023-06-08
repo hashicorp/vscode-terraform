@@ -9,7 +9,7 @@ import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
 import { apiClient } from '../terraformCloud';
 
-export class TerraformCloudFeature implements vscode.Disposable {
+export class OrganizationStatusBar implements vscode.Disposable {
   private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 
   constructor(private context: vscode.ExtensionContext) {
@@ -18,12 +18,62 @@ export class TerraformCloudFeature implements vscode.Disposable {
       command: 'terraform.cloud.organization.picker',
       title: 'Choose your Terraform Cloud Organization',
     };
+  }
 
-    const org = this.context.workspaceState.get('terraform.cloud.organization', '');
-    if (org) {
-      this.organizationStatusBar.text = org;
-      this.organizationStatusBar.show();
+  dispose() {
+    this.organizationStatusBar.dispose();
+  }
+
+  public show(organization?: string) {
+    const savedOrg = this.context.workspaceState.get('terraform.cloud.organization', '');
+    const chosenOrg = organization ? organization : savedOrg;
+    if (chosenOrg) {
+      this.organizationStatusBar.text = chosenOrg;
     }
+
+    this.organizationStatusBar.show();
+  }
+
+  public async reset() {
+    await this.context.workspaceState.update('terraform.cloud.organization', undefined);
+    this.organizationStatusBar.text = '';
+    this.organizationStatusBar.hide();
+  }
+
+  public hide() {
+    this.organizationStatusBar.hide();
+  }
+}
+
+export class TerraformCloudFeature implements vscode.Disposable {
+  private statusBar: OrganizationStatusBar;
+
+  constructor(private context: vscode.ExtensionContext) {
+    this.statusBar = new OrganizationStatusBar(context);
+
+    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context, this.statusBar);
+    authProvider.onDidChangeSessions(async (event) => {
+      console.log(event);
+      if (event) {
+        if (event.added) {
+          console.log('signed in');
+
+          await vscode.commands.executeCommand('terraform.cloud.organization.picker');
+          this.statusBar.show();
+        }
+      }
+    });
+
+    context.subscriptions.push(
+      vscode.authentication.registerAuthenticationProvider(
+        TerraformCloudAuthenticationProvider.providerID,
+        TerraformCloudAuthenticationProvider.providerLabel,
+        authProvider,
+        { supportsMultipleAccounts: false },
+      ),
+    );
+
+    this.statusBar.show();
 
     const runDataProvider = new RunTreeDataProvider(this.context);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
@@ -67,10 +117,10 @@ export class TerraformCloudFeature implements vscode.Disposable {
     workspaceView.onDidChangeVisibility((event) => {
       if (event.visible) {
         // the view is visible so show the status bar
-        this.organizationStatusBar.show();
+        this.statusBar.show();
       } else {
         // hide statusbar because user isn't looking at our views
-        this.organizationStatusBar.hide();
+        this.statusBar.hide();
       }
     });
 
@@ -100,11 +150,10 @@ export class TerraformCloudFeature implements vscode.Disposable {
         }
 
         // user chose an organization so update the statusbar and make sure its visible
-        this.organizationStatusBar.text = answer.label;
-        this.organizationStatusBar.show();
+        await this.context.workspaceState.update('terraform.cloud.organization', answer.label);
+        this.statusBar.show(answer.label);
 
         // store the organization so other parts can use it
-        this.context.workspaceState.update('terraform.cloud.organization', answer.label);
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();
@@ -114,6 +163,6 @@ export class TerraformCloudFeature implements vscode.Disposable {
   }
 
   dispose() {
-    this.organizationStatusBar.dispose();
+    this.statusBar.dispose();
   }
 }
