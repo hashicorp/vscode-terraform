@@ -83,6 +83,9 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     try {
       const runs = await apiClient.listRuns({
         params: { workspace_id: workspaceId },
+        queries: {
+          'page[size]': 100,
+        },
       });
 
       if (runs.data.length === 0) {
@@ -94,8 +97,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         items.push(new RunTreeItem(run.id, workspaceName, run.attributes));
       }
-
-      // TODO: pagination
 
       return items;
     } catch (error) {
