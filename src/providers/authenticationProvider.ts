@@ -8,7 +8,6 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
 import { earlyApiClient } from '../terraformCloud';
-import { OrganizationStatusBar } from '../features/terraformCloud';
 
 // TODO: replace with production URL
 const TerraformCloudHost = 'app.staging.terraform.io';
@@ -88,11 +87,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private _onDidChangeSessions =
     new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
-  constructor(
-    private readonly secretStorage: vscode.SecretStorage,
-    private readonly ctx: vscode.ExtensionContext,
-    private statusBar: OrganizationStatusBar,
-  ) {
+  constructor(private readonly secretStorage: vscode.SecretStorage, private readonly ctx: vscode.ExtensionContext) {
     this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
     this.sessionHandler = new TerraformCloudSessionHandler(this.secretStorage, this.sessionKey);
     ctx.subscriptions.push(
@@ -182,10 +177,6 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
     this.logger.info('Removing current session');
     await this.sessionHandler.delete();
-
-    await this.ctx.workspaceState.update('terraform.cloud.organization', '');
-
-    this.statusBar.reset();
 
     // Notify VSCode's UI
     this._onDidChangeSessions.fire({ added: [], removed: [session], changed: [] });

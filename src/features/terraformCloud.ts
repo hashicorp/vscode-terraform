@@ -24,11 +24,15 @@ export class OrganizationStatusBar implements vscode.Disposable {
     this.organizationStatusBar.dispose();
   }
 
-  public show(organization?: string) {
-    const savedOrg = this.context.workspaceState.get('terraform.cloud.organization', '');
-    const chosenOrg = organization ? organization : savedOrg;
-    if (chosenOrg) {
-      this.organizationStatusBar.text = chosenOrg;
+  public async show(organization?: string) {
+    if (organization) {
+      await this.context.workspaceState.update('terraform.cloud.organization', organization);
+    } else {
+      organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+    }
+
+    if (organization) {
+      this.organizationStatusBar.text = organization;
     }
 
     this.organizationStatusBar.show();
@@ -51,11 +55,14 @@ export class TerraformCloudFeature implements vscode.Disposable {
   constructor(private context: vscode.ExtensionContext) {
     this.statusBar = new OrganizationStatusBar(context);
 
-    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context, this.statusBar);
+    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context);
     authProvider.onDidChangeSessions(async (event) => {
       if (event && event.added && event.added.length > 0) {
         await vscode.commands.executeCommand('terraform.cloud.organization.picker');
         this.statusBar.show();
+      }
+      if (event && event.removed && event.removed.length > 0) {
+        this.statusBar.reset();
       }
     });
 
@@ -143,7 +150,6 @@ export class TerraformCloudFeature implements vscode.Disposable {
         }
 
         // user chose an organization so update the statusbar and make sure its visible
-        await this.context.workspaceState.update('terraform.cloud.organization', answer.label);
         this.statusBar.show(answer.label);
 
         // store the organization so other parts can use it
