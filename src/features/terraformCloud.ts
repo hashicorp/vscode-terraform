@@ -53,7 +53,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
     const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context, this.statusBar);
     authProvider.onDidChangeSessions(async (event) => {
-      if (event && event.added) {
+      if (event && event.added && event.added.length > 0) {
         await vscode.commands.executeCommand('terraform.cloud.organization.picker');
         this.statusBar.show();
       }
@@ -67,8 +67,6 @@ export class TerraformCloudFeature implements vscode.Disposable {
         { supportsMultipleAccounts: false },
       ),
     );
-
-    this.statusBar.show();
 
     const runDataProvider = new RunTreeDataProvider(this.context);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
