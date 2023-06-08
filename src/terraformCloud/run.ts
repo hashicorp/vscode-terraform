@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { makeApi } from '@zodios/core';
+import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#run-states
-const runStates = z.enum([
+const runStatus = z.enum([
   'pending',
   'fetching',
   'fetching_completed',
@@ -37,38 +37,117 @@ const runStates = z.enum([
   'force_canceled',
 ]);
 
-const triggerReasons = z.enum(['unknown', 'manual', 'disabled', 'matched', 'inconclusive', 'git_tag']);
+const triggerReason = z.enum(['unknown', 'manual', 'disabled', 'matched', 'inconclusive', 'git_tag']);
+
+const runSource = z.enum(['tfe-ui', 'tfe-api', 'tfe-configuration-version', 'tfe-module']);
 
 export const runAttributes = z.object({
   'created-at': z.date(),
   message: z.string(),
-  source: z.string(),
-  status: runStates,
-  'trigger-reason': triggerReasons,
+  source: runSource,
+  status: runStatus,
+  'trigger-reason': triggerReason,
   'terraform-version': z.string(),
+});
+export type RunAttributes = z.infer<typeof runAttributes>;
+
+const relationship = z.object({
+  data: z.object({
+    id: z.string(),
+    type: z.string(),
+  }),
+});
+
+const runRelationships = z.object({
+  workspace: relationship,
+  'configuration-version': relationship,
+  'created-by': relationship.optional(),
 });
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#get-run-details
 const run = z.object({
   id: z.string(),
   attributes: runAttributes,
+  relationships: runRelationships,
+});
+export type Run = z.infer<typeof run>;
+
+// include=configuration_version.ingress_attributes
+// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version-s-commit-information
+const ingressAttributes = z.object({
+  branch: z.string(),
+  'clone-url': z.string(),
+  'commit-message': z.string(),
+  'commit-sha': z.string(),
+  'commit-url': z.string(),
+  'compare-url': z.string(),
+  identifier: z.string(),
+  'is-pull-request': z.boolean(),
+  'on-default-branch': z.boolean(),
+  'pull-request-number': z.number(),
+  'pull-request-url': z.string(),
+  'pull-request-title': z.string(),
+  'pull-request-body': z.string(),
+  tag: z.string().nullable(),
+  'sender-username': z.string(),
+  'sender-avatar-url': z.string(),
+  'sender-html-url': z.string(),
+});
+export type IngressAttributes = z.infer<typeof ingressAttributes>;
+
+// include=configuration_version (implied from .ingress_attributes too)
+// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version
+const configurationVersionAttributes = z.object({
+  source: z.string(),
+});
+export type ConfigurationVersionAttributes = z.infer<typeof configurationVersionAttributes>;
+
+const createdByAttributes = z.object({
+  username: z.string(),
+  'is-service-account': z.boolean(),
+  'avatar-url': z.string(),
+});
+export type CreatedByAttributes = z.infer<typeof createdByAttributes>;
+
+const includedObject = z.object({
+  id: z.string(),
+  type: z.string(),
+  attributes: ingressAttributes.or(configurationVersionAttributes).or(createdByAttributes),
   relationships: z.object({
-    workspace: z.object({
-      data: z.object({
-        id: z.string(),
-      }),
-    }),
+    'ingress-attributes': relationship,
   }),
 });
-
-export type RunAttributes = z.infer<typeof runAttributes>;
+export type IncludedObject = z.infer<typeof includedObject>;
 
 const runs = z.object({
   data: z.array(run),
+  included: z.array(includedObject),
   meta: z.object({
     pagination: paginationMeta,
   }),
 });
+
+// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#available-related-resources
+const includeParams = makeParameters([
+  {
+    name: 'include',
+    type: 'Query',
+    description: 'Related attributes to include',
+    schema: z
+      .array(
+        z.enum([
+          'plan',
+          'apply',
+          'created_by',
+          'cost_estimate',
+          'configuration_version',
+          'configuration_version.ingress_attributes',
+        ]),
+      )
+      .transform((x) => x?.join(','))
+      .optional(),
+  },
+]);
 
 export const runEndpoints = makeApi([
   {
@@ -77,7 +156,7 @@ export const runEndpoints = makeApi([
     alias: 'listRuns',
     description: 'List Runs in a Workspace',
     response: runs,
-    parameters: paginationParams,
+    parameters: [...paginationParams, ...includeParams],
   },
   {
     method: 'get',

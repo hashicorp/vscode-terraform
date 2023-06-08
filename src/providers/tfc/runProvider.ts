@@ -7,7 +7,14 @@ import * as vscode from 'vscode';
 import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import axios from 'axios';
-import { RunAttributes } from '../../terraformCloud/run';
+import {
+  ConfigurationVersionAttributes,
+  CreatedByAttributes,
+  IncludedObject,
+  IngressAttributes,
+  Run,
+  RunAttributes,
+} from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon } from './helpers';
 
@@ -33,7 +40,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
           return;
         }
 
-        const runURL = `${baseUrl}/${orgName}/workspaces/${run.workspaceName}/runs/${run.id}`;
+        const runURL = `${baseUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
 
         vscode.env.openExternal(vscode.Uri.parse(runURL));
       }),
@@ -58,15 +65,18 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     try {
-      return this.getRuns(this.activeWorkspace.id, this.activeWorkspace.attributes.name);
+      return this.getRuns(this.activeWorkspace.id);
     } catch (error) {
       return [];
     }
   }
 
-  // TODO: Implement resolveTreeItem() to pull and display ingress attributes on hover (branch, SHA, author)
+  async resolveTreeItem(item: vscode.TreeItem, element: RunTreeItem): Promise<vscode.TreeItem> {
+    item.tooltip = await runMarkdown(element);
+    return item;
+  }
 
-  private async getRuns(workspaceId: string, workspaceName: string): Promise<vscode.TreeItem[]> {
+  private async getRuns(workspaceId: string): Promise<vscode.TreeItem[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -80,22 +90,38 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
       return [];
     }
 
+    if (!this.activeWorkspace) {
+      return [];
+    }
+
     try {
       const runs = await apiClient.listRuns({
         params: { workspace_id: workspaceId },
         queries: {
           'page[size]': 100,
+          include: ['configuration_version.ingress_attributes', 'created_by'],
         },
       });
 
       if (runs.data.length === 0) {
-        return [{ label: `No runs found for ${workspaceName}` }];
+        return [{ label: `No runs found for ${this.activeWorkspace.attributes.name}` }];
       }
 
       const items: RunTreeItem[] = [];
       for (let index = 0; index < runs.data.length; index++) {
         const run = runs.data[index];
-        items.push(new RunTreeItem(run.id, workspaceName, run.attributes));
+        const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
+
+        runItem.createdBy = findCreatedByAttributes(runs.included, run);
+
+        const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
+        if (cfgVersion) {
+          runItem.configurationVersion = cfgVersion.attributes as ConfigurationVersionAttributes;
+
+          const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
+          runItem.ingressAttributes = ingressAttrs;
+        }
+        items.push(runItem);
       }
 
       return items;
@@ -116,27 +142,93 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
   }
 }
 
+function findConfigurationVersionAttributes(included: IncludedObject[], run: Run) {
+  return included.find(
+    (included: IncludedObject) =>
+      included.type === 'configuration-versions' && included.id === run.relationships['configuration-version'].data.id,
+  );
+}
+
+function findCreatedByAttributes(included: IncludedObject[], run: Run) {
+  const includedObject = included.find(
+    (included: IncludedObject) => included.type === 'users' && included.id === run.relationships['created-by']?.data.id,
+  );
+  if (includedObject) {
+    return includedObject.attributes as CreatedByAttributes;
+  }
+}
+
+function findIngressAttributes(included: IncludedObject[], cfgVersion: IncludedObject) {
+  const includedObject = included.find(
+    (included: IncludedObject) =>
+      included.type === 'ingress-attributes' && included.id === cfgVersion?.relationships['ingress-attributes'].data.id,
+  );
+  if (includedObject) {
+    return includedObject.attributes as IngressAttributes;
+  }
+}
+
 export class RunTreeItem extends vscode.TreeItem {
-  constructor(public id: string, public workspaceName: string, public attributes: RunAttributes) {
+  public createdBy?: CreatedByAttributes;
+  public configurationVersion?: ConfigurationVersionAttributes;
+  public ingressAttributes?: IngressAttributes;
+
+  constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem) {
     super(attributes.message, vscode.TreeItemCollapsibleState.None);
     this.id = id;
 
-    this.workspaceName = workspaceName;
+    this.workspace = workspace;
     this.iconPath = GetRunStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
-    this.tooltip = new vscode.MarkdownString(`
-### \`${workspaceName}\`
-#### ID: \`${id}\`
-___
-${attributes.message}
-___
+  }
+}
+
+async function runMarkdown(item: RunTreeItem) {
+  const markdown: vscode.MarkdownString = new vscode.MarkdownString();
+
+  // to allow image resizing
+  markdown.supportHtml = true;
+
+  if (item.createdBy) {
+    markdown.appendMarkdown(`<img src="${item.createdBy?.['avatar-url']}" width="20"> **${item.createdBy?.username}**`);
+  } else if (item.ingressAttributes) {
+    markdown.appendMarkdown(
+      `<img src="${item.ingressAttributes['sender-avatar-url']}" width="20"> **${item.ingressAttributes['sender-username']}**`,
+    );
+  }
+  markdown.appendMarkdown(
+    ` triggered a ${item.attributes['trigger-reason']} run from ${item.attributes.source} at ${item.attributes['created-at']}`,
+  );
+  markdown.appendMarkdown(`
+
+-----
+_____
 | | |
---|--
-| **Status**               | ${attributes.status}|
-| **Trigger reason** | ${attributes['trigger-reason']}|
-| **Created at**        | ${attributes['created-at']}|
-| **Source**              | ${attributes.source}|
-| **Terraform**         | ${attributes['terraform-version']}|
+-:|--
+| **Run ID**   | \`${item.id}\` |
+`);
+  if (item.ingressAttributes) {
+    // Blind shortening like this may not be appropriate
+    // due to hash collisions but we just mimic what TFC does here
+    // which is fairly safe since it's just UI/text, not URL.
+    const shortCommitSha = item.ingressAttributes?.['commit-sha'].slice(0, 8);
+
+    markdown.appendMarkdown(`| **Configuration** | From ${item.configurationVersion?.source} by <img src="${
+      item.ingressAttributes?.['sender-avatar-url']
+    }" width="20"> ${item.ingressAttributes?.['sender-username']} **Branch** ${
+      item.ingressAttributes?.branch
+    } **Repo** [${item.ingressAttributes?.identifier}](${item.ingressAttributes?.['clone-url']}) |
+| **Commit** | [${shortCommitSha}](${item.ingressAttributes?.['commit-url']}): ${
+      item.ingressAttributes?.['commit-message'].split('\n')[0]
+    } |
+`);
+  } else {
+    markdown.appendMarkdown(`| **Configuration** | From ${item.attributes.source} |
 `);
   }
+
+  markdown.appendMarkdown(`| **Trigger** | ${item.attributes['trigger-reason']} |
+| **Execution Mode** | ${item.workspace.attributes['execution-mode']} |
+`);
+  return markdown;
 }
