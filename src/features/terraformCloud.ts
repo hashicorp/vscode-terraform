@@ -9,46 +9,6 @@ import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
 import { apiClient } from '../terraformCloud';
 
-export class OrganizationStatusBar implements vscode.Disposable {
-  private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
-
-  constructor(private context: vscode.ExtensionContext) {
-    this.organizationStatusBar.name = 'TFCOrganizationBar';
-    this.organizationStatusBar.command = {
-      command: 'terraform.cloud.organization.picker',
-      title: 'Choose your Terraform Cloud Organization',
-    };
-  }
-
-  dispose() {
-    this.organizationStatusBar.dispose();
-  }
-
-  public async show(organization?: string) {
-    if (organization) {
-      await this.context.workspaceState.update('terraform.cloud.organization', organization);
-    } else {
-      organization = this.context.workspaceState.get('terraform.cloud.organization', '');
-    }
-
-    if (organization) {
-      this.organizationStatusBar.text = organization;
-    }
-
-    this.organizationStatusBar.show();
-  }
-
-  public async reset() {
-    await this.context.workspaceState.update('terraform.cloud.organization', undefined);
-    this.organizationStatusBar.text = '';
-    this.organizationStatusBar.hide();
-  }
-
-  public hide() {
-    this.organizationStatusBar.hide();
-  }
-}
-
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
 
@@ -163,5 +123,45 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
   dispose() {
     this.statusBar.dispose();
+  }
+}
+
+export class OrganizationStatusBar implements vscode.Disposable {
+  private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+
+  constructor(private context: vscode.ExtensionContext) {
+    this.organizationStatusBar.name = 'TFCOrganizationBar';
+    this.organizationStatusBar.command = {
+      command: 'terraform.cloud.organization.picker',
+      title: 'Choose your Terraform Cloud Organization',
+    };
+  }
+
+  dispose() {
+    this.organizationStatusBar.dispose();
+  }
+
+  public async show(organization?: string) {
+    if (organization) {
+      await this.context.workspaceState.update('terraform.cloud.organization', organization);
+    } else {
+      organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+    }
+
+    if (organization) {
+      this.organizationStatusBar.text = organization;
+    }
+
+    this.organizationStatusBar.show();
+  }
+
+  public async reset() {
+    await this.context.workspaceState.update('terraform.cloud.organization', undefined);
+    this.organizationStatusBar.text = '';
+    this.organizationStatusBar.hide();
+  }
+
+  public hide() {
+    this.organizationStatusBar.hide();
   }
 }
