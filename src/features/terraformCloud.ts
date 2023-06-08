@@ -53,14 +53,9 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
     const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context, this.statusBar);
     authProvider.onDidChangeSessions(async (event) => {
-      console.log(event);
-      if (event) {
-        if (event.added) {
-          console.log('signed in');
-
-          await vscode.commands.executeCommand('terraform.cloud.organization.picker');
-          this.statusBar.show();
-        }
+      if (event && event.added) {
+        await vscode.commands.executeCommand('terraform.cloud.organization.picker');
+        this.statusBar.show();
       }
     });
 
