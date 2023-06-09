@@ -10,20 +10,30 @@ import { TerraformCloudAuthenticationProvider } from '../providers/authenticatio
 import { apiClient } from '../terraformCloud';
 
 export class TerraformCloudFeature implements vscode.Disposable {
-  private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+  private statusBar: OrganizationStatusBar;
 
   constructor(private context: vscode.ExtensionContext) {
-    this.organizationStatusBar.name = 'TFCOrganizationBar';
-    this.organizationStatusBar.command = {
-      command: 'terraform.cloud.organization.picker',
-      title: 'Choose your Terraform Cloud Organization',
-    };
+    this.statusBar = new OrganizationStatusBar(context);
 
-    const org = this.context.workspaceState.get('terraform.cloud.organization', '');
-    if (org) {
-      this.organizationStatusBar.text = org;
-      this.organizationStatusBar.show();
-    }
+    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context);
+    authProvider.onDidChangeSessions(async (event) => {
+      if (event && event.added && event.added.length > 0) {
+        await vscode.commands.executeCommand('terraform.cloud.organization.picker');
+        this.statusBar.show();
+      }
+      if (event && event.removed && event.removed.length > 0) {
+        this.statusBar.reset();
+      }
+    });
+
+    context.subscriptions.push(
+      vscode.authentication.registerAuthenticationProvider(
+        TerraformCloudAuthenticationProvider.providerID,
+        TerraformCloudAuthenticationProvider.providerLabel,
+        authProvider,
+        { supportsMultipleAccounts: false },
+      ),
+    );
 
     const runDataProvider = new RunTreeDataProvider(this.context);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
@@ -67,10 +77,10 @@ export class TerraformCloudFeature implements vscode.Disposable {
     workspaceView.onDidChangeVisibility((event) => {
       if (event.visible) {
         // the view is visible so show the status bar
-        this.organizationStatusBar.show();
+        this.statusBar.show();
       } else {
         // hide statusbar because user isn't looking at our views
-        this.organizationStatusBar.hide();
+        this.statusBar.hide();
       }
     });
 
@@ -100,11 +110,9 @@ export class TerraformCloudFeature implements vscode.Disposable {
         }
 
         // user chose an organization so update the statusbar and make sure its visible
-        this.organizationStatusBar.text = answer.label;
-        this.organizationStatusBar.show();
+        this.statusBar.show(answer.label);
 
         // store the organization so other parts can use it
-        this.context.workspaceState.update('terraform.cloud.organization', answer.label);
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();
@@ -114,6 +122,46 @@ export class TerraformCloudFeature implements vscode.Disposable {
   }
 
   dispose() {
+    this.statusBar.dispose();
+  }
+}
+
+export class OrganizationStatusBar implements vscode.Disposable {
+  private organizationStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+
+  constructor(private context: vscode.ExtensionContext) {
+    this.organizationStatusBar.name = 'TFCOrganizationBar';
+    this.organizationStatusBar.command = {
+      command: 'terraform.cloud.organization.picker',
+      title: 'Choose your Terraform Cloud Organization',
+    };
+  }
+
+  dispose() {
     this.organizationStatusBar.dispose();
+  }
+
+  public async show(organization?: string) {
+    if (organization) {
+      await this.context.workspaceState.update('terraform.cloud.organization', organization);
+    } else {
+      organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+    }
+
+    if (organization) {
+      this.organizationStatusBar.text = organization;
+    }
+
+    this.organizationStatusBar.show();
+  }
+
+  public async reset() {
+    await this.context.workspaceState.update('terraform.cloud.organization', undefined);
+    this.organizationStatusBar.text = '';
+    this.organizationStatusBar.hide();
+  }
+
+  public hide() {
+    this.organizationStatusBar.hide();
   }
 }
