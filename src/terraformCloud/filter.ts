@@ -15,11 +15,14 @@ export const projectFilterParams = makeParameters([
   },
 ]);
 
-export const currentRunParams = makeParameters([
+export const workspaceIncludeParams = makeParameters([
   {
     name: 'include',
     type: 'Query',
-    description: 'Includes related resources when specified',
-    schema: z.string().optional(),
+    description: 'Includes related resources for workspaces when specified',
+    schema: z
+      .array(z.enum(['current_run']))
+      .transform((x) => x?.join(','))
+      .optional(),
   },
 ]);

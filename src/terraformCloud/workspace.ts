@@ -5,7 +5,7 @@
 
 import { makeApi } from '@zodios/core';
 import { z } from 'zod';
-import { currentRunParams, projectFilterParams } from './filter';
+import { workspaceIncludeParams, projectFilterParams } from './filter';
 import { paginationMeta, paginationParams } from './pagination';
 import { runAttributes } from './run';
 
@@ -72,7 +72,7 @@ export const workspaceEndpoints = makeApi([
     alias: 'listWorkspaces',
     description: 'List workspaces in the organization',
     response: workspaces,
-    parameters: [...paginationParams, ...projectFilterParams, ...currentRunParams],
+    parameters: [...paginationParams, ...projectFilterParams, ...workspaceIncludeParams],
   },
   {
     method: 'get',

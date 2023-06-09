@@ -91,8 +91,9 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
           organization_name: organization,
         },
         queries: {
-          'filter[project][id]': this.projectFilter,
-          include: 'current_run',
+          include: ['current_run'],
+          // Include query parameter only if project filter is set
+          ...(this.projectFilter && { 'filter[project][id]': this.projectFilter }),
         },
       });
 
