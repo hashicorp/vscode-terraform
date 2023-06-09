@@ -56,7 +56,7 @@ export const tokenPluginId = apiClient.use(
       const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
         createIfNone: true,
       });
-      return session.accessToken;
+      return session ? session.accessToken : undefined;
     },
   }),
 );
