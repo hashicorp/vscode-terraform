@@ -58,7 +58,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     try {
-      return this.getRuns(this.activeWorkspace.id, this.activeWorkspace.name);
+      return this.getRuns(this.activeWorkspace.id, this.activeWorkspace.attributes.name);
     } catch (error) {
       return [];
     }
