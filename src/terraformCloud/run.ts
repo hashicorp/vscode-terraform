@@ -37,16 +37,34 @@ const runStatus = z.enum([
   'force_canceled',
 ]);
 
-const triggerReason = z.enum(['unknown', 'manual', 'disabled', 'matched', 'inconclusive', 'git_tag']);
+export const TRIGGER_REASON: { [id: string]: string } = {
+  unknown: 'unknown',
+  manual: 'manually triggered run',
+  disabled: 'file change detected in VCS',
+  matched: 'file change detected in tracked directory',
+  inconclusive: 'unable to detect changed files',
+  git_tag: 'automatically triggered run',
+};
+const triggerReasons = Object.keys(TRIGGER_REASON);
 
-const runSource = z.enum(['tfe-ui', 'tfe-api', 'tfe-configuration-version', 'tfe-module']);
+export const RUN_SOURCE: { [id: string]: string } = {
+  terraform: 'CLI',
+  'terraform+cloud': 'CLI',
+  'tfe-api': 'API',
+  'tfe-configuration-version': 'configuration version',
+  'tfe-infrastructure-lifecycle': 'infrastructure lifecycle',
+  'tfe-module': 'no-code provision',
+  'tfe-run-trigger': 'run trigger',
+  'tfe-ui': 'UI',
+};
+const runSources = Object.keys(RUN_SOURCE);
 
 export const runAttributes = z.object({
   'created-at': z.date(),
   message: z.string(),
-  source: runSource,
+  source: z.enum([runSources[0], ...runSources]),
   status: runStatus,
-  'trigger-reason': triggerReason,
+  'trigger-reason': z.enum([triggerReasons[0], ...triggerReasons]),
   'terraform-version': z.string(),
 });
 export type RunAttributes = z.infer<typeof runAttributes>;
@@ -95,10 +113,22 @@ const ingressAttributes = z.object({
 });
 export type IngressAttributes = z.infer<typeof ingressAttributes>;
 
+export const CONFIGURATION_SOURCE: { [id: string]: string } = {
+  ado: 'Azure DevOps',
+  bitbucket: 'Bitbucket',
+  gitlab: 'GitLab',
+  github: 'GitHub',
+  terraform: 'Terraform',
+  'terraform+cloud': 'Terraform Cloud',
+  tfeAPI: 'API',
+  tfeModule: 'No-code Module',
+};
+const cfgSources = Object.keys(CONFIGURATION_SOURCE);
+
 // include=configuration_version (implied from .ingress_attributes too)
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version
 const configurationVersionAttributes = z.object({
-  source: z.string(),
+  source: z.enum([cfgSources[0], ...cfgSources]),
 });
 export type ConfigurationVersionAttributes = z.infer<typeof configurationVersionAttributes>;
 

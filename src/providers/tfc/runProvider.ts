@@ -8,12 +8,15 @@ import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import axios from 'axios';
 import {
+  CONFIGURATION_SOURCE,
   ConfigurationVersionAttributes,
   CreatedByAttributes,
   IncludedObject,
   IngressAttributes,
+  RUN_SOURCE,
   Run,
   RunAttributes,
+  TRIGGER_REASON,
 } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon } from './helpers';
@@ -202,9 +205,10 @@ async function runMarkdown(item: RunTreeItem) {
       `<img src="${item.ingressAttributes['sender-avatar-url']}" width="20"> **${item.ingressAttributes['sender-username']}**`,
     );
   }
-  markdown.appendMarkdown(
-    ` triggered a ${item.attributes['trigger-reason']} run from ${item.attributes.source} ${createdAtTime}`,
-  );
+
+  const triggerReason = TRIGGER_REASON[item.attributes['trigger-reason']];
+
+  markdown.appendMarkdown(` ${triggerReason} from ${RUN_SOURCE[item.attributes.source]} ${createdAtTime}`);
   markdown.appendMarkdown(`
 
 -----
@@ -213,13 +217,14 @@ _____
 -:|--
 | **Run ID**   | \`${item.id}\` |
 `);
-  if (item.ingressAttributes) {
+  if (item.ingressAttributes && item.configurationVersion) {
     // Blind shortening like this may not be appropriate
     // due to hash collisions but we just mimic what TFC does here
     // which is fairly safe since it's just UI/text, not URL.
     const shortCommitSha = item.ingressAttributes?.['commit-sha'].slice(0, 8);
 
-    markdown.appendMarkdown(`| **Configuration** | From ${item.configurationVersion?.source} by <img src="${
+    const cfgSource = CONFIGURATION_SOURCE[item.configurationVersion.source];
+    markdown.appendMarkdown(`| **Configuration** | From ${cfgSource} by <img src="${
       item.ingressAttributes?.['sender-avatar-url']
     }" width="20"> ${item.ingressAttributes?.['sender-username']} **Branch** ${
       item.ingressAttributes?.branch
@@ -233,7 +238,7 @@ _____
 `);
   }
 
-  markdown.appendMarkdown(`| **Trigger** | ${item.attributes['trigger-reason']} |
+  markdown.appendMarkdown(`| **Trigger** | ${triggerReason} |
 | **Execution Mode** | ${item.workspace.attributes['execution-mode']} |
 `);
   return markdown;
