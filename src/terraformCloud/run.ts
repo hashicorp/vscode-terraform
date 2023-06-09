@@ -39,7 +39,7 @@ const runStates = z.enum([
 
 const triggerReasons = z.enum(['unknown', 'manual', 'disabled', 'matched', 'inconclusive', 'git_tag']);
 
-const runAttributes = z.object({
+export const runAttributes = z.object({
   'created-at': z.date(),
   message: z.string(),
   source: z.string(),
