@@ -16,25 +16,27 @@ const included = z.object({
   attributes: runAttributes,
 });
 
+const workspaceAttributes = z.object({
+  description: z.string(),
+  environment: z.string(),
+  'execution-mode': executionModes,
+  name: z.string(),
+  source: z.string(),
+  'updated-at': z.date(),
+  'run-failures': z.number(),
+  'resource-count': z.number(),
+  'terraform-version': z.string(),
+  locked: z.string(),
+  'vcs-repo-identifier': z.string(),
+  'vcs-repo': z.object({
+    'repository-http-url': z.string(),
+  }),
+  'auto-apply': z.string(),
+});
+
 const workspace = z.object({
   id: z.string(),
-  attributes: z.object({
-    description: z.string(),
-    environment: z.string(),
-    'execution-mode': executionModes,
-    name: z.string(),
-    source: z.string(),
-    'updated-at': z.date(),
-    'run-failures': z.number(),
-    'resource-count': z.number(),
-    'terraform-version': z.string(),
-    locked: z.string(),
-    'vcs-repo-identifier': z.string(),
-    'vcs-repo': z.object({
-      'repository-http-url': z.string(),
-    }),
-    'auto-apply': z.string(),
-  }),
+  attributes: workspaceAttributes,
   relationships: z.object({
     'latest-run': z.object({
       data: z.object({
@@ -56,6 +58,7 @@ const workspace = z.object({
 });
 
 export type Workspace = z.infer<typeof workspace>;
+export type WorkspaceAttributes = z.infer<typeof workspaceAttributes>;
 
 const workspaces = z.object({
   data: z.array(workspace),

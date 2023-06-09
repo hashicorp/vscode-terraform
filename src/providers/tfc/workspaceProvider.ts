@@ -11,7 +11,7 @@ import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectQuickPick, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon } from './helpers';
-import { Workspace } from '../../terraformCloud/workspace';
+import { WorkspaceAttributes } from '../../terraformCloud/workspace';
 import { RunAttributes } from '../../terraformCloud/run';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
@@ -28,10 +28,13 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         this.refresh();
         this.runDataProvider.refresh(workspaceItem);
       }),
-      vscode.commands.registerCommand('terraform.cloud.workspaces.viewInBrowser', (workspace: WorkspaceTreeItem) => {
-        const runURL = `${this.baseUrl}/${workspace.organization}/workspaces/${workspace.name}`;
-        vscode.env.openExternal(vscode.Uri.parse(runURL));
-      }),
+      vscode.commands.registerCommand(
+        'terraform.cloud.workspaces.viewInBrowser',
+        (workspaceItem: WorkspaceTreeItem) => {
+          const runURL = `${this.baseUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
+          vscode.env.openExternal(vscode.Uri.parse(runURL));
+        },
+      ),
       vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => this.filterByProject()),
     );
   }
@@ -124,11 +127,10 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
 
         items.push(
           new WorkspaceTreeItem(
-            workspace.attributes.name,
+            workspace.attributes,
             workspace.id,
             projectName,
             organization,
-            workspace,
             link,
             lastestRun?.attributes,
           ),
@@ -160,26 +162,27 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
    * @param projectName The name of the project this workspace is in
    */
   constructor(
-    public name: string,
+    public attributes: WorkspaceAttributes,
     public id: string,
     public projectName: string,
     public organization: string,
-    public workspace: Workspace,
     public weblink: vscode.Uri,
     public lastRun?: RunAttributes,
   ) {
-    super(name, vscode.TreeItemCollapsibleState.None);
+    super(attributes.name, vscode.TreeItemCollapsibleState.None);
+
     this.description = this.projectName;
-    if (lastRun) {
-      this.iconPath = GetRunStatusIcon(lastRun.status);
+
+    if (this.lastRun) {
+      this.iconPath = GetRunStatusIcon(this.lastRun.status);
     }
 
-    const lockedTxt = this.workspace.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
-    const vscText = this.workspace.attributes['vcs-repo-identifier']
-      ? `$(source-control) [${workspace.attributes['vcs-repo-identifier']}](${workspace.attributes['vcs-repo']['repository-http-url']})`
+    const lockedTxt = this.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
+    const vscText = this.attributes['vcs-repo-identifier']
+      ? `$(source-control) [${this.attributes['vcs-repo-identifier']}](${this.attributes['vcs-repo']['repository-http-url']})`
       : '';
     const text = `
-## [${this.name}](${this.weblink})
+## [${this.attributes.name}](${this.weblink})
 
 #### ID: *${this.id}*
 
@@ -187,16 +190,16 @@ ${lockedTxt}
 ___
 | | |
 --|--
-| **Resources**         | ${workspace.attributes['resource-count']}|
-| **Terraform Version** | ${workspace.attributes['terraform-version']}|
-| **Updated at**        | ${workspace.attributes['updated-at']}|
+| **Resources**         | ${this.attributes['resource-count']}|
+| **Terraform Version** | ${this.attributes['terraform-version']}|
+| **Updated at**        | ${this.attributes['updated-at']}|
 
 ___
 | | |
 --|--
 | ${vscText} | |
-| **$(zap) Execution Mode** | ${workspace.attributes['terraform-version']}|
-| **$(gear) Auto Apply**    | ${workspace.attributes['updated-at']}|
+| **$(zap) Execution Mode** | ${this.attributes['terraform-version']}|
+| **$(gear) Auto Apply**    | ${this.attributes['updated-at']}|
 `;
 
     this.tooltip = new vscode.MarkdownString(text, true);
