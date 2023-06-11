@@ -216,7 +216,7 @@ To enable automatic formatting, it is recommended that the following be added to
   "editor.defaultFormatter": "hashicorp.terraform",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file"
-}
+},
 "[terraform-vars]": {
   "editor.defaultFormatter": "hashicorp.terraform",
   "editor.formatOnSave": true,
