@@ -48,7 +48,7 @@ let crashCount = 0;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;
-  reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
+  reporter = new TelemetryReporter(manifest.appInsightsKey);
   context.subscriptions.push(reporter);
 
   // always register commands needed to control terraform-ls
