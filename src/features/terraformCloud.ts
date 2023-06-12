@@ -92,6 +92,15 @@ export class TerraformCloudFeature implements vscode.Disposable {
     });
 
     this.context.subscriptions.push(
+      vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
+        // https://app.staging.terraform.io/app/ipl-empathy-workshop-stark/workspaces/new
+        const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+        if (organization === '') {
+          return [];
+        }
+        const terraformCloudURL = `https://app.staging.terraform.io/app/${organization}/workspaces/new`;
+        await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
+      }),
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-pick-organization');
 
@@ -124,6 +133,9 @@ export class TerraformCloudFeature implements vscode.Disposable {
         // user chose an organization so update the statusbar and make sure its visible
         organizationQuickPick.hide();
         this.statusBar.show(choice.label);
+
+        // project filter should be cleared on org change
+        await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();

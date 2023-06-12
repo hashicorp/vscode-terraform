@@ -58,6 +58,12 @@ export class OrganizationAPIResource implements APIResource {
       }),
     });
 
+    if (organizations.data.length <= 0) {
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsExist', false);
+    } else {
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsExist', true);
+    }
+
     return organizations.data.map((organization) => new OrganizationItem(organization));
   }
 
