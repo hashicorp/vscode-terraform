@@ -82,7 +82,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     initializationFailedHandler: (error: ResponseError<InitializeError> | Error | any) => {
       initializationError = error;
 
-      reporter.sendTelemetryException(error);
+      reporter.sendTelemetryErrorEvent('initializationError', { error });
 
       let msg = 'Failure to start terraform-ls. Please check your configuration settings and reload this window';
 
@@ -216,11 +216,11 @@ export async function deactivate(): Promise<void> {
   } catch (error) {
     if (error instanceof Error) {
       outputChannel.appendLine(error.message);
-      reporter.sendTelemetryException(error);
+      reporter.sendTelemetryErrorEvent('deactivationError', { error: error.message });
       vscode.window.showErrorMessage(error.message);
     } else if (typeof error === 'string') {
       outputChannel.appendLine(error);
-      reporter.sendTelemetryException(new Error(error));
+      reporter.sendTelemetryErrorEvent('deactivationError', { error });
       vscode.window.showErrorMessage(error);
     }
   }

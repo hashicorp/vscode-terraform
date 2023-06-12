@@ -87,10 +87,10 @@ export async function handleLanguageClientStartError(
     return;
   } else if (error instanceof Error) {
     message = error.message;
-    reporter.sendTelemetryException(error);
+    reporter.sendTelemetryErrorEvent('startError', { error: error.message });
   } else if (typeof error === 'string') {
     message = error;
-    reporter.sendTelemetryException(new Error(error));
+    reporter.sendTelemetryErrorEvent('startError', { error });
   }
 
   if (message === 'INVALID_URI_WSL') {
