@@ -27,9 +27,9 @@ const userAgentHeader = pluginHeader(
 
 function pluginLogger(): ZodiosPlugin {
   return {
-    request: async (_, config) => {
-      console.log(config);
-      return { ...config };
+    response: async (_api, _config, response) => {
+      console.log(response);
+      return response;
     },
   };
 }
@@ -48,6 +48,7 @@ export const apiClient = new Zodios(baseUrl, [
 ]);
 apiClient.use(jsonHeader);
 apiClient.use(userAgentHeader);
+apiClient.use(pluginLogger());
 
 export const tokenPluginId = apiClient.use(
   pluginToken({
