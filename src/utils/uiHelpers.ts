@@ -10,6 +10,7 @@ export interface APIResource {
 
   readonly title: string;
   readonly placeholder: string;
+  readonly ignoreFocusOut?: boolean;
 
   fetchItems(query?: string): Promise<vscode.QuickPickItem[]>;
 }
@@ -23,6 +24,7 @@ export class APIQuickPick {
     this.quickPick.title = resource.title;
     this.quickPick.placeholder = resource.placeholder;
     this.quickPick.onDidChangeValue(this.onDidChangeValue, this);
+    this.quickPick.ignoreFocusOut = resource.ignoreFocusOut ?? false;
   }
 
   private onDidChangeValue() {
@@ -40,7 +42,7 @@ export class APIQuickPick {
     this.quickPick.busy = false;
   }
 
-  async pick() {
+  async pick(autoHide = true) {
     await this.fetchResource();
 
     const result = await new Promise<vscode.QuickPickItem | undefined>((c) => {
@@ -48,8 +50,15 @@ export class APIQuickPick {
       this.quickPick.onDidHide(() => c(undefined));
       this.quickPick.show();
     });
-    this.quickPick.hide();
+
+    if (autoHide) {
+      this.quickPick.hide();
+    }
 
     return result;
+  }
+
+  hide() {
+    this.quickPick.hide();
   }
 }
