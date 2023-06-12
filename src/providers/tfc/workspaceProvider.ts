@@ -10,9 +10,10 @@ import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectQuickPick, ResetProjectItem } from './workspaceFilters';
-import { GetRunStatusIcon } from './helpers';
+import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../terraformCloud/workspace';
 import { RunAttributes } from '../../terraformCloud/run';
+import { z } from 'zod';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
@@ -181,6 +182,9 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
     const vscText = this.attributes['vcs-repo-identifier']
       ? `$(source-control) [${this.attributes['vcs-repo-identifier']}](${this.attributes['vcs-repo']['repository-http-url']})`
       : '';
+
+    // TODO(fix): the date does not get parsed as Date via zod schema
+    const updatedAt = RelativeTimeFormat(z.coerce.date().parse(this.attributes['updated-at']));
     const text = `
 ## [${this.attributes.name}](${this.weblink})
 
@@ -192,14 +196,14 @@ ___
 --|--
 | **Resources**         | ${this.attributes['resource-count']}|
 | **Terraform Version** | ${this.attributes['terraform-version']}|
-| **Updated at**        | ${this.attributes['updated-at']}|
+| **Updated**           | ${updatedAt}|
 
 ___
 | | |
 --|--
 | ${vscText} | |
 | **$(zap) Execution Mode** | ${this.attributes['terraform-version']}|
-| **$(gear) Auto Apply**    | ${this.attributes['updated-at']}|
+| **$(gear) Auto Apply**    | ${updatedAt}|
 `;
 
     this.tooltip = new vscode.MarkdownString(text, true);
