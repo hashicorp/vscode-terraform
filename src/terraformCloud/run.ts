@@ -60,7 +60,7 @@ export const RUN_SOURCE: { [id: string]: string } = {
 const runSources = Object.keys(RUN_SOURCE);
 
 export const runAttributes = z.object({
-  'created-at': z.date(),
+  'created-at': z.coerce.date(),
   message: z.string(),
   source: z.enum([runSources[0], ...runSources]),
   status: runStatus,
@@ -69,17 +69,21 @@ export const runAttributes = z.object({
 });
 export type RunAttributes = z.infer<typeof runAttributes>;
 
-const relationship = z.object({
-  data: z.object({
-    id: z.string(),
-    type: z.string(),
-  }),
-});
+const relationship = z
+  .object({
+    data: z
+      .object({
+        id: z.string(),
+        type: z.string(),
+      })
+      .nullable(),
+  })
+  .nullish();
 
 const runRelationships = z.object({
   workspace: relationship,
   'configuration-version': relationship,
-  'created-by': relationship.optional(),
+  'created-by': relationship,
 });
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#get-run-details
@@ -98,20 +102,27 @@ const ingressAttributes = z.object({
   'commit-message': z.string(),
   'commit-sha': z.string(),
   'commit-url': z.string(),
-  'compare-url': z.string(),
+  'compare-url': z.string().nullable(),
   identifier: z.string(),
   'is-pull-request': z.boolean(),
   'on-default-branch': z.boolean(),
-  'pull-request-number': z.number(),
-  'pull-request-url': z.string(),
-  'pull-request-title': z.string(),
-  'pull-request-body': z.string(),
+  'pull-request-number': z.number().nullable(),
+  'pull-request-url': z.string().nullable(),
+  'pull-request-title': z.string().nullable(),
+  'pull-request-body': z.string().nullable(),
   tag: z.string().nullable(),
   'sender-username': z.string(),
   'sender-avatar-url': z.string(),
   'sender-html-url': z.string(),
 });
 export type IngressAttributes = z.infer<typeof ingressAttributes>;
+
+const ingressAttributesObject = z.object({
+  id: z.string(),
+  type: z.literal('ingress-attributes'),
+  attributes: ingressAttributes,
+});
+export type IngressAttributesObject = z.infer<typeof ingressAttributesObject>;
 
 export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   ado: 'Azure DevOps',
@@ -121,37 +132,46 @@ export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   terraform: 'Terraform',
   'terraform+cloud': 'Terraform Cloud',
   tfeAPI: 'API',
-  tfeModule: 'No-code Module',
+  module: 'No-code Module',
 };
 const cfgSources = Object.keys(CONFIGURATION_SOURCE);
+
+const configurationVersionRelationships = z.object({
+  'ingress-attributes': relationship,
+});
 
 // include=configuration_version (implied from .ingress_attributes too)
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version
 const configurationVersionAttributes = z.object({
-  source: z.enum([cfgSources[0], ...cfgSources]),
+  source: z.enum([cfgSources[0], ...cfgSources]).nullish(),
 });
 export type ConfigurationVersionAttributes = z.infer<typeof configurationVersionAttributes>;
+const configurationVersion = z.object({
+  id: z.string(),
+  type: z.literal('configuration-versions'),
+  attributes: configurationVersionAttributes,
+  relationships: configurationVersionRelationships,
+});
+export type ConfigurationVersion = z.infer<typeof configurationVersion>;
 
-const createdByAttributes = z.object({
+const userAttributes = z.object({
   username: z.string(),
   'is-service-account': z.boolean(),
   'avatar-url': z.string(),
 });
-export type CreatedByAttributes = z.infer<typeof createdByAttributes>;
-
-const includedObject = z.object({
+export type UserAttributes = z.infer<typeof userAttributes>;
+const user = z.object({
   id: z.string(),
-  type: z.string(),
-  attributes: ingressAttributes.or(configurationVersionAttributes).or(createdByAttributes),
-  relationships: z.object({
-    'ingress-attributes': relationship,
-  }),
+  type: z.literal('users'),
+  attributes: userAttributes,
 });
+
+const includedObject = z.discriminatedUnion('type', [ingressAttributesObject, configurationVersion, user]);
 export type IncludedObject = z.infer<typeof includedObject>;
 
 const runs = z.object({
   data: z.array(run),
-  included: z.array(includedObject),
+  included: z.array(includedObject).nullish(),
   meta: z.object({
     pagination: paginationMeta,
   }),
