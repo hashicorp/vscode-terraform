@@ -7,7 +7,12 @@ import * as vscode from 'vscode';
 import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
-import { apiClient } from '../terraformCloud';
+import {
+  CreateOrganizationItem,
+  OrganizationAPIResource,
+  RefreshOrganizationItem,
+} from '../providers/tfc/organizationPicker';
+import { APIQuickPick } from '../utils/uiHelpers';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -86,33 +91,32 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
-        const response = await apiClient.listOrganizations();
-        const orgs = response.data;
+        const organizationAPIResource = new OrganizationAPIResource();
+        const organizationQuickPick = new APIQuickPick(organizationAPIResource);
+        let choice: vscode.QuickPickItem | undefined;
 
-        const items: vscode.QuickPickItem[] = [];
-        for (let index = 0; index < orgs.length; index++) {
-          const element = orgs[index];
-          items.push({
-            label: element.attributes.name,
-          });
-        }
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          choice = await organizationQuickPick.pick(false);
 
-        const answer = await vscode.window.showQuickPick(items, {
-          canPickMany: false,
-          ignoreFocusOut: true,
-          placeHolder: 'Choose an organization. Hit enter to select the first organization.',
-          title: 'Welcome to Terraform Cloud',
-        });
+          if (choice === undefined) {
+            // user exited without answering, so don't do anything
+            return;
+          } else if (choice instanceof CreateOrganizationItem) {
+            // open the browser an re-run the loop
+            choice.open();
+            continue;
+          } else if (choice instanceof RefreshOrganizationItem) {
+            // re-run the loop
+            continue;
+          }
 
-        if (answer === undefined) {
-          // user exited without answering, so don't change
-          return;
+          break;
         }
 
         // user chose an organization so update the statusbar and make sure its visible
-        this.statusBar.show(answer.label);
-
-        // store the organization so other parts can use it
+        organizationQuickPick.hide();
+        this.statusBar.show(choice.label);
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();
