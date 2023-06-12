@@ -47,7 +47,8 @@ export class TelemetryFeature implements StaticFeature {
           return;
         }
 
-        this.reporter.sendRawTelemetryEvent(event.name, event.properties);
+        // @ts-expect-error they expect string here, but it should work with any
+        this.reporter.sendTelemetryEvent(event.name, event.properties);
       }),
     );
   }
