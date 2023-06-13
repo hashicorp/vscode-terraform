@@ -46,6 +46,66 @@ export function GetRunStatusIcon(status: string): vscode.ThemeIcon {
   return new vscode.ThemeIcon('indent');
 }
 
+export function GetRunStatusMessage(status: string): string {
+  switch (status) {
+    // in progress
+    case 'pending':
+      return 'Pending';
+    case 'fetching':
+      return 'Fetching';
+    case 'queuing':
+      return 'Queuing';
+    case 'planning':
+      return 'Planning';
+    case 'cost_estimating':
+      return 'Estimating costs';
+    case 'policy_checking':
+      return 'Checking policies';
+    case 'apply_queued':
+      return 'Apply queued';
+    case 'applying':
+      return 'Applying';
+    case 'post_plan_running':
+      return 'Tasks - post-plan (running)';
+    case 'plan_queued':
+      return 'Plan queued';
+    case 'fetching_completed':
+      return 'Fetching completed';
+    case 'pre_plan_running':
+      return 'Tasks - pre-plan (running)';
+    case 'pre_plan_completed':
+      return 'Tasks - pre-plan (passed)';
+    case 'planned':
+      return 'Planned';
+    case 'cost_estimated':
+      return 'Cost estimated';
+    case 'policy_override':
+      return 'Policy override';
+    case 'policy_checked':
+      return 'Policy checked';
+    case 'confirmed':
+      return 'Confirmed';
+    case 'post_plan_completed':
+      return 'Tasks - post-plan (passed)';
+    case 'planned_and_finished':
+      return 'Planned and finished';
+    case 'policy_soft_failed':
+      return 'Policy Soft Failure';
+    case 'applied':
+      return 'Applied';
+    case 'discarded':
+      return 'Discarded';
+    case 'canceled':
+      return 'Canceled';
+    case 'force_canceled':
+      return 'Force canceled';
+    case 'errored':
+      return 'Errored';
+  }
+
+  return '';
+}
+
 export function RelativeTimeFormat(d: Date): string {
   const SECONDS_IN_MINUTE = 60;
   const SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60;
