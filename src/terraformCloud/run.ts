@@ -45,7 +45,7 @@ export const TRIGGER_REASON: { [id: string]: string } = {
   inconclusive: 'unable to detect changed files',
   git_tag: 'automatically triggered run',
 };
-const triggerReasons = Object.keys(TRIGGER_REASON);
+const triggerReasons = Object.keys(TRIGGER_REASON) as [string, ...string[]];
 
 export const RUN_SOURCE: { [id: string]: string } = {
   terraform: 'CLI',
@@ -57,14 +57,14 @@ export const RUN_SOURCE: { [id: string]: string } = {
   'tfe-run-trigger': 'run trigger',
   'tfe-ui': 'UI',
 };
-const runSources = Object.keys(RUN_SOURCE);
+const runSources = Object.keys(RUN_SOURCE) as [string, ...string[]];
 
 export const runAttributes = z.object({
   'created-at': z.coerce.date(),
   message: z.string(),
-  source: z.enum([runSources[0], ...runSources]),
+  source: z.enum(runSources),
   status: runStatus,
-  'trigger-reason': z.enum([triggerReasons[0], ...triggerReasons]),
+  'trigger-reason': z.enum(triggerReasons),
   'terraform-version': z.string(),
 });
 export type RunAttributes = z.infer<typeof runAttributes>;
@@ -134,7 +134,7 @@ export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   tfeAPI: 'API',
   module: 'No-code Module',
 };
-const cfgSources = Object.keys(CONFIGURATION_SOURCE);
+const cfgSources = Object.keys(CONFIGURATION_SOURCE) as [string, ...string[]];
 
 const configurationVersionRelationships = z.object({
   'ingress-attributes': relationship,
@@ -143,7 +143,7 @@ const configurationVersionRelationships = z.object({
 // include=configuration_version (implied from .ingress_attributes too)
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version
 const configurationVersionAttributes = z.object({
-  source: z.enum([cfgSources[0], ...cfgSources]).nullish(),
+  source: z.enum(cfgSources).nullish(),
 });
 export type ConfigurationVersionAttributes = z.infer<typeof configurationVersionAttributes>;
 const configurationVersion = z.object({
