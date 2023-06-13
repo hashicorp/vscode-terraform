@@ -5,15 +5,16 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
+import { z } from 'zod';
 
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { ProjectQuickPick, ResetProjectItem } from './workspaceFilters';
+import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../terraformCloud/workspace';
 import { RunAttributes } from '../../terraformCloud/run';
-import { z } from 'zod';
+import { APIQuickPick } from './uiHelpers';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
@@ -47,7 +48,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   async filterByProject(): Promise<void> {
     // TODO! only run this if user is logged in
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-    const projectQuickPick = new ProjectQuickPick(organization);
+    const projectAPIResource = new ProjectsAPIResource(organization);
+    const projectQuickPick = new APIQuickPick(projectAPIResource);
     const project = await projectQuickPick.pick();
 
     if (project === undefined || project instanceof ResetProjectItem) {
