@@ -582,7 +582,7 @@
         },
         {
           "command": "terraform.cloud.run.viewInBrowser",
-          "when": "view == terraform.cloud.runs",
+          "when": "view == terraform.cloud.runs && viewItem != empty",
           "group": "inline"
         }
       ]
