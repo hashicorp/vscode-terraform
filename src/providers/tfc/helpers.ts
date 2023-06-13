@@ -30,17 +30,17 @@ export function GetRunStatusIcon(status: string): vscode.ThemeIcon {
     case 'confirmed':
     case 'post_plan_completed':
     case 'planned_and_finished':
-      return new vscode.ThemeIcon('pass');
+      return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
     case 'policy_soft_failed':
-      return new vscode.ThemeIcon('warning');
+      return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow'));
     case 'applied':
-      return new vscode.ThemeIcon('pass-filled');
+      return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('charts.green'));
     case 'discarded':
     case 'canceled':
     case 'force_canceled':
-      return new vscode.ThemeIcon('discard');
+      return new vscode.ThemeIcon('discard', new vscode.ThemeColor('charts.red'));
     case 'errored':
-      return new vscode.ThemeIcon('error');
+      return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.red'));
   }
 
   return new vscode.ThemeIcon('indent');
