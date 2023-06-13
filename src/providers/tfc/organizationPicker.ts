@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import { TerraformCloudHost, apiClient } from '../../terraformCloud';
-import { APIResource } from '../../utils/uiHelpers';
+import { APIResource } from './uiHelpers';
 import { Organization } from '../../terraformCloud/organization';
 
 export class CreateOrganizationItem implements vscode.QuickPickItem {

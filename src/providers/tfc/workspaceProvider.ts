@@ -14,7 +14,7 @@ import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../terraformCloud/workspace';
 import { RunAttributes } from '../../terraformCloud/run';
-import { APIQuickPick } from '../../utils/uiHelpers';
+import { APIQuickPick } from './uiHelpers';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();

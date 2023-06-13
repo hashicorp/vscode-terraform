@@ -12,7 +12,7 @@ import {
   OrganizationAPIResource,
   RefreshOrganizationItem,
 } from '../providers/tfc/organizationPicker';
-import { APIQuickPick } from '../utils/uiHelpers';
+import { APIQuickPick } from '../providers/tfc/uiHelpers';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;

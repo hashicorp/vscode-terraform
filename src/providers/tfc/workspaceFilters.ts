@@ -6,7 +6,7 @@
 import * as vscode from 'vscode';
 import { apiClient } from '../../terraformCloud';
 import { Project } from '../../terraformCloud/project';
-import { APIResource } from '../../utils/uiHelpers';
+import { APIResource } from './uiHelpers';
 
 export class ResetProjectItem implements vscode.QuickPickItem {
   get label() {
