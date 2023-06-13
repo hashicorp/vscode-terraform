@@ -5,6 +5,118 @@
 
 import * as vscode from 'vscode';
 
+interface RunInfo {
+  icon: vscode.ThemeIcon;
+  human: string;
+}
+
+export const RUN_STATUS: { [id: string]: RunInfo } = {
+  pending: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Pending',
+  },
+  fetching: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Fetching',
+  },
+  pre_plan_running: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Queuing',
+  },
+  queuing: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Planning',
+  },
+  planning: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Estimating costs',
+  },
+  cost_estimating: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Checking policies',
+  },
+  policy_checking: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Apply queued',
+  },
+  apply_queued: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Applying',
+  },
+  applying: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Tasks - post-plan (running)',
+  },
+  post_plan_running: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Plan queued',
+  },
+  plan_queued: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Fetching completed',
+  },
+  fetching_completed: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Tasks - pre-plan (running)',
+  },
+  pre_plan_completed: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Tasks - pre-plan (passed)',
+  },
+  planned: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Planned',
+  },
+  cost_estimated: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Cost estimated',
+  },
+  policy_override: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Policy override',
+  },
+  policy_checked: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Policy checked',
+  },
+  confirmed: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Confirmed',
+  },
+  post_plan_completed: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Tasks - post-plan (passed)',
+  },
+  planned_and_finished: {
+    icon: new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green')),
+    human: 'Planned and finished',
+  },
+  policy_soft_failed: {
+    icon: new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow')),
+    human: 'Policy Soft Failure',
+  },
+  applied: {
+    icon: new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('charts.green')),
+    human: 'Applied',
+  },
+  discarded: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Discarded',
+  },
+  canceled: {
+    icon: new vscode.ThemeIcon('spin'),
+    human: 'Canceled',
+  },
+  force_canceled: {
+    icon: new vscode.ThemeIcon('discard', new vscode.ThemeColor('charts.red')),
+    human: 'Force canceled',
+  },
+  errored: {
+    icon: new vscode.ThemeIcon('discard', new vscode.ThemeColor('charts.red')),
+    human: 'Errored',
+  },
+};
+
 export function GetRunStatusIcon(status: string): vscode.ThemeIcon {
   switch (status) {
     // in progress
