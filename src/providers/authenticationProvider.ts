@@ -8,8 +8,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
-
-import { earlyApiClient, TerraformCloudHost } from '../terraformCloud';
+import { earlyApiClient, TerraformCloudHost, TerraformCloudWebUrl } from '../terraformCloud';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -245,7 +244,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     // TODO: Change to production URL
-    const terraformCloudURL = `https://${TerraformCloudHost}/app/settings/tokens?source=vscode-terraform`;
+    const terraformCloudURL = `https://${TerraformCloudWebUrl}/settings/tokens?source=vscode-terraform`;
     let token: string | undefined;
     switch (choice.label) {
       case 'Open to generate a User token':
