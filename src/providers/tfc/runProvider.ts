@@ -23,13 +23,20 @@ import {
 } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
+import { ZodiosError, isErrorFromAlias } from '@zodios/core';
+import { apiErrorsToString } from '../../terraformCloud/errors';
+import { handleAuthError, handleZodiosError } from './uiHelpers';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
-  constructor(private ctx: vscode.ExtensionContext, private reporter: TelemetryReporter) {
+  constructor(
+    private ctx: vscode.ExtensionContext,
+    private reporter: TelemetryReporter,
+    private outputChannel: vscode.OutputChannel,
+  ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.runs.refresh', () => {
         this.reporter.sendTelemetryEvent('tfc-runs-refresh');
@@ -137,13 +144,45 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
       return items;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        vscode.window.showErrorMessage(`Runs not accessible for workspace ${workspaceId}: ${error}`);
-      } else if (error instanceof Error) {
-        vscode.window.showErrorMessage(error.message);
-      } else if (typeof error === 'string') {
-        vscode.window.showErrorMessage(error);
+      let message = `Failed to list runs in ${workspaceId}: `;
+
+      if (error instanceof ZodiosError) {
+        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        return [];
       }
+
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          handleAuthError();
+          return [];
+        }
+
+        if (error.response?.status === 404) {
+          vscode.window.showWarningMessage(
+            `Workspace ${this.activeWorkspace.attributes.name} (${workspaceId}) not found, please pick another one`,
+          );
+          return [];
+        }
+
+        if (isErrorFromAlias(apiClient.api, 'listRuns', error)) {
+          message += apiErrorsToString(error.response.data.errors);
+          vscode.window.showErrorMessage(message);
+          this.reporter.sendTelemetryException(error);
+          return [];
+        }
+      }
+
+      if (error instanceof Error) {
+        message += error.message;
+        vscode.window.showErrorMessage(message);
+        this.reporter.sendTelemetryException(error);
+        return [];
+      }
+
+      if (typeof error === 'string') {
+        message += error;
+      }
+      vscode.window.showErrorMessage(message);
       return [];
     }
   }

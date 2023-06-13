@@ -4,7 +4,6 @@
  */
 
 import * as vscode from 'vscode';
-import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
@@ -14,7 +13,10 @@ import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../terraformCloud/workspace';
 import { RunAttributes } from '../../terraformCloud/run';
-import { APIQuickPick } from './uiHelpers';
+import { APIQuickPick, handleAuthError, handleZodiosError } from './uiHelpers';
+import { isErrorFromAlias, ZodiosError } from '@zodios/core';
+import axios from 'axios';
+import { apiErrorsToString } from '../../terraformCloud/errors';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
@@ -25,6 +27,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
     private ctx: vscode.ExtensionContext,
     private runDataProvider: RunTreeDataProvider,
     private reporter: TelemetryReporter,
+    private outputChannel: vscode.OutputChannel,
   ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
@@ -54,7 +57,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   async filterByProject(): Promise<void> {
     // TODO! only run this if user is logged in
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-    const projectAPIResource = new ProjectsAPIResource(organization);
+    const projectAPIResource = new ProjectsAPIResource(organization, this.outputChannel, this.reporter);
     const projectQuickPick = new APIQuickPick(projectAPIResource);
     const project = await projectQuickPick.pick();
 
@@ -152,13 +155,47 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
 
       return items;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        vscode.window.showErrorMessage('Invalid token supplied, please try again');
-      } else if (error instanceof Error) {
-        vscode.window.showErrorMessage(error.message);
-      } else if (typeof error === 'string') {
-        vscode.window.showErrorMessage(error);
+      let message = `Failed to list workspaces in ${organization}: `;
+
+      if (error instanceof ZodiosError) {
+        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        return [];
       }
+
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          handleAuthError();
+          return [];
+        }
+
+        if (error.response?.status === 404) {
+          vscode.window.showWarningMessage(`Organization '${organization}' not found, please pick another one`);
+          vscode.commands.executeCommand('terraform.cloud.organization.picker');
+          return [];
+        }
+
+        if (
+          isErrorFromAlias(apiClient.api, 'listWorkspaces', error) ||
+          isErrorFromAlias(apiClient.api, 'listProjects', error)
+        ) {
+          message += apiErrorsToString(error.response.data.errors);
+          vscode.window.showErrorMessage(message);
+          this.reporter.sendTelemetryException(error);
+          return [];
+        }
+      }
+
+      if (error instanceof Error) {
+        message += error.message;
+        vscode.window.showErrorMessage(message);
+        this.reporter.sendTelemetryException(error);
+        return [];
+      }
+
+      if (typeof error === 'string') {
+        message += error;
+      }
+      vscode.window.showErrorMessage(message);
       return [];
     }
   }
