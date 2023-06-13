@@ -17,7 +17,7 @@ import { workspaceEndpoints } from './workspace';
 export const TerraformCloudHost = 'app.staging.terraform.io';
 
 // TODO: Replace with production URL before going live
-export const TerraformCloudAPI = `https://${TerraformCloudHost}/api/v2`;
+export const TerraformCloudAPIURL = `https://${TerraformCloudHost}/api/v2`;
 export const TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
 
 const jsonHeader = pluginHeader('Content-Type', async () => 'application/vnd.api+json');
@@ -38,12 +38,12 @@ function pluginLogger(): ZodiosPlugin {
   };
 }
 
-export const earlyApiClient = new Zodios(TerraformCloudAPI, accountEndpoints);
+export const earlyApiClient = new Zodios(TerraformCloudAPIURL, accountEndpoints);
 earlyApiClient.use(jsonHeader);
 earlyApiClient.use(userAgentHeader);
 earlyApiClient.use(pluginLogger());
 
-export const apiClient = new Zodios(TerraformCloudAPI, [
+export const apiClient = new Zodios(TerraformCloudAPIURL, [
   ...accountEndpoints,
   ...organizationEndpoints,
   ...projectEndpoints,
