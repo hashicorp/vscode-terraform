@@ -571,7 +571,7 @@
     "check-format": "npm run prettier -- --check"
   },
   "dependencies": {
-    "@vscode/extension-telemetry": "^0.4.9",
+    "@vscode/extension-telemetry": "^0.8.0",
     "vscode-languageclient": "8.1.0",
     "vscode-uri": "^3.0.7",
     "which": "^3.0.1"
