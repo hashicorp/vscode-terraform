@@ -6,17 +6,20 @@
 import { makeApi } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
+import { searchQueryParams } from './filter';
+
+const organization = z.object({
+  id: z.string(),
+  attributes: z.object({
+    'external-id': z.string(),
+    name: z.string(),
+  }),
+});
+
+export type Organization = z.infer<typeof organization>;
 
 const organizations = z.object({
-  data: z.array(
-    z.object({
-      id: z.string(),
-      attributes: z.object({
-        'external-id': z.string(),
-        name: z.string(),
-      }),
-    }),
-  ),
+  data: z.array(organization),
   meta: z
     .object({
       pagination: paginationMeta.optional(),
@@ -49,7 +52,7 @@ export const organizationEndpoints = makeApi([
     alias: 'listOrganizations',
     description: 'List organizations of the current user',
     response: organizations,
-    parameters: paginationParams,
+    parameters: [...paginationParams, ...searchQueryParams],
   },
   {
     method: 'get',
