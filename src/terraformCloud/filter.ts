@@ -26,3 +26,12 @@ export const workspaceIncludeParams = makeParameters([
       .optional(),
   },
 ]);
+
+export const searchQueryParams = makeParameters([
+  {
+    name: 'q',
+    type: 'Query',
+    description: ' A search query string.',
+    schema: z.string().optional(),
+  },
+]);
