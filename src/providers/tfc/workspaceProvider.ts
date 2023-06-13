@@ -5,7 +5,6 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import { z } from 'zod';
 
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
@@ -119,7 +118,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       for (let index = 0; index < workspaces.length; index++) {
         const workspace = workspaces[index];
 
-        const project = projects.find((p) => p.id === workspace.relationships.project.data.id);
+        const project = projects.find((p) => p.id === workspace.relationships['project']?.data?.id);
         const projectName = project ? project.attributes.name : '';
 
         const lastRunId = workspace.relationships['latest-run']?.data?.id;
@@ -181,12 +180,12 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
     }
 
     const lockedTxt = this.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
-    const vscText = this.attributes['vcs-repo-identifier']
-      ? `$(source-control) [${this.attributes['vcs-repo-identifier']}](${this.attributes['vcs-repo']['repository-http-url']})`
-      : '';
+    const vscText =
+      this.attributes['vcs-repo-identifier'] && this.attributes['vcs-repo']
+        ? `$(source-control) [${this.attributes['vcs-repo-identifier']}](${this.attributes['vcs-repo']['repository-http-url']})`
+        : '';
 
-    // TODO(fix): the date does not get parsed as Date via zod schema
-    const updatedAt = RelativeTimeFormat(z.coerce.date().parse(this.attributes['updated-at']));
+    const updatedAt = RelativeTimeFormat(this.attributes['updated-at']);
     const text = `
 ## [${this.attributes.name}](${this.weblink})
 

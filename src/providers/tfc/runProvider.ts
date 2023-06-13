@@ -9,8 +9,9 @@ import { TerraformCloudAuthenticationProvider } from '../authenticationProvider'
 import axios from 'axios';
 import {
   CONFIGURATION_SOURCE,
+  ConfigurationVersion,
   ConfigurationVersionAttributes,
-  CreatedByAttributes,
+  UserAttributes,
   IncludedObject,
   IngressAttributes,
   RUN_SOURCE,
@@ -20,7 +21,6 @@ import {
 } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
-import { z } from 'zod';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -116,14 +116,16 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
-        runItem.createdBy = findCreatedByAttributes(runs.included, run);
+        if (runs.included) {
+          runItem.createdBy = findCreatedByAttributes(runs.included, run);
 
-        const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
-        if (cfgVersion) {
-          runItem.configurationVersion = cfgVersion.attributes as ConfigurationVersionAttributes;
+          const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
+          if (cfgVersion) {
+            runItem.configurationVersion = cfgVersion.attributes;
 
-          const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
-          runItem.ingressAttributes = ingressAttrs;
+            const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
+            runItem.ingressAttributes = ingressAttrs;
+          }
         }
         items.push(runItem);
       }
@@ -146,26 +148,32 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
   }
 }
 
-function findConfigurationVersionAttributes(included: IncludedObject[], run: Run) {
-  return included.find(
-    (included: IncludedObject) =>
-      included.type === 'configuration-versions' && included.id === run.relationships['configuration-version'].data.id,
-  );
-}
-
-function findCreatedByAttributes(included: IncludedObject[], run: Run) {
+function findConfigurationVersionAttributes(included: IncludedObject[], run: Run): ConfigurationVersion | undefined {
   const includedObject = included.find(
-    (included: IncludedObject) => included.type === 'users' && included.id === run.relationships['created-by']?.data.id,
+    (included: IncludedObject) =>
+      included.type === 'configuration-versions' &&
+      included.id === run.relationships['configuration-version']?.data?.id,
   );
   if (includedObject) {
-    return includedObject.attributes as CreatedByAttributes;
+    return includedObject as ConfigurationVersion;
   }
 }
 
-function findIngressAttributes(included: IncludedObject[], cfgVersion: IncludedObject) {
+function findCreatedByAttributes(included: IncludedObject[], run: Run): UserAttributes | undefined {
   const includedObject = included.find(
     (included: IncludedObject) =>
-      included.type === 'ingress-attributes' && included.id === cfgVersion?.relationships['ingress-attributes'].data.id,
+      included.type === 'users' && included.id === run.relationships['created-by']?.data?.id,
+  );
+  if (includedObject) {
+    return includedObject.attributes as UserAttributes;
+  }
+}
+
+function findIngressAttributes(included: IncludedObject[], cfgVersion: ConfigurationVersion) {
+  const includedObject = included.find(
+    (included: IncludedObject) =>
+      included.type === 'ingress-attributes' &&
+      included.id === cfgVersion.relationships['ingress-attributes']?.data?.id,
   );
   if (includedObject) {
     return includedObject.attributes as IngressAttributes;
@@ -173,7 +181,7 @@ function findIngressAttributes(included: IncludedObject[], cfgVersion: IncludedO
 }
 
 export class RunTreeItem extends vscode.TreeItem {
-  public createdBy?: CreatedByAttributes;
+  public createdBy?: UserAttributes;
   public configurationVersion?: ConfigurationVersionAttributes;
   public ingressAttributes?: IngressAttributes;
 
@@ -193,10 +201,7 @@ async function runMarkdown(item: RunTreeItem) {
   // to allow image resizing
   markdown.supportHtml = true;
 
-  // TODO(fix): the date does not get parsed as Date via zod schema
-  const date = z.coerce.date().parse(item.attributes['created-at']);
-
-  const createdAtTime = RelativeTimeFormat(date);
+  const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
 
   if (item.createdBy) {
     markdown.appendMarkdown(`<img src="${item.createdBy?.['avatar-url']}" width="20"> **${item.createdBy?.username}**`);
@@ -217,7 +222,7 @@ _____
 -:|--
 | **Run ID**   | \`${item.id}\` |
 `);
-  if (item.ingressAttributes && item.configurationVersion) {
+  if (item.ingressAttributes && item.configurationVersion && item.configurationVersion.source) {
     // Blind shortening like this may not be appropriate
     // due to hash collisions but we just mimic what TFC does here
     // which is fairly safe since it's just UI/text, not URL.
