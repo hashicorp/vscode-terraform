@@ -17,40 +17,45 @@ const included = z.object({
 });
 
 const workspaceAttributes = z.object({
-  description: z.string(),
+  description: z.string().nullable(),
   environment: z.string(),
   'execution-mode': executionModes,
   name: z.string(),
   source: z.string(),
-  'updated-at': z.date(),
-  'run-failures': z.number(),
+  'updated-at': z.coerce.date(),
+  'run-failures': z.number().nullable(),
   'resource-count': z.number(),
   'terraform-version': z.string(),
-  locked: z.string(),
-  'vcs-repo-identifier': z.string(),
-  'vcs-repo': z.object({
-    'repository-http-url': z.string(),
-  }),
-  'auto-apply': z.string(),
+  locked: z.boolean(),
+  'vcs-repo-identifier': z.string().nullable(),
+  'vcs-repo': z
+    .object({
+      'repository-http-url': z.string(),
+    })
+    .nullable(),
+  'auto-apply': z.boolean(),
+});
+
+const relationship = z
+  .object({
+    data: z
+      .object({
+        id: z.string(),
+        type: z.string(),
+      })
+      .nullable(),
+  })
+  .nullish();
+
+const workspaceRelationships = z.object({
+  'latest-run': relationship,
+  project: relationship,
 });
 
 const workspace = z.object({
   id: z.string(),
   attributes: workspaceAttributes,
-  relationships: z.object({
-    'latest-run': z.object({
-      data: z.object({
-        id: z.string(),
-        type: z.string(),
-      }),
-    }),
-    project: z.object({
-      data: z.object({
-        id: z.string(),
-        type: z.string(),
-      }),
-    }),
-  }),
+  relationships: workspaceRelationships,
   links: z.object({
     self: z.string(),
     'self-html': z.string(),
