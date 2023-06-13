@@ -112,7 +112,9 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         },
       });
 
-      this.reporter.sendTelemetryEvent('tfc-fetch-runs', undefined, { count: runs.data.length });
+      this.reporter.sendTelemetryEvent('tfc-fetch-runs', undefined, {
+        totalCount: runs.meta.pagination['total-count'],
+      });
 
       if (runs.data.length === 0) {
         return [{ label: `No runs found for ${this.activeWorkspace.attributes.name}` }];

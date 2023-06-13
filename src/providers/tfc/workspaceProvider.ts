@@ -112,7 +112,9 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         },
       });
 
-      this.reporter.sendTelemetryEvent('tfc-fetch-workspaces', undefined, { count: workspaceResponse.data.length });
+      this.reporter.sendTelemetryEvent('tfc-fetch-workspaces', undefined, {
+        totalCount: workspaceResponse.meta.pagination['total-count'],
+      });
 
       // TODO? we could skip this request if a project filter is set,
       // but with the addition of more filters, we could still get
