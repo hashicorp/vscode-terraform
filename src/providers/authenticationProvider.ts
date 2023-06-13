@@ -7,10 +7,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
-import { earlyApiClient } from '../terraformCloud';
-
-// TODO: replace with production URL
-const TerraformCloudHost = 'app.staging.terraform.io';
+import { earlyApiClient, TerraformCloudHost } from '../terraformCloud';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
