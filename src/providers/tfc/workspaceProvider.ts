@@ -5,7 +5,6 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import { z } from 'zod';
 
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
