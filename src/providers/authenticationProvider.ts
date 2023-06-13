@@ -244,7 +244,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     // TODO: Change to production URL
-    const terraformCloudURL = `https://${TerraformCloudWebUrl}/settings/tokens?source=vscode-terraform`;
+    const terraformCloudURL = `${TerraformCloudWebUrl}/settings/tokens?source=vscode-terraform`;
     let token: string | undefined;
     switch (choice.label) {
       case 'Open to generate a User token':
