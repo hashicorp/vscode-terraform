@@ -8,7 +8,7 @@ import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
-import { apiClient } from '../../terraformCloud';
+import { apiClient, TerraformCloudWebUrl } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
@@ -20,9 +20,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private projectFilter: string | undefined;
-
-  // TODO: get from settings or somewhere global
-  private baseUrl = 'https://app.staging.terraform.io/app';
 
   constructor(
     private ctx: vscode.ExtensionContext,
@@ -39,7 +36,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         'terraform.cloud.workspaces.viewInBrowser',
         (workspaceItem: WorkspaceTreeItem) => {
           this.reporter.sendTelemetryEvent('tfc-workspaces-viewInBrowser');
-          const runURL = `${this.baseUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
+          const runURL = `${TerraformCloudWebUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
           vscode.env.openExternal(vscode.Uri.parse(runURL));
         },
       ),
@@ -139,7 +136,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         const lastestRun = workspaceResponse.included
           ? workspaceResponse.included.find((run) => run.id === lastRunId)
           : undefined;
-        const link = vscode.Uri.joinPath(vscode.Uri.parse(this.baseUrl), workspace.links['self-html']);
+        const link = vscode.Uri.joinPath(vscode.Uri.parse(TerraformCloudWebUrl), workspace.links['self-html']);
 
         items.push(
           new WorkspaceTreeItem(
