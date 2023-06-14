@@ -16,7 +16,7 @@ export class CreateOrganizationItem implements vscode.QuickPickItem {
     return 'Open the browser to create a new organization';
   }
   async open() {
-    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations`));
+    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations/new`));
   }
   get alwaysShow() {
     return true;

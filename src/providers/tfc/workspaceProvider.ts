@@ -73,6 +73,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.projectFilterUsed', true);
     }
     this.refresh();
+    this.runDataProvider.refresh();
   }
 
   getTreeItem(element: WorkspaceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
