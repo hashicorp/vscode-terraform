@@ -4,9 +4,12 @@
  */
 
 import * as vscode from 'vscode';
+import { z } from 'zod';
+import axios from 'axios';
+import TelemetryReporter from '@vscode/extension-telemetry';
+
 import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import axios from 'axios';
 import {
   CONFIGURATION_SOURCE,
   ConfigurationVersion,
@@ -27,9 +30,10 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
-  constructor(private ctx: vscode.ExtensionContext) {
+  constructor(private ctx: vscode.ExtensionContext, private reporter: TelemetryReporter) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.runs.refresh', () => {
+        this.reporter.sendTelemetryEvent('tfc-runs-refresh');
         this.refresh(this.activeWorkspace);
       }),
     );
@@ -44,6 +48,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
           return;
         }
 
+        this.reporter.sendTelemetryEvent('tfc-runs-viewInBrowser');
         const runURL = `${baseUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
 
         vscode.env.openExternal(vscode.Uri.parse(runURL));
@@ -105,6 +110,10 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
           'page[size]': 100,
           include: ['configuration_version.ingress_attributes', 'created_by'],
         },
+      });
+
+      this.reporter.sendTelemetryEvent('tfc-fetch-runs', undefined, {
+        totalCount: runs.meta.pagination['total-count'],
       });
 
       if (runs.data.length === 0) {
