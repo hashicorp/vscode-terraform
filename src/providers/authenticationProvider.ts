@@ -192,6 +192,8 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this.logger.info('Removing current session');
     await this.sessionHandler.delete();
 
+    await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', false);
+
     // Notify VSCode's UI
     this._onDidChangeSessions.fire({ added: [], removed: [session], changed: [] });
   }
