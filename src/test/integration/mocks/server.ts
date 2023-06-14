@@ -6,7 +6,7 @@
 import { ZodiosPathsByMethod, ZodiosResponseByPath } from '@zodios/core/lib/zodios.types';
 import { ResponseResolver, rest, RestContext, RestRequest } from 'msw';
 import { setupServer } from 'msw/node';
-import { apiClient, baseUrl } from '../../../terraformCloud';
+import { TerraformCloudAPIUrl, apiClient } from '../../../terraformCloud';
 
 type Api = typeof apiClient.api;
 
@@ -14,7 +14,7 @@ export function mockGet<Path extends ZodiosPathsByMethod<Api, 'get'>>(
   path: Path,
   resolver: ResponseResolver<RestRequest, RestContext, Awaited<ZodiosResponseByPath<Api, 'get', Path>>>,
 ) {
-  return rest.get(`${baseUrl}${path}`, resolver);
+  return rest.get(`${TerraformCloudAPIUrl}${path}`, resolver);
 }
 
 const handlers = [

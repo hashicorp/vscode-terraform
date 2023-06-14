@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { TerraformCloudHost, apiClient } from '../../terraformCloud';
+import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { APIResource } from './uiHelpers';
 import { Organization } from '../../terraformCloud/organization';
 
@@ -16,7 +16,7 @@ export class CreateOrganizationItem implements vscode.QuickPickItem {
     return 'Open the browser to create a new organization';
   }
   async open() {
-    await vscode.env.openExternal(vscode.Uri.parse(`https://${TerraformCloudHost}/app/organizations`));
+    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations`));
   }
   get alwaysShow() {
     return true;
