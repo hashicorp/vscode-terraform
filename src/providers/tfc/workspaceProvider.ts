@@ -11,7 +11,7 @@ import { RunTreeDataProvider } from './runProvider';
 import { apiClient, TerraformCloudWebUrl } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
-import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
+import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../terraformCloud/workspace';
 import { RunAttributes } from '../../terraformCloud/run';
 import { APIQuickPick } from './uiHelpers';
@@ -184,7 +184,7 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
   ) {
     super(attributes.name, vscode.TreeItemCollapsibleState.None);
 
-    this.description = this.projectName;
+    this.description = `[${this.projectName}]`;
 
     if (this.lastRun) {
       this.iconPath = GetRunStatusIcon(this.lastRun.status);
@@ -196,11 +196,20 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
         ? `$(source-control) [${this.attributes['vcs-repo-identifier']}](${this.attributes['vcs-repo']['repository-http-url']})`
         : '';
 
+    const statusIcon = GetRunStatusIcon(lastRun?.status ?? '');
+    const statusMsg = GetRunStatusMessage(lastRun?.status ?? '');
+    const message = statusMsg ? `Run Status: $(${statusIcon?.id}) ${statusMsg}` : '';
+
+    const header = statusIcon
+      ? `## $(${statusIcon?.id}) [${this.attributes.name}](${this.weblink})`
+      : `## [${this.attributes.name}](${this.weblink})`;
     const updatedAt = RelativeTimeFormat(this.attributes['updated-at']);
     const text = `
-## [${this.attributes.name}](${this.weblink})
+${header}
 
 #### ID: *${this.id}*
+
+${message}
 
 ${lockedTxt}
 ___
@@ -214,7 +223,7 @@ ___
 | | |
 --|--
 | ${vscText} | |
-| **$(zap) Execution Mode** | ${this.attributes['terraform-version']}|
+| **$(zap) Execution Mode** | ${this.attributes['execution-mode']}|
 | **$(gear) Auto Apply**    | ${updatedAt}|
 `;
 
