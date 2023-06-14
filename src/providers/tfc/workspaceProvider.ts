@@ -200,9 +200,12 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
     const statusMsg = GetRunStatusMessage(lastRun?.status ?? '');
     const message = statusMsg ? `Run Status: $(${statusIcon?.id}) ${statusMsg}` : '';
 
+    const header = statusIcon
+      ? `## $(${statusIcon?.id}) [${this.attributes.name}](${this.weblink})`
+      : `## [${this.attributes.name}](${this.weblink})`;
     const updatedAt = RelativeTimeFormat(this.attributes['updated-at']);
     const text = `
-## $(${statusIcon?.id}) [${this.attributes.name}](${this.weblink})
+${header}
 
 #### ID: *${this.id}*
 
@@ -220,7 +223,7 @@ ___
 | | |
 --|--
 | ${vscText} | |
-| **$(zap) Execution Mode** | ${this.attributes['terraform-version']}|
+| **$(zap) Execution Mode** | ${this.attributes['execution-mode']}|
 | **$(gear) Auto Apply**    | ${updatedAt}|
 `;
 
