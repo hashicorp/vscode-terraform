@@ -4,11 +4,10 @@
  */
 
 import * as vscode from 'vscode';
-import { z } from 'zod';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { apiClient } from '../../terraformCloud';
+import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import {
   CONFIGURATION_SOURCE,
@@ -38,9 +37,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
       }),
     );
 
-    // TODO: get from settings or somewhere global
-    const baseUrl = 'https://app.staging.terraform.io/app';
-
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.viewInBrowser', (run: RunTreeItem) => {
         const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
@@ -49,7 +45,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         }
 
         this.reporter.sendTelemetryEvent('tfc-runs-viewInBrowser');
-        const runURL = `${baseUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
+        const runURL = `${TerraformCloudWebUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
 
         vscode.env.openExternal(vscode.Uri.parse(runURL));
       }),
