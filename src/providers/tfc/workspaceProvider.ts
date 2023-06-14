@@ -5,6 +5,7 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
+import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient } from '../../terraformCloud';
@@ -23,20 +24,29 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   // TODO: get from settings or somewhere global
   private baseUrl = 'https://app.staging.terraform.io/app';
 
-  constructor(private ctx: vscode.ExtensionContext, private runDataProvider: RunTreeDataProvider) {
+  constructor(
+    private ctx: vscode.ExtensionContext,
+    private runDataProvider: RunTreeDataProvider,
+    private reporter: TelemetryReporter,
+  ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
+        this.reporter.sendTelemetryEvent('tfc-workspaces-refresh');
         this.refresh();
         this.runDataProvider.refresh(workspaceItem);
       }),
       vscode.commands.registerCommand(
         'terraform.cloud.workspaces.viewInBrowser',
         (workspaceItem: WorkspaceTreeItem) => {
+          this.reporter.sendTelemetryEvent('tfc-workspaces-viewInBrowser');
           const runURL = `${this.baseUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
           vscode.env.openExternal(vscode.Uri.parse(runURL));
         },
       ),
-      vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => this.filterByProject()),
+      vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => {
+        this.reporter.sendTelemetryEvent('tfc-workspaces-filter');
+        this.filterByProject();
+      }),
     );
   }
 
@@ -100,6 +110,10 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
           // Include query parameter only if project filter is set
           ...(this.projectFilter && { 'filter[project][id]': this.projectFilter }),
         },
+      });
+
+      this.reporter.sendTelemetryEvent('tfc-fetch-workspaces', undefined, {
+        totalCount: workspaceResponse.meta.pagination['total-count'],
       });
 
       // TODO? we could skip this request if a project filter is set,
