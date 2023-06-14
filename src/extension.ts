@@ -58,7 +58,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // always register commands needed to control terraform-ls
   context.subscriptions.push(new TerraformLSCommands());
 
-  context.subscriptions.push(new TerraformCloudFeature(context));
+  context.subscriptions.push(new TerraformCloudFeature(context, reporter));
   // This triggers a badge to appear in the User Account icon.
   // TODO: remove this when workspace views land
   await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
