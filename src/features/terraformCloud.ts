@@ -4,6 +4,8 @@
  */
 
 import * as vscode from 'vscode';
+import TelemetryReporter from '@vscode/extension-telemetry';
+
 import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
@@ -17,10 +19,10 @@ import { APIQuickPick } from '../providers/tfc/uiHelpers';
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
 
-  constructor(private context: vscode.ExtensionContext) {
+  constructor(private context: vscode.ExtensionContext, private reporter: TelemetryReporter) {
     this.statusBar = new OrganizationStatusBar(context);
 
-    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context);
+    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context, this.reporter);
     authProvider.onDidChangeSessions(async (event) => {
       if (event && event.added && event.added.length > 0) {
         await vscode.commands.executeCommand('terraform.cloud.organization.picker');
@@ -40,14 +42,14 @@ export class TerraformCloudFeature implements vscode.Disposable {
       ),
     );
 
-    const runDataProvider = new RunTreeDataProvider(this.context);
+    const runDataProvider = new RunTreeDataProvider(this.context, this.reporter);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
       canSelectMany: false,
       showCollapseAll: true,
       treeDataProvider: runDataProvider,
     });
 
-    const workspaceDataProvider = new WorkspaceTreeDataProvider(this.context, runDataProvider);
+    const workspaceDataProvider = new WorkspaceTreeDataProvider(this.context, runDataProvider, this.reporter);
     const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
       canSelectMany: false,
       showCollapseAll: true,
@@ -91,6 +93,8 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
+        this.reporter.sendTelemetryEvent('tfc-pick-organization');
+
         const organizationAPIResource = new OrganizationAPIResource();
         const organizationQuickPick = new APIQuickPick(organizationAPIResource);
         let choice: vscode.QuickPickItem | undefined;
@@ -103,10 +107,13 @@ export class TerraformCloudFeature implements vscode.Disposable {
             // user exited without answering, so don't do anything
             return;
           } else if (choice instanceof CreateOrganizationItem) {
+            this.reporter.sendTelemetryEvent('tfc-pick-organization-create');
+
             // open the browser an re-run the loop
             choice.open();
             continue;
           } else if (choice instanceof RefreshOrganizationItem) {
+            this.reporter.sendTelemetryEvent('tfc-pick-organization-refresh');
             // re-run the loop
             continue;
           }

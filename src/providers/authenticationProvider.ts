@@ -7,6 +7,8 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import axios from 'axios';
+import TelemetryReporter from '@vscode/extension-telemetry';
+
 import { earlyApiClient, TerraformCloudHost } from '../terraformCloud';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
@@ -84,7 +86,11 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private _onDidChangeSessions =
     new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
-  constructor(private readonly secretStorage: vscode.SecretStorage, private readonly ctx: vscode.ExtensionContext) {
+  constructor(
+    private readonly secretStorage: vscode.SecretStorage,
+    private readonly ctx: vscode.ExtensionContext,
+    private reporter: TelemetryReporter,
+  ) {
     this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
     this.sessionHandler = new TerraformCloudSessionHandler(this.secretStorage, this.sessionKey);
     ctx.subscriptions.push(
@@ -142,6 +148,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
     try {
       const session = await this.sessionHandler.store(token);
+      this.reporter.sendTelemetryEvent('tfc-login-success');
       this.logger.info('Successfully logged in to Terraform Cloud');
 
       // Notify VSCode's UI
@@ -150,13 +157,16 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       return session;
     } catch (error) {
       if (error instanceof InvalidToken) {
+        this.reporter.sendTelemetryEvent('tfc-login-fail', { reason: 'Invalid token' });
         vscode.window.showErrorMessage(`${error.message}. Please try again`);
         return this.createSession(_scopes);
       } else if (error instanceof Error) {
         vscode.window.showErrorMessage(error.message);
+        this.reporter.sendTelemetryException(error);
         this.logger.error(error.message);
       } else if (typeof error === 'string') {
         vscode.window.showErrorMessage(error);
+        this.reporter.sendTelemetryException(new Error(error));
         this.logger.error(error);
       }
 
@@ -172,6 +182,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       return;
     }
 
+    this.reporter.sendTelemetryEvent('tfc-logout');
     this.logger.info('Removing current session');
     await this.sessionHandler.delete();
 
@@ -238,6 +249,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     let token: string | undefined;
     switch (choice.label) {
       case 'Open to generate a User token':
+        this.reporter.sendTelemetryEvent('tfc-login', { method: 'browser' });
         await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
@@ -248,6 +260,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         });
         break;
       case 'Existing User Token':
+        this.reporter.sendTelemetryEvent('tfc-login', { method: 'existing' });
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
@@ -257,6 +270,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         });
         break;
       case 'Stored User Token':
+        this.reporter.sendTelemetryEvent('tfc-login', { method: 'stored' });
         token = await this.getTerraformCLIToken();
         break;
       default:
