@@ -197,16 +197,16 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
         : '';
 
     const statusIcon = GetRunStatusIcon(lastRun?.status ?? '');
-
     const statusMsg = GetRunStatusMessage(lastRun?.status ?? '');
-    // TODO(fix): the date does not get parsed as Date via zod schema
-    const updatedAt = RelativeTimeFormat(z.coerce.date().parse(this.attributes['updated-at']));
+    const message = statusMsg ? `Run Status: $(${statusIcon?.id}) ${statusMsg}` : '';
+
+    const updatedAt = RelativeTimeFormat(this.attributes['updated-at']);
     const text = `
-## $(${statusIcon.id}) [${this.attributes.name}](${this.weblink})
+## $(${statusIcon?.id}) [${this.attributes.name}](${this.weblink})
 
 #### ID: *${this.id}*
 
-Run Status: $(${statusIcon.id}) ${statusMsg}
+${message}
 
 ${lockedTxt}
 ___
