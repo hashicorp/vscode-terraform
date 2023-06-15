@@ -14,7 +14,7 @@ import { runEndpoints } from './run';
 import { workspaceEndpoints } from './workspace';
 
 // TODO: replace with production URL
-export const TerraformCloudHost = 'app.staging.terraform.io';
+export const TerraformCloudHost = 'app.terraform.io';
 
 export const TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
 export const TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
