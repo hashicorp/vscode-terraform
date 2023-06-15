@@ -7,6 +7,8 @@ import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 import { errors } from './errors';
+import { plan } from './plan';
+import { apply } from './apply';
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#run-states
 const runStatus = z.enum([
@@ -82,6 +84,8 @@ const relationship = z
   .nullish();
 
 const runRelationships = z.object({
+  plan: relationship.optional(),
+  apply: relationship.optional(),
   workspace: relationship,
   'configuration-version': relationship,
   'created-by': relationship,
@@ -168,7 +172,7 @@ const user = z.object({
   attributes: userAttributes,
 });
 
-const includedObject = z.discriminatedUnion('type', [ingressAttributesObject, configurationVersion, user]);
+const includedObject = z.discriminatedUnion('type', [ingressAttributesObject, configurationVersion, user, plan, apply]);
 export type IncludedObject = z.infer<typeof includedObject>;
 
 const runs = z.object({
