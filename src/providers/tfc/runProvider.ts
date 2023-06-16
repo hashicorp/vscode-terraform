@@ -113,7 +113,13 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
       });
 
       if (runs.data.length === 0) {
-        return [{ label: `No runs found for ${this.activeWorkspace.attributes.name}` }];
+        return [
+          {
+            label: `No runs found for ${this.activeWorkspace.attributes.name}`,
+            tooltip: `No runs found for ${this.activeWorkspace.attributes.name}`,
+            contextValue: 'empty',
+          },
+        ];
       }
 
       const items: RunTreeItem[] = [];

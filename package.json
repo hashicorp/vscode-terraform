@@ -588,7 +588,7 @@
         },
         {
           "command": "terraform.cloud.run.viewInBrowser",
-          "when": "view == terraform.cloud.runs",
+          "when": "view == terraform.cloud.runs && viewItem != empty",
           "group": "inline"
         }
       ]
@@ -642,7 +642,28 @@
       },
       {
         "view": "terraform.cloud.workspaces",
-        "contents": "[Login to Terraform Cloud](command:terraform.cloud.login)"
+        "contents": "In order to use Terraform Cloud features, you need to be logged in.\n[Login to Terraform Cloud](command:terraform.cloud.login)",
+        "when": "terraform.cloud.signed-in === false"
+      },
+      {
+        "view": "terraform.cloud.workspaces",
+        "contents": "No organizations found for this token. Please create a new Terraform Cloud organization to get started:\n[Create or select a organization](command:terraform.cloud.organization.picker)",
+        "when": "terraform.cloud.signed-in && !terraform.cloud.organizationsExist "
+      },
+      {
+        "view": "terraform.cloud.workspaces",
+        "contents": "Please choose an organization:\n[Select a organization](command:terraform.cloud.organization.picker)",
+        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && !terraform.cloud.organizationsChosen "
+      },
+      {
+        "view": "terraform.cloud.workspaces",
+        "contents": "There are no workspaces in this organization.\n[Create a new workspace](command:terraform.cloud.workspaces.picker)\n[Choose a different organization](command:terraform.cloud.organization.picker)",
+        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && !terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist"
+      },
+      {
+        "view": "terraform.cloud.workspaces",
+        "contents": "There are no workspaces in this project.\n[Create a new workspace](command:terraform.cloud.workspaces.picker)\n[Clear filter](command:terraform.cloud.workspaces.resetProjectFilter)",
+        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist"
       },
       {
         "view": "terraform.cloud.runs",
