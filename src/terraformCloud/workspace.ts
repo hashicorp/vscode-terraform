@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { workspaceIncludeParams, projectFilterParams } from './filter';
 import { paginationMeta, paginationParams } from './pagination';
 import { runAttributes } from './run';
+import { errors } from './errors';
 
 const executionModes = z.enum(['remote', 'local', 'agent']);
 
@@ -81,6 +82,7 @@ export const workspaceEndpoints = makeApi([
     description: 'List workspaces in the organization',
     response: workspaces,
     parameters: [...paginationParams, ...projectFilterParams, ...workspaceIncludeParams],
+    errors,
   },
   {
     method: 'get',
@@ -90,5 +92,6 @@ export const workspaceEndpoints = makeApi([
     response: z.object({
       data: workspace,
     }),
+    errors,
   },
 ]);
