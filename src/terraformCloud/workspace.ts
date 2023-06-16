@@ -21,7 +21,7 @@ const workspaceAttributes = z.object({
   environment: z.string(),
   'execution-mode': executionModes,
   name: z.string(),
-  source: z.string().nullable(),
+  source: z.string(),
   'updated-at': z.coerce.date(),
   'run-failures': z.number().nullable(),
   'resource-count': z.number(),

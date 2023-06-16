@@ -34,7 +34,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.resetProjectFilter', () => {
         this.projectFilter = undefined;
-        // TODO:: this.workspaceView.title = 'WORKSPACES';
         this.refresh();
       }),
       vscode.commands.registerCommand(
@@ -65,11 +64,9 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
 
     if (project === undefined || project instanceof ResetProjectItem) {
       this.projectFilter = undefined;
-      // TODO:: this.workspaceView.title = 'WORKSPACES';
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.projectFilterUsed', false);
     } else {
       this.projectFilter = project.description;
-      // TODO:: this.workspaceView.title = 'WORKSPACES - ' + project.label;
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.projectFilterUsed', true);
     }
     this.refresh();
@@ -135,11 +132,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       const workspaces = workspaceResponse.data;
       if (workspaces.length <= 0) {
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.workspacesExist', false);
-        // this.workspaceView.message =
-        //   'No workspaces found. Create a workspace to get started';
         return [];
       } else {
-        // this.workspaceView.message = undefined;
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.workspacesExist', true);
       }
       const projects = projectResponse.data;
