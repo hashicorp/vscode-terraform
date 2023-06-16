@@ -15,6 +15,7 @@ import {
   RefreshOrganizationItem,
 } from '../providers/tfc/organizationPicker';
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
+import { TerraformCloudWebUrl } from '../terraformCloud';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -92,6 +93,15 @@ export class TerraformCloudFeature implements vscode.Disposable {
     });
 
     this.context.subscriptions.push(
+      vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
+        this.reporter.sendTelemetryEvent('tfc-new-workspace');
+        const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+        if (organization === '') {
+          return [];
+        }
+        const terraformCloudURL = `${TerraformCloudWebUrl}/${organization}/workspaces/new`;
+        await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
+      }),
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-pick-organization');
 
@@ -124,6 +134,9 @@ export class TerraformCloudFeature implements vscode.Disposable {
         // user chose an organization so update the statusbar and make sure its visible
         organizationQuickPick.hide();
         this.statusBar.show(choice.label);
+
+        // project filter should be cleared on org change
+        await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
 
         // refresh workspaces so they pick up the change
         workspaceDataProvider.refresh();
@@ -161,12 +174,16 @@ export class OrganizationStatusBar implements vscode.Disposable {
 
     if (organization) {
       this.organizationStatusBar.text = organization;
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', true);
+    } else {
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', false);
     }
 
     this.organizationStatusBar.show();
   }
 
   public async reset() {
+    await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', false);
     await this.context.workspaceState.update('terraform.cloud.organization', undefined);
     this.organizationStatusBar.text = '';
     this.organizationStatusBar.hide();
