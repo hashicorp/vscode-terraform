@@ -5,6 +5,7 @@
 
 import { makeApi } from '@zodios/core';
 import { z } from 'zod';
+import { errors } from './errors';
 
 const accountDetails = z.object({
   data: z.object({
@@ -24,5 +25,6 @@ export const accountEndpoints = makeApi([
     alias: 'getUser',
     description: 'Get user details',
     response: accountDetails,
+    errors,
   },
 ]);
