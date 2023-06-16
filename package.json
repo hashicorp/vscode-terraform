@@ -642,12 +642,12 @@
       {
         "view": "terraform.cloud.workspaces",
         "contents": "No organizations found for this token. Please create a new Terraform Cloud organization to get started:\n[Create or select a organization](command:terraform.cloud.organization.picker)",
-        "when": "terraform.cloud.signed-in && !terraform.cloud.organizationsExist "
+        "when": "terraform.cloud.signed-in && !terraform.cloud.organizationsExist && !terraform.cloud.organizationsChosen"
       },
       {
         "view": "terraform.cloud.workspaces",
         "contents": "Please choose an organization:\n[Select a organization](command:terraform.cloud.organization.picker)",
-        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && !terraform.cloud.organizationsChosen "
+        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && !terraform.cloud.organizationsChosen"
       },
       {
         "view": "terraform.cloud.workspaces",
