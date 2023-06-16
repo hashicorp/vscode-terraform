@@ -7,6 +7,7 @@ import { makeApi } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 import { searchQueryParams } from './filter';
+import { errors } from './errors';
 
 const organization = z.object({
   id: z.string(),
@@ -53,6 +54,7 @@ export const organizationEndpoints = makeApi([
     description: 'List organizations of the current user',
     response: organizations,
     parameters: [...paginationParams, ...searchQueryParams],
+    errors,
   },
   {
     method: 'get',
@@ -60,5 +62,6 @@ export const organizationEndpoints = makeApi([
     alias: 'listOrganizationMemberships',
     description: 'List organization memberships of the current user',
     response: organizationMemberships,
+    errors,
   },
 ]);
