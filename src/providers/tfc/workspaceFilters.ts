@@ -6,7 +6,11 @@
 import * as vscode from 'vscode';
 import { apiClient } from '../../terraformCloud';
 import { Project } from '../../terraformCloud/project';
-import { APIResource } from './uiHelpers';
+import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
+import TelemetryReporter from '@vscode/extension-telemetry';
+import { ZodiosError, isErrorFromAlias } from '@zodios/core';
+import axios from 'axios';
+import { apiErrorsToString } from '../../terraformCloud/errors';
 
 export class ResetProjectItem implements vscode.QuickPickItem {
   get label() {
@@ -35,7 +39,11 @@ export class ProjectsAPIResource implements APIResource {
   title = 'Filter Workspaces';
   placeholder = 'Select a project (type to search)';
 
-  constructor(private organizationName: string) {}
+  constructor(
+    private organizationName: string,
+    private outputChannel: vscode.OutputChannel,
+    private reporter: TelemetryReporter,
+  ) {}
 
   private async createProjectItems(organization: string, search?: string): Promise<ProjectItem[]> {
     const projects = await apiClient.listProjects({
@@ -61,14 +69,26 @@ export class ProjectsAPIResource implements APIResource {
       picks.push(...(await this.createProjectItems(this.organizationName, query)));
     } catch (error) {
       let message = 'Failed to fetch projects';
-      if (error instanceof Error) {
-        message = error.message;
-      } else if (typeof error === 'string') {
-        message = error;
+
+      if (error instanceof ZodiosError) {
+        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        return picks;
       }
 
-      picks.push({ label: `$(error) Error: ${message}`, alwaysShow: true });
-      console.error(error);
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        handleAuthError();
+        return picks;
+      } else if (isErrorFromAlias(apiClient.api, 'listProjects', error)) {
+        message += apiErrorsToString(error.response.data.errors);
+        this.reporter.sendTelemetryException(error);
+      } else if (error instanceof Error) {
+        message += error.message;
+        this.reporter.sendTelemetryException(error);
+      } else if (typeof error === 'string') {
+        message += error;
+      }
+
+      picks.push({ label: `$(error) ${message}`, alwaysShow: true });
     }
 
     return picks;

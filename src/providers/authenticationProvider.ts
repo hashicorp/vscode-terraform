@@ -6,9 +6,11 @@
 import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { earlyApiClient, TerraformCloudHost, TerraformCloudWebUrl } from '../terraformCloud';
+import { isErrorFromAlias, ZodiosError } from '@zodios/core';
+import { apiErrorsToString } from '../terraformCloud/errors';
+import { handleZodiosError } from './tfc/uiHelpers';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -33,7 +35,12 @@ class InvalidToken extends Error {
 }
 
 class TerraformCloudSessionHandler {
-  constructor(private readonly secretStorage: vscode.SecretStorage, private readonly sessionKey: string) {}
+  constructor(
+    private outputChannel: vscode.OutputChannel,
+    private reporter: TelemetryReporter,
+    private readonly secretStorage: vscode.SecretStorage,
+    private readonly sessionKey: string,
+  ) {}
 
   async get(): Promise<TerraformCloudSession | undefined> {
     const rawSession = await this.secretStorage.get(this.sessionKey);
@@ -60,9 +67,21 @@ class TerraformCloudSessionHandler {
       await this.secretStorage.store(this.sessionKey, JSON.stringify(session));
       return session;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        throw new InvalidToken();
+      if (error instanceof ZodiosError) {
+        handleZodiosError(error, 'Failed to process user details', this.outputChannel, this.reporter);
+        throw error;
       }
+
+      if (isErrorFromAlias(earlyApiClient.api, 'getUser', error)) {
+        if ((error.response.status as number) === 401) {
+          throw new InvalidToken();
+        }
+        this.reporter.sendTelemetryException(error);
+        throw new Error(`Failed to login: ${apiErrorsToString(error.response.data.errors)}`);
+      } else if (error instanceof Error) {
+        this.reporter.sendTelemetryException(error);
+      }
+
       throw error;
     }
   }
@@ -89,9 +108,15 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     private readonly secretStorage: vscode.SecretStorage,
     private readonly ctx: vscode.ExtensionContext,
     private reporter: TelemetryReporter,
+    private outputChannel: vscode.OutputChannel,
   ) {
     this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
-    this.sessionHandler = new TerraformCloudSessionHandler(this.secretStorage, this.sessionKey);
+    this.sessionHandler = new TerraformCloudSessionHandler(
+      this.outputChannel,
+      this.reporter,
+      this.secretStorage,
+      this.sessionKey,
+    );
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.login', async () => {
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
