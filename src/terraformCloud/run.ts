@@ -6,6 +6,7 @@
 import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
+import { errors } from './errors';
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#run-states
 const runStatus = z.enum([
@@ -208,6 +209,7 @@ export const runEndpoints = makeApi([
     description: 'List Runs in a Workspace',
     response: runs,
     parameters: [...paginationParams, ...includeParams],
+    errors,
   },
   {
     method: 'get',
@@ -215,5 +217,6 @@ export const runEndpoints = makeApi([
     alias: 'getRun',
     description: 'Show details of a specific run',
     response: z.object({ data: run }),
+    errors,
   },
 ]);
