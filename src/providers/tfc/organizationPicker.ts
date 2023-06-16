@@ -16,7 +16,7 @@ export class CreateOrganizationItem implements vscode.QuickPickItem {
     return 'Open the browser to create a new organization';
   }
   async open() {
-    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations`));
+    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations/new`));
   }
   get alwaysShow() {
     return true;
@@ -57,6 +57,12 @@ export class OrganizationAPIResource implements APIResource {
         },
       }),
     });
+
+    if (organizations.data.length <= 0) {
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsExist', false);
+    } else {
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsExist', true);
+    }
 
     return organizations.data.map((organization) => new OrganizationItem(organization));
   }
