@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { makeApi } from '@zodios/core';
+import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { workspaceIncludeParams, projectFilterParams } from './filter';
 import { paginationMeta, paginationParams } from './pagination';
@@ -74,6 +74,24 @@ const workspaces = z.object({
   included: z.array(included).optional(),
 });
 
+export const workspaceSortParams = makeParameters([
+  {
+    name: 'sort',
+    type: 'Query',
+    description: "Allows sorting the organization's workspaces by a provided value.",
+    schema: z
+      .enum([
+        'name',
+        'current-run.created-at',
+        'latest-change-at',
+        '-name',
+        '-current-run.created-at',
+        '-latest-change-at',
+      ])
+      .optional(),
+  },
+]);
+
 export const workspaceEndpoints = makeApi([
   {
     method: 'get',
@@ -81,7 +99,7 @@ export const workspaceEndpoints = makeApi([
     alias: 'listWorkspaces',
     description: 'List workspaces in the organization',
     response: workspaces,
-    parameters: [...paginationParams, ...projectFilterParams, ...workspaceIncludeParams],
+    parameters: [...paginationParams, ...projectFilterParams, ...workspaceIncludeParams, ...workspaceSortParams],
     errors,
   },
   {
