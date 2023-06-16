@@ -132,7 +132,7 @@ export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   terraform: 'Terraform',
   'terraform+cloud': 'Terraform Cloud',
   tfeAPI: 'API',
-  'tfe-api': 'tfe-api',
+  'tfe-api': 'API',
   module: 'No-code Module',
 };
 const cfgSources = Object.keys(CONFIGURATION_SOURCE) as [string, ...string[]];
