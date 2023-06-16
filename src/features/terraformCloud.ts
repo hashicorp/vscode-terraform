@@ -94,6 +94,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
+        this.reporter.sendTelemetryEvent('tfc-new-workspace');
         const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
         if (organization === '') {
           return [];

@@ -33,6 +33,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         this.runDataProvider.refresh(workspaceItem);
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.resetProjectFilter', () => {
+        this.reporter.sendTelemetryEvent('tfc-workspaces-filter-reset');
         this.projectFilter = undefined;
         this.refresh();
       }),
