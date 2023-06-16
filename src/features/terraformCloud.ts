@@ -20,10 +20,19 @@ import { TerraformCloudWebUrl } from '../terraformCloud';
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
 
-  constructor(private context: vscode.ExtensionContext, private reporter: TelemetryReporter) {
+  constructor(
+    private context: vscode.ExtensionContext,
+    private reporter: TelemetryReporter,
+    outputChannel: vscode.OutputChannel,
+  ) {
+    const authProvider = new TerraformCloudAuthenticationProvider(
+      context.secrets,
+      context,
+      this.reporter,
+      outputChannel,
+    );
     this.statusBar = new OrganizationStatusBar(context);
 
-    const authProvider = new TerraformCloudAuthenticationProvider(context.secrets, context, this.reporter);
     authProvider.onDidChangeSessions(async (event) => {
       if (event && event.added && event.added.length > 0) {
         await vscode.commands.executeCommand('terraform.cloud.organization.picker');
@@ -43,14 +52,19 @@ export class TerraformCloudFeature implements vscode.Disposable {
       ),
     );
 
-    const runDataProvider = new RunTreeDataProvider(this.context, this.reporter);
+    const runDataProvider = new RunTreeDataProvider(this.context, this.reporter, outputChannel);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
       canSelectMany: false,
       showCollapseAll: true,
       treeDataProvider: runDataProvider,
     });
 
-    const workspaceDataProvider = new WorkspaceTreeDataProvider(this.context, runDataProvider, this.reporter);
+    const workspaceDataProvider = new WorkspaceTreeDataProvider(
+      this.context,
+      runDataProvider,
+      this.reporter,
+      outputChannel,
+    );
     const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
       canSelectMany: false,
       showCollapseAll: true,
@@ -105,7 +119,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-pick-organization');
 
-        const organizationAPIResource = new OrganizationAPIResource();
+        const organizationAPIResource = new OrganizationAPIResource(outputChannel, reporter);
         const organizationQuickPick = new APIQuickPick(organizationAPIResource);
         let choice: vscode.QuickPickItem | undefined;
 
