@@ -121,8 +121,13 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   async getSessions(scopes?: string[] | undefined): Promise<readonly vscode.AuthenticationSession[]> {
     try {
       const session = await this.sessionPromise;
-      this.logger.info('Successfully fetched Terraform Cloud session.');
-      return session ? [session] : [];
+      if (session) {
+        this.logger.info('Successfully fetched Terraform Cloud session.');
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
+        return [session];
+      } else {
+        return [];
+      }
     } catch (error) {
       if (error instanceof Error) {
         vscode.window.showErrorMessage(error.message);
@@ -149,6 +154,8 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       const session = await this.sessionHandler.store(token);
       this.reporter.sendTelemetryEvent('tfc-login-success');
       this.logger.info('Successfully logged in to Terraform Cloud');
+
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
 
       // Notify VSCode's UI
       this._onDidChangeSessions.fire({ added: [session], removed: [], changed: [] });
@@ -184,6 +191,8 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this.reporter.sendTelemetryEvent('tfc-logout');
     this.logger.info('Removing current session');
     await this.sessionHandler.delete();
+
+    await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', false);
 
     // Notify VSCode's UI
     this._onDidChangeSessions.fire({ added: [], removed: [session], changed: [] });
