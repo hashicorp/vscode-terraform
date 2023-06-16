@@ -44,6 +44,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-vars' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
+const tfcOutputChannel = vscode.window.createOutputChannel('HashiCorp Terraform Cloud');
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
@@ -58,7 +59,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // always register commands needed to control terraform-ls
   context.subscriptions.push(new TerraformLSCommands());
 
-  context.subscriptions.push(new TerraformCloudFeature(context, reporter));
+  context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
   // This triggers a badge to appear in the User Account icon.
   // TODO: remove this when workspace views land
   await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
