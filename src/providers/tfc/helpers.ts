@@ -9,42 +9,61 @@ export function GetRunStatusIcon(status: string): vscode.ThemeIcon | undefined {
   switch (status) {
     // in progress
     case 'pending':
+      return new vscode.ThemeIcon('debug-pause', new vscode.ThemeColor('charts.gray'));
     case 'fetching':
+      return new vscode.ThemeIcon('sync~spin', new vscode.ThemeColor('charts.gray'));
     case 'pre_plan_running':
+      return new vscode.ThemeIcon('run-status-running', new vscode.ThemeColor('charts.gray'));
     case 'queuing':
+      return new vscode.ThemeIcon('debug-pause', new vscode.ThemeColor('charts.gray'));
     case 'planning':
+      return new vscode.ThemeIcon('run-status-running', new vscode.ThemeColor('charts.gray'));
     case 'cost_estimating':
+      return new vscode.ThemeIcon('sync~spin', new vscode.ThemeColor('charts.gray'));
     case 'policy_checking':
+      return new vscode.ThemeIcon('sync~spin', new vscode.ThemeColor('charts.gray'));
     case 'apply_queued':
+      return new vscode.ThemeIcon('debug-pause', new vscode.ThemeColor('charts.gray'));
     case 'applying':
+      return new vscode.ThemeIcon('sync~spin', new vscode.ThemeColor('charts.gray'));
     case 'post_plan_running':
+      return new vscode.ThemeIcon('run-status-running', new vscode.ThemeColor('charts.gray'));
     case 'plan_queued':
-      return new vscode.ThemeIcon('sync~spin');
-
+      return new vscode.ThemeIcon('debug-pause');
     case 'fetching_completed':
-    case 'pre_plan_completed':
-    case 'planned':
-    case 'cost_estimated':
-    case 'policy_override':
-    case 'policy_checked':
-    case 'confirmed':
-    case 'post_plan_completed':
-    case 'planned_and_finished':
       return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+    case 'pre_plan_completed':
+      return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+    case 'planned':
+      return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow'));
+    case 'cost_estimated':
+      return new vscode.ThemeIcon('info', new vscode.ThemeColor('charts.orange'));
+    case 'policy_override':
+      return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow'));
+    case 'policy_checked':
+      return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+    case 'confirmed':
+      return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+    case 'post_plan_completed':
+      return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+    case 'planned_and_finished':
+      return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('charts.green'));
     case 'policy_soft_failed':
       return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow'));
     case 'applied':
       return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('charts.green'));
     case 'discarded':
+      return new vscode.ThemeIcon('close', new vscode.ThemeColor('charts.gray'));
     case 'canceled':
+      return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.gray'));
     case 'force_canceled':
-      return new vscode.ThemeIcon('discard', new vscode.ThemeColor('charts.red'));
+      return new vscode.ThemeIcon('error');
     case 'errored':
       return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.red'));
   }
 
-  // return new vscode.ThemeIcon('indent');
-  return undefined;
+  return new vscode.ThemeIcon('dash');
+  // return undefined;
 }
 
 export function GetRunStatusMessage(status: string): string {
@@ -104,7 +123,7 @@ export function GetRunStatusMessage(status: string): string {
       return 'Errored';
   }
 
-  return '';
+  return 'No runs available';
 }
 
 export function RelativeTimeFormat(d: Date): string {

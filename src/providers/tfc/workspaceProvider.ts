@@ -241,6 +241,8 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
 
     if (this.lastRun) {
       this.iconPath = GetRunStatusIcon(this.lastRun.status);
+    } else {
+      this.iconPath = new vscode.ThemeIcon('dash');
     }
 
     const lockedTxt = this.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
