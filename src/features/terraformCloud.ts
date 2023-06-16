@@ -15,6 +15,7 @@ import {
   RefreshOrganizationItem,
 } from '../providers/tfc/organizationPicker';
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
+import { TerraformCloudWebUrl } from '../terraformCloud';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -93,12 +94,11 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
-        // https://app.staging.terraform.io/app/ipl-empathy-workshop-stark/workspaces/new
         const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
         if (organization === '') {
           return [];
         }
-        const terraformCloudURL = `https://app.staging.terraform.io/app/${organization}/workspaces/new`;
+        const terraformCloudURL = `${TerraformCloudWebUrl}/${organization}/workspaces/new`;
         await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
       }),
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
@@ -173,12 +173,16 @@ export class OrganizationStatusBar implements vscode.Disposable {
 
     if (organization) {
       this.organizationStatusBar.text = organization;
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', true);
+    } else {
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', false);
     }
 
     this.organizationStatusBar.show();
   }
 
   public async reset() {
+    await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', false);
     await this.context.workspaceState.update('terraform.cloud.organization', undefined);
     this.organizationStatusBar.text = '';
     this.organizationStatusBar.hide();
