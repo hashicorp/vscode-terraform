@@ -11,3 +11,5 @@ testFixture/.terraform.lock.hcl
 testFixture/.vscode
 .terraform/
 .vscode-test-web
+.test-extensions
+test-resources

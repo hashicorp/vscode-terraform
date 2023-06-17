@@ -2,6 +2,8 @@
 .vscode
 .vscode-test
 .vscode-test-web
+test-resources
+.test-extensions
 build/
 docs/
 lsp/

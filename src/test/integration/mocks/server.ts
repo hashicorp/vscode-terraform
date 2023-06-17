@@ -33,6 +33,37 @@ const handlers = [
       }),
     );
   }),
+  mockGet('/organizations/:organization_name/projects', (_, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        data: [
+          {
+            id: 'project-1',
+            attributes: {
+              name: 'Project 1',
+            },
+          },
+          {
+            id: 'project-2',
+            attributes: {
+              name: 'Project 2',
+            },
+          },
+        ],
+        meta: {
+          pagination: {
+            'current-page': 1,
+            'total-pages': 1,
+            'total-count': 2,
+            'page-size': 20,
+            'next-page': null,
+            'prev-page': null,
+          },
+        },
+      }),
+    );
+  }),
 ];
 
 // This configures a request mocking server with the given request handlers.
