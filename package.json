@@ -493,6 +493,16 @@
         "icon": "$(globe)"
       },
       {
+        "command": "terraform.cloud.run.plan.downloadLog",
+        "title": "View Raw Plan Log",
+        "icon": "$(book)"
+      },
+      {
+        "command": "terraform.cloud.run.apply.downloadLog",
+        "title": "View Raw Apply Log",
+        "icon": "$(output)"
+      },
+      {
         "command": "terraform.cloud.workspaces.filterByProject",
         "title": "Filter by Project",
         "icon": "$(filter)"
@@ -547,6 +557,14 @@
         {
           "command": "terraform.cloud.run.viewInBrowser",
           "when": "false"
+        },
+        {
+          "command": "terraform.cloud.run.plan.downloadLog",
+          "when": "false"
+        },
+        {
+          "command": "terraform.cloud.run.apply.downloadLog",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -598,6 +616,16 @@
         {
           "command": "terraform.cloud.run.viewInBrowser",
           "when": "view == terraform.cloud.runs && viewItem != empty",
+          "group": "inline"
+        },
+        {
+          "command": "terraform.cloud.run.plan.downloadLog",
+          "when": "view == terraform.cloud.runs && viewItem =~ /hasPlan/",
+          "group": "inline"
+        },
+        {
+          "command": "terraform.cloud.run.apply.downloadLog",
+          "when": "view == terraform.cloud.runs && viewItem =~ /hasApply/",
           "group": "inline"
         }
       ]
@@ -656,7 +684,7 @@
       },
       {
         "view": "terraform.cloud.workspaces",
-        "contents": "No organizations found for this token. Please create a new Terraform Cloud organization to get started:\n[Create or select a organization](command:terraform.cloud.organization.picker)",
+        "contents": "No organizations found for this token. Please create a new Terraform Cloud organization to get started:\n[Create or select an organization](command:terraform.cloud.organization.picker)",
         "when": "terraform.cloud.signed-in && !terraform.cloud.organizationsExist && !terraform.cloud.organizationsChosen"
       },
       {
@@ -716,7 +744,7 @@
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.1",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^16.11.7",
+    "@types/node": "^16.18.36",
     "@types/vscode": "~1.75.1",
     "@types/webpack-env": "^1.18.0",
     "@types/which": "^3.0.0",
