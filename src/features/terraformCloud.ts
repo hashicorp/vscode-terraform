@@ -16,6 +16,7 @@ import {
 } from '../providers/tfc/organizationPicker';
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
 import { TerraformCloudWebUrl } from '../terraformCloud';
+import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -30,6 +31,9 @@ export class TerraformCloudFeature implements vscode.Disposable {
       context,
       this.reporter,
       outputChannel,
+    );
+    this.context.subscriptions.push(
+      vscode.workspace.registerTextDocumentContentProvider('vscode-terraform', new PlanLogContentProvider()),
     );
     this.statusBar = new OrganizationStatusBar(context);
 
