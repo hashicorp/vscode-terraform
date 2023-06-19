@@ -112,7 +112,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     try {
-      return this.getRuns(this.activeWorkspace.id);
+      return this.getRuns(this.activeWorkspace);
     } catch (error) {
       return [];
     }
@@ -123,7 +123,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     return item;
   }
 
-  private async getRuns(workspaceId: string): Promise<vscode.TreeItem[]> {
+  private async getRuns(workspace: WorkspaceTreeItem): Promise<vscode.TreeItem[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -143,7 +143,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     try {
       const runs = await apiClient.listRuns({
-        params: { workspace_id: workspaceId },
+        params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
           include: ['plan', 'apply', 'configuration_version.ingress_attributes', 'created_by'],
@@ -211,7 +211,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
       return items;
     } catch (error) {
-      let message = `Failed to list runs in ${workspaceId}: `;
+      let message = `Failed to list runs in ${this.activeWorkspace.attributes.name} (${workspace.id}): `;
 
       if (error instanceof ZodiosError) {
         handleZodiosError(error, message, this.outputChannel, this.reporter);
@@ -226,7 +226,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
         if (error.response?.status === 404) {
           vscode.window.showWarningMessage(
-            `Workspace ${this.activeWorkspace.attributes.name} (${workspaceId}) not found, please pick another one`,
+            `Workspace ${this.activeWorkspace.attributes.name} (${workspace.id}) not found, please pick another one`,
           );
           return [];
         }
