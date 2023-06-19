@@ -274,6 +274,15 @@
         "description": "Required providers"
       }
     ],
+    "icons": {
+      "run-status-running": {
+        "description": "Run Status icon",
+        "default": {
+          "fontPath": "./assets/icons/running.woff",
+          "fontCharacter": "D"
+        }
+      }
+    },
     "snippets": [
       {
         "language": "terraform",
