@@ -161,6 +161,6 @@ export function RelativeTimeFormat(d: Date): string {
     const months = Math.round(diffSeconds / SECONDS_IN_MONTH);
     return rtf.format(-months, 'month');
   }
-  const years = diffSeconds / SECONDS_IN_YEAR;
+  const years = Math.round(diffSeconds / SECONDS_IN_YEAR);
   return rtf.format(-years, 'year');
 }
