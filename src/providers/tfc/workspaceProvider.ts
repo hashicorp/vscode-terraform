@@ -238,10 +238,7 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
     super(attributes.name, vscode.TreeItemCollapsibleState.None);
 
     this.description = `[${this.projectName}]`;
-
-    if (this.lastRun) {
-      this.iconPath = GetRunStatusIcon(this.lastRun.status);
-    }
+    this.iconPath = GetRunStatusIcon(this.lastRun?.status);
 
     const lockedTxt = this.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
     const vscText =
@@ -249,20 +246,14 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
         ? `$(source-control) [${this.attributes['vcs-repo-identifier']}](${this.attributes['vcs-repo']['repository-http-url']})`
         : '';
 
-    const statusIcon = GetRunStatusIcon(lastRun?.status ?? '');
-    const statusMsg = GetRunStatusMessage(lastRun?.status ?? '');
-    const message = statusMsg ? `Run Status: $(${statusIcon?.id}) ${statusMsg}` : '';
-
-    const header = statusIcon
-      ? `## $(${statusIcon?.id}) [${this.attributes.name}](${this.weblink})`
-      : `## [${this.attributes.name}](${this.weblink})`;
+    const statusMsg = GetRunStatusMessage(this.lastRun?.status);
     const updatedAt = RelativeTimeFormat(this.attributes['updated-at']);
     const text = `
-${header}
+## $(${this.iconPath.id}) [${this.attributes.name}](${this.weblink})
 
 #### ID: *${this.id}*
 
-${message}
+Run Status: $(${this.iconPath.id}) ${statusMsg}
 
 ${lockedTxt}
 ___
