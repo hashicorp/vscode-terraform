@@ -22,10 +22,12 @@ import {
   TRIGGER_REASON,
 } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
-import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
+import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
+import { PlanAttributes } from '../../terraformCloud/plan';
+import { ApplyAttributes } from '../../terraformCloud/apply';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -56,6 +58,39 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
         vscode.env.openExternal(vscode.Uri.parse(runURL));
       }),
+      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: RunTreeItem) => {
+        if (!run.planId) {
+          await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
+          return;
+        }
+
+        const planUri = vscode.Uri.parse(`vscode-terraform://plan/${run.planId}`);
+        const doc = await vscode.workspace.openTextDocument(planUri);
+        await vscode.window.showTextDocument(doc, {
+          preview: false,
+        });
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: RunTreeItem) => {
+        if (!run.applyId) {
+          await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
+          return;
+        }
+
+        const applyUri = vscode.Uri.parse(`vscode-terraform://apply/${run.applyId}`);
+        const doc = await vscode.workspace.openTextDocument(applyUri);
+        await vscode.window.showTextDocument(doc, {
+          preview: false,
+        });
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.apply.viewInBrowser', (run: RunTreeItem) => {
+        const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+        if (orgName === '') {
+          return;
+        }
+
+        const runURL = `${TerraformCloudWebUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
+        vscode.env.openExternal(vscode.Uri.parse(runURL));
+      }),
     );
   }
 
@@ -77,7 +112,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     try {
-      return this.getRuns(this.activeWorkspace.id);
+      return this.getRuns(this.activeWorkspace);
     } catch (error) {
       return [];
     }
@@ -88,7 +123,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     return item;
   }
 
-  private async getRuns(workspaceId: string): Promise<vscode.TreeItem[]> {
+  private async getRuns(workspace: WorkspaceTreeItem): Promise<vscode.TreeItem[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -108,10 +143,10 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     try {
       const runs = await apiClient.listRuns({
-        params: { workspace_id: workspaceId },
+        params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          include: ['configuration_version.ingress_attributes', 'created_by'],
+          include: ['plan', 'apply', 'configuration_version.ingress_attributes', 'created_by'],
         },
       });
 
@@ -134,23 +169,49 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
-        if (runs.included) {
-          runItem.createdBy = findCreatedByAttributes(runs.included, run);
+        if (!runs.included) {
+          items.push(runItem);
+          continue;
+        }
 
-          const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
-          if (cfgVersion) {
-            runItem.configurationVersion = cfgVersion.attributes;
+        runItem.createdBy = findCreatedByAttributes(runs.included, run);
 
-            const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
-            runItem.ingressAttributes = ingressAttrs;
+        const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
+        if (cfgVersion) {
+          runItem.configurationVersion = cfgVersion.attributes;
+
+          const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
+          runItem.ingressAttributes = ingressAttrs;
+        }
+
+        if (run.relationships.plan) {
+          const planAttributes = findPlanAttributes(runs.included, run);
+          if (planAttributes) {
+            if (['errored', 'canceled', 'finished'].includes(planAttributes.status)) {
+              runItem.planId = run.relationships.plan?.data?.id;
+              runItem.planAttributes = planAttributes;
+              runItem.contextValue = 'hasPlan';
+            }
           }
         }
+
+        if (run.relationships.apply) {
+          const applyAttributes = findApplyAttributes(runs.included, run);
+          if (applyAttributes) {
+            if (['errored', 'canceled', 'finished'].includes(applyAttributes.status)) {
+              runItem.applyId = run.relationships.apply?.data?.id;
+              runItem.applyAttributes = applyAttributes;
+              runItem.contextValue += 'hasApply';
+            }
+          }
+        }
+
         items.push(runItem);
       }
 
       return items;
     } catch (error) {
-      let message = `Failed to list runs in ${workspaceId}: `;
+      let message = `Failed to list runs in ${this.activeWorkspace.attributes.name} (${workspace.id}): `;
 
       if (error instanceof ZodiosError) {
         handleZodiosError(error, message, this.outputChannel, this.reporter);
@@ -165,7 +226,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
         if (error.response?.status === 404) {
           vscode.window.showWarningMessage(
-            `Workspace ${this.activeWorkspace.attributes.name} (${workspaceId}) not found, please pick another one`,
+            `Workspace ${this.activeWorkspace.attributes.name} (${workspace.id}) not found, please pick another one`,
           );
           return [];
         }
@@ -209,6 +270,24 @@ function findConfigurationVersionAttributes(included: IncludedObject[], run: Run
   }
 }
 
+function findPlanAttributes(included: IncludedObject[], run: Run) {
+  const plan = included.find(
+    (included: IncludedObject) => included.type === 'plans' && included.id === run.relationships.plan?.data?.id,
+  );
+  if (plan) {
+    return plan.attributes as PlanAttributes;
+  }
+}
+
+function findApplyAttributes(included: IncludedObject[], run: Run) {
+  const apply = included.find(
+    (included: IncludedObject) => included.type === 'applies' && included.id === run.relationships.apply?.data?.id,
+  );
+  if (apply) {
+    return apply.attributes as ApplyAttributes;
+  }
+}
+
 function findCreatedByAttributes(included: IncludedObject[], run: Run): UserAttributes | undefined {
   const includedObject = included.find(
     (included: IncludedObject) =>
@@ -235,6 +314,12 @@ export class RunTreeItem extends vscode.TreeItem {
   public configurationVersion?: ConfigurationVersionAttributes;
   public ingressAttributes?: IngressAttributes;
 
+  public planAttributes?: PlanAttributes;
+  public planId?: string;
+
+  public applyAttributes?: ApplyAttributes;
+  public applyId?: string;
+
   constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem) {
     super(attributes.message, vscode.TreeItemCollapsibleState.None);
     this.id = id;
@@ -250,11 +335,12 @@ async function runMarkdown(item: RunTreeItem) {
 
   // to allow image resizing
   markdown.supportHtml = true;
+  markdown.supportThemeIcons = true;
 
   const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
 
   if (item.createdBy) {
-    markdown.appendMarkdown(`<img src="${item.createdBy?.['avatar-url']}" width="20"> **${item.createdBy?.username}**`);
+    markdown.appendMarkdown(`<img src="${item.createdBy['avatar-url']}" width="20"> **${item.createdBy.username}**`);
   } else if (item.ingressAttributes) {
     markdown.appendMarkdown(
       `<img src="${item.ingressAttributes['sender-avatar-url']}" width="20"> **${item.ingressAttributes['sender-username']}**`,
@@ -262,6 +348,8 @@ async function runMarkdown(item: RunTreeItem) {
   }
 
   const triggerReason = TRIGGER_REASON[item.attributes['trigger-reason']];
+  const icon = GetRunStatusIcon(item.attributes.status);
+  const msg = GetRunStatusMessage(item.attributes.status);
 
   markdown.appendMarkdown(` ${triggerReason} from ${RUN_SOURCE[item.attributes.source]} ${createdAtTime}`);
   markdown.appendMarkdown(`
@@ -271,6 +359,7 @@ _____
 | | |
 -:|--
 | **Run ID**   | \`${item.id}\` |
+| **Status** | $(${icon.id}) ${msg} |
 `);
   if (item.ingressAttributes && item.configurationVersion && item.configurationVersion.source) {
     // Blind shortening like this may not be appropriate

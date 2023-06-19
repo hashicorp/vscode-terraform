@@ -60,7 +60,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   }
 
   async filterByProject(): Promise<void> {
-    // TODO! only run this if user is logged in
+    const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
+      createIfNone: false,
+    });
+
+    if (session === undefined) {
+      return;
+    }
+
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     const projectAPIResource = new ProjectsAPIResource(organization, this.outputChannel, this.reporter);
     const projectQuickPick = new APIQuickPick(projectAPIResource);
