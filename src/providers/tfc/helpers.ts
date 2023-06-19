@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 
-export function GetRunStatusIcon(status: string): vscode.ThemeIcon | undefined {
+export function GetRunStatusIcon(status?: string): vscode.ThemeIcon {
   switch (status) {
     // in progress
     case 'pending':
@@ -65,7 +65,7 @@ export function GetRunStatusIcon(status: string): vscode.ThemeIcon | undefined {
   return new vscode.ThemeIcon('dash');
 }
 
-export function GetRunStatusMessage(status: string): string {
+export function GetRunStatusMessage(status?: string): string {
   switch (status) {
     // in progress
     case 'pending':
