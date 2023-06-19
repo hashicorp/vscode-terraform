@@ -22,7 +22,7 @@ import {
   TRIGGER_REASON,
 } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
-import { GetRunStatusIcon, RelativeTimeFormat } from './helpers';
+import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
@@ -335,11 +335,12 @@ async function runMarkdown(item: RunTreeItem) {
 
   // to allow image resizing
   markdown.supportHtml = true;
+  markdown.supportThemeIcons = true;
 
   const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
 
   if (item.createdBy) {
-    markdown.appendMarkdown(`<img src="${item.createdBy?.['avatar-url']}" width="20"> **${item.createdBy?.username}**`);
+    markdown.appendMarkdown(`<img src="${item.createdBy['avatar-url']}" width="20"> **${item.createdBy.username}**`);
   } else if (item.ingressAttributes) {
     markdown.appendMarkdown(
       `<img src="${item.ingressAttributes['sender-avatar-url']}" width="20"> **${item.ingressAttributes['sender-username']}**`,
@@ -347,6 +348,8 @@ async function runMarkdown(item: RunTreeItem) {
   }
 
   const triggerReason = TRIGGER_REASON[item.attributes['trigger-reason']];
+  const icon = GetRunStatusIcon(item.attributes.status);
+  const msg = GetRunStatusMessage(item.attributes.status);
 
   markdown.appendMarkdown(` ${triggerReason} from ${RUN_SOURCE[item.attributes.source]} ${createdAtTime}`);
   markdown.appendMarkdown(`
@@ -356,6 +359,7 @@ _____
 | | |
 -:|--
 | **Run ID**   | \`${item.id}\` |
+| **Status** | $(${icon.id}) ${msg} |
 `);
   if (item.ingressAttributes && item.configurationVersion && item.configurationVersion.source) {
     // Blind shortening like this may not be appropriate
