@@ -5,9 +5,9 @@
 
 import axios from 'axios';
 import * as vscode from 'vscode';
-import stripAnsi from 'strip-ansi';
 
 import { apiClient } from '../../terraformCloud';
+import stripAnsi from './helpers';
 
 export class PlanLogContentProvider implements vscode.TextDocumentContentProvider {
   onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
