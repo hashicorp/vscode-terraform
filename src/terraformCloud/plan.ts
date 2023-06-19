@@ -10,9 +10,11 @@ export const planAttributes = z.object({
   actions: z.object({
     'is-exportable': z.boolean(),
   }),
-  'execution-details': z.object({
-    mode: z.string(),
-  }),
+  'execution-details': z
+    .object({
+      mode: z.string(),
+    })
+    .nullable(),
   'has-changes': z.boolean(),
   permissions: z.object({
     'can-export': z.boolean(),
