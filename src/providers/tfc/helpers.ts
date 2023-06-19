@@ -63,7 +63,6 @@ export function GetRunStatusIcon(status: string): vscode.ThemeIcon | undefined {
   }
 
   return new vscode.ThemeIcon('dash');
-  // return undefined;
 }
 
 export function GetRunStatusMessage(status: string): string {
