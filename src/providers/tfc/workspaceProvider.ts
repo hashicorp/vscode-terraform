@@ -44,10 +44,16 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         'terraform.cloud.workspaces.viewInBrowser',
         (workspaceItem: WorkspaceTreeItem) => {
           this.reporter.sendTelemetryEvent('tfc-workspaces-viewInBrowser');
-          const runURL = `${TerraformCloudWebUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
-          vscode.env.openExternal(vscode.Uri.parse(runURL));
+          const workspaceURL = `${TerraformCloudWebUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
+          vscode.env.openExternal(vscode.Uri.parse(workspaceURL));
         },
       ),
+      vscode.commands.registerCommand('terraform.cloud.organization.viewInBrowser', () => {
+        this.reporter.sendTelemetryEvent('tfc-organization-viewInBrowser');
+        const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+        const orgURL = `${TerraformCloudWebUrl}/${organization}`;
+        vscode.env.openExternal(vscode.Uri.parse(orgURL));
+      }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter');
         this.filterByProject();
@@ -148,9 +154,25 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       const workspaces = workspaceResponse.data;
       if (workspaces.length <= 0) {
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.workspacesExist', false);
+
+        // check if the user has pending invitation to the org
+        // as that may be a reason for zero workspaces
+        const memberships = await apiClient.listOrganizationMemberships({});
+        const pendingMembership = memberships.data.filter(
+          (membership) =>
+            membership.relationships.organization.data.id === organization &&
+            membership.attributes.status === 'invited',
+        );
+        if (pendingMembership.length > 0) {
+          await vscode.commands.executeCommand('setContext', 'terraform.cloud.pendingOrgMembership', true);
+        } else {
+          await vscode.commands.executeCommand('setContext', 'terraform.cloud.pendingOrgMembership', false);
+        }
+
         return [];
       } else {
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.workspacesExist', true);
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.pendingOrgMembership', false);
       }
       const projects = projectResponse.data;
 
