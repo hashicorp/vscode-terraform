@@ -105,13 +105,13 @@ The new Terraform Cloud features are currently available in the pre-release vers
 1. Search for the HashiCorp Terraform extension
 1. Click on "Switch to Pre-Release Version"
 
-![](docs/tfc/switch_to_preview.png)
+![](docs/tfc/switch_to_preview.gif)
 
 If the text on the button says "Switch to Release Version", it means the pre-release version is already installed.
 
 To start using Terrfaform Cloud with VS Code, open the new Terraform Cloud sidebar and click "Login to Terraform Cloud". You can login using a stored token from the Terraform CLI, an existing token you provide, or open the Terraform Cloud website to generate a new token.
 
-![](docs/tfc/login_view.png)
+![](docs/tfc/login_view.gif)
 
 Once logged in, you are prompted to choose which Organization to view workspaces in.
 
@@ -119,15 +119,15 @@ Once logged in, you are prompted to choose which Organization to view workspaces
 
 Now that your Organization is chosen, the Workspace view populates with all workspaces your token has permission to view. At a glance, you can see the last run status of each Workspace. Hovering over a workspace shows detailed information about each workspace.
 
-![](docs/tfc/workspace_view.png)
+![](docs/tfc/workspace_view.gif)
 
 Selecting a workspace populates the Run view with a list of runs for that workspace. At a glance, you can see the status of each Run, and hover over each for more detailed information.
 
-![](docs/tfc/workspace_run_view.png)
+![](docs/tfc/workspace_run_view.gif)
 
 If a Run has been Planned or Applied, you can view the raw log for each by selecting the button on each Run.
 
-![](docs/tfc/plan_apply_view.png)
+![](docs/tfc/plan_apply_view.gif)
 
 ### Terraform Module and Provider Explorer
 
