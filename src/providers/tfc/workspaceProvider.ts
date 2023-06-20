@@ -142,6 +142,9 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         },
       });
 
+      // We can imply organization existence based on 200 OK (i.e. not 404) here
+      vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsExist', true);
+
       const workspaces = workspaceResponse.data;
       if (workspaces.length <= 0) {
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.workspacesExist', false);
@@ -192,6 +195,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         }
 
         if (error.response?.status === 404) {
+          vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsExist', false);
           vscode.window.showWarningMessage(`Organization '${organization}' not found, please pick another one`);
           vscode.commands.executeCommand('terraform.cloud.organization.picker');
           return [];
