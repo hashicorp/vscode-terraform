@@ -695,7 +695,12 @@
       {
         "view": "terraform.cloud.workspaces",
         "contents": "There are no workspaces in this organization.\n[Create a new workspace](command:terraform.cloud.workspaces.picker)\n[Choose a different organization](command:terraform.cloud.organization.picker)",
-        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && !terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist"
+        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && !terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist && !terraform.cloud.pendingOrgMembership"
+      },
+      {
+        "view": "terraform.cloud.workspaces",
+        "contents": "You have not yet accepted the invitation to this organization.\n[See pending invitation](command:terraform.cloud.organization.viewInBrowser)\n[Choose a different organization](command:terraform.cloud.organization.picker)",
+        "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && !terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist && terraform.cloud.pendingOrgMembership"
       },
       {
         "view": "terraform.cloud.workspaces",
