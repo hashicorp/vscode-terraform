@@ -95,8 +95,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       // Refresh the workspace list if the user changes session
       if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
         workspaceDataProvider.refresh();
-        // TODO: determine if we refersh the run view as well
-        // or if cascade will handle it
+        runDataProvider.refresh();
       }
     });
 
