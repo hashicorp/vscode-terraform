@@ -26,6 +26,7 @@ Read the [Troubleshooting Guide](#troubleshooting) for answers to common questio
 - [Code Navigation](#code-navigation) Navigate through your codebase with Go to Definition and Symbol support
 - [Code Formatting](#code-formatting) Format your code with `terraform fmt` automatically
 - [Code Snippets](#code-snippets) Shortcuts for commmon snippets like `for_each` and `variable`
+- [Terraform Cloud Integration](#terraform-cloud-integration) View Terraform Cloud Workspaces and Run details inside VS Code
 - [Terraform Module Explorer](#terraform-module-and-provider-explorer) View all modules and providers referenced in the currently open document.
 - [Terraform commands](#terraform-commands) Directly execute commands like `terraform init` or `terraform plan` from the VS Code Command Palette.
 
@@ -91,6 +92,42 @@ The extension provides several snippets to accelerate adding Terraform code to y
 - `provisioner` - Provisioner
 - `vare` - Empty variable
 - `varm` - Map Variable
+
+### Terraform Cloud Integration
+
+Every time you have to switch away from your code, you risk losing momentum and the context about your tasks. Previously, Terraform users needed to have at least two windows open – their editor and a web page – to develop Terraform code. The editor contains all of the Terraform code they are working on, and the web page has the Terraform Cloud workspace loaded. Switching back and forth between the Terraform Cloud website and the text editor can be a frustrating and fragmented experience.
+
+The public preview of Terraform Cloud Visual Studio Code integration improves user experience by allowing users to view workspaces directly from within Visual Studio Code. Users can view the status of current and past runs and inspect detailed logs – without ever leaving the comfort of their editor.
+
+The new Terraform Cloud features are currently available in the pre-release version of our Terraform extension, which is the Visual Studio Code equivalent of a public beta channel. If you want to opt-in to receiving the new version in order to check out these capabilities before we roll them out to all users:
+
+1. Bring up the Extensions view in Visual Studio Code (Ctrl+Shift+X or ⇧⌘X)
+1. Search for the HashiCorp Terraform extension
+1. Click on "Switch to Pre-Release Version"
+
+![](docs/tfc/switch_to_preview.png)
+
+If the text on the button says "Switch to Release Version", it means the pre-release version is already installed.
+
+To start using Terrfaform Cloud with VS Code, open the new Terraform Cloud sidebar and click "Login to Terraform Cloud". You can login using a stored token from the Terraform CLI, an existing token you provide, or open the Terraform Cloud website to generate a new token.
+
+![](docs/tfc/login_view.png)
+
+Once logged in, you are prompted to choose which Organization to view workspaces in.
+
+![](docs/tfc/choose_org_view.png)
+
+Now that your Organization is chosen, the Workspace view populates with all workspaces your token has permission to view. At a glance, you can see the last run status of each Workspace. Hovering over a workspace shows detailed information about each workspace.
+
+![](docs/tfc/workspace_view.png)
+
+Selecting a workspace populates the Run view with a list of runs for that workspace. At a glance, you can see the status of each Run, and hover over each for more detailed information.
+
+![](docs/tfc/workspace_run_view.png)
+
+If a Run has been Planned or Applied, you can view the raw log for each by selecting the button on each Run.
+
+![](docs/tfc/plan_apply_view.png)
 
 ### Terraform Module and Provider Explorer
 
