@@ -2,7 +2,7 @@
 
 ENHANCEMENTS:
 
-* Login to Terraform cloud using an Authentication Token
+* Login to Terraform Cloud using an Authentication Token
 * View Terraform Cloud Workspaces and status detail inside VS Code
 * View Terraform Cloud Runs and status detail inside VS Code
 * Filter Terraform Cloud Workspaces by Project
