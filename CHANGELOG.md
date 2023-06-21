@@ -1,4 +1,4 @@
-## [2.26.1111] (2023-06-21)
+## [2.26.2023062109] (2023-06-21)
 
 ENHANCEMENTS:
 
@@ -8,33 +8,6 @@ ENHANCEMENTS:
 * Filter Terraform Cloud Workspaces by Project
 * Switch Terraform Cloud Organizations to view different workspaces
 * View Plan and Apply logs directly in the editor
-
-* TFC: Fix missing context key & account for pending org invitations ([1499](https://github.com/hashicorp/vscode-terraform/pull/1499))
-* Run status icons ([1496](https://github.com/hashicorp/vscode-terraform/pull/1496))
-* TFC workspaces improvements ([1495](https://github.com/hashicorp/vscode-terraform/pull/1495))
-* Fix source schema ([1494](https://github.com/hashicorp/vscode-terraform/pull/1494))
-* Change to production URL ([1493](https://github.com/hashicorp/vscode-terraform/pull/1493))
-* TFC: Improve error handling ([1490](https://github.com/hashicorp/vscode-terraform/pull/1490))
-* Standardize TFC URL Location ([1489](https://github.com/hashicorp/vscode-terraform/pull/1489))
-* Design feedback ([1488](https://github.com/hashicorp/vscode-terraform/pull/1488))
-* Plan Apply Log ([1487](https://github.com/hashicorp/vscode-terraform/pull/1487))
-* Add telemetry for TFC integration ([1486](https://github.com/hashicorp/vscode-terraform/pull/1486))
-* Fix first use experience with empty account ([1484](https://github.com/hashicorp/vscode-terraform/pull/1484))
-* bump zodios to `v10.9.2` and update incorrect API schemas ([1482](https://github.com/hashicorp/vscode-terraform/pull/1482))
-* Fix silent login workflow ([1476](https://github.com/hashicorp/vscode-terraform/pull/1476))
-* Polish run tree view ([1475](https://github.com/hashicorp/vscode-terraform/pull/1475))
-* Add API based filtering for organizations ([1472](https://github.com/hashicorp/vscode-terraform/pull/1472))
-* Workspace View Detail ([1470](https://github.com/hashicorp/vscode-terraform/pull/1470))
-* Fix Terraform Cloud case ([1467](https://github.com/hashicorp/vscode-terraform/pull/1467))
-* Add open workspace in browser command ([1466](https://github.com/hashicorp/vscode-terraform/pull/1466))
-* Refresh runs when refreshing workspaces ([1459](https://github.com/hashicorp/vscode-terraform/pull/1459))
-* Implement workspace filtering by project ([1455](https://github.com/hashicorp/vscode-terraform/pull/1455))
-* Implement basic TreeView provider for TFC runs ([1451](https://github.com/hashicorp/vscode-terraform/pull/1451))
-* TFC Login command ([1444](https://github.com/hashicorp/vscode-terraform/pull/1444))
-* TFC Views skeleton ([1443](https://github.com/hashicorp/vscode-terraform/pull/1443))
-* Store all session data in `vscode.SecretStorage` ([1421](https://github.com/hashicorp/vscode-terraform/pull/1421))
-* Implement TFC REST API client ([1416](https://github.com/hashicorp/vscode-terraform/pull/1416))
-* Implement Terraform Cloud Authentication Provider ([1411](https://github.com/hashicorp/vscode-terraform/pull/1411))
 
 ## [2.26.1] (2023-05-11)
 
