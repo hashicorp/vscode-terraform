@@ -25,14 +25,14 @@ Read the [Troubleshooting Guide](#troubleshooting) for answers to common questio
 - [Syntax highlighting](#syntax-highlighting) Highlighting syntax from Terraform 0.12 to 1.X
 - [Code Navigation](#code-navigation) Navigate through your codebase with Go to Definition and Symbol support
 - [Code Formatting](#code-formatting) Format your code with `terraform fmt` automatically
-- [Code Snippets](#code-snippets) Shortcuts for commmon snippets like `for_each` and `variable`
+- [Code Snippets](#code-snippets) Shortcuts for common snippets like `for_each` and `variable`
 - [Terraform Cloud Integration](#terraform-cloud-integration) View Terraform Cloud Workspaces and Run details inside VS Code
 - [Terraform Module Explorer](#terraform-module-and-provider-explorer) View all modules and providers referenced in the currently open document.
 - [Terraform commands](#terraform-commands) Directly execute commands like `terraform init` or `terraform plan` from the VS Code Command Palette.
 
 ### IntelliSense and Autocomplete
 
-IntelliSense is a general term for a variety of code editing features including: code completion, parameter info, quick info, and member lists. IntelliSense features are sometimes called by other names such as autcomplete, code completion, and code hinting.
+IntelliSense is a general term for a variety of code editing features including: code completion, parameter info, quick info, and member lists. IntelliSense features are sometimes called by other names such as autocomplete, code completion, and code hinting.
 
 For Terraform constructs like resource and data, labels, blocks and attributes are auto completed both at the root of the document and inside other blocks. This also works for Terraform modules that are installed in the workspace, attributes and other constructs are autocompleted.
 
@@ -109,7 +109,7 @@ The new Terraform Cloud features are currently available in the pre-release vers
 
 If the text on the button says "Switch to Release Version", it means the pre-release version is already installed.
 
-To start using Terrfaform Cloud with VS Code, open the new Terraform Cloud sidebar and click "Login to Terraform Cloud". You can login using a stored token from the Terraform CLI, an existing token you provide, or open the Terraform Cloud website to generate a new token.
+To start using Terraform Cloud with VS Code, open the new Terraform Cloud sidebar and click "Login to Terraform Cloud". You can login using a stored token from the Terraform CLI, an existing token you provide, or open the Terraform Cloud website to generate a new token.
 
 ![](docs/tfc/login_view.gif)
 
