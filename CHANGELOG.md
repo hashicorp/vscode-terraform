@@ -8,6 +8,14 @@ ENHANCEMENTS:
 * Filter Terraform Cloud Workspaces by Project
 * Switch Terraform Cloud Organizations to view different workspaces
 * View Plan and Apply logs directly in the editor
+* Introduce v1.5 `check` block ([terraform-schema#229](https://github.com/hashicorp/terraform-schema/pull/229))
+* Introduce v1.5 `import` block ([terraform-schema#228](https://github.com/hashicorp/terraform-schema/pull/228))
+* Re-generate function signatures for v1.5 ([terraform-schema#213](https://github.com/hashicorp/terraform-schema/pull/213))
+* Add v1.4 `local-exec` provisioner `quiet` attribute ([terraform-schema#218](https://github.com/hashicorp/terraform-schema/pull/218))
+* Reflect 1.4 changes in `gcs` backend ([terraform-schema#227](https://github.com/hashicorp/terraform-schema/pull/227))
+* Reflect 1.4 changes in `http` backend ([terraform-schema#226](https://github.com/hashicorp/terraform-schema/pull/226))
+* Reflect 1.3 & 1.4 changes in `cos` backend ([terraform-schema#217](https://github.com/hashicorp/terraform-schema/pull/217))
+* Reflect 1.2 & 1.3 changes in `azurerm` backend ([terraform-schema#225](https://github.com/hashicorp/terraform-schema/pull/225))
 
 ## [2.26.1] (2023-05-11)
 
