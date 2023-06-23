@@ -15,7 +15,9 @@ jobs:
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # https://github.com/actions/checkout/releases/tag/v3.5.3
       - name: Script
         run: |
-          echo $GITHUB_HEAD_REF
+          printenv
+          pwd
+          ls -la
 
 #   build:
 #     name: Package
