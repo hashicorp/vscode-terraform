@@ -13,77 +13,87 @@ on:
 
 jobs:
   build:
-    name: Package
-    strategy:
-      matrix:
-        include:
-          - vsce_target: web
-            ls_target: web_noop
-            npm_config_arch: x64
-          - vsce_target: win32-x64
-            ls_target: windows_amd64
-            npm_config_arch: x64
-          - vsce_target: win32-ia32
-            ls_target: windows_386
-            npm_config_arch: ia32
-          - vsce_target: win32-arm64
-            ls_target: windows_arm64
-            npm_config_arch: arm
-          - vsce_target: linux-x64
-            ls_target: linux_amd64
-            npm_config_arch: x64
-          - vsce_target: linux-arm64
-            ls_target: linux_arm64
-            npm_config_arch: arm64
-          - vsce_target: linux-armhf
-            ls_target: linux_arm
-            npm_config_arch: arm
-          - vsce_target: darwin-x64
-            ls_target: darwin_amd64
-            npm_config_arch: x64
-          - vsce_target: darwin-arm64
-            ls_target: darwin_arm64
-            npm_config_arch: arm64
+    name: Test
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check out repository
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # https://github.com/actions/checkout/releases/tag/v3.5.3
-      - name: Set preview in package.json
-        id: set-preview
+      - name: Script
         run: |
-          ./build/preview.sh
-        env:
-          LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
-      - name: Setup Node
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # https://github.com/actions/setup-node/releases/tag/v3.6.0
-        with:
-          node-version-file: '.nvmrc'
-      - name: Install dependencies
-        run: npm ci
-        env:
-          npm_config_arch: ${{ matrix.npm_config_arch }}
-          ls_target: ${{ matrix.ls_target }}
-      - name: Package VSIX
-        run: npm run package -- --pre-release --target=${{ matrix.vsce_target }}
-      - name: Upload vsix as artifact
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # https://github.com/actions/upload-artifact/releases/tag/v3.1.2
-        with:
-          name: ${{ matrix.vsce_target }}
-          path: '*.vsix'
-      - name: Check latest published version
-        shell: bash
-        run: |
-          export EXTENSION_ID=`cat package.json | jq -r '.publisher + "." + .name'`
-          npx -- vsce show --json $EXTENSION_ID | jq '.versions[0]'
+          echo $GITHUB_HEAD_REF
 
-  publish:
-    name: Publish All
-    runs-on: ubuntu-latest
-    needs: build
-    if: success()
-    steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
-      - name: Publish Preview Extension
-        run: npx vsce publish --pre-release --no-git-tag-version --packagePath $(find . -iname *.vsix)
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+#   build:
+#     name: Package
+#     strategy:
+#       matrix:
+#         include:
+#           - vsce_target: web
+#             ls_target: web_noop
+#             npm_config_arch: x64
+#           - vsce_target: win32-x64
+#             ls_target: windows_amd64
+#             npm_config_arch: x64
+#           - vsce_target: win32-ia32
+#             ls_target: windows_386
+#             npm_config_arch: ia32
+#           - vsce_target: win32-arm64
+#             ls_target: windows_arm64
+#             npm_config_arch: arm
+#           - vsce_target: linux-x64
+#             ls_target: linux_amd64
+#             npm_config_arch: x64
+#           - vsce_target: linux-arm64
+#             ls_target: linux_arm64
+#             npm_config_arch: arm64
+#           - vsce_target: linux-armhf
+#             ls_target: linux_arm
+#             npm_config_arch: arm
+#           - vsce_target: darwin-x64
+#             ls_target: darwin_amd64
+#             npm_config_arch: x64
+#           - vsce_target: darwin-arm64
+#             ls_target: darwin_arm64
+#             npm_config_arch: arm64
+#     runs-on: 'ubuntu-latest'
+#     steps:
+#       - name: Check out repository
+#         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # https://github.com/actions/checkout/releases/tag/v3.5.3
+#       - name: Set preview in package.json
+#         id: set-preview
+#         run: |
+#           ./build/preview.sh
+#         env:
+#           LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
+#       - name: Setup Node
+#         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # https://github.com/actions/setup-node/releases/tag/v3.6.0
+#         with:
+#           node-version-file: '.nvmrc'
+#       - name: Install dependencies
+#         run: npm ci
+#         env:
+#           npm_config_arch: ${{ matrix.npm_config_arch }}
+#           ls_target: ${{ matrix.ls_target }}
+#       - name: Package VSIX
+#         run: npm run package -- --pre-release --target=${{ matrix.vsce_target }}
+#       - name: Upload vsix as artifact
+#         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # https://github.com/actions/upload-artifact/releases/tag/v3.1.2
+#         with:
+#           name: ${{ matrix.vsce_target }}
+#           path: '*.vsix'
+#       - name: Check latest published version
+#         shell: bash
+#         run: |
+#           export EXTENSION_ID=`cat package.json | jq -r '.publisher + "." + .name'`
+#           npx -- vsce show --json $EXTENSION_ID | jq '.versions[0]'
+
+#   publish:
+#     name: Publish All
+#     runs-on: ubuntu-latest
+#     needs: build
+#     if: success()
+#     steps:
+#       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
+#       - name: Publish Preview Extension
+#         run: npx vsce publish --pre-release --no-git-tag-version --packagePath $(find . -iname *.vsix)
+#         env:
+#           VSCE_PAT: ${{ secrets.VSCE_PAT }}
