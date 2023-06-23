@@ -5,11 +5,6 @@ permissions:
 
 on:
   workflow_dispatch:
-    inputs:
-      langserver:
-        description: 'The terraform-ls version to use. If not specified will use version in package.json'
-        required: false
-        type: string
 
 jobs:
   build:
