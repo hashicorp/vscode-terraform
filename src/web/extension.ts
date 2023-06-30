@@ -7,7 +7,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 
 const brand = `HashiCorp Terraform`;
-const outputChannel = vscode.window.createOutputChannel(brand);
+const outputChannel = vscode.window.createOutputChannel(brand, { log: true });
 let reporter: TelemetryReporter;
 
 export function activate(context: vscode.ExtensionContext) {

@@ -41,7 +41,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
 ];
-const outputChannel = vscode.window.createOutputChannel(brand);
+const outputChannel = vscode.window.createOutputChannel(brand, { log: true });
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
