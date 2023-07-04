@@ -10,39 +10,21 @@ ENHANCEMENTS:
 * Reflect 1.4 changes in `http` backend ([terraform-schema#226](https://github.com/hashicorp/terraform-schema/pull/226))
 * Reflect 1.3 & 1.4 changes in `cos` backend ([terraform-schema#217](https://github.com/hashicorp/terraform-schema/pull/217))
 * Reflect 1.2 & 1.3 changes in `azurerm` backend ([terraform-schema#225](https://github.com/hashicorp/terraform-schema/pull/225))
+* Reflect Terraform 1.4 and 1.5 language changes in the highlighting grammar ([syntax#78](https://github.com/hashicorp/syntax/pull/78))
 
 INTERNAL:
 
 * Add copyright headers automagically instead of failing a check on PRs ([#1456](https://github.com/hashicorp/vscode-terraform/pull/1456))
-* Bump @vscode/test-electron from 2.3.0 to 2.3.2 ([#1429](https://github.com/hashicorp/vscode-terraform/pull/1429))
-* Bump @vscode/test-electron from 2.3.2 to 2.3.3 ([#1479](https://github.com/hashicorp/vscode-terraform/pull/1479))
+* Bump @vscode/test-electron from 2.3.0 to 2.3.3 ([#1429](https://github.com/hashicorp/vscode-terraform/pull/1429), [#1479](https://github.com/hashicorp/vscode-terraform/pull/1479))
 * Bump actions/checkout from 3.5.2 to 3.5.3 ([#1480](https://github.com/hashicorp/vscode-terraform/pull/1480))
 * Bump dessant/lock-threads from 4.0.0 to 4.0.1 ([#1485](https://github.com/hashicorp/vscode-terraform/pull/1485))
-* Bump eslint from 8.40.0 to 8.41.0 ([#1439](https://github.com/hashicorp/vscode-terraform/pull/1439))
-* Bump eslint from 8.41.0 to 8.42.0 ([#1465](https://github.com/hashicorp/vscode-terraform/pull/1465))
-* Bump eslint from 8.42.0 to 8.43.0 ([#1497](https://github.com/hashicorp/vscode-terraform/pull/1497))
-* Bump glob from 10.2.3 to 10.2.4 ([#1433](https://github.com/hashicorp/vscode-terraform/pull/1433))
-* Bump glob from 10.2.4 to 10.2.5 ([#1437](https://github.com/hashicorp/vscode-terraform/pull/1437))
-* Bump glob from 10.2.5 to 10.2.6 ([#1438](https://github.com/hashicorp/vscode-terraform/pull/1438))
-* Bump glob from 10.2.6 to 10.2.7 ([#1471](https://github.com/hashicorp/vscode-terraform/pull/1471))
-* Bump glob from 10.2.7 to 10.3.0 ([#1512](https://github.com/hashicorp/vscode-terraform/pull/1512))
-* Bump glob from 10.3.0 to 10.3.1 ([#1519](https://github.com/hashicorp/vscode-terraform/pull/1519))
+* Bump eslint from 8.40.0 to 8.43.0 ([#1439](https://github.com/hashicorp/vscode-terraform/pull/1439), [#1465](https://github.com/hashicorp/vscode-terraform/pull/1465), [#1497](https://github.com/hashicorp/vscode-terraform/pull/1497))
+* Bump glob from 10.2.3 to 10.3.1 ([#1433](https://github.com/hashicorp/vscode-terraform/pull/1433), [#1437](https://github.com/hashicorp/vscode-terraform/pull/1437), [#1438](https://github.com/hashicorp/vscode-terraform/pull/1438), [#1471](https://github.com/hashicorp/vscode-terraform/pull/1471), [#1512](https://github.com/hashicorp/vscode-terraform/pull/1512), [#1519](https://github.com/hashicorp/vscode-terraform/pull/1519))
 * Bump ts-jest from 29.1.0 to 29.1.1 ([#1527](https://github.com/hashicorp/vscode-terraform/pull/1527))
-* Bump ts-loader from 9.4.2 to 9.4.3 ([#1442](https://github.com/hashicorp/vscode-terraform/pull/1442))
-* Bump ts-loader from 9.4.3 to 9.4.4 ([#1522](https://github.com/hashicorp/vscode-terraform/pull/1522))
-* Bump typescript from 5.0.4 to 5.1.3 ([#1462](https://github.com/hashicorp/vscode-terraform/pull/1462))
-* Bump typescript from 5.1.3 to 5.1.6 ([#1523](https://github.com/hashicorp/vscode-terraform/pull/1523))
-* Bump webpack from 5.82.1 to 5.83.1 ([#1436](https://github.com/hashicorp/vscode-terraform/pull/1436))
-* Bump webpack from 5.83.1 to 5.84.0 ([#1446](https://github.com/hashicorp/vscode-terraform/pull/1446))
-* Bump webpack from 5.84.0 to 5.84.1 ([#1450](https://github.com/hashicorp/vscode-terraform/pull/1450))
-* Bump webpack from 5.84.1 to 5.85.0 ([#1461](https://github.com/hashicorp/vscode-terraform/pull/1461))
-* Bump webpack from 5.85.0 to 5.85.1 ([#1469](https://github.com/hashicorp/vscode-terraform/pull/1469))
-* Bump webpack from 5.85.1 to 5.86.0 ([#1474](https://github.com/hashicorp/vscode-terraform/pull/1474))
-* Bump webpack from 5.86.0 to 5.87.0 ([#1492](https://github.com/hashicorp/vscode-terraform/pull/1492))
-* Bump webpack from 5.87.0 to 5.88.0 ([#1513](https://github.com/hashicorp/vscode-terraform/pull/1513))
-* Bump webpack from 5.88.0 to 5.88.1 ([#1521](https://github.com/hashicorp/vscode-terraform/pull/1521))
-* Bump webpack-cli from 5.1.1 to 5.1.3 ([#1464](https://github.com/hashicorp/vscode-terraform/pull/1464))
-* Bump webpack-cli from 5.1.3 to 5.1.4 ([#1473](https://github.com/hashicorp/vscode-terraform/pull/1473))
+* Bump ts-loader from 9.4.2 to 9.4.4 ([#1442](https://github.com/hashicorp/vscode-terraform/pull/1442), [#1522](https://github.com/hashicorp/vscode-terraform/pull/1522))
+* Bump typescript from 5.0.4 to 5.1.6 ([#1462](https://github.com/hashicorp/vscode-terraform/pull/1462), [#1523](https://github.com/hashicorp/vscode-terraform/pull/1523))
+* Bump webpack from 5.82.1 to 5.88.1 ([#1436](https://github.com/hashicorp/vscode-terraform/pull/1436), [#1446](https://github.com/hashicorp/vscode-terraform/pull/1446), [#1450](https://github.com/hashicorp/vscode-terraform/pull/1450), [#1461](https://github.com/hashicorp/vscode-terraform/pull/1461), [#1469](https://github.com/hashicorp/vscode-terraform/pull/1469), [#1474](https://github.com/hashicorp/vscode-terraform/pull/1474), [#1492](https://github.com/hashicorp/vscode-terraform/pull/1492), [#1513](https://github.com/hashicorp/vscode-terraform/pull/1513), [#1521](https://github.com/hashicorp/vscode-terraform/pull/1521))
+* Bump webpack-cli from 5.1.1 to 5.1.4 ([#1464](https://github.com/hashicorp/vscode-terraform/pull/1464), [#1473](https://github.com/hashicorp/vscode-terraform/pull/1473))
 * deps: bump semver to 7.5.3 ([#1515](https://github.com/hashicorp/vscode-terraform/pull/1515))
 * Switch to GitHub issue form templates ([#1463](https://github.com/hashicorp/vscode-terraform/pull/1463))
 
@@ -740,6 +722,7 @@ For information on prior major and minor releases, see their changelogs:
 
 <!-- Links to tag comparisons -->
 [Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...main
+[2.27.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...v2.27.0
 [2.26.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...v2.26.1
 [2.26.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.4...v2.26.0
 [2.25.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.3...v2.25.4
