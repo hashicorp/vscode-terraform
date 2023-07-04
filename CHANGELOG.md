@@ -721,7 +721,7 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.0...main
 [2.27.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...v2.27.0
 [2.26.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...v2.26.1
 [2.26.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.4...v2.26.0
