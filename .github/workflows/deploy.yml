@@ -55,14 +55,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check out repository
-        if: inputs.deploy_type == 'stable'
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # https://github.com/actions/checkout/releases/tag/v3.5.3
-
-      - name: Check out prerelease
-        if: inputs.deploy_type == 'prerelease'
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # https://github.com/actions/checkout/releases/tag/v3.5.3
-        with:
-          ref: 'f-tfc'
 
       - name: Set prerelease in package.json
         if: inputs.deploy_type == 'prerelease'
@@ -85,7 +78,7 @@ jobs:
 
       - name: Package PreRelease VSIX
         if: inputs.deploy_type == 'prerelease'
-        run: npm run package -- --githubBranch f-tfc --pre-release --target=${{ matrix.vsce_target }}
+        run: npm run package -- --githubBranch $GITHUB_REF_NAME --pre-release --target=${{ matrix.vsce_target }}
 
       - name: Package Stable VSIX
         if: inputs.deploy_type == 'stable'
