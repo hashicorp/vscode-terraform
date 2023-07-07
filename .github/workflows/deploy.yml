@@ -1,4 +1,4 @@
-name: Publish Preview release
+name: Publish Extension release
 
 permissions:
   contents: write # for uploading release artifacts
@@ -6,6 +6,14 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
+      deploy_type:
+        description: 'Deploy a stable or prerelease extension'
+        type: choice
+        required: true
+        default: stable
+        options:
+          - stable
+          - prerelease
       langserver:
         description: 'The terraform-ls version to use. If not specified will use version in package.json'
         required: false
@@ -48,42 +56,75 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # https://github.com/actions/checkout/releases/tag/v3.5.3
-      - name: Set preview in package.json
+
+      - name: Set prerelease in package.json
+        if: inputs.deploy_type == 'prerelease'
         id: set-preview
         run: |
           ./build/preview.sh
         env:
           LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
+
       - name: Setup Node
-        uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # https://github.com/actions/setup-node/releases/tag/v3.7.0
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # https://github.com/actions/setup-node/releases/tag/v3.6.0
         with:
           node-version-file: '.nvmrc'
+
       - name: Install dependencies
         run: npm ci
         env:
           npm_config_arch: ${{ matrix.npm_config_arch }}
           ls_target: ${{ matrix.ls_target }}
-      - name: Package VSIX
-        run: npm run package -- --pre-release --target=${{ matrix.vsce_target }}
+
+      - name: Package PreRelease VSIX
+        if: inputs.deploy_type == 'prerelease'
+        run: npm run package -- --githubBranch $GITHUB_REF_NAME --pre-release --target=${{ matrix.vsce_target }}
+
+      - name: Package Stable VSIX
+        if: inputs.deploy_type == 'stable'
+        run: npm run package -- --target=${{ matrix.vsce_target }}
+
       - name: Upload vsix as artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # https://github.com/actions/upload-artifact/releases/tag/v3.1.2
         with:
           name: ${{ matrix.vsce_target }}
           path: '*.vsix'
-      - name: Check latest published version
-        shell: bash
-        run: |
-          export EXTENSION_ID=`cat package.json | jq -r '.publisher + "." + .name'`
-          npx -- vsce show --json $EXTENSION_ID | jq '.versions[0]'
 
-  publish:
-    name: Publish All
+  publish-pre:
+    name: Publish Prerelease
     runs-on: ubuntu-latest
     needs: build
-    if: success()
+    if: success() && inputs.deploy_type == 'prerelease'
     steps:
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
-      - name: Publish Preview Extension
+      - name: Publish Prerelease to Marketplace
+        if: inputs.deploy_type == 'prerelease'
         run: npx vsce publish --pre-release --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+  publish-stable-marketplace:
+    name: Publish Marketplace
+    runs-on: ubuntu-latest
+    needs: build
+    if: success() && inputs.deploy_type == 'stable'
+    steps:
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
+      - name: Publish Stable to Marketplace
+        if: inputs.deploy_type == 'stable'
+        run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+  publish-stable-openvsx:
+    name: Publish OpenVSX
+    runs-on: ubuntu-latest
+    needs: build
+    if: success() && inputs.deploy_type == 'stable'
+    steps:
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
+      - name: Publish Stable to OpenVSX
+        if: inputs.deploy_type == 'stable'
+        run: npx ovsx publish --packagePath $(find . -iname *.vsix)
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
