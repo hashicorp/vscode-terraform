@@ -90,8 +90,8 @@ jobs:
           name: ${{ matrix.vsce_target }}
           path: '*.vsix'
 
-  publish-pre:
-    name: Publish Prerelease
+  publish-pre-marketplace:
+    name: Publish Prerelease to Marketplace
     runs-on: ubuntu-latest
     needs: build
     if: success() && inputs.deploy_type == 'prerelease'
