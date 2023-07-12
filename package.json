@@ -653,12 +653,12 @@
         {
           "id": "terraform",
           "title": "HashiCorp Terraform",
-          "icon": "assets/icons/terraform.svg"
+          "icon": "assets/icons/vs_code_terraform.svg"
         },
         {
           "id": "terraform-cloud",
           "title": "HashiCorp Terraform Cloud",
-          "icon": "assets/icons/terraform-cloud.svg"
+          "icon": "assets/icons/vs_code_terraform_cloud.svg"
         }
       ]
     },
