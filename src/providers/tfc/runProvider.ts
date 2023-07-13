@@ -9,7 +9,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { RUN_SOURCE, Run, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
+import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
@@ -17,12 +17,7 @@ import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
-import {
-  CONFIGURATION_SOURCE,
-  ConfigurationVersion,
-  ConfigurationVersionAttributes,
-  IngressAttributes,
-} from '../../terraformCloud/configurationVersion';
+import { CONFIGURATION_SOURCE, IngressAttributes } from '../../terraformCloud/configurationVersion';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();

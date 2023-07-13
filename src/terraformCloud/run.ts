@@ -7,8 +7,6 @@ import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 import { errors } from './errors';
-import { plan } from './plan';
-import { apply } from './apply';
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#run-states
 const runStatus = z.enum([
