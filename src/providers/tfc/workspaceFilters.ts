@@ -36,7 +36,7 @@ class ProjectItem implements vscode.QuickPickItem {
 
 export class ProjectsAPIResource implements APIResource {
   name = 'projects';
-  title = 'Filter Workspaces';
+  title = 'Filter workspaces';
   placeholder = 'Select a project (type to search)';
 
   constructor(
