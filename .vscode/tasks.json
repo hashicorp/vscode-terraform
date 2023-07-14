@@ -16,6 +16,20 @@
       }
     },
     {
+      "type": "npm",
+      "script": "watch:web",
+      "problemMatcher": "$ts-webpack-watch",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never",
+        "group": "watchers"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
       "type": "process",
       "label": "terraformInit",
       "isBackground": true,
