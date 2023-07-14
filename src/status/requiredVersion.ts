@@ -1,0 +1,20 @@
+import * as vscode from 'vscode';
+
+const requiredVersion = vscode.languages.createLanguageStatusItem('terraform.requiredVersion', [
+  { language: 'terraform' },
+  { language: 'terraform-vars' },
+]);
+requiredVersion.name = 'TerraformRequiredVersion';
+requiredVersion.detail = 'Terraform Required';
+
+export function setVersion(version: string) {
+  requiredVersion.text = version;
+}
+
+export function Ready() {
+  requiredVersion.busy = false;
+}
+
+export function Waiting() {
+  requiredVersion.busy = true;
+}

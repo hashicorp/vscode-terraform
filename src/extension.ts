@@ -34,6 +34,8 @@ import { TerraformCommands } from './commands/terraform';
 import { TerraformVersionFeature } from './features/terraformVersion';
 import { TerraformCloudAuthenticationProvider } from './providers/authenticationProvider';
 import { TerraformCloudFeature } from './features/terraformCloud';
+import * as lsStatus from './status/language';
+import { LanguageStatusFeature } from './features/languageStatus';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -79,6 +81,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
+    progressOnInitialization: true,
     synchronize: {
       fileEvents: [
         vscode.workspace.createFileSystemWatcher('**/*.tf'),
@@ -186,12 +189,22 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   client = new LanguageClient(id, serverOptions, clientOptions);
   client.onDidChangeState((event) => {
     outputChannel.appendLine(`Client: ${State[event.oldState]} --> ${State[event.newState]}`);
-    if (event.newState === State.Stopped) {
-      reporter.sendTelemetryEvent('stopClient');
+    switch (event.newState) {
+      case State.Starting:
+        lsStatus.setLanguageServerStarting();
+        break;
+      case State.Running:
+        lsStatus.setLanguageServerRunning();
+        break;
+      case State.Stopped:
+        lsStatus.setLanguageServerStopped();
+        reporter.sendTelemetryEvent('stopClient');
+        break;
     }
   });
 
   client.registerFeatures([
+    new LanguageStatusFeature(client, reporter, outputChannel),
     new CustomSemanticTokens(client, manifest),
     new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client, reporter)),
     new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client, reporter)),
@@ -204,17 +217,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter));
 
   try {
-    outputChannel.appendLine('Starting client');
-
     await client.start();
-
-    reporter.sendTelemetryEvent('startClient');
-
-    const initializeResult = client.initializeResult;
-    if (initializeResult !== undefined) {
-      const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-      outputChannel.appendLine(`Multi-folder support: ${multiFoldersSupported}`);
-    }
   } catch (error) {
     await handleLanguageClientStartError(error, context, reporter);
   }
@@ -228,10 +231,12 @@ export async function deactivate(): Promise<void> {
       outputChannel.appendLine(error.message);
       reporter.sendTelemetryException(error);
       vscode.window.showErrorMessage(error.message);
+      lsStatus.setLanguageServerState(error.message, false, vscode.LanguageStatusSeverity.Error);
     } else if (typeof error === 'string') {
       outputChannel.appendLine(error);
       reporter.sendTelemetryException(new Error(error));
       vscode.window.showErrorMessage(error);
+      lsStatus.setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
     }
   }
 }

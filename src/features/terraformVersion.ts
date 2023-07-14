@@ -11,35 +11,20 @@ import { ExperimentalClientCapabilities } from './types';
 import { Utils } from 'vscode-uri';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { LanguageClient } from 'vscode-languageclient/node';
+import * as lsStatus from '../status/language';
+import * as versionStatus from '../status/installedversion';
+import * as requiredVersionStatus from '../status/requiredVersion';
 
 export class TerraformVersionFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
   private clientTerraformVersionCommandId = 'client.refreshTerraformVersion';
 
-  private installedVersion = vscode.languages.createLanguageStatusItem('terraform.installedVersion', [
-    { language: 'terraform' },
-    { language: 'terraform-vars' },
-  ]);
-  private requiredVersion = vscode.languages.createLanguageStatusItem('terraform.requiredVersion', [
-    { language: 'terraform' },
-    { language: 'terraform-vars' },
-  ]);
-
   constructor(
     private client: LanguageClient,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
-  ) {
-    this.installedVersion.name = 'TerraformInstalledVersion';
-    this.installedVersion.detail = 'Installed Version';
-
-    this.requiredVersion.name = 'TerraformRequiredVersion';
-    this.requiredVersion.detail = 'Required Version';
-
-    this.disposables.push(this.installedVersion);
-    this.disposables.push(this.requiredVersion);
-  }
+  ) {}
 
   getState(): FeatureState {
     return {
@@ -67,9 +52,18 @@ export class TerraformVersionFeature implements StaticFeature {
       const moduleDir = Utils.dirname(editor.document.uri);
 
       try {
+        versionStatus.Waiting();
+        requiredVersionStatus.Waiting();
+
+        lsStatus.setLanguageServerBusy();
+
         const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
-        this.installedVersion.text = response.discovered_version || 'unknown';
-        this.requiredVersion.text = response.required_version || 'any';
+        versionStatus.setVersion(response.discovered_version || 'unknown');
+        requiredVersionStatus.setVersion(response.required_version || 'unknown');
+
+        lsStatus.setLanguageServerRunning();
+        versionStatus.Ready();
+        requiredVersionStatus.Ready();
       } catch (error) {
         let message = 'Unknown Error';
         if (error instanceof Error) {
@@ -86,6 +80,10 @@ export class TerraformVersionFeature implements StaticFeature {
          see this errored here.
         */
         this.outputChannel.appendLine(message);
+
+        lsStatus.setLanguageServerRunning();
+        versionStatus.Ready();
+        requiredVersionStatus.Ready();
       }
     });
 
