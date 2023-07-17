@@ -170,6 +170,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         }
 
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
+        runItem.createdByUserId = run.relationships['created-by']?.data?.id;
 
         items.push(runItem);
       }
