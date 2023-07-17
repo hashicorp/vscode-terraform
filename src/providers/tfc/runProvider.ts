@@ -228,7 +228,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 export class RunTreeItem extends vscode.TreeItem {
   public createdByUserId?: string;
   public configurationVersionId?: string;
-  public ingressAttributesId?: string;
 
   public planAttributes?: PlanAttributes;
   public planId?: string;
