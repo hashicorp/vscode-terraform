@@ -6,36 +6,6 @@
 import { makeApi } from '@zodios/core';
 import { z } from 'zod';
 
-// include=configuration_version.ingress_attributes
-// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version-s-commit-information
-const ingressAttributes = z.object({
-  branch: z.string(),
-  'clone-url': z.string(),
-  'commit-message': z.string(),
-  'commit-sha': z.string(),
-  'commit-url': z.string(),
-  'compare-url': z.string().nullable(),
-  identifier: z.string(),
-  'is-pull-request': z.boolean(),
-  'on-default-branch': z.boolean(),
-  'pull-request-number': z.number().nullable(),
-  'pull-request-url': z.string().nullable(),
-  'pull-request-title': z.string().nullable(),
-  'pull-request-body': z.string().nullable(),
-  tag: z.string().nullable(),
-  'sender-username': z.string(),
-  'sender-avatar-url': z.string(),
-  'sender-html-url': z.string(),
-});
-export type IngressAttributes = z.infer<typeof ingressAttributes>;
-
-const ingressAttributesObject = z.object({
-  id: z.string(),
-  type: z.literal('ingress-attributes'),
-  attributes: ingressAttributes,
-});
-export type IngressAttributesObject = z.infer<typeof ingressAttributesObject>;
-
 export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   ado: 'Azure DevOps',
   bitbucket: 'Bitbucket',
@@ -87,14 +57,3 @@ export const configurationVersionEndpoints = makeApi([
     response: z.object({ data: configurationVersion }),
   },
 ]);
-
-// function findConfigurationVersionAttributes(included: IncludedObject[], run: Run): ConfigurationVersion | undefined {
-//   const includedObject = included.find(
-//     (included: IncludedObject) =>
-//       included.type === 'configuration-versions' &&
-//       included.id === run.relationships['configuration-version']?.data?.id,
-//   );
-//   if (includedObject) {
-//     return includedObject as ConfigurationVersion;
-//   }
-// }

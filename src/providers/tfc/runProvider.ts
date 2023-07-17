@@ -17,7 +17,8 @@ import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
-import { CONFIGURATION_SOURCE, IngressAttributes } from '../../terraformCloud/configurationVersion';
+import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
+import { IngressAttributes } from '../../terraformCloud/ingressAttribute';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();

@@ -45,14 +45,3 @@ export const ingressAttributesEndpoints = makeApi([
     response: z.object({ data: ingressAttributesObject }),
   },
 ]);
-
-// function findIngressAttributes(included: IncludedObject[], cfgVersion: IngressAttributes) {
-//   const includedObject = included.find(
-//     (included: IncludedObject) =>
-//       included.type === 'ingress-attributes' &&
-//       included.id === cfgVersion.relationships['ingress-attributes']?.data?.id,
-//   );
-//   if (includedObject) {
-//     return includedObject.attributes as IngressAttributes;
-//   }
-// }
