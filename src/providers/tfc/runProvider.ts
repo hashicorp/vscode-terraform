@@ -136,7 +136,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          include: ['configuration_version.ingress_attributes', 'created_by'],
         },
       });
 
@@ -169,21 +168,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
           runItem.contextValue += 'hasApply';
         }
 
-        // if (!runs.included) {
-        //   items.push(runItem);
-        //   continue;
-        // }
-
-        // runItem.createdBy = findCreatedByAttributes(runs.included, run);
-
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
-        // const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
-        // if (cfgVersion) {
-        //   runItem.configurationVersion = cfgVersion.attributes;
-
-        //   const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
-        //   runItem.ingressAttributes = ingressAttrs;
-        // }
 
         items.push(runItem);
       }
