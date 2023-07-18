@@ -7,6 +7,8 @@ import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 import { errors } from './errors';
+import { apply } from './apply';
+import { plan } from './plan';
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#run-states
 const runStatus = z.enum([
@@ -97,8 +99,12 @@ const run = z.object({
 });
 export type Run = z.infer<typeof run>;
 
+const includedObject = z.discriminatedUnion('type', [plan, apply]);
+export type IncludedObject = z.infer<typeof includedObject>;
+
 const runs = z.object({
   data: z.array(run),
+  included: z.array(includedObject).nullish(),
   meta: z.object({
     pagination: paginationMeta,
   }),
@@ -126,6 +132,18 @@ const includeParams = makeParameters([
   },
 ]);
 
+const includeFieldParams = makeParameters([
+  {
+    name: 'fields[plan]',
+    type: 'Query',
+    description: 'Specific attributes to include only',
+    schema: z
+      .array(z.enum(['status', 'structured-run-output-enabled', 'log-read-url']))
+      .transform((x) => x?.join(','))
+      .optional(),
+  },
+]);
+
 export const runEndpoints = makeApi([
   {
     method: 'get',
@@ -133,7 +151,7 @@ export const runEndpoints = makeApi([
     alias: 'listRuns',
     description: 'List Runs in a Workspace',
     response: runs,
-    parameters: [...paginationParams, ...includeParams],
+    parameters: [...paginationParams, ...includeParams, ...includeFieldParams],
     errors,
   },
   {

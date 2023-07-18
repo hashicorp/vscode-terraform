@@ -9,7 +9,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
+import { IncludedObject, RUN_SOURCE, Run, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
@@ -51,7 +51,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
       }),
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: RunTreeItem) => {
         if (!run.planId) {
-          await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
+          await vscode.window.showErrorMessage(`No plan found for ${run.planId}`);
           return;
         }
 
@@ -137,6 +137,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
+          'fields[plan]': ['status', 'log-read-url', 'structured-run-output-enabled'],
         },
       });
 
@@ -159,14 +160,26 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
-        if (run.relationships.plan && ['planned', 'planned_and_finished'].includes(run.attributes.status)) {
-          runItem.planId = run.relationships.plan.data?.id;
-          runItem.contextValue = 'hasPlan';
+        if (run.relationships.plan?.data?.id && runs.included) {
+          const planAttributes = findPlanAttributes(runs.included, run);
+          if (planAttributes) {
+            if (['errored', 'canceled', 'finished'].includes(planAttributes.status)) {
+              runItem.planId = run.relationships.plan.data.id;
+              runItem.planAttributes = planAttributes;
+              runItem.contextValue = 'hasPlan';
+            }
+          }
         }
 
-        if (run.relationships.apply && ['applied'].includes(run.attributes.status)) {
-          runItem.applyId = run.relationships.apply.data?.id;
-          runItem.contextValue += 'hasApply';
+        if (run.relationships.apply?.data?.id && runs.included) {
+          const applyAttributes = findApplyAttributes(runs.included, run);
+          if (applyAttributes) {
+            if (['errored', 'canceled', 'finished'].includes(applyAttributes.status)) {
+              runItem.applyId = run.relationships.apply.data.id;
+              runItem.applyAttributes = applyAttributes;
+              runItem.contextValue += 'hasApply';
+            }
+          }
         }
 
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
@@ -330,4 +343,22 @@ function ingressConfigurationMarkdown(
     ingressAttributes['commit-message'].split('\n')[0]
   } |
 `;
+}
+
+function findPlanAttributes(included: IncludedObject[], run: Run) {
+  const plan = included.find(
+    (included: IncludedObject) => included.type === 'plans' && included.id === run.relationships.plan?.data?.id,
+  );
+  if (plan) {
+    return plan.attributes as PlanAttributes;
+  }
+}
+
+function findApplyAttributes(included: IncludedObject[], run: Run) {
+  const apply = included.find(
+    (included: IncludedObject) => included.type === 'applies' && included.id === run.relationships.apply?.data?.id,
+  );
+  if (apply) {
+    return apply.attributes as ApplyAttributes;
+  }
 }
