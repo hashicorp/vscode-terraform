@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import * as vscode from 'vscode';
 
 const lsStatus = vscode.languages.createLanguageStatusItem('terraform-ls.status', [

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import * as vscode from 'vscode';
 
 const requiredVersion = vscode.languages.createLanguageStatusItem('terraform.requiredVersion', [
