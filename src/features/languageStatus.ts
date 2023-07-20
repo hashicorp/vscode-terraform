@@ -33,28 +33,16 @@ export class LanguageStatusFeature implements StaticFeature {
 
   public initialize(): void {
     this.reporter.sendTelemetryEvent('startClient');
-
     this.outputChannel.appendLine('Started client');
 
     const initializeResult = this.client.initializeResult;
-    if (initializeResult !== undefined) {
-      const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-      this.outputChannel.appendLine(`Multi-folder support: ${multiFoldersSupported}`);
-      lsStatus.setVersion(initializeResult.serverInfo?.version ?? '');
+    if (initializeResult === undefined) {
+      return;
     }
 
-    // if (vscode.env.isTelemetryEnabled === false) {
-    //   return;
-    // }
-    // this.disposables.push(
-    //   this.client.onTelemetry((event: TelemetryEvent) => {
-    //     if (event.v !== TELEMETRY_VERSION) {
-    //       console.log(`unsupported telemetry event: ${event}`);
-    //       return;
-    //     }
-    //     this.reporter.sendRawTelemetryEvent(event.name, event.properties);
-    //   }),
-    // );
+    const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
+    this.outputChannel.appendLine(`Multi-folder support: ${multiFoldersSupported}`);
+    lsStatus.setVersion(initializeResult.serverInfo?.version ?? '');
   }
 
   public dispose(): void {
