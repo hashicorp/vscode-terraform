@@ -7,30 +7,9 @@ import { makeApi } from '@zodios/core';
 import { z } from 'zod';
 
 export const planAttributes = z.object({
-  actions: z.object({
-    'is-exportable': z.boolean(),
-  }),
-  'execution-details': z
-    .object({
-      mode: z.string(),
-    })
-    .nullable(),
-  'has-changes': z.boolean(),
-  permissions: z.object({
-    'can-export': z.boolean(),
-  }),
-  'resource-additions': z.number().nullable(),
-  'resource-changes': z.number().nullable(),
-  'resource-destructions': z.number().nullable(),
-  'structured-run-output-enabled': z.boolean(),
+  'structured-run-output-enabled': z.boolean().optional(),
   status: z.string(),
-  'status-timestamps': z.object({
-    'queued-at': z.string().optional(),
-    'pending-at': z.string().optional(),
-    'started-at': z.string().optional(),
-    'finished-at': z.string().optional(),
-  }),
-  'log-read-url': z.string(),
+  'log-read-url': z.string().optional(),
 });
 export type PlanAttributes = z.infer<typeof planAttributes>;
 

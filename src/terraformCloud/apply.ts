@@ -7,16 +7,8 @@ import { makeApi } from '@zodios/core';
 import { z } from 'zod';
 
 export const applyAttributes = z.object({
-  'resource-additions': z.number().nullable(),
-  'resource-changes': z.number().nullable(),
-  'resource-destructions': z.number().nullable(),
   status: z.string(),
-  'status-timestamps': z.object({
-    'queued-at': z.string().optional(),
-    'started-at': z.string().optional(),
-    'finished-at': z.string().optional(),
-  }),
-  'log-read-url': z.string(),
+  'log-read-url': z.string().optional(),
 });
 export type ApplyAttributes = z.infer<typeof applyAttributes>;
 

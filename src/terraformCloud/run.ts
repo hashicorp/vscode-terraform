@@ -132,13 +132,25 @@ const includeParams = makeParameters([
   },
 ]);
 
-const includeFieldParams = makeParameters([
+const includePlanFieldParams = makeParameters([
   {
     name: 'fields[plan]',
     type: 'Query',
     description: 'Specific attributes to include only',
     schema: z
       .array(z.enum(['status', 'structured-run-output-enabled', 'log-read-url']))
+      .transform((x) => x?.join(','))
+      .optional(),
+  },
+]);
+
+const includeApplyFieldParams = makeParameters([
+  {
+    name: 'fields[apply]',
+    type: 'Query',
+    description: 'Specific attributes to include only',
+    schema: z
+      .array(z.enum(['status', 'log-read-url']))
       .transform((x) => x?.join(','))
       .optional(),
   },
@@ -151,7 +163,7 @@ export const runEndpoints = makeApi([
     alias: 'listRuns',
     description: 'List Runs in a Workspace',
     response: runs,
-    parameters: [...paginationParams, ...includeParams, ...includeFieldParams],
+    parameters: [...paginationParams, ...includeParams, ...includePlanFieldParams, ...includeApplyFieldParams],
     errors,
   },
   {

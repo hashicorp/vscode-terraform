@@ -137,7 +137,8 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          'fields[plan]': ['status', 'log-read-url', 'structured-run-output-enabled'],
+          include: ['plan'],
+          'fields[plan]': ['status'],
         },
       });
 
@@ -160,30 +161,35 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
-        if (run.relationships.plan?.data?.id && runs.included) {
+        runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
+        runItem.createdByUserId = run.relationships['created-by']?.data?.id;
+
+        if (!runs.included) {
+          items.push(runItem);
+          continue;
+        }
+
+        if (run.relationships.plan) {
           const planAttributes = findPlanAttributes(runs.included, run);
           if (planAttributes) {
             if (['errored', 'canceled', 'finished'].includes(planAttributes.status)) {
-              runItem.planId = run.relationships.plan.data.id;
+              runItem.planId = run.relationships.plan?.data?.id;
               runItem.planAttributes = planAttributes;
               runItem.contextValue = 'hasPlan';
             }
           }
         }
 
-        if (run.relationships.apply?.data?.id && runs.included) {
+        if (run.relationships.apply) {
           const applyAttributes = findApplyAttributes(runs.included, run);
           if (applyAttributes) {
             if (['errored', 'canceled', 'finished'].includes(applyAttributes.status)) {
-              runItem.applyId = run.relationships.apply.data.id;
+              runItem.applyId = run.relationships.apply?.data?.id;
               runItem.applyAttributes = applyAttributes;
               runItem.contextValue += 'hasApply';
             }
           }
         }
-
-        runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
-        runItem.createdByUserId = run.relationships['created-by']?.data?.id;
 
         items.push(runItem);
       }
