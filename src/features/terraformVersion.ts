@@ -12,7 +12,7 @@ import { Utils } from 'vscode-uri';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { LanguageClient } from 'vscode-languageclient/node';
 import * as lsStatus from '../status/language';
-import * as versionStatus from '../status/installedversion';
+import * as versionStatus from '../status/installedVersion';
 import * as requiredVersionStatus from '../status/requiredVersion';
 
 export class TerraformVersionFeature implements StaticFeature {
