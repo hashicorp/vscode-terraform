@@ -24,6 +24,7 @@ export interface IndexingOptions {
 }
 
 export interface ExperimentalFeatures {
+  codelensReferenceCount: boolean;
   validateOnSave: boolean;
   prefillRequiredFields: boolean;
 }

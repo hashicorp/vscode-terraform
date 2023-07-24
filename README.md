@@ -200,7 +200,7 @@ Completing the snippet allows you to tab complete through each attribute and blo
 Display reference counts above top level blocks and attributes
 
 ```json
-"terraform.codelens.referenceCount": true
+"terraform.experimentalFeatures.codelensReferenceCount": true
 ```
 
 ![](docs/code_lens.png)
