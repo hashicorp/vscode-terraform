@@ -34,7 +34,7 @@ export function setLanguageServerBusy() {
 
 export function setLanguageServerStopped() {
   // this makes the statusItem a different color in the bar
-  // and triggers an alert, so the user 'sees' that the ls is stopped
+  // and triggers an alert, so the user 'sees' that the LS is stopped
   lsStatus.severity = vscode.LanguageStatusSeverity.Warning;
   lsStatus.busy = false;
 }
