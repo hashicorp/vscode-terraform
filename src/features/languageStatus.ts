@@ -40,8 +40,6 @@ export class LanguageStatusFeature implements StaticFeature {
       return;
     }
 
-    const multiFoldersSupported = initializeResult.capabilities.workspace?.workspaceFolders?.supported;
-    this.outputChannel.appendLine(`Multi-folder support: ${multiFoldersSupported}`);
     lsStatus.setVersion(initializeResult.serverInfo?.version ?? '');
   }
 
