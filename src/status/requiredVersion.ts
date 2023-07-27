@@ -16,10 +16,10 @@ export function setVersion(version: string) {
   requiredVersion.text = version;
 }
 
-export function Ready() {
+export function setReady() {
   requiredVersion.busy = false;
 }
 
-export function Waiting() {
+export function setWaiting() {
   requiredVersion.busy = true;
 }

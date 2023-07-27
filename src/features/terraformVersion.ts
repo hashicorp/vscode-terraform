@@ -52,8 +52,8 @@ export class TerraformVersionFeature implements StaticFeature {
       const moduleDir = Utils.dirname(editor.document.uri);
 
       try {
-        versionStatus.Waiting();
-        requiredVersionStatus.Waiting();
+        versionStatus.setWaiting();
+        requiredVersionStatus.setWaiting();
 
         lsStatus.setLanguageServerBusy();
 
@@ -62,8 +62,8 @@ export class TerraformVersionFeature implements StaticFeature {
         requiredVersionStatus.setVersion(response.required_version || 'any');
 
         lsStatus.setLanguageServerRunning();
-        versionStatus.Ready();
-        requiredVersionStatus.Ready();
+        versionStatus.setReady();
+        requiredVersionStatus.setReady();
       } catch (error) {
         let message = 'Unknown Error';
         if (error instanceof Error) {
@@ -82,8 +82,8 @@ export class TerraformVersionFeature implements StaticFeature {
         this.outputChannel.appendLine(message);
 
         lsStatus.setLanguageServerRunning();
-        versionStatus.Ready();
-        requiredVersionStatus.Ready();
+        versionStatus.setReady();
+        requiredVersionStatus.setReady();
       }
     });
 
