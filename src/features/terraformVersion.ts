@@ -59,7 +59,7 @@ export class TerraformVersionFeature implements StaticFeature {
 
         const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
         versionStatus.setVersion(response.discovered_version || 'unknown');
-        requiredVersionStatus.setVersion(response.required_version || 'unknown');
+        requiredVersionStatus.setVersion(response.required_version || 'any');
 
         lsStatus.setLanguageServerRunning();
         versionStatus.Ready();
