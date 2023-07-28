@@ -78,6 +78,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tfvars'),
       ],
     },
+    diagnosticCollectionName: 'HashiCorpTerraform',
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
     initializationOptions: initializationOptions,
