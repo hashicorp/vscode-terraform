@@ -9,19 +9,30 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { IncludedObject, RUN_SOURCE, Run, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
+import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
-import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
+import { GetPlanApplyStatusIcon, GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
-import { PlanAttributes } from '../../terraformCloud/plan';
-import { ApplyAttributes } from '../../terraformCloud/apply';
 import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
 import { IngressAttributes } from '../../terraformCloud/ingressAttribute';
+import { PlanAttributes } from '../../terraformCloud/plan';
+import { ApplyAttributes } from '../../terraformCloud/apply';
 
-export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+export class RunTreeDataProvider
+  implements vscode.TreeDataProvider<RunTreeItem | PlanTreeItem | ApplyTreeItem | vscode.TreeItem>, vscode.Disposable
+{
+  private readonly didChangeTreeData = new vscode.EventEmitter<
+    | void
+    | vscode.TreeItem
+    | RunTreeItem
+    | PlanTreeItem
+    | ApplyTreeItem
+    | (vscode.TreeItem | RunTreeItem | PlanTreeItem | ApplyTreeItem)[]
+    | null
+    | undefined
+  >();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
@@ -49,25 +60,25 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
         vscode.env.openExternal(vscode.Uri.parse(runURL));
       }),
-      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: RunTreeItem) => {
-        if (!run.planId) {
-          await vscode.window.showErrorMessage(`No plan found for ${run.planId}`);
+      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (plan: PlanTreeItem) => {
+        if (!plan.id) {
+          await vscode.window.showErrorMessage(`No plan found for ${plan.id}`);
           return;
         }
 
-        const planUri = vscode.Uri.parse(`vscode-terraform://plan/${run.planId}`);
+        const planUri = vscode.Uri.parse(`vscode-terraform://plan/${plan.id}`);
         const doc = await vscode.workspace.openTextDocument(planUri);
         await vscode.window.showTextDocument(doc, {
           preview: false,
         });
       }),
-      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: RunTreeItem) => {
-        if (!run.applyId) {
-          await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
+      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (apply: ApplyTreeItem) => {
+        if (!apply.id) {
+          await vscode.window.showErrorMessage(`No apply found for ${apply.id}`);
           return;
         }
 
-        const applyUri = vscode.Uri.parse(`vscode-terraform://apply/${run.applyId}`);
+        const applyUri = vscode.Uri.parse(`vscode-terraform://apply/${apply.id}`);
         const doc = await vscode.workspace.openTextDocument(applyUri);
         await vscode.window.showTextDocument(doc, {
           preview: false,
@@ -90,13 +101,18 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     this.didChangeTreeData.fire();
   }
 
-  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(
+    element: vscode.TreeItem | RunTreeItem | PlanTreeItem | ApplyTreeItem,
+  ): vscode.TreeItem | Thenable<vscode.TreeItem | RunTreeItem | PlanTreeItem | ApplyTreeItem> {
     return element;
   }
 
-  getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
+  getChildren(
+    element?: RunTreeItem,
+  ): vscode.ProviderResult<(vscode.TreeItem | RunTreeItem | PlanTreeItem | ApplyTreeItem)[]> {
     if (element) {
-      return [element];
+      const items = this.getRunDetails(element);
+      return items;
     }
     if (!this.activeWorkspace) {
       return [];
@@ -109,12 +125,19 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
   }
 
-  async resolveTreeItem(item: vscode.TreeItem, element: RunTreeItem): Promise<vscode.TreeItem> {
-    item.tooltip = await runMarkdown(element);
+  async resolveTreeItem(
+    item: vscode.TreeItem,
+    element: RunTreeItem | PlanTreeItem | ApplyTreeItem,
+  ): Promise<vscode.TreeItem> {
+    if (element instanceof RunTreeItem) {
+      item.tooltip = await runMarkdown(element);
+    }
     return item;
   }
 
-  private async getRuns(workspace: WorkspaceTreeItem): Promise<vscode.TreeItem[]> {
+  private async getRuns(
+    workspace: WorkspaceTreeItem,
+  ): Promise<(vscode.TreeItem | RunTreeItem | PlanTreeItem | ApplyTreeItem)[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -137,8 +160,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          include: ['plan'],
-          'fields[plan]': ['status'],
         },
       });
 
@@ -149,54 +170,28 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
       if (runs.data.length === 0) {
         return [
           {
-            label: `No runs found for ${this.activeWorkspace.attributes.name}`,
-            tooltip: `No runs found for ${this.activeWorkspace.attributes.name}`,
+            label: `No runs found for ${workspace.attributes.name}`,
+            tooltip: `No runs found for ${workspace.attributes.name}`,
             contextValue: 'empty',
           },
         ];
       }
-
       const items: RunTreeItem[] = [];
       for (let index = 0; index < runs.data.length; index++) {
         const run = runs.data[index];
-        const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
+        const runItem = new RunTreeItem(run.id, run.attributes, workspace);
 
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
         runItem.createdByUserId = run.relationships['created-by']?.data?.id;
-
-        if (!runs.included) {
-          items.push(runItem);
-          continue;
-        }
-
-        if (run.relationships.plan) {
-          const planAttributes = findPlanAttributes(runs.included, run);
-          if (planAttributes) {
-            if (['errored', 'canceled', 'finished'].includes(planAttributes.status)) {
-              runItem.planId = run.relationships.plan?.data?.id;
-              runItem.planAttributes = planAttributes;
-              runItem.contextValue = 'hasPlan';
-            }
-          }
-        }
-
-        if (run.relationships.apply) {
-          const applyAttributes = findApplyAttributes(runs.included, run);
-          if (applyAttributes) {
-            if (['errored', 'canceled', 'finished'].includes(applyAttributes.status)) {
-              runItem.applyId = run.relationships.apply?.data?.id;
-              runItem.applyAttributes = applyAttributes;
-              runItem.contextValue += 'hasApply';
-            }
-          }
-        }
+        runItem.planId = run.relationships.plan?.data?.id;
+        runItem.applyId = run.relationships.apply?.data?.id;
 
         items.push(runItem);
       }
 
       return items;
     } catch (error) {
-      let message = `Failed to list runs in ${this.activeWorkspace.attributes.name} (${workspace.id}): `;
+      let message = `Failed to list runs in ${workspace.attributes.name} (${workspace.id}): `;
 
       if (error instanceof ZodiosError) {
         handleZodiosError(error, message, this.outputChannel, this.reporter);
@@ -211,7 +206,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
 
         if (error.response?.status === 404) {
           vscode.window.showWarningMessage(
-            `Workspace ${this.activeWorkspace.attributes.name} (${workspace.id}) not found, please pick another one`,
+            `Workspace ${workspace.attributes.name} (${workspace.id}) not found, please pick another one`,
           );
           return [];
         }
@@ -239,6 +234,46 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
   }
 
+  private async getRunDetails(element: RunTreeItem) {
+    const items = [];
+    if (element.planId) {
+      const plan = await apiClient.getPlan({ params: { plan_id: element.planId } });
+      if (plan) {
+        const status = plan.data.attributes.status;
+        const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
+        const item = new PlanTreeItem(element.planId, label, plan.data.attributes);
+        switch (status) {
+          case 'unreachable':
+            item.label = 'Plan will not run';
+            break;
+          default:
+            item.contextValue = 'hasPlan';
+            break;
+        }
+        items.push(item);
+      }
+    }
+
+    if (element.applyId) {
+      const apply = await apiClient.getApply({ params: { apply_id: element.applyId } });
+      if (apply) {
+        const status = apply.data.attributes.status;
+        const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
+        const item = new ApplyTreeItem(element.applyId, label, apply.data.attributes);
+        switch (status) {
+          case 'unreachable':
+            item.label = 'Apply will not run';
+            break;
+          default:
+            item.contextValue = 'hasApply';
+            break;
+        }
+        items.push(item);
+      }
+    }
+    return items;
+  }
+
   dispose() {
     //
   }
@@ -248,19 +283,40 @@ export class RunTreeItem extends vscode.TreeItem {
   public createdByUserId?: string;
   public configurationVersionId?: string;
 
-  public planAttributes?: PlanAttributes;
   public planId?: string;
 
-  public applyAttributes?: ApplyAttributes;
   public applyId?: string;
 
   constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem) {
-    super(attributes.message, vscode.TreeItemCollapsibleState.None);
+    super(attributes.message, vscode.TreeItemCollapsibleState.Collapsed);
     this.id = id;
 
     this.workspace = workspace;
     this.iconPath = GetRunStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
+  }
+}
+
+class PlanTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+
+  constructor(public id: string, public label: string, public attributes: PlanAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
+  }
+}
+
+class ApplyTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+  constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
   }
 }
 
@@ -349,22 +405,4 @@ function ingressConfigurationMarkdown(
     ingressAttributes['commit-message'].split('\n')[0]
   } |
 `;
-}
-
-function findPlanAttributes(included: IncludedObject[], run: Run) {
-  const plan = included.find(
-    (included: IncludedObject) => included.type === 'plans' && included.id === run.relationships.plan?.data?.id,
-  );
-  if (plan) {
-    return plan.attributes as PlanAttributes;
-  }
-}
-
-function findApplyAttributes(included: IncludedObject[], run: Run) {
-  const apply = included.find(
-    (included: IncludedObject) => included.type === 'applies' && included.id === run.relationships.apply?.data?.id,
-  );
-  if (apply) {
-    return apply.attributes as ApplyAttributes;
-  }
 }
