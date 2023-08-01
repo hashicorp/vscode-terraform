@@ -17,7 +17,7 @@ export class PlanLogContentProvider implements vscode.TextDocumentContentProvide
     try {
       const logUrl = await this.getLogUrl(uri);
       if (!logUrl) {
-        throw new Error('Unable to parse log Url');
+        throw new Error('Unable to parse log URL');
       }
 
       const result = await axios.get<string>(logUrl, { headers: { Accept: 'text/plain' } });
