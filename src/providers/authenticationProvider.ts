@@ -287,7 +287,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: 'User access token',
-          prompt: 'Enter an Terraform Cloud user access token',
+          prompt: 'Enter a Terraform Cloud user access token',
           password: true,
         });
         break;
@@ -297,7 +297,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: 'User access token',
-          prompt: 'Enter an Terraform Cloud user access token',
+          prompt: 'Enter a Terraform Cloud user access token',
           password: true,
         });
         break;
