@@ -34,7 +34,6 @@ import { getInitializationOptions } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import * as lsStatus from './status/language';
-import { TerraformCloudAuthenticationProvider } from './providers/authenticationProvider';
 import { TerraformCloudFeature } from './features/terraformCloud';
 
 const id = 'terraform';
@@ -60,11 +59,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(new TerraformLSCommands());
 
   context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
-  // This triggers a badge to appear in the User Account icon.
-  // TODO: remove this when workspace views land
-  await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
-    createIfNone: false,
-  });
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
