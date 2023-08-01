@@ -473,7 +473,7 @@
       },
       {
         "command": "terraform.cloud.workspaces.viewInBrowser",
-        "title": "View Workspace",
+        "title": "View workspace",
         "icon": "$(globe)"
       },
       {
@@ -483,22 +483,22 @@
       },
       {
         "command": "terraform.cloud.run.viewInBrowser",
-        "title": "View Run",
+        "title": "View run",
         "icon": "$(globe)"
       },
       {
         "command": "terraform.cloud.run.plan.downloadLog",
-        "title": "View Raw Plan Log",
+        "title": "View raw plan log",
         "icon": "$(book)"
       },
       {
         "command": "terraform.cloud.run.apply.downloadLog",
-        "title": "View Raw Apply Log",
+        "title": "View raw apply log",
         "icon": "$(output)"
       },
       {
         "command": "terraform.cloud.workspaces.filterByProject",
-        "title": "Filter by Project",
+        "title": "Filter by project",
         "icon": "$(filter)"
       }
     ],
@@ -639,12 +639,12 @@
         {
           "id": "terraform.cloud.workspaces",
           "name": "Workspaces",
-          "contextualTitle": "Terraform Cloud Workspaces"
+          "contextualTitle": "Terraform Cloud workspaces"
         },
         {
           "id": "terraform.cloud.runs",
           "name": "Runs",
-          "contextualTitle": "Terraform Cloud Runs"
+          "contextualTitle": "Terraform Cloud runs"
         }
       ]
     },
@@ -673,12 +673,12 @@
       },
       {
         "view": "terraform.cloud.workspaces",
-        "contents": "In order to use Terraform Cloud features, you need to be logged in.\n[Login to Terraform Cloud](command:terraform.cloud.login)",
+        "contents": "In order to use Terraform Cloud features, you need to be logged in\n[Login to Terraform Cloud](command:terraform.cloud.login)",
         "when": "terraform.cloud.signed-in === false"
       },
       {
         "view": "terraform.cloud.workspaces",
-        "contents": "No organizations found for this token. Please create a new Terraform Cloud organization to get started:\n[Create or select an organization](command:terraform.cloud.organization.picker)",
+        "contents": "No organizations found for this token. Please create a new Terraform Cloud organization to get started\n[Create or select an organization](command:terraform.cloud.organization.picker)",
         "when": "terraform.cloud.signed-in && !terraform.cloud.organizationsExist && !terraform.cloud.organizationsChosen"
       },
       {
@@ -693,17 +693,17 @@
       },
       {
         "view": "terraform.cloud.workspaces",
-        "contents": "You have not yet accepted the invitation to this organization.\n[See pending invitation](command:terraform.cloud.organization.viewInBrowser)\n[Choose a different organization](command:terraform.cloud.organization.picker)",
+        "contents": "You have not yet accepted the invitation to this organization\n[See pending invitations](command:terraform.cloud.organization.viewInBrowser)\n[Choose a different organization](command:terraform.cloud.organization.picker)",
         "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && !terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist && terraform.cloud.pendingOrgMembership"
       },
       {
         "view": "terraform.cloud.workspaces",
-        "contents": "There are no workspaces in this project.\n[Create a new workspace](command:terraform.cloud.workspaces.picker)\n[Clear filter](command:terraform.cloud.workspaces.resetProjectFilter)",
+        "contents": "There are no workspaces in this project\n[Create a new workspace](command:terraform.cloud.workspaces.picker)\n[Clear filter](command:terraform.cloud.workspaces.resetProjectFilter)",
         "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist"
       },
       {
         "view": "terraform.cloud.runs",
-        "contents": "Select a Workspace to view a list of runs"
+        "contents": "Select a workspace to view a list of runs"
       }
     ]
   },

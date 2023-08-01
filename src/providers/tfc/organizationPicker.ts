@@ -16,7 +16,7 @@ export class CreateOrganizationItem implements vscode.QuickPickItem {
   get label() {
     return '$(add) Create new organization';
   }
-  get description() {
+  get detail() {
     return 'Open the browser to create a new organization';
   }
   async open() {
@@ -31,7 +31,7 @@ export class RefreshOrganizationItem implements vscode.QuickPickItem {
   get label() {
     return '$(refresh) Refresh organizations';
   }
-  get description() {
+  get detail() {
     return 'Refetch all organizations';
   }
   get alwaysShow() {
@@ -49,7 +49,7 @@ class OrganizationItem implements vscode.QuickPickItem {
 export class OrganizationAPIResource implements APIResource {
   name = 'organizations';
   title = 'Welcome to Terraform Cloud';
-  placeholder = 'Choose an organization. Hit enter to select the first organization. (type to search)';
+  placeholder = 'Choose an organization (type to search)';
   ignoreFocusOut = true;
 
   constructor(private outputChannel: vscode.OutputChannel, private reporter: TelemetryReporter) {}

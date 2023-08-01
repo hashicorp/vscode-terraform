@@ -147,7 +147,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     try {
       const session = await this.sessionPromise;
       if (session) {
-        this.logger.info('Successfully fetched Terraform Cloud session.');
+        this.logger.info('Successfully fetched Terraform Cloud session');
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
         return [session];
       } else {
@@ -171,8 +171,8 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     // Prompt for the UAT.
     const token = await this.promptForToken();
     if (!token) {
-      this.logger.error('User did not provide a UAT');
-      throw new Error('UAT is required');
+      this.logger.error('User did not provide a token');
+      throw new Error('Token is required');
     }
 
     try {
@@ -254,22 +254,22 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const choice = await vscode.window.showQuickPick(
       [
         {
-          label: 'Stored User Token',
+          label: 'Stored user token',
           detail: 'Use a token stored in the Terraform CLI configuration file',
         },
         {
-          label: 'Existing User Token',
+          label: 'Existing user token',
           detail: 'Enter a token manually',
         },
         {
-          label: 'Open to generate a User token',
+          label: 'Generate a user token',
           detail: 'Open the Terraform Cloud website to generate a new token',
         },
       ],
       {
         canPickMany: false,
         ignoreFocusOut: true,
-        placeHolder: 'Choose a method to enter a Terraform Cloud User Token',
+        placeHolder: 'Choose a method to enter a Terraform Cloud user token',
         title: 'HashiCorp Terraform Cloud Authentication',
       },
     );
@@ -280,28 +280,28 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const terraformCloudURL = `${TerraformCloudWebUrl}/settings/tokens?source=vscode-terraform`;
     let token: string | undefined;
     switch (choice.label) {
-      case 'Open to generate a User token':
+      case 'Generate a user token':
         this.reporter.sendTelemetryEvent('tfc-login', { method: 'browser' });
         await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: 'User access token',
-          prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
+          prompt: 'Enter a Terraform Cloud user access token',
           password: true,
         });
         break;
-      case 'Existing User Token':
+      case 'Existing user token':
         this.reporter.sendTelemetryEvent('tfc-login', { method: 'existing' });
         // Prompt for the UAT.
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: 'User access token',
-          prompt: 'Enter an HashiCorp Terraform User Access Token (UAT).',
+          prompt: 'Enter a Terraform Cloud user access token',
           password: true,
         });
         break;
-      case 'Stored User Token':
+      case 'Stored user token':
         this.reporter.sendTelemetryEvent('tfc-login', { method: 'stored' });
         token = await this.getTerraformCLIToken();
         break;
