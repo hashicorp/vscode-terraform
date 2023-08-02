@@ -2,8 +2,8 @@
 
 ENHANCEMENTS:
 
-* Language Status indicator ([#1547](https://github.com/hashicorp/vscode-terraform/pull/1547))
-* Explicitly set diagnosticCollectionName ([#1548](https://github.com/hashicorp/vscode-terraform/pull/1548))
+* Language Status progress indicator ([#1547](https://github.com/hashicorp/vscode-terraform/pull/1547))
+* Explicitly set diagnosticCollectionName to help avoid conflicts with other extensions generating diagnostics ([#1548](https://github.com/hashicorp/vscode-terraform/pull/1548))
 * Don't wait for `GetModuleDataFromRegistry` job in terraform-ls to improve performance ([terraform-ls#1332](https://github.com/hashicorp/terraform-ls/pull/1332))
 
 INTERNAL:
