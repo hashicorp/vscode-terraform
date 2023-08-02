@@ -1,3 +1,22 @@
+## [2.27.1] (2023-08-02)
+
+ENHANCEMENTS:
+
+* Language Status progress indicator ([#1547](https://github.com/hashicorp/vscode-terraform/pull/1547))
+* Explicitly set diagnosticCollectionName to help avoid conflicts with other extensions generating diagnostics ([#1548](https://github.com/hashicorp/vscode-terraform/pull/1548))
+* Don't wait for `GetModuleDataFromRegistry` job in terraform-ls to improve performance ([terraform-ls#1332](https://github.com/hashicorp/terraform-ls/pull/1332))
+
+INTERNAL:
+
+* Bump eslint from 8.43.0 to 8.45.0 ([#1529](https://github.com/hashicorp/vscode-terraform/pull/1529), [#1537](https://github.com/hashicorp/vscode-terraform/pull/1537)
+* Bump jest from 29.5.0 to 29.6.0 ([#1528](https://github.com/hashicorp/vscode-terraform/pull/1528))
+* Bump actions/setup-node from 3.6.0 to 3.7.0 ([#1530](https://github.com/hashicorp/vscode-terraform/pull/1530))
+* Bump jest from 29.6.0 to 29.6.1 ([#1531](https://github.com/hashicorp/vscode-terraform/pull/1531))
+* Correct invalid json in README.md ([#1477](https://github.com/hashicorp/vscode-terraform/pull/1477))
+* Bump glob from 10.3.1 to 10.3.3 ([#1533](https://github.com/hashicorp/vscode-terraform/pull/1533))
+* Streamline extension publishing ([#1532](https://github.com/hashicorp/vscode-terraform/pull/1532))
+* Bump webpack from 5.88.1 to 5.88.2 ([#1538](https://github.com/hashicorp/vscode-terraform/pull/1538))
+
 ## [2.27.0] (2023-07-04)
 
 ENHANCEMENTS:
@@ -721,7 +740,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.1...main
+[2.27.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.0...v2.27.1
 [2.27.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...v2.27.0
 [2.26.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...v2.26.1
 [2.26.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.4...v2.26.0
