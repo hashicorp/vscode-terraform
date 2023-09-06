@@ -1,3 +1,16 @@
+## [2.27.2] (2023-09-06)
+
+ENHANCEMENTS:
+
+* Improve `PreloadEmbeddedSchema` job performance in terraform-ls ([terraform-ls#1369](https://github.com/hashicorp/terraform-ls/pull/1369))
+* Avoid re-processing open files in terraform-ls after file saving to improve performance ([terraform-ls#1372](https://github.com/hashicorp/terraform-ls/pull/1372))
+
+
+INTERNAL:
+
+* Bump actions/setup-node from 3.7.0 to 3.8.1 by ([#1558](https://github.com/hashicorp/vscode-terraform/pull/1558))
+* Bump actions/checkout from 3.5.3 to 4.0.0 by ([#1559](https://github.com/hashicorp/vscode-terraform/pull/1559), [#1560](https://github.com/hashicorp/vscode-terraform/pull/1560))
+
 ## [2.27.1] (2023-08-02)
 
 ENHANCEMENTS:
@@ -740,7 +753,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.1...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.2...main
+[2.27.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.1...v2.27.2
 [2.27.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.0...v2.27.1
 [2.27.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...v2.27.0
 [2.26.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...v2.26.1
