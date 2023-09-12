@@ -30,7 +30,7 @@ suite('code actions', () => {
     ];
 
     // wait till the LS is ready to acccept a code action request
-    await sleep(1000);
+    await new Promise((r) => setTimeout(r, 1000));
 
     for (let index = 0; index < supported.length; index++) {
       const wanted = supported[index];
@@ -53,9 +53,3 @@ suite('code actions', () => {
     }
   });
 });
-
-function sleep(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
