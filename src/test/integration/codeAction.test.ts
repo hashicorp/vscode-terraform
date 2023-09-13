@@ -29,6 +29,9 @@ suite('code actions', () => {
       new vscode.CodeAction('Format Document', vscode.CodeActionKind.Source.append('formatAll').append('terraform')),
     ];
 
+    // wait till the LS is ready to acccept a code action request
+    await new Promise((r) => setTimeout(r, 1000));
+
     for (let index = 0; index < supported.length; index++) {
       const wanted = supported[index];
       const requested = wanted.kind?.value.toString();
