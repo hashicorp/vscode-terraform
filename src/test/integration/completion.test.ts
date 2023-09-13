@@ -15,7 +15,9 @@ suite('completion', () => {
 
   test('simple completion', async () => {
     const wanted = new vscode.CompletionList([
+      new vscode.CompletionItem('check', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('data', vscode.CompletionItemKind.Class),
+      new vscode.CompletionItem('import', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('module', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('moved', vscode.CompletionItemKind.Class),
