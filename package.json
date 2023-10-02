@@ -288,7 +288,7 @@
             "scope": "window",
             "type": "boolean",
             "default": true,
-            "description": "Enable early validation of Terraform files and modules"
+            "description": "Enable enhanced validation of Terraform files and modules"
           }
         }
       },
