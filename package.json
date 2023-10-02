@@ -284,7 +284,7 @@
             "default": false,
             "description": "Display reference counts above top level blocks and attributes."
           },
-          "terraform.validation.earlyValidation": {
+          "terraform.validation.enableEnhancedValidation": {
             "scope": "window",
             "type": "boolean",
             "default": true,

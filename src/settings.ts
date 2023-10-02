@@ -30,7 +30,7 @@ export interface ExperimentalFeatures {
 }
 
 export interface ValidationOptions {
-  earlyValidation: boolean;
+  enableEnhancedValidation: boolean;
 }
 
 export function getInitializationOptions() {
@@ -40,7 +40,7 @@ export function getInitializationOptions() {
     we tackle #791
   */
   const validation = config('terraform').get<ValidationOptions>('validation', {
-    earlyValidation: true,
+    enableEnhancedValidation: true,
   });
   const terraform = config('terraform').get<TerraformOptions>('languageServer.terraform', {
     path: '',
