@@ -2,8 +2,7 @@
 
 ENHANCEMENTS:
 
-* Enhanced validation ([#1368](https://github.com/hashicorp/terraform-ls/pull/1368))
-  * Additional diagnostics for [selected invalid Terraform language constructs](https://github.com/hashicorp/terraform-ls/blob/v0.32.0/docs/validation.md#enhanced-validation) based on detected Terraform version and provider versions are provided.
+* Enhanced validation provides additional diagnostics for [selected invalid Terraform language constructs](https://github.com/hashicorp/terraform-ls/blob/v0.32.0/docs/validation.md#enhanced-validation) based on detected Terraform version and provider versions are provided.
 * Improve performance by parsing changed `*.tf` file (as opposed to all files in the module) ([#1404](https://github.com/hashicorp/terraform-ls/pull/1404))
 * Improve performance by parsing changed `*.tfvars` file (as opposed to all files in the directory) ([#1422](https://github.com/hashicorp/terraform-ls/pull/1422))
 * Add `project` attribute to workspaces block ([terraform-schema#257](https://github.com/hashicorp/terraform-schema/pull/257))
