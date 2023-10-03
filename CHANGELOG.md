@@ -10,7 +10,7 @@ ENHANCEMENTS:
 * Add `nullable` to `variable` blocks for `v1.1+` ([terraform-schema#261](https://github.com/hashicorp/terraform-schema/pull/261))
 * Add `endpoint` and `domain` to `cos` backend ([terraform-schema#262](https://github.com/hashicorp/terraform-schema/pull/262))
 * Add `proxy_url` to `kubernetes` backend ([terraform-schema#263](https://github.com/hashicorp/terraform-schema/pull/263))
-* Update `s3` backend w/ `v1.6` changes ([terraform-schema#265](https://github.com/hashicorp/terraform-schema/pull/265))
+* Update `s3` backend with `v1.6` changes ([terraform-schema#265](https://github.com/hashicorp/terraform-schema/pull/265))
 
 BUG FIXES:
 
