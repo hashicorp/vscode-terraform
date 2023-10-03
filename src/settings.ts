@@ -10,6 +10,7 @@ export interface InitializationOptions {
   experimentalFeatures?: ExperimentalFeatures;
   ignoreSingleFileWarning?: boolean;
   terraform?: TerraformOptions;
+  validation?: ValidationOptions;
 }
 
 export interface TerraformOptions {
@@ -28,12 +29,19 @@ export interface ExperimentalFeatures {
   prefillRequiredFields: boolean;
 }
 
+export interface ValidationOptions {
+  enableEnhancedValidation: boolean;
+}
+
 export function getInitializationOptions() {
   /*
     This is basically a set of settings masquerading as a function. The intention
     here is to make room for this to be added to a configuration builder when
     we tackle #791
   */
+  const validation = config('terraform').get<ValidationOptions>('validation', {
+    enableEnhancedValidation: true,
+  });
   const terraform = config('terraform').get<TerraformOptions>('languageServer.terraform', {
     path: '',
     timeout: '',
@@ -55,6 +63,7 @@ export function getInitializationOptions() {
   }
 
   const initializationOptions: InitializationOptions = {
+    validation,
     experimentalFeatures,
     ignoreSingleFileWarning,
     terraform,

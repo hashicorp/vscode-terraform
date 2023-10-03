@@ -283,6 +283,12 @@
             "type": "boolean",
             "default": false,
             "description": "Display reference counts above top level blocks and attributes."
+          },
+          "terraform.validation.enableEnhancedValidation": {
+            "scope": "window",
+            "type": "boolean",
+            "default": true,
+            "description": "Enable enhanced validation of Terraform files and modules"
           }
         }
       },
