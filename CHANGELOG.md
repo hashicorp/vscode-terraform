@@ -1,3 +1,18 @@
+## [2.28.1] (2023-10-06)
+
+ENHANCEMENTS:
+
+* decoder: Add support for binary & unary operators ([hcl-lang#320](https://github.com/hashicorp/hcl-lang/pull/320))
+
+BUG FIXES:
+
+* Fix incorrect schema for `terraform_remote_state` data source ([terraform-schema#272](https://github.com/hashicorp/terraform-schema/pull/272))
+* Make `cloud` `organization` optional ([terraform-schema#271](https://github.com/hashicorp/terraform-schema/pull/271))
+* Ensure empty objects & tuples still get recognised ([hcl-lang#330](https://github.com/hashicorp/hcl-lang/pull/330))
+* Introduce default value `"ssh"` for `type` under `connection` block to enable recognition of attributes such as `bastion_host` even when `type` is not declared ([hcl-lang#327 ([terraform-schema#270](https://github.com/hashicorp/terraform-schema/pull/270))
+* Introduce v1.3 proxy related fields for provisioner `connection` block ([terraform-schema#269](https://github.com/hashicorp/terraform-schema/pull/269))
+* Ensure `target_platform` is recognised in nested `connection` block ([terraform-schema#268](https://github.com/hashicorp/terraform-schema/pull/268))
+
 ## [2.28.0] (2023-10-04)
 
 ENHANCEMENTS:
@@ -781,7 +796,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.1...main
+[2.28.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.0...v2.28.1
 [2.28.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.2...v2.28.0
 [2.27.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.1...v2.27.2
 [2.27.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.0...v2.27.1
