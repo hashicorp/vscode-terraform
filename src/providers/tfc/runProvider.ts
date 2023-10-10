@@ -19,8 +19,8 @@ import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
 import { CONFIGURATION_SOURCE } from '../../terraformCloud/ configurationVersion';
 
-export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCItem>();
+export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeItem>, vscode.Disposable {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCRunTreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
@@ -30,56 +30,19 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vs
     private outputChannel: vscode.OutputChannel,
   ) {
     this.ctx.subscriptions.push(
+      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
+        this.downloadPlanLog(run);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: ApplyTreeItem) =>
+        this.downloadApplyLog(run),
+      ),
       vscode.commands.registerCommand('terraform.cloud.runs.refresh', () => {
         this.reporter.sendTelemetryEvent('tfc-runs-refresh');
         this.refresh(this.activeWorkspace);
       }),
-    );
-
-    this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.viewInBrowser', (run: RunTreeItem) => {
-        const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-        if (orgName === '') {
-          return;
-        }
-
         this.reporter.sendTelemetryEvent('tfc-runs-viewInBrowser');
-        const runURL = `${TerraformCloudWebUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
-
-        vscode.env.openExternal(vscode.Uri.parse(runURL));
-      }),
-      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: RunTreeItem) => {
-        if (!run.planId) {
-          await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
-          return;
-        }
-
-        const planUri = vscode.Uri.parse(`vscode-terraform://plan/${run.planId}`);
-        const doc = await vscode.workspace.openTextDocument(planUri);
-        await vscode.window.showTextDocument(doc, {
-          preview: false,
-        });
-      }),
-      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: RunTreeItem) => {
-        if (!run.applyId) {
-          await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
-          return;
-        }
-
-        const applyUri = vscode.Uri.parse(`vscode-terraform://apply/${run.applyId}`);
-        const doc = await vscode.workspace.openTextDocument(applyUri);
-        await vscode.window.showTextDocument(doc, {
-          preview: false,
-        });
-      }),
-      vscode.commands.registerCommand('terraform.cloud.run.apply.viewInBrowser', (run: RunTreeItem) => {
-        const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-        if (orgName === '') {
-          return;
-        }
-
-        const runURL = `${TerraformCloudWebUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
-        vscode.env.openExternal(vscode.Uri.parse(runURL));
+        vscode.env.openExternal(run.websiteUri);
       }),
     );
   }
@@ -89,17 +52,18 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vs
     this.didChangeTreeData.fire();
   }
 
-  getTreeItem(element: TFCItem): vscode.TreeItem | Thenable<TFCItem> {
+  getTreeItem(element: TFCRunTreeItem): vscode.TreeItem | Thenable<TFCRunTreeItem> {
     return element;
   }
 
-  getChildren(element?: TFCItem | undefined): vscode.ProviderResult<TFCItem[]> {
+  getChildren(element?: TFCRunTreeItem | undefined): vscode.ProviderResult<TFCRunTreeItem[]> {
+    if (!this.activeWorkspace) {
+      return [];
+    }
+
     if (element) {
       const items = this.getRunDetails(element);
       return items;
-    }
-    if (!this.activeWorkspace) {
-      return [];
     }
 
     try {
@@ -159,11 +123,13 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vs
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
+        runItem.organizationName = organization;
+
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
         runItem.createdByUserId = run.relationships['created-by']?.data?.id;
+
         runItem.planId = run.relationships.plan?.data?.id;
         runItem.applyId = run.relationships.apply?.data?.id;
-
         if (runItem.planId || runItem.applyId) {
           runItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
         }
@@ -216,7 +182,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vs
     }
   }
 
-  private async getRunDetails(element: TFCItem) {
+  private async getRunDetails(element: TFCRunTreeItem) {
     const items = [];
     const root = element as RunTreeItem;
     if (root.planId) {
@@ -258,14 +224,39 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vs
     return items;
   }
 
+  private async downloadPlanLog(run: PlanTreeItem) {
+    if (!run.id) {
+      await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(run.documentUri);
+    return await vscode.window.showTextDocument(doc, {
+      preview: false,
+    });
+  }
+
+  private async downloadApplyLog(run: ApplyTreeItem) {
+    if (!run.id) {
+      await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(run.documentUri);
+    return await vscode.window.showTextDocument(doc, {
+      preview: false,
+    });
+  }
+
   dispose() {
     //
   }
 }
 
-export type TFCItem = RunTreeItem | PlanTreeItem | ApplyTreeItem | vscode.TreeItem;
+export type TFCRunTreeItem = RunTreeItem | PlanTreeItem | ApplyTreeItem | vscode.TreeItem;
 
 export class RunTreeItem extends vscode.TreeItem {
+  public organizationName?: string;
   public configurationVersionId?: string;
   public createdByUserId?: string;
 
@@ -283,6 +274,12 @@ export class RunTreeItem extends vscode.TreeItem {
     this.iconPath = GetRunStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
   }
+
+  public get websiteUri(): vscode.Uri {
+    return vscode.Uri.parse(
+      `${TerraformCloudWebUrl}/${this.organizationName}/workspaces/${this.workspace.attributes.name}/runs/${this.id}`,
+    );
+  }
 }
 
 class PlanTreeItem extends vscode.TreeItem {
@@ -295,6 +292,10 @@ class PlanTreeItem extends vscode.TreeItem {
       this.logReadUrl = attributes['log-read-url'] ?? '';
     }
   }
+
+  public get documentUri(): vscode.Uri {
+    return vscode.Uri.parse(`vscode-terraform://plan/${this.id}`);
+  }
 }
 
 class ApplyTreeItem extends vscode.TreeItem {
@@ -305,6 +306,10 @@ class ApplyTreeItem extends vscode.TreeItem {
     if (attributes) {
       this.logReadUrl = attributes['log-read-url'] ?? '';
     }
+  }
+
+  public get documentUri(): vscode.Uri {
+    return vscode.Uri.parse(`vscode-terraform://apply/${this.id}`);
   }
 }
 
