@@ -9,9 +9,9 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { IncludedObject, RUN_SOURCE, Run, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
+import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
-import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
+import { GetPlanApplyStatusIcon, GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
@@ -19,8 +19,8 @@ import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
 import { CONFIGURATION_SOURCE } from '../../terraformCloud/ configurationVersion';
 
-export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCItem>, vscode.Disposable {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
@@ -89,13 +89,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     this.didChangeTreeData.fire();
   }
 
-  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: TFCItem): vscode.TreeItem | Thenable<TFCItem> {
     return element;
   }
 
-  getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
+  getChildren(element?: TFCItem | undefined): vscode.ProviderResult<TFCItem[]> {
     if (element) {
-      return [element];
+      const items = this.getRunDetails(element);
+      return items;
     }
     if (!this.activeWorkspace) {
       return [];
@@ -136,7 +137,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          include: ['plan', 'apply'],
         },
       });
 
@@ -159,43 +159,13 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
-        if (!runs.included) {
-          items.push(runItem);
-          continue;
-        }
-
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
         runItem.createdByUserId = run.relationships['created-by']?.data?.id;
-        // runItem.createdBy = findCreatedByAttributes(runs.included, run);
+        runItem.planId = run.relationships.plan?.data?.id;
+        runItem.applyId = run.relationships.apply?.data?.id;
 
-        // const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
-        // if (cfgVersion) {
-        //   runItem.configurationVersion = cfgVersion.attributes;
-
-        //   const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
-        //   runItem.ingressAttributes = ingressAttrs;
-        // }
-
-        if (run.relationships.plan) {
-          const planAttributes = findPlanAttributes(runs.included, run);
-          if (planAttributes) {
-            if (['errored', 'canceled', 'finished'].includes(planAttributes.status)) {
-              runItem.planId = run.relationships.plan?.data?.id;
-              runItem.planAttributes = planAttributes;
-              runItem.contextValue = 'hasPlan';
-            }
-          }
-        }
-
-        if (run.relationships.apply) {
-          const applyAttributes = findApplyAttributes(runs.included, run);
-          if (applyAttributes) {
-            if (['errored', 'canceled', 'finished'].includes(applyAttributes.status)) {
-              runItem.applyId = run.relationships.apply?.data?.id;
-              runItem.applyAttributes = applyAttributes;
-              runItem.contextValue += 'hasApply';
-            }
-          }
+        if (runItem.planId || runItem.applyId) {
+          runItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
         }
 
         items.push(runItem);
@@ -246,33 +216,56 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
   }
 
+  private async getRunDetails(element: TFCItem) {
+    const items = [];
+    const root = element as RunTreeItem;
+    if (root.planId) {
+      const plan = await apiClient.getPlan({ params: { plan_id: root.planId } });
+      if (plan) {
+        const status = plan.data.attributes.status;
+        const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
+        const item = new PlanTreeItem(root.planId, label, plan.data.attributes);
+        switch (status) {
+          case 'unreachable':
+            item.label = 'Plan will not run';
+            break;
+          default:
+            item.contextValue = 'hasPlan';
+            break;
+        }
+        items.push(item);
+      }
+    }
+
+    if (root.applyId) {
+      const apply = await apiClient.getApply({ params: { apply_id: root.applyId } });
+      if (apply) {
+        const status = apply.data.attributes.status;
+        const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
+        const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes);
+        switch (status) {
+          case 'unreachable':
+            item.label = 'Apply will not run';
+            break;
+          default:
+            item.contextValue = 'hasApply';
+            break;
+        }
+        items.push(item);
+      }
+    }
+
+    return items;
+  }
+
   dispose() {
     //
   }
 }
 
-function findPlanAttributes(included: IncludedObject[], run: Run) {
-  const plan = included.find(
-    (included: IncludedObject) => included.type === 'plans' && included.id === run.relationships.plan?.data?.id,
-  );
-  if (plan) {
-    return plan.attributes as PlanAttributes;
-  }
-}
-
-function findApplyAttributes(included: IncludedObject[], run: Run) {
-  const apply = included.find(
-    (included: IncludedObject) => included.type === 'applies' && included.id === run.relationships.apply?.data?.id,
-  );
-  if (apply) {
-    return apply.attributes as ApplyAttributes;
-  }
-}
+export type TFCItem = RunTreeItem | PlanTreeItem | ApplyTreeItem | vscode.TreeItem;
 
 export class RunTreeItem extends vscode.TreeItem {
-  // public createdBy?: UserAttributes;
-  // public configurationVersion?: ConfigurationVersionAttributes;
-  // public ingressAttributes?: IngressAttributes;
   public configurationVersionId?: string;
   public createdByUserId?: string;
 
@@ -289,6 +282,29 @@ export class RunTreeItem extends vscode.TreeItem {
     this.workspace = workspace;
     this.iconPath = GetRunStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
+  }
+}
+
+class PlanTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+
+  constructor(public id: string, public label: string, public attributes: PlanAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
+  }
+}
+
+class ApplyTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+  constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
   }
 }
 
