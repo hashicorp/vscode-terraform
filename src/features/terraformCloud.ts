@@ -83,10 +83,11 @@ export class TerraformCloudFeature implements vscode.Disposable {
       }
 
       // we don't allow multi-select yet so this will always be one
-      const workspaceItem = event.selection[0] as WorkspaceTreeItem;
-
-      // call the TFC Run provider with the workspace
-      runDataProvider.refresh(workspaceItem);
+      const item = event.selection[0];
+      if (item instanceof WorkspaceTreeItem) {
+        // call the TFC Run provider with the workspace
+        runDataProvider.refresh(item);
+      }
     });
 
     // TODO: move this as the login/organization picker is fleshed out
