@@ -18,10 +18,13 @@ import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import axios from 'axios';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 
-export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
+export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private projectFilter: string | undefined;
+  private pageSize = 10; // TODO! increase
+  private cache: vscode.TreeItem[] = [];
+  private totalWorkspaceCount = -1;
 
   constructor(
     private ctx: vscode.ExtensionContext,
@@ -58,6 +61,11 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter');
         this.filterByProject();
       }),
+      vscode.commands.registerCommand('terraform.cloud.workspaces.loadMore', async () => {
+        this.reporter.sendTelemetryEvent('tfc-workspaces-loadMore');
+        this.cache = [...this.cache, ...(await this.getWorkspaces())];
+        this.refresh();
+      }),
     );
   }
 
@@ -90,24 +98,38 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
     this.runDataProvider.refresh();
   }
 
-  getTreeItem(element: WorkspaceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getChildren(element?: any): vscode.ProviderResult<WorkspaceTreeItem[]> {
+  getChildren(element?: any): vscode.ProviderResult<vscode.TreeItem[]> {
     if (element) {
       return [element];
     }
 
-    try {
-      return this.getWorkspaces();
-    } catch (error) {
-      return [];
-    }
+    return this.buildChildren();
   }
 
-  private async getWorkspaces() {
+  private async buildChildren() {
+    if (this.cache.length === 0) {
+      try {
+        const items = await this.getWorkspaces();
+        this.cache = items;
+      } catch (error) {
+        return [];
+      }
+    }
+
+    const x = this.cache.slice(0);
+    if (this.totalWorkspaceCount > this.cache.length) {
+      x.push(new LoadMoreTreeItem());
+    }
+
+    return x;
+  }
+
+  private async getWorkspaces(): Promise<vscode.TreeItem[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -122,6 +144,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
     }
 
     try {
+      // Calculate the next page number
+      const page = Math.floor(this.cache.length / this.pageSize) + 1;
       const workspaceResponse = await apiClient.listWorkspaces({
         params: {
           organization_name: organization,
@@ -130,13 +154,15 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
           include: ['current_run'],
           // Include query parameter only if project filter is set
           ...(this.projectFilter && { 'filter[project][id]': this.projectFilter }),
-          'page[size]': 50,
+          'page[size]': this.pageSize,
+          'page[number]': page,
           sort: '-current-run.created-at',
         },
       });
+      this.totalWorkspaceCount = workspaceResponse.meta.pagination['total-count'];
 
       this.reporter.sendTelemetryEvent('tfc-fetch-workspaces', undefined, {
-        totalCount: workspaceResponse.meta.pagination['total-count'],
+        totalCount: this.totalWorkspaceCount,
       });
 
       // TODO? we could skip this request if a project filter is set,
@@ -251,6 +277,19 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
 
   dispose() {
     //
+  }
+}
+
+export class LoadMoreTreeItem extends vscode.TreeItem {
+  constructor() {
+    super('Load more...', vscode.TreeItemCollapsibleState.None);
+
+    this.description = 'Load more workspaces';
+    this.iconPath = new vscode.ThemeIcon('ellipsis', new vscode.ThemeColor('charts.gray'));
+    this.command = {
+      command: 'terraform.cloud.workspaces.loadMore',
+      title: 'Load more',
+    };
   }
 }
 
