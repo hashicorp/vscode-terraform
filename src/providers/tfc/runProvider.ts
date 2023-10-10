@@ -123,6 +123,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
+        runItem.contextValue = 'isRun';
         runItem.organizationName = organization;
 
         runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
