@@ -9,18 +9,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import {
-  CONFIGURATION_SOURCE,
-  ConfigurationVersion,
-  ConfigurationVersionAttributes,
-  UserAttributes,
-  IncludedObject,
-  IngressAttributes,
-  RUN_SOURCE,
-  Run,
-  RunAttributes,
-  TRIGGER_REASON,
-} from '../../terraformCloud/run';
+import { IncludedObject, RUN_SOURCE, Run, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
@@ -28,6 +17,7 @@ import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
+import { CONFIGURATION_SOURCE } from '../../terraformCloud/ configurationVersion';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -146,7 +136,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          include: ['plan', 'apply', 'configuration_version.ingress_attributes', 'created_by'],
+          include: ['plan', 'apply'],
         },
       });
 
@@ -174,15 +164,17 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
           continue;
         }
 
-        runItem.createdBy = findCreatedByAttributes(runs.included, run);
+        runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
+        runItem.createdByUserId = run.relationships['created-by']?.data?.id;
+        // runItem.createdBy = findCreatedByAttributes(runs.included, run);
 
-        const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
-        if (cfgVersion) {
-          runItem.configurationVersion = cfgVersion.attributes;
+        // const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
+        // if (cfgVersion) {
+        //   runItem.configurationVersion = cfgVersion.attributes;
 
-          const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
-          runItem.ingressAttributes = ingressAttrs;
-        }
+        //   const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
+        //   runItem.ingressAttributes = ingressAttrs;
+        // }
 
         if (run.relationships.plan) {
           const planAttributes = findPlanAttributes(runs.included, run);
@@ -259,17 +251,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
   }
 }
 
-function findConfigurationVersionAttributes(included: IncludedObject[], run: Run): ConfigurationVersion | undefined {
-  const includedObject = included.find(
-    (included: IncludedObject) =>
-      included.type === 'configuration-versions' &&
-      included.id === run.relationships['configuration-version']?.data?.id,
-  );
-  if (includedObject) {
-    return includedObject as ConfigurationVersion;
-  }
-}
-
 function findPlanAttributes(included: IncludedObject[], run: Run) {
   const plan = included.find(
     (included: IncludedObject) => included.type === 'plans' && included.id === run.relationships.plan?.data?.id,
@@ -288,31 +269,12 @@ function findApplyAttributes(included: IncludedObject[], run: Run) {
   }
 }
 
-function findCreatedByAttributes(included: IncludedObject[], run: Run): UserAttributes | undefined {
-  const includedObject = included.find(
-    (included: IncludedObject) =>
-      included.type === 'users' && included.id === run.relationships['created-by']?.data?.id,
-  );
-  if (includedObject) {
-    return includedObject.attributes as UserAttributes;
-  }
-}
-
-function findIngressAttributes(included: IncludedObject[], cfgVersion: ConfigurationVersion) {
-  const includedObject = included.find(
-    (included: IncludedObject) =>
-      included.type === 'ingress-attributes' &&
-      included.id === cfgVersion.relationships['ingress-attributes']?.data?.id,
-  );
-  if (includedObject) {
-    return includedObject.attributes as IngressAttributes;
-  }
-}
-
 export class RunTreeItem extends vscode.TreeItem {
-  public createdBy?: UserAttributes;
-  public configurationVersion?: ConfigurationVersionAttributes;
-  public ingressAttributes?: IngressAttributes;
+  // public createdBy?: UserAttributes;
+  // public configurationVersion?: ConfigurationVersionAttributes;
+  // public ingressAttributes?: IngressAttributes;
+  public configurationVersionId?: string;
+  public createdByUserId?: string;
 
   public planAttributes?: PlanAttributes;
   public planId?: string;
@@ -337,13 +299,36 @@ async function runMarkdown(item: RunTreeItem) {
   markdown.supportHtml = true;
   markdown.supportThemeIcons = true;
 
+  const configurationVersion = item.configurationVersionId
+    ? await apiClient.getConfigurationVersion({
+        params: {
+          configuration_id: item.configurationVersionId,
+        },
+      })
+    : undefined;
+  const ingress = configurationVersion?.data.relationships['ingress-attributes']?.data?.id
+    ? await apiClient.getIngressAttributes({
+        params: {
+          configuration_id: configurationVersion.data.id,
+        },
+      })
+    : undefined;
+
   const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
 
-  if (item.createdBy) {
-    markdown.appendMarkdown(`<img src="${item.createdBy['avatar-url']}" width="20"> **${item.createdBy.username}**`);
-  } else if (item.ingressAttributes) {
+  if (item.createdByUserId) {
+    const user = await apiClient.getUser({
+      params: {
+        user_id: item.createdByUserId,
+      },
+    });
+
     markdown.appendMarkdown(
-      `<img src="${item.ingressAttributes['sender-avatar-url']}" width="20"> **${item.ingressAttributes['sender-username']}**`,
+      `<img src="${user.data.attributes['avatar-url']}" width="20"> **${user.data.attributes.username}**`,
+    );
+  } else if (ingress) {
+    markdown.appendMarkdown(
+      `<img src="${ingress.data.attributes['sender-avatar-url']}" width="20"> **${ingress.data.attributes['sender-username']}**`,
     );
   }
 
@@ -361,20 +346,20 @@ _____
 | **Run ID**   | \`${item.id}\` |
 | **Status** | $(${icon.id}) ${msg} |
 `);
-  if (item.ingressAttributes && item.configurationVersion && item.configurationVersion.source) {
+  if (ingress && configurationVersion && configurationVersion.data.attributes.source) {
     // Blind shortening like this may not be appropriate
     // due to hash collisions but we just mimic what TFC does here
     // which is fairly safe since it's just UI/text, not URL.
-    const shortCommitSha = item.ingressAttributes?.['commit-sha'].slice(0, 8);
+    const shortCommitSha = ingress.data.attributes['commit-sha'].slice(0, 8);
 
-    const cfgSource = CONFIGURATION_SOURCE[item.configurationVersion.source];
+    const cfgSource = CONFIGURATION_SOURCE[configurationVersion.data.attributes.source];
     markdown.appendMarkdown(`| **Configuration** | From ${cfgSource} by <img src="${
-      item.ingressAttributes?.['sender-avatar-url']
-    }" width="20"> ${item.ingressAttributes?.['sender-username']} **Branch** ${
-      item.ingressAttributes?.branch
-    } **Repo** [${item.ingressAttributes?.identifier}](${item.ingressAttributes?.['clone-url']}) |
-| **Commit** | [${shortCommitSha}](${item.ingressAttributes?.['commit-url']}): ${
-      item.ingressAttributes?.['commit-message'].split('\n')[0]
+      ingress.data.attributes['sender-avatar-url']
+    }" width="20"> ${ingress.data.attributes['sender-username']} **Branch** ${
+      ingress.data.attributes.branch
+    } **Repo** [${ingress.data.attributes.identifier}](${ingress.data.attributes['clone-url']}) |
+| **Commit** | [${shortCommitSha}](${ingress.data.attributes['commit-url']}): ${
+      ingress.data.attributes['commit-message'].split('\n')[0]
     } |
 `);
   } else {

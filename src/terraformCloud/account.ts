@@ -22,8 +22,8 @@ export const accountEndpoints = makeApi([
   {
     method: 'get',
     path: '/account/details',
-    alias: 'getUser',
-    description: 'Get user details',
+    alias: 'getAccount',
+    description: 'Get account details',
     response: accountDetails,
     errors,
   },
