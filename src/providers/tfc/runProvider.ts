@@ -57,7 +57,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
   }
 
   getChildren(element?: TFCRunTreeItem | undefined): vscode.ProviderResult<TFCRunTreeItem[]> {
-    if (!this.activeWorkspace) {
+    if (!this.activeWorkspace || !(this.activeWorkspace instanceof WorkspaceTreeItem)) {
       return [];
     }
 
