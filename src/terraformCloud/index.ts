@@ -14,6 +14,9 @@ import { runEndpoints } from './run';
 import { workspaceEndpoints } from './workspace';
 import { planEndpoints } from './plan';
 import { applyEndpoints } from './apply';
+import { userEndpoints } from './user';
+import { configurationVersionEndpoints } from './configurationVersion';
+import { ingressAttributesEndpoints } from './ingressAttribute';
 
 export const TerraformCloudHost = 'app.terraform.io';
 
@@ -51,6 +54,9 @@ export const apiClient = new Zodios(TerraformCloudAPIUrl, [
   ...runEndpoints,
   ...planEndpoints,
   ...applyEndpoints,
+  ...userEndpoints,
+  ...configurationVersionEndpoints,
+  ...ingressAttributesEndpoints,
 ]);
 apiClient.use(jsonHeader);
 apiClient.use(userAgentHeader);

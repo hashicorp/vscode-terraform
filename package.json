@@ -615,7 +615,7 @@
         },
         {
           "command": "terraform.cloud.run.viewInBrowser",
-          "when": "view == terraform.cloud.runs && viewItem != empty",
+          "when": "view == terraform.cloud.runs && viewItem =~ /isRun/",
           "group": "inline"
         },
         {
