@@ -5,6 +5,29 @@
 
 import * as vscode from 'vscode';
 
+export function GetPlanApplyStatusIcon(status?: string): vscode.ThemeIcon {
+  switch (status) {
+    case 'pending':
+      return new vscode.ThemeIcon('debug-pause', new vscode.ThemeColor('charts.gray'));
+    case 'managed_queued':
+      return new vscode.ThemeIcon('debug-pause', new vscode.ThemeColor('charts.gray'));
+    case 'queued':
+      return new vscode.ThemeIcon('debug-pause', new vscode.ThemeColor('charts.gray'));
+    case 'running':
+      return new vscode.ThemeIcon('run-status-running', new vscode.ThemeColor('charts.gray'));
+    case 'errored':
+      return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.red'));
+    case 'canceled':
+      return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.gray'));
+    case 'finished':
+      return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+    case 'unreachable':
+      return new vscode.ThemeIcon('dash');
+  }
+
+  return new vscode.ThemeIcon('dash');
+}
+
 export function GetRunStatusIcon(status?: string): vscode.ThemeIcon {
   switch (status) {
     // in progress

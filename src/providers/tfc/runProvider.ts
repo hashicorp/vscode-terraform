@@ -9,28 +9,18 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import {
-  CONFIGURATION_SOURCE,
-  ConfigurationVersion,
-  ConfigurationVersionAttributes,
-  UserAttributes,
-  IncludedObject,
-  IngressAttributes,
-  RUN_SOURCE,
-  Run,
-  RunAttributes,
-  TRIGGER_REASON,
-} from '../../terraformCloud/run';
+import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
-import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
+import { GetPlanApplyStatusIcon, GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
+import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
 
-export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeItem>, vscode.Disposable {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCRunTreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
@@ -40,56 +30,19 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     private outputChannel: vscode.OutputChannel,
   ) {
     this.ctx.subscriptions.push(
+      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
+        this.downloadPlanLog(run);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: ApplyTreeItem) =>
+        this.downloadApplyLog(run),
+      ),
       vscode.commands.registerCommand('terraform.cloud.runs.refresh', () => {
         this.reporter.sendTelemetryEvent('tfc-runs-refresh');
         this.refresh(this.activeWorkspace);
       }),
-    );
-
-    this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.viewInBrowser', (run: RunTreeItem) => {
-        const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-        if (orgName === '') {
-          return;
-        }
-
         this.reporter.sendTelemetryEvent('tfc-runs-viewInBrowser');
-        const runURL = `${TerraformCloudWebUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
-
-        vscode.env.openExternal(vscode.Uri.parse(runURL));
-      }),
-      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: RunTreeItem) => {
-        if (!run.planId) {
-          await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
-          return;
-        }
-
-        const planUri = vscode.Uri.parse(`vscode-terraform://plan/${run.planId}`);
-        const doc = await vscode.workspace.openTextDocument(planUri);
-        await vscode.window.showTextDocument(doc, {
-          preview: false,
-        });
-      }),
-      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: RunTreeItem) => {
-        if (!run.applyId) {
-          await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
-          return;
-        }
-
-        const applyUri = vscode.Uri.parse(`vscode-terraform://apply/${run.applyId}`);
-        const doc = await vscode.workspace.openTextDocument(applyUri);
-        await vscode.window.showTextDocument(doc, {
-          preview: false,
-        });
-      }),
-      vscode.commands.registerCommand('terraform.cloud.run.apply.viewInBrowser', (run: RunTreeItem) => {
-        const orgName = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-        if (orgName === '') {
-          return;
-        }
-
-        const runURL = `${TerraformCloudWebUrl}/${orgName}/workspaces/${run.workspace.attributes.name}/runs/${run.id}`;
-        vscode.env.openExternal(vscode.Uri.parse(runURL));
+        vscode.env.openExternal(run.websiteUri);
       }),
     );
   }
@@ -99,16 +52,18 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     this.didChangeTreeData.fire();
   }
 
-  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: TFCRunTreeItem): vscode.TreeItem | Thenable<TFCRunTreeItem> {
     return element;
   }
 
-  getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
-    if (element) {
-      return [element];
-    }
+  getChildren(element?: TFCRunTreeItem | undefined): vscode.ProviderResult<TFCRunTreeItem[]> {
     if (!this.activeWorkspace) {
       return [];
+    }
+
+    if (element) {
+      const items = this.getRunDetails(element);
+      return items;
     }
 
     try {
@@ -146,7 +101,6 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
-          include: ['plan', 'apply', 'configuration_version.ingress_attributes', 'created_by'],
         },
       });
 
@@ -169,41 +123,16 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
         const run = runs.data[index];
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
-        if (!runs.included) {
-          items.push(runItem);
-          continue;
-        }
+        runItem.contextValue = 'isRun';
+        runItem.organizationName = organization;
 
-        runItem.createdBy = findCreatedByAttributes(runs.included, run);
+        runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
+        runItem.createdByUserId = run.relationships['created-by']?.data?.id;
 
-        const cfgVersion = findConfigurationVersionAttributes(runs.included, run);
-        if (cfgVersion) {
-          runItem.configurationVersion = cfgVersion.attributes;
-
-          const ingressAttrs = findIngressAttributes(runs.included, cfgVersion);
-          runItem.ingressAttributes = ingressAttrs;
-        }
-
-        if (run.relationships.plan) {
-          const planAttributes = findPlanAttributes(runs.included, run);
-          if (planAttributes) {
-            if (['errored', 'canceled', 'finished'].includes(planAttributes.status)) {
-              runItem.planId = run.relationships.plan?.data?.id;
-              runItem.planAttributes = planAttributes;
-              runItem.contextValue = 'hasPlan';
-            }
-          }
-        }
-
-        if (run.relationships.apply) {
-          const applyAttributes = findApplyAttributes(runs.included, run);
-          if (applyAttributes) {
-            if (['errored', 'canceled', 'finished'].includes(applyAttributes.status)) {
-              runItem.applyId = run.relationships.apply?.data?.id;
-              runItem.applyAttributes = applyAttributes;
-              runItem.contextValue += 'hasApply';
-            }
-          }
+        runItem.planId = run.relationships.plan?.data?.id;
+        runItem.applyId = run.relationships.apply?.data?.id;
+        if (runItem.planId || runItem.applyId) {
+          runItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
         }
 
         items.push(runItem);
@@ -254,65 +183,83 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
   }
 
+  private async getRunDetails(element: TFCRunTreeItem) {
+    const items = [];
+    const root = element as RunTreeItem;
+    if (root.planId) {
+      const plan = await apiClient.getPlan({ params: { plan_id: root.planId } });
+      if (plan) {
+        const status = plan.data.attributes.status;
+        const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
+        const item = new PlanTreeItem(root.planId, label, plan.data.attributes);
+        switch (status) {
+          case 'unreachable':
+            item.label = 'Plan will not run';
+            break;
+          default:
+            item.contextValue = 'hasPlan';
+            break;
+        }
+        items.push(item);
+      }
+    }
+
+    if (root.applyId) {
+      const apply = await apiClient.getApply({ params: { apply_id: root.applyId } });
+      if (apply) {
+        const status = apply.data.attributes.status;
+        const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
+        const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes);
+        switch (status) {
+          case 'unreachable':
+            item.label = 'Apply will not run';
+            break;
+          default:
+            item.contextValue = 'hasApply';
+            break;
+        }
+        items.push(item);
+      }
+    }
+
+    return items;
+  }
+
+  private async downloadPlanLog(run: PlanTreeItem) {
+    if (!run.id) {
+      await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(run.documentUri);
+    return await vscode.window.showTextDocument(doc, {
+      preview: false,
+    });
+  }
+
+  private async downloadApplyLog(run: ApplyTreeItem) {
+    if (!run.id) {
+      await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(run.documentUri);
+    return await vscode.window.showTextDocument(doc, {
+      preview: false,
+    });
+  }
+
   dispose() {
     //
   }
 }
 
-function findConfigurationVersionAttributes(included: IncludedObject[], run: Run): ConfigurationVersion | undefined {
-  const includedObject = included.find(
-    (included: IncludedObject) =>
-      included.type === 'configuration-versions' &&
-      included.id === run.relationships['configuration-version']?.data?.id,
-  );
-  if (includedObject) {
-    return includedObject as ConfigurationVersion;
-  }
-}
-
-function findPlanAttributes(included: IncludedObject[], run: Run) {
-  const plan = included.find(
-    (included: IncludedObject) => included.type === 'plans' && included.id === run.relationships.plan?.data?.id,
-  );
-  if (plan) {
-    return plan.attributes as PlanAttributes;
-  }
-}
-
-function findApplyAttributes(included: IncludedObject[], run: Run) {
-  const apply = included.find(
-    (included: IncludedObject) => included.type === 'applies' && included.id === run.relationships.apply?.data?.id,
-  );
-  if (apply) {
-    return apply.attributes as ApplyAttributes;
-  }
-}
-
-function findCreatedByAttributes(included: IncludedObject[], run: Run): UserAttributes | undefined {
-  const includedObject = included.find(
-    (included: IncludedObject) =>
-      included.type === 'users' && included.id === run.relationships['created-by']?.data?.id,
-  );
-  if (includedObject) {
-    return includedObject.attributes as UserAttributes;
-  }
-}
-
-function findIngressAttributes(included: IncludedObject[], cfgVersion: ConfigurationVersion) {
-  const includedObject = included.find(
-    (included: IncludedObject) =>
-      included.type === 'ingress-attributes' &&
-      included.id === cfgVersion.relationships['ingress-attributes']?.data?.id,
-  );
-  if (includedObject) {
-    return includedObject.attributes as IngressAttributes;
-  }
-}
+export type TFCRunTreeItem = RunTreeItem | PlanTreeItem | ApplyTreeItem | vscode.TreeItem;
 
 export class RunTreeItem extends vscode.TreeItem {
-  public createdBy?: UserAttributes;
-  public configurationVersion?: ConfigurationVersionAttributes;
-  public ingressAttributes?: IngressAttributes;
+  public organizationName?: string;
+  public configurationVersionId?: string;
+  public createdByUserId?: string;
 
   public planAttributes?: PlanAttributes;
   public planId?: string;
@@ -328,6 +275,43 @@ export class RunTreeItem extends vscode.TreeItem {
     this.iconPath = GetRunStatusIcon(attributes.status);
     this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
   }
+
+  public get websiteUri(): vscode.Uri {
+    return vscode.Uri.parse(
+      `${TerraformCloudWebUrl}/${this.organizationName}/workspaces/${this.workspace.attributes.name}/runs/${this.id}`,
+    );
+  }
+}
+
+class PlanTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+
+  constructor(public id: string, public label: string, public attributes: PlanAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
+  }
+
+  public get documentUri(): vscode.Uri {
+    return vscode.Uri.parse(`vscode-terraform://plan/${this.id}`);
+  }
+}
+
+class ApplyTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+  constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
+  }
+
+  public get documentUri(): vscode.Uri {
+    return vscode.Uri.parse(`vscode-terraform://apply/${this.id}`);
+  }
 }
 
 async function runMarkdown(item: RunTreeItem) {
@@ -337,13 +321,36 @@ async function runMarkdown(item: RunTreeItem) {
   markdown.supportHtml = true;
   markdown.supportThemeIcons = true;
 
+  const configurationVersion = item.configurationVersionId
+    ? await apiClient.getConfigurationVersion({
+        params: {
+          configuration_id: item.configurationVersionId,
+        },
+      })
+    : undefined;
+  const ingress = configurationVersion?.data.relationships['ingress-attributes']?.data?.id
+    ? await apiClient.getIngressAttributes({
+        params: {
+          configuration_id: configurationVersion.data.id,
+        },
+      })
+    : undefined;
+
   const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
 
-  if (item.createdBy) {
-    markdown.appendMarkdown(`<img src="${item.createdBy['avatar-url']}" width="20"> **${item.createdBy.username}**`);
-  } else if (item.ingressAttributes) {
+  if (item.createdByUserId) {
+    const user = await apiClient.getUser({
+      params: {
+        user_id: item.createdByUserId,
+      },
+    });
+
     markdown.appendMarkdown(
-      `<img src="${item.ingressAttributes['sender-avatar-url']}" width="20"> **${item.ingressAttributes['sender-username']}**`,
+      `<img src="${user.data.attributes['avatar-url']}" width="20"> **${user.data.attributes.username}**`,
+    );
+  } else if (ingress) {
+    markdown.appendMarkdown(
+      `<img src="${ingress.data.attributes['sender-avatar-url']}" width="20"> **${ingress.data.attributes['sender-username']}**`,
     );
   }
 
@@ -361,20 +368,20 @@ _____
 | **Run ID**   | \`${item.id}\` |
 | **Status** | $(${icon.id}) ${msg} |
 `);
-  if (item.ingressAttributes && item.configurationVersion && item.configurationVersion.source) {
+  if (ingress && configurationVersion && configurationVersion.data.attributes.source) {
     // Blind shortening like this may not be appropriate
     // due to hash collisions but we just mimic what TFC does here
     // which is fairly safe since it's just UI/text, not URL.
-    const shortCommitSha = item.ingressAttributes?.['commit-sha'].slice(0, 8);
+    const shortCommitSha = ingress.data.attributes['commit-sha'].slice(0, 8);
 
-    const cfgSource = CONFIGURATION_SOURCE[item.configurationVersion.source];
+    const cfgSource = CONFIGURATION_SOURCE[configurationVersion.data.attributes.source];
     markdown.appendMarkdown(`| **Configuration** | From ${cfgSource} by <img src="${
-      item.ingressAttributes?.['sender-avatar-url']
-    }" width="20"> ${item.ingressAttributes?.['sender-username']} **Branch** ${
-      item.ingressAttributes?.branch
-    } **Repo** [${item.ingressAttributes?.identifier}](${item.ingressAttributes?.['clone-url']}) |
-| **Commit** | [${shortCommitSha}](${item.ingressAttributes?.['commit-url']}): ${
-      item.ingressAttributes?.['commit-message'].split('\n')[0]
+      ingress.data.attributes['sender-avatar-url']
+    }" width="20"> ${ingress.data.attributes['sender-username']} **Branch** ${
+      ingress.data.attributes.branch
+    } **Repo** [${ingress.data.attributes.identifier}](${ingress.data.attributes['clone-url']}) |
+| **Commit** | [${shortCommitSha}](${ingress.data.attributes['commit-url']}): ${
+      ingress.data.attributes['commit-message'].split('\n')[0]
     } |
 `);
   } else {

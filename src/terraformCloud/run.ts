@@ -7,8 +7,6 @@ import { makeApi, makeParameters } from '@zodios/core';
 import { z } from 'zod';
 import { paginationMeta, paginationParams } from './pagination';
 import { errors } from './errors';
-import { plan } from './plan';
-import { apply } from './apply';
 
 // See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/run#run-states
 const runStatus = z.enum([
@@ -99,85 +97,8 @@ const run = z.object({
 });
 export type Run = z.infer<typeof run>;
 
-// include=configuration_version.ingress_attributes
-// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version-s-commit-information
-const ingressAttributes = z.object({
-  branch: z.string(),
-  'clone-url': z.string(),
-  'commit-message': z.string(),
-  'commit-sha': z.string(),
-  'commit-url': z.string(),
-  'compare-url': z.string().nullable(),
-  identifier: z.string(),
-  'is-pull-request': z.boolean(),
-  'on-default-branch': z.boolean(),
-  'pull-request-number': z.number().nullable(),
-  'pull-request-url': z.string().nullable(),
-  'pull-request-title': z.string().nullable(),
-  'pull-request-body': z.string().nullable(),
-  tag: z.string().nullable(),
-  'sender-username': z.string(),
-  'sender-avatar-url': z.string(),
-  'sender-html-url': z.string(),
-});
-export type IngressAttributes = z.infer<typeof ingressAttributes>;
-
-const ingressAttributesObject = z.object({
-  id: z.string(),
-  type: z.literal('ingress-attributes'),
-  attributes: ingressAttributes,
-});
-export type IngressAttributesObject = z.infer<typeof ingressAttributesObject>;
-
-export const CONFIGURATION_SOURCE: { [id: string]: string } = {
-  ado: 'Azure DevOps',
-  bitbucket: 'Bitbucket',
-  gitlab: 'GitLab',
-  github: 'GitHub',
-  terraform: 'Terraform',
-  'terraform+cloud': 'Terraform Cloud',
-  tfeAPI: 'API',
-  'tfe-api': 'API',
-  module: 'No-code Module',
-};
-const cfgSources = Object.keys(CONFIGURATION_SOURCE) as [string, ...string[]];
-
-const configurationVersionRelationships = z.object({
-  'ingress-attributes': relationship,
-});
-
-// include=configuration_version (implied from .ingress_attributes too)
-// See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions#show-a-configuration-version
-const configurationVersionAttributes = z.object({
-  source: z.enum(cfgSources).nullish(),
-});
-export type ConfigurationVersionAttributes = z.infer<typeof configurationVersionAttributes>;
-const configurationVersion = z.object({
-  id: z.string(),
-  type: z.literal('configuration-versions'),
-  attributes: configurationVersionAttributes,
-  relationships: configurationVersionRelationships,
-});
-export type ConfigurationVersion = z.infer<typeof configurationVersion>;
-
-const userAttributes = z.object({
-  username: z.string(),
-  'is-service-account': z.boolean(),
-  'avatar-url': z.string(),
-});
-export type UserAttributes = z.infer<typeof userAttributes>;
-const user = z.object({
-  id: z.string(),
-  type: z.literal('users'),
-  attributes: userAttributes,
-});
-
-const includedObject = z.discriminatedUnion('type', [ingressAttributesObject, configurationVersion, user, plan, apply]);
-export type IncludedObject = z.infer<typeof includedObject>;
-
 const runs = z.object({
   data: z.array(run),
-  included: z.array(includedObject).nullish(),
   meta: z.object({
     pagination: paginationMeta,
   }),
