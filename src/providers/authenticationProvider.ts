@@ -53,7 +53,7 @@ class TerraformCloudSessionHandler {
 
   async store(token: string): Promise<TerraformCloudSession> {
     try {
-      const user = await earlyApiClient.getUser({
+      const user = await earlyApiClient.getAccount({
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -72,7 +72,7 @@ class TerraformCloudSessionHandler {
         throw error;
       }
 
-      if (isErrorFromAlias(earlyApiClient.api, 'getUser', error)) {
+      if (isErrorFromAlias(earlyApiClient.api, 'getAccount', error)) {
         if ((error.response.status as number) === 401) {
           throw new InvalidToken();
         }
