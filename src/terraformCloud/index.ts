@@ -15,7 +15,7 @@ import { workspaceEndpoints } from './workspace';
 import { planEndpoints } from './plan';
 import { applyEndpoints } from './apply';
 import { userEndpoints } from './user';
-import { configurationVersionEndpoints } from './ configurationVersion';
+import { configurationVersionEndpoints } from './configurationVersion';
 import { ingressAttributesEndpoints } from './ingressAttribute';
 
 export const TerraformCloudHost = 'app.terraform.io';
