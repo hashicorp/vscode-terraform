@@ -1,3 +1,16 @@
+## [2.28.2] (2023-10-16)
+
+ENHANCEMENTS:
+
+* Add `skip_requesting_account_id` to `s3` backend ([terraform-schema#279](https://github.com/hashicorp/terraform-schema/pull/279))
+
+BUG FIXES:
+
+* Work around 'unreliable' input data for Registry modules ([#1456](https://github.com/hashicorp/terraform-ls/pull/1456))
+* Resolve version correctly for backend schema ([#1453](https://github.com/hashicorp/terraform-ls/pull/1453))
+* Allow objects in `for_each` ([hcl-lang#333](https://github.com/hashicorp/hcl-lang/pull/333))
+* Fix `output` block `precondition` in 1.2 schema ([terraform-schema#282](https://github.com/hashicorp/terraform-schema/pull/282))
+
 ## [2.28.1] (2023-10-06)
 
 ENHANCEMENTS:
