@@ -5,6 +5,7 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
+import * as semver from 'semver';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
@@ -18,6 +19,7 @@ import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
 import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
+import { PlanTreeDataProvider } from './planProvider';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCRunTreeItem>();
@@ -28,6 +30,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     private ctx: vscode.ExtensionContext,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
+    private planDataProvider: PlanTreeDataProvider,
   ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
@@ -43,6 +46,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
       vscode.commands.registerCommand('terraform.cloud.run.viewInBrowser', (run: RunTreeItem) => {
         this.reporter.sendTelemetryEvent('tfc-runs-viewInBrowser');
         vscode.env.openExternal(run.websiteUri);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.viewPlan', async (plan: PlanTreeItem) => {
+        if (!plan.logReadUrl) {
+          await vscode.window.showErrorMessage(`No plan found for ${plan.id}`);
+          return;
+        }
+        await vscode.commands.executeCommand('terraform.cloud.run.plan.focus');
+        this.planDataProvider.refresh(plan);
       }),
     );
   }
@@ -194,13 +205,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         const status = plan.data.attributes.status;
         const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
         const item = new PlanTreeItem(root.planId, label, plan.data.attributes);
-        switch (status) {
-          case 'unreachable':
-            item.label = 'Plan will not run';
-            break;
-          default:
-            item.contextValue = 'hasPlan';
-            break;
+        if (status === 'unreachable') {
+          item.label = 'Plan will not run';
+        } else {
+          if (this.isJsonExpected(plan.data.attributes, root.attributes['terraform-version'])) {
+            item.contextValue = 'hasStructuredPlan';
+          } else {
+            item.contextValue = 'hasRawPlan';
+          }
         }
         items.push(item);
       }
@@ -225,6 +237,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     }
 
     return items;
+  }
+
+  private isJsonExpected(attributes: PlanAttributes, terraformVersion: string): boolean {
+    const jsonSupportedVersion = '> 0.15.2';
+    if (!semver.satisfies(terraformVersion, jsonSupportedVersion)) {
+      return false;
+    }
+    return attributes['structured-run-output-enabled'];
   }
 
   private async downloadPlanLog(run: PlanTreeItem) {
@@ -285,7 +305,7 @@ export class RunTreeItem extends vscode.TreeItem {
   }
 }
 
-class PlanTreeItem extends vscode.TreeItem {
+export class PlanTreeItem extends vscode.TreeItem {
   public logReadUrl = '';
 
   constructor(public id: string, public label: string, public attributes: PlanAttributes) {

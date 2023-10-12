@@ -8,6 +8,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
+import { PlanTreeDataProvider } from '../providers/tfc/planProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
 import {
   CreateOrganizationItem,
@@ -56,7 +57,14 @@ export class TerraformCloudFeature implements vscode.Disposable {
       ),
     );
 
-    const runDataProvider = new RunTreeDataProvider(this.context, this.reporter, outputChannel);
+    const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, outputChannel);
+    const planView = vscode.window.createTreeView('terraform.cloud.run.plan', {
+      canSelectMany: false,
+      showCollapseAll: true,
+      treeDataProvider: planDataProvider,
+    });
+
+    const runDataProvider = new RunTreeDataProvider(this.context, this.reporter, outputChannel, planDataProvider);
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
       canSelectMany: false,
       showCollapseAll: true,
@@ -77,7 +85,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
     const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
     workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
 
-    this.context.subscriptions.push(runView, runDataProvider, workspaceDataProvider, workspaceView);
+    this.context.subscriptions.push(runView, planView, runDataProvider, workspaceDataProvider, workspaceView);
 
     workspaceView.onDidChangeSelection((event) => {
       if (event.selection.length <= 0) {
@@ -89,6 +97,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       if (item instanceof WorkspaceTreeItem) {
         // call the TFC Run provider with the workspace
         runDataProvider.refresh(item);
+        planDataProvider.refresh();
       }
     });
 
@@ -100,6 +109,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
         workspaceDataProvider.reset();
         workspaceDataProvider.refresh();
         runDataProvider.refresh();
+        planDataProvider.refresh();
       }
     });
 

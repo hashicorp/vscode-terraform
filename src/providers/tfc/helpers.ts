@@ -4,6 +4,7 @@
  */
 
 import * as vscode from 'vscode';
+import { ChangeAction, DiagnosticSeverity } from '../../terraformCloud/log';
 
 export function GetPlanApplyStatusIcon(status?: string): vscode.ThemeIcon {
   switch (status) {
@@ -146,6 +147,48 @@ export function GetRunStatusMessage(status?: string): string {
   }
 
   return 'No runs available';
+}
+
+export function GetChangeActionIcon(action: ChangeAction): vscode.ThemeIcon {
+  switch (action) {
+    case 'create':
+      return new vscode.ThemeIcon('diff-added', new vscode.ThemeColor('charts.green'));
+    case 'delete':
+      return new vscode.ThemeIcon('diff-removed', new vscode.ThemeColor('charts.red'));
+    case 'update':
+      return new vscode.ThemeIcon('diff-modified', new vscode.ThemeColor('charts.orange'));
+    case 'move':
+      return new vscode.ThemeIcon('diff-renamed', new vscode.ThemeColor('charts.orange'));
+    case 'replace':
+      return new vscode.ThemeIcon('arrow-swap', new vscode.ThemeColor('charts.orange'));
+    case 'read':
+      return new vscode.ThemeIcon('git-fetch', new vscode.ThemeColor('charts.blue'));
+    case 'import':
+      return new vscode.ThemeIcon('export', new vscode.ThemeColor('charts.blue'));
+    case 'noop':
+      return new vscode.ThemeIcon('diff-ignored', new vscode.ThemeColor('charts.grey'));
+  }
+}
+
+export function GetDriftChangeActionMessage(action: ChangeAction): string {
+  switch (action) {
+    case 'update':
+      return 'updated';
+    case 'delete':
+      return 'deleted';
+    default:
+      // Other actions are not defined for drifts
+      return 'unknown';
+  }
+}
+
+export function GetDiagnosticSeverityIcon(severity: DiagnosticSeverity): vscode.ThemeIcon {
+  switch (severity) {
+    case 'warning':
+      return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.orange'));
+    case 'error':
+      return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.red'));
+  }
 }
 
 export function RelativeTimeFormat(d: Date): string {
