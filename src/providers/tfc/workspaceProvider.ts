@@ -65,7 +65,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.loadMore', async () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-loadMore');
-        this.cache = [...this.cache, ...(await this.getWorkspaces())];
         this.refresh();
         this.runDataProvider.refresh();
       }),
@@ -116,13 +115,10 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   }
 
   private async buildChildren() {
-    if (this.cache.length === 0) {
-      try {
-        const items = await this.getWorkspaces();
-        this.cache = items;
-      } catch (error) {
-        return [];
-      }
+    try {
+      this.cache = [...this.cache, ...(await this.getWorkspaces())];
+    } catch (error) {
+      return [];
     }
 
     const items = this.cache.slice(0);
