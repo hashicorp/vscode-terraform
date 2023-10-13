@@ -73,8 +73,10 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     }
   }
 
-  async resolveTreeItem(item: vscode.TreeItem, element: RunTreeItem): Promise<vscode.TreeItem> {
-    item.tooltip = await runMarkdown(element);
+  async resolveTreeItem(item: vscode.TreeItem, element: TFCRunTreeItem): Promise<vscode.TreeItem> {
+    if (element instanceof RunTreeItem) {
+      item.tooltip = await runMarkdown(element);
+    }
     return item;
   }
 
