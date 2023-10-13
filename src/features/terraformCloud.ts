@@ -155,10 +155,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
         // project filter should be cleared on org change
         await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
-
-        // refresh workspaces so they pick up the change
-        workspaceDataProvider.refresh();
-        runDataProvider.refresh();
+        // filter reset will refresh workspaces
       }),
     );
   }
