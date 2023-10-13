@@ -1,3 +1,16 @@
+## [2.28.2] (2023-10-16)
+
+ENHANCEMENTS:
+
+* Add `skip_requesting_account_id` to `s3` backend ([terraform-schema#279](https://github.com/hashicorp/terraform-schema/pull/279))
+
+BUG FIXES:
+
+* Work around 'unreliable' input data for Registry modules ([terraform-ls#1456](https://github.com/hashicorp/terraform-ls/pull/1456))
+* Resolve version correctly for backend schema ([terraform-ls#1453](https://github.com/hashicorp/terraform-ls/pull/1453))
+* Allow objects in `for_each` ([hcl-lang#333](https://github.com/hashicorp/hcl-lang/pull/333))
+* Fix `output` block `precondition` in 1.2 schema ([terraform-schema#282](https://github.com/hashicorp/terraform-schema/pull/282))
+
 ## [2.28.1] (2023-10-06)
 
 ENHANCEMENTS:
@@ -796,7 +809,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.1...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.2...main
+[2.28.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.1...v2.28.2
 [2.28.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.0...v2.28.1
 [2.28.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.2...v2.28.0
 [2.27.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.1...v2.27.2
