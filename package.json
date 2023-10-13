@@ -495,7 +495,7 @@
       {
         "command": "terraform.cloud.run.plan.downloadLog",
         "title": "View raw plan log",
-        "icon": "$(book)"
+        "icon": "$(output)"
       },
       {
         "command": "terraform.cloud.run.apply.downloadLog",
