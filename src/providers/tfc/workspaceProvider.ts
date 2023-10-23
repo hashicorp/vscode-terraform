@@ -35,14 +35,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-refresh');
-        this.cache = [];
+        this.reset();
         this.refresh();
         this.runDataProvider.refresh(workspaceItem);
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.resetProjectFilter', () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter-reset');
         this.projectFilter = undefined;
-        this.cache = [];
+        this.reset();
         this.refresh();
       }),
       vscode.commands.registerCommand(
@@ -75,6 +75,12 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     this.didChangeTreeData.fire();
   }
 
+  // This resets the internal cache, e.g. after logout
+  reset(): void {
+    this.totalWorkspaceCount = -1;
+    this.cache = [];
+  }
+
   async filterByProject(): Promise<void> {
     const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
       createIfNone: false,
@@ -96,7 +102,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       this.projectFilter = project.description;
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.projectFilterUsed', true);
     }
-    this.cache = [];
+    this.reset();
     this.refresh();
     this.runDataProvider.refresh();
   }
