@@ -610,7 +610,7 @@
         },
         {
           "command": "terraform.cloud.workspaces.viewInBrowser",
-          "when": "view == terraform.cloud.workspaces",
+          "when": "view == terraform.cloud.workspaces && viewItem =~ /hasLink/",
           "group": "inline"
         },
         {

@@ -18,10 +18,13 @@ import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import axios from 'axios';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 
-export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<WorkspaceTreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | WorkspaceTreeItem>();
+export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
+  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private projectFilter: string | undefined;
+  private pageSize = 50;
+  private cache: vscode.TreeItem[] = [];
+  private nextPage: number | null = null;
 
   constructor(
     private ctx: vscode.ExtensionContext,
@@ -32,12 +35,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-refresh');
+        this.reset();
         this.refresh();
         this.runDataProvider.refresh(workspaceItem);
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.resetProjectFilter', () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter-reset');
         this.projectFilter = undefined;
+        this.reset();
         this.refresh();
       }),
       vscode.commands.registerCommand(
@@ -58,11 +63,22 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter');
         this.filterByProject();
       }),
+      vscode.commands.registerCommand('terraform.cloud.workspaces.loadMore', async () => {
+        this.reporter.sendTelemetryEvent('tfc-workspaces-loadMore');
+        this.refresh();
+        this.runDataProvider.refresh();
+      }),
     );
   }
 
   refresh(): void {
     this.didChangeTreeData.fire();
+  }
+
+  // This resets the internal cache, e.g. after logout
+  reset(): void {
+    this.nextPage = null;
+    this.cache = [];
   }
 
   async filterByProject(): Promise<void> {
@@ -86,28 +102,40 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
       this.projectFilter = project.description;
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.projectFilterUsed', true);
     }
+    this.reset();
     this.refresh();
     this.runDataProvider.refresh();
   }
 
-  getTreeItem(element: WorkspaceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getChildren(element?: any): vscode.ProviderResult<WorkspaceTreeItem[]> {
+  getChildren(element?: any): vscode.ProviderResult<vscode.TreeItem[]> {
     if (element) {
       return [element];
     }
 
+    return this.buildChildren();
+  }
+
+  private async buildChildren() {
     try {
-      return this.getWorkspaces();
+      this.cache = [...this.cache, ...(await this.getWorkspaces())];
     } catch (error) {
       return [];
     }
+
+    const items = this.cache.slice(0);
+    if (this.nextPage !== null) {
+      items.push(new LoadMoreTreeItem());
+    }
+
+    return items;
   }
 
-  private async getWorkspaces() {
+  private async getWorkspaces(): Promise<vscode.TreeItem[]> {
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
@@ -130,10 +158,12 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
           include: ['current_run'],
           // Include query parameter only if project filter is set
           ...(this.projectFilter && { 'filter[project][id]': this.projectFilter }),
-          'page[size]': 50,
+          'page[size]': this.pageSize,
+          'page[number]': this.nextPage ?? 1,
           sort: '-current-run.created-at',
         },
       });
+      this.nextPage = workspaceResponse.meta.pagination['next-page'];
 
       this.reporter.sendTelemetryEvent('tfc-fetch-workspaces', undefined, {
         totalCount: workspaceResponse.meta.pagination['total-count'],
@@ -254,6 +284,18 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<Worksp
   }
 }
 
+export class LoadMoreTreeItem extends vscode.TreeItem {
+  constructor() {
+    super('Load more...', vscode.TreeItemCollapsibleState.None);
+
+    this.iconPath = new vscode.ThemeIcon('ellipsis', new vscode.ThemeColor('charts.gray'));
+    this.command = {
+      command: 'terraform.cloud.workspaces.loadMore',
+      title: 'Load more',
+    };
+  }
+}
+
 export class WorkspaceTreeItem extends vscode.TreeItem {
   /**
    * @param name The Workspace Name
@@ -272,6 +314,7 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
 
     this.description = `[${this.projectName}]`;
     this.iconPath = GetRunStatusIcon(this.lastRun?.status);
+    this.contextValue = 'hasLink';
 
     const lockedTxt = this.attributes.locked ? '$(lock) Locked' : '$(unlock) Unlocked';
     const vscText =
