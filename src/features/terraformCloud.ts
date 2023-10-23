@@ -83,10 +83,11 @@ export class TerraformCloudFeature implements vscode.Disposable {
       }
 
       // we don't allow multi-select yet so this will always be one
-      const workspaceItem = event.selection[0] as WorkspaceTreeItem;
-
-      // call the TFC Run provider with the workspace
-      runDataProvider.refresh(workspaceItem);
+      const item = event.selection[0];
+      if (item instanceof WorkspaceTreeItem) {
+        // call the TFC Run provider with the workspace
+        runDataProvider.refresh(item);
+      }
     });
 
     // TODO: move this as the login/organization picker is fleshed out
@@ -94,6 +95,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
     vscode.authentication.onDidChangeSessions((e) => {
       // Refresh the workspace list if the user changes session
       if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
+        workspaceDataProvider.reset();
         workspaceDataProvider.refresh();
         runDataProvider.refresh();
       }
@@ -154,10 +156,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
         // project filter should be cleared on org change
         await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
-
-        // refresh workspaces so they pick up the change
-        workspaceDataProvider.refresh();
-        runDataProvider.refresh();
+        // filter reset will refresh workspaces
       }),
     );
   }
