@@ -24,7 +24,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   private projectFilter: string | undefined;
   private pageSize = 50;
   private cache: vscode.TreeItem[] = [];
-  private totalWorkspaceCount = -1;
+  private nextPage: number | null = null;
 
   constructor(
     private ctx: vscode.ExtensionContext,
@@ -77,7 +77,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
 
   // This resets the internal cache, e.g. after logout
   reset(): void {
-    this.totalWorkspaceCount = -1;
+    this.nextPage = null;
     this.cache = [];
   }
 
@@ -128,7 +128,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
 
     const items = this.cache.slice(0);
-    if (this.totalWorkspaceCount > this.cache.length) {
+    if (this.nextPage !== null) {
       items.push(new LoadMoreTreeItem());
     }
 
@@ -150,8 +150,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
 
     try {
-      // Calculate the next page number
-      const page = Math.floor(this.cache.length / this.pageSize) + 1;
       const workspaceResponse = await apiClient.listWorkspaces({
         params: {
           organization_name: organization,
@@ -161,14 +159,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
           // Include query parameter only if project filter is set
           ...(this.projectFilter && { 'filter[project][id]': this.projectFilter }),
           'page[size]': this.pageSize,
-          'page[number]': page,
+          'page[number]': this.nextPage ?? 1,
           sort: '-current-run.created-at',
         },
       });
-      this.totalWorkspaceCount = workspaceResponse.meta.pagination['total-count'];
+      this.nextPage = workspaceResponse.meta.pagination['next-page'];
 
       this.reporter.sendTelemetryEvent('tfc-fetch-workspaces', undefined, {
-        totalCount: this.totalWorkspaceCount,
+        totalCount: workspaceResponse.meta.pagination['total-count'],
       });
 
       // TODO? we could skip this request if a project filter is set,
