@@ -74,6 +74,8 @@ export class TerraformCloudFeature implements vscode.Disposable {
       showCollapseAll: true,
       treeDataProvider: workspaceDataProvider,
     });
+    const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+    workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
 
     this.context.subscriptions.push(runView, runDataProvider, workspaceDataProvider, workspaceView);
 
@@ -153,6 +155,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
         // user chose an organization so update the statusbar and make sure its visible
         organizationQuickPick.hide();
         this.statusBar.show(choice.label);
+        workspaceView.title = `Workspace - (${choice.label})`;
 
         // project filter should be cleared on org change
         await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
@@ -189,7 +192,7 @@ export class OrganizationStatusBar implements vscode.Disposable {
     }
 
     if (organization) {
-      this.organizationStatusBar.text = organization;
+      this.organizationStatusBar.text = `$(account) TFC - ${organization}`;
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', true);
     } else {
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.organizationsChosen', false);

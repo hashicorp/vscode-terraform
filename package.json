@@ -421,7 +421,7 @@
     "commands": [
       {
         "command": "terraform.cloud.login",
-        "title": "Terraform Cloud: Login"
+        "title": "HashiCorp Terraform Cloud: Login"
       },
       {
         "command": "terraform.generateBugReport",
@@ -503,6 +503,11 @@
         "icon": "$(output)"
       },
       {
+        "command": "terraform.cloud.organization.picker",
+        "title": "HashiCorp Terraform Cloud: Pick Organization",
+        "icon": "$(account)"
+      },
+      {
         "command": "terraform.cloud.workspaces.filterByProject",
         "title": "Filter by project",
         "icon": "$(filter)"
@@ -565,6 +570,9 @@
         {
           "command": "terraform.cloud.run.apply.downloadLog",
           "when": "false"
+        },
+        {
+          "command": "terraform.cloud.organization.picker"
         }
       ],
       "view/title": [
@@ -585,6 +593,11 @@
         },
         {
           "command": "terraform.cloud.workspaces.filterByProject",
+          "when": "view == terraform.cloud.workspaces",
+          "group": "navigation"
+        },
+        {
+          "command": "terraform.cloud.organization.picker",
           "when": "view == terraform.cloud.workspaces",
           "group": "navigation"
         },
