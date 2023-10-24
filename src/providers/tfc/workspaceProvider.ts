@@ -44,6 +44,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         this.projectFilter = undefined;
         this.reset();
         this.refresh();
+        this.runDataProvider.refresh();
       }),
       vscode.commands.registerCommand(
         'terraform.cloud.workspaces.viewInBrowser',
