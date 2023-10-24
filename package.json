@@ -583,7 +583,7 @@
     "which": "^3.0.1"
   },
   "devDependencies": {
-    "@hashicorp/js-releases": "^1.6.1",
+    "@hashicorp/js-releases": "^1.7.1",
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.1",
