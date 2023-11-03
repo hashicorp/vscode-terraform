@@ -1,14 +1,3 @@
-## [2.29.2023102410] (2023-10-24)
-
-ENHANCEMENTS:
-
-* Login to Terraform Cloud using an Authentication Token
-* View Terraform Cloud Workspaces and status detail inside VS Code
-* View Terraform Cloud Runs and status detail inside VS Code
-* Filter Terraform Cloud Workspaces by Project
-* Switch Terraform Cloud Organizations to view different workspaces
-* View Plan and Apply logs directly in the editor
-
 ## [2.28.2] (2023-10-16)
 
 ENHANCEMENTS:
