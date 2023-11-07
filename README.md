@@ -119,17 +119,7 @@ The extension provides several snippets to accelerate adding Terraform code to y
 
 Every time you have to switch away from your code, you risk losing momentum and the context about your tasks. Previously, Terraform users needed to have at least two windows open – their editor and a web page – to develop Terraform code. The editor contains all of the Terraform code they are working on, and the web page has the Terraform Cloud workspace loaded. Switching back and forth between the Terraform Cloud website and the text editor can be a frustrating and fragmented experience.
 
-The public preview of Terraform Cloud Visual Studio Code integration improves user experience by allowing users to view workspaces directly from within Visual Studio Code. Users can view the status of current and past runs and inspect detailed logs – without ever leaving the comfort of their editor.
-
-The new Terraform Cloud features are currently available in the pre-release version of our Terraform extension, which is the Visual Studio Code equivalent of a public beta channel. If you want to opt-in to receiving the new version in order to check out these capabilities before we roll them out to all users:
-
-1. Bring up the Extensions view in Visual Studio Code (Ctrl+Shift+X or ⇧⌘X)
-1. Search for the HashiCorp Terraform extension
-1. Click on "Switch to Pre-Release Version"
-
-![](docs/tfc/switch_to_preview.gif)
-
-If the text on the button says "Switch to Release Version", it means the pre-release version is already installed.
+The Terraform Cloud Visual Studio Code integration improves user experience by allowing users to view workspaces directly from within Visual Studio Code. Users can view the status of current and past runs and inspect detailed logs – without ever leaving the comfort of their editor.
 
 To start using Terraform Cloud with VS Code, open the new Terraform Cloud sidebar and click "Login to Terraform Cloud". You can login using a stored token from the Terraform CLI, an existing token you provide, or open the Terraform Cloud website to generate a new token.
 
@@ -147,7 +137,7 @@ Selecting a workspace populates the Run view with a list of runs for that worksp
 
 ![](docs/tfc/workspace_run_view.gif)
 
-If a Run has been Planned or Applied, you can view the raw log for each by selecting the button on each Run.
+If a Run has been Planned or Applied, you can view the raw log for each by expanding the Run then selecting the 'View Raw Log' button for either the Plan or Apply.
 
 ![](docs/tfc/plan_apply_view.gif)
 
