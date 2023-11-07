@@ -1,3 +1,25 @@
+## [2.29.0] (2023-11-08)
+
+ENHANCEMENTS:
+
+* Login to Terraform Cloud using an Authentication Token
+* View Terraform Cloud Workspaces and status detail inside VS Code
+* View Terraform Cloud Runs and status detail inside VS Code
+* Filter Terraform Cloud Workspaces by Project
+* Switch Terraform Cloud Organizations to view different workspaces
+* View Plan and Apply logs directly in the editor
+
+BUG FIXES:
+
+* Validate required attributes more selectively to relax `provider` validation ([#1485](https://github.com/hashicorp/terraform-ls/pull/1485))
+* Skip inferring variable type from default values ([hcl-lang#338](https://github.com/hashicorp/hcl-lang/pull/338))
+* Ensure partially unknown dependent body is handled ([hcl-lang#339](https://github.com/hashicorp/hcl-lang/pull/339))
+* Fix type-unaware target collection ([hcl-lang#340](https://github.com/hashicorp/hcl-lang/pull/340))
+* Allow variable references in `depends_on` ([terraform-schema#290](https://github.com/hashicorp/terraform-schema/pull/290))
+* Fix provider attribute to block conversion ([terraform-schema#288](https://github.com/hashicorp/terraform-schema/pull/288))
+* Skip inferring module inputs for default values ([terraform-schema#289](https://github.com/hashicorp/terraform-schema/pull/289))
+* Allow local references in `depends_on` ([terraform-schema#292](https://github.com/hashicorp/terraform-schema/pull/292))
+
 ## [2.28.2] (2023-10-16)
 
 ENHANCEMENTS:
@@ -808,7 +830,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.2...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.0...main
+[2.29.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.2...v2.29.0
 [2.28.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.1...v2.28.2
 [2.28.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.0...v2.28.1
 [2.28.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.2...v2.28.0
