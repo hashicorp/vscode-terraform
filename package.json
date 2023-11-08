@@ -51,7 +51,8 @@
     "onAuthenticationRequest:terraform",
     "onView:terraform-modules",
     "workspaceContains:**/*.tf",
-    "workspaceContains:**/*.tfvars"
+    "workspaceContains:**/*.tfvars",
+    "workspaceContains:**/*.tftest.hcl"
   ],
   "main": "./out/extension",
   "browser": "./out/web/extension",
@@ -82,6 +83,13 @@
         "configuration": "./language-configuration.json"
       },
       {
+        "id": "terraform-test",
+        "extensions": [
+          ".tftest.hcl"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
         "id": "json",
         "extensions": [
           ".tfstate"
@@ -96,6 +104,11 @@
       },
       {
         "language": "terraform-vars",
+        "scopeName": "source.hcl.terraform",
+        "path": "./syntaxes/terraform.tmGrammar.json"
+      },
+      {
+        "language": "terraform-test",
         "scopeName": "source.hcl.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
       }

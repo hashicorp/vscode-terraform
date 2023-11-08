@@ -41,6 +41,7 @@ const brand = `HashiCorp Terraform`;
 const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
+  { scheme: 'file', language: 'terraform-test' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
 const tfcOutputChannel = vscode.window.createOutputChannel('HashiCorp Terraform Cloud');
@@ -80,6 +81,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       fileEvents: [
         vscode.workspace.createFileSystemWatcher('**/*.tf'),
         vscode.workspace.createFileSystemWatcher('**/*.tfvars'),
+        vscode.workspace.createFileSystemWatcher('**/*.tftest.hcl'),
       ],
     },
     diagnosticCollectionName: 'HashiCorpTerraform',
