@@ -740,7 +740,7 @@
     "package": "vsce package",
     "test": "npm run compile:test && node ./out/test/runTest.js",
     "test:unit": "jest",
-    "test:unit:web": "npm run compile && npx playwright install && vscode-test-web --headless --browser=chromium --extensionDevelopmentPath=. --extensionTestsPath=./out/web/test/integration/index.js",
+    "test:unit:web": "npm run compile && npx playwright install chromium && vscode-test-web --headless --browser=chromium --extensionDevelopmentPath=. --extensionTestsPath=./out/web/test/integration/index.js",
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
