@@ -1,0 +1,187 @@
+name: "Performance issue report"
+description: "Let us know about issues with performance, such as slow speed or abnormally high CPU or memory usage."
+labels: [performance]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: We use GitHub issues for tracking bugs and enhancements. For questions, please use [the community forum](https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/) where there are more people ready to help.
+
+  - type: input
+    id: version
+    attributes:
+      label: Extension Version
+      description: |
+        Find this in the VS Code UI: Extensions Pane -> Installed -> HashiCorp Terraform
+      placeholder: v2.26.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: vscode
+    attributes:
+      label: VS Code Version
+      description: |
+        Copy this from VS Code:
+          - Windows/Linux: Help -> About
+          - macOS: Code -> About Visual Studio Code
+      placeholder: |
+        Version: 1.78.2 (Universal)
+        Commit: b3e4e68a0bc097f0ae7907b217c1119af9e03435
+        Date: 2023-05-10T14:44:45.204Z
+        Electron: 22.5.2
+        Chromium: 108.0.5359.215
+        Node.js: 16.17.1
+        V8: 10.8.168.25-electron.0
+        OS: Darwin arm64 21.6.0
+        Sandboxed: Yes
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: |
+        Find version and build (32-bit or 64-bit) of your OS
+          - macOS: Apple logo -> About This Mac
+          - Windows: right-click on Windows logo -> Settings -> Device and Windows specifications
+          - Linux: `uname -a`
+            - Ubuntu: `cat /etc/issue`
+        Also note whether you use WSL (Windows Subsystem for Linux) when on Windows.
+      placeholder: macOS Monterey Version 12.6.5 (21G531)
+    validations:
+      required: true
+
+  - type: input
+    id: terraform
+    attributes:
+      label: Terraform Version
+      description: |
+        Output of `terraform version`
+      placeholder: Terraform v1.4.6 on darwin_arm64
+    validations:
+      required: true
+
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Behavior
+      description: |
+        What happens? What symptoms of poor performance are you seeing? Please give a clear and concise description in plain English.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        Please list the steps required to reproduce the issue. If applicable, add screenshots to help explain your problem.
+      placeholder: |
+        1. Go to '...'
+        2. Type '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Terraform Configuration
+      description: |
+        Include any relevant Terraform configuration that might be helpful for reproducing your issue.
+        Please remove any sensitive information such as passwords before sharing configuration snippets.
+      placeholder: |
+        resource "github_repository" "test" {
+          name = "vscode-terraform"
+        }
+
+        # etc...
+      render: terraform
+    validations:
+      required: false
+
+  - type: textarea
+    id: tree
+    attributes:
+      label: Project Structure
+      description: |
+        Optionally, use `tree` to output ASCII-based hierarchy of your project.
+      placeholder: |
+        .
+        ├── LICENSE
+        ├── README.md
+        ├── aks
+        │   ├── main.tf
+        │   ├── outputs.tf
+        │   ├── terraform.tfvars.example
+        │   ├── variables.tf
+        │   └── versions.tf
+        ├── consul
+        │   ├── dc1.yaml
+        │   ├── dc2.yaml
+        │   ├── main.tf
+        │   ├── proxy_defaults.tf
+        │   └── versions.tf
+        ├── counting-service
+        │   ├── main.tf
+        │   └── versions.tf
+        └── eks
+            ├── kubernetes.tf
+            ├── main.tf
+            ├── outputs.tf
+            ├── variables.tf
+            └── versions.tf
+      render: sh
+    validations:
+      required: false
+
+  - type: input
+    id: gist
+    attributes:
+      label: Gist
+      description: |
+        If possible, please provide a link to a [GitHub Gist](https://gist.github.com/) containing a larger code sample and/or the [log output](https://user-images.githubusercontent.com/45985/239918316-8ad0a91b-c724-4f89-ae8f-1a992385bd77.png).
+        Please remove any sensitive information such as passwords before sharing configuration files.
+      placeholder: |
+        https://gist.github.com/gdb/b6365e79be6052e7531e7ba6ea8caf23
+    validations:
+      required: false
+
+  - type: textarea
+    id: miscellaneous
+    attributes:
+      label: Anything Else?
+      description: |
+        Is there anything else we should know? For example, do you you use any tools for managing Terraform version/execution (e.g. `tfenv`) or any credentials helpers?
+        Do you have any other Terraform extensions installed?
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Are there any other GitHub issues (open or closed) or pull requests that relate to this issue? Or links to documentation pages?
+        Guide to referencing Github issues: https://help.github.com/articles/basic-writing-and-formatting-syntax/#referencing-issues-and-pull-requests
+      placeholder: |
+        - #123
+        - #456
+        - hashicorp/terraform#789
+        - https://developer.hashicorp.com/terraform/language/expressions/dynamic-blocks
+    validations:
+      required: false
+
+  - type: textarea
+    id: community
+    attributes:
+      label: Community Note
+      description: Please do not remove, edit, or change the following note for our community. Just leave everything in this textbox as-is.
+      value: |
+        - Please vote on this issue by adding a 👍 [reaction](https://blog.github.com/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/) to the original issue to help the community and maintainers prioritize this request
+        - Please do not leave "+1" or other comments that do not add relevant new information or questions, they generate extra noise for issue followers and do not help prioritize the request
+        - If you are interested in working on this issue or have submitted a pull request, please leave a comment
+    validations:
+      required: true
