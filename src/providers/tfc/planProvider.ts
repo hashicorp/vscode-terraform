@@ -81,7 +81,6 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
     if (planLog && planLog.driftChanges) {
       items.push(new DriftChangesItem(planLog.driftChanges, planLog.driftSummary));
     }
-    //  && planLog.outputs.size > 0
     if (planLog && planLog.outputs) {
       items.push(new OutputsItem(planLog.outputs));
     }
@@ -147,20 +146,14 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
             continue;
           }
           if (logLine.type === 'outputs' && logLine.outputs) {
-            // JSON.parse() won't do the conversion from [JSON] object
-            // to the Map so we have to do it here.
-            Object.entries(logLine.outputs).forEach(function (value: [string, OutputChange]) {
-              if (!planLog.outputs) {
-                planLog.outputs = new Map();
-              }
-              planLog.outputs.set(value[0], value[1]);
-            });
-
+            planLog.outputs = logLine.outputs;
             continue;
           }
           if (logLine.type === 'diagnostic' && logLine.diagnostic) {
-            if (!planLog.diagnostics || !planLog.diagnosticSummary) {
+            if (!planLog.diagnostics) {
               planLog.diagnostics = [];
+            }
+            if (!planLog.diagnosticSummary) {
               planLog.diagnosticSummary = {
                 errorCount: 0,
                 warningCount: 0,
@@ -269,11 +262,7 @@ class PlannedChangesItem extends vscode.TreeItem implements ItemWithChildren {
   }
 
   getChildren(): vscode.TreeItem[] {
-    const items: vscode.TreeItem[] = [];
-    this.plannedChanges.forEach((change) => {
-      items.push(new PlannedChangeItem(change));
-    });
-    return items;
+    return this.plannedChanges.map((change) => new PlannedChangeItem(change));
   }
 }
 
@@ -286,11 +275,10 @@ class PlannedChangeItem extends vscode.TreeItem {
 
     super(label, vscode.TreeItemCollapsibleState.None);
     this.id = change.action + '/' + change.resource.addr;
-    const icon = GetChangeActionIcon(change.action);
-    this.iconPath = icon;
+    this.iconPath = GetChangeActionIcon(change.action);
     this.description = change.action;
 
-    const tooltip: vscode.MarkdownString = new vscode.MarkdownString();
+    const tooltip = new vscode.MarkdownString();
     if (change.previous_resource) {
       tooltip.appendMarkdown(
         `\`${change.previous_resource.addr}\` planned to _${change.action}_ to \`${change.resource.addr}\``,
@@ -324,11 +312,7 @@ class DriftChangesItem extends vscode.TreeItem implements ItemWithChildren {
   }
 
   getChildren(): vscode.TreeItem[] {
-    const items: vscode.TreeItem[] = [];
-    this.driftChanges.forEach((change) => {
-      items.push(new DriftChangeItem(change));
-    });
-    return items;
+    return this.driftChanges.map((change) => new DriftChangeItem(change));
   }
 }
 
@@ -341,14 +325,10 @@ class DriftChangeItem extends vscode.TreeItem {
 
     super(label, vscode.TreeItemCollapsibleState.None);
     this.id = 'drift/' + change.action + '/' + change.resource.addr;
-    const icon = GetChangeActionIcon(change.action);
-    this.iconPath = icon;
+    this.iconPath = GetChangeActionIcon(change.action);
     const message = GetDriftChangeActionMessage(change.action);
     this.description = message;
-
-    const tooltip: vscode.MarkdownString = new vscode.MarkdownString();
-    tooltip.appendMarkdown(`\`${change.resource.addr}\` _${message}_`);
-    this.tooltip = tooltip;
+    this.tooltip = new vscode.MarkdownString(`\`${change.resource.addr}\` _${message}_`);
   }
 }
 
@@ -371,8 +351,8 @@ class OutputsItem extends vscode.TreeItem implements ItemWithChildren {
 
   getChildren(): vscode.TreeItem[] {
     const items: vscode.TreeItem[] = [];
-    this.outputs.forEach((output: OutputChange, name: string) => {
-      items.push(new OutputChangeItem(name, output));
+    Object.entries(this.outputs).forEach(([name, change]: [string, OutputChange]) => {
+      items.push(new OutputChangeItem(name, change));
     });
     return items;
   }
@@ -395,11 +375,7 @@ class DiagnosticsItem extends vscode.TreeItem implements ItemWithChildren {
   }
 
   getChildren(): vscode.TreeItem[] {
-    const items: vscode.TreeItem[] = [];
-    this.diagnostics.forEach((diagnostic) => {
-      items.push(new DiagnosticItem(diagnostic));
-    });
-    return items;
+    return this.diagnostics.map((diagnostic) => new DiagnosticItem(diagnostic));
   }
 }
 
@@ -410,7 +386,7 @@ class DiagnosticItem extends vscode.TreeItem {
     const icon = GetDiagnosticSeverityIcon(diagnostic.severity);
     this.iconPath = icon;
 
-    const tooltip: vscode.MarkdownString = new vscode.MarkdownString();
+    const tooltip = new vscode.MarkdownString();
     tooltip.supportThemeIcons = true;
     tooltip.appendMarkdown(`$(${icon.id}) **${diagnostic.summary}**\n\n`);
     tooltip.appendMarkdown(diagnostic.detail);

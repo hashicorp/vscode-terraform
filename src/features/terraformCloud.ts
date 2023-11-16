@@ -85,7 +85,14 @@ export class TerraformCloudFeature implements vscode.Disposable {
     const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
     workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
 
-    this.context.subscriptions.push(runView, planView, runDataProvider, workspaceDataProvider, workspaceView);
+    this.context.subscriptions.push(
+      runView,
+      planView,
+      planDataProvider,
+      runDataProvider,
+      workspaceDataProvider,
+      workspaceView,
+    );
 
     workspaceView.onDidChangeSelection((event) => {
       if (event.selection.length <= 0) {

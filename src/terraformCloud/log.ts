@@ -109,7 +109,9 @@ export interface DriftSummary {
 
 type OperationType = 'plan' | 'apply' | 'destroy';
 
-export type Outputs = Map<string, OutputChange>;
+export interface Outputs {
+  [key: string]: OutputChange;
+}
 
 export interface OutputChange {
   action: ChangeAction;
