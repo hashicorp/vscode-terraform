@@ -48,11 +48,11 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         vscode.env.openExternal(run.websiteUri);
       }),
       vscode.commands.registerCommand('terraform.cloud.run.viewPlan', async (plan: PlanTreeItem) => {
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingPlan', true);
         if (!plan.logReadUrl) {
           await vscode.window.showErrorMessage(`No plan found for ${plan.id}`);
           return;
         }
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingPlan', true);
         await vscode.commands.executeCommand('terraform.cloud.run.plan.focus');
         this.planDataProvider.refresh(plan);
       }),
