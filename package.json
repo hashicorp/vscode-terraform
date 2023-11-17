@@ -683,7 +683,8 @@
       "terraform-cloud-panel": [
         {
           "id": "terraform.cloud.run.plan",
-          "name": "Plan"
+          "name": "Plan",
+          "when": "terraform.cloud.run.viewingPlan"
         }
       ]
     },
