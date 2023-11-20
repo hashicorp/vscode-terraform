@@ -495,6 +495,11 @@
       {
         "command": "terraform.cloud.run.plan.downloadLog",
         "title": "View raw plan log",
+        "icon": "$(console)"
+      },
+      {
+        "command": "terraform.cloud.run.viewPlan",
+        "title": "View plan output",
         "icon": "$(output)"
       },
       {
@@ -568,6 +573,10 @@
           "when": "false"
         },
         {
+          "command": "terraform.cloud.run.viewPlan",
+          "when": "false"
+        },
+        {
           "command": "terraform.cloud.run.apply.downloadLog",
           "when": "false"
         },
@@ -633,7 +642,12 @@
         },
         {
           "command": "terraform.cloud.run.plan.downloadLog",
-          "when": "view == terraform.cloud.runs && viewItem =~ /hasPlan/",
+          "when": "view == terraform.cloud.runs && viewItem =~ /hasRawPlan/",
+          "group": "inline"
+        },
+        {
+          "command": "terraform.cloud.run.viewPlan",
+          "when": "view == terraform.cloud.runs && viewItem =~ /hasStructuredPlan/",
           "group": "inline"
         },
         {
@@ -665,6 +679,13 @@
           "name": "Runs",
           "contextualTitle": "Terraform Cloud runs"
         }
+      ],
+      "terraform-cloud-panel": [
+        {
+          "id": "terraform.cloud.run.plan",
+          "name": "Plan",
+          "when": "terraform.cloud.run.viewingPlan"
+        }
       ]
     },
     "viewsContainers": {
@@ -677,6 +698,13 @@
         {
           "id": "terraform-cloud",
           "title": "HashiCorp Terraform Cloud",
+          "icon": "assets/icons/vs_code_terraform_cloud.svg"
+        }
+      ],
+      "panel": [
+        {
+          "id": "terraform-cloud-panel",
+          "title": "Terraform Cloud",
           "icon": "assets/icons/vs_code_terraform_cloud.svg"
         }
       ]
@@ -723,6 +751,10 @@
       {
         "view": "terraform.cloud.runs",
         "contents": "Select a workspace to view a list of runs"
+      },
+      {
+        "view": "terraform.cloud.run.plan",
+        "contents": "Select a run to view a plan"
       }
     ]
   },
@@ -751,6 +783,7 @@
     "@zodios/core": "^10.9.2",
     "@zodios/plugins": "^10.6.0",
     "axios": "^1.4.0",
+    "semver": "^7.5.4",
     "vscode-languageclient": "8.1.0",
     "vscode-uri": "^3.0.7",
     "which": "^3.0.1",
