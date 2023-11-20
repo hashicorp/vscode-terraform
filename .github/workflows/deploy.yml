@@ -55,7 +55,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check out repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # https://github.com/actions/checkout/releases/tag/v4.1.1
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Set prerelease in package.json
         if: inputs.deploy_type == 'prerelease'
@@ -66,7 +66,7 @@ jobs:
           LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
 
       - name: Setup Node
-        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # https://github.com/actions/setup-node/releases/tag/v3.8.1
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
           node-version-file: '.nvmrc'
 
@@ -85,7 +85,7 @@ jobs:
         run: npm run package -- --target=${{ matrix.vsce_target }}
 
       - name: Upload vsix as artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # https://github.com/actions/upload-artifact/releases/tag/v3.1.3
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
         with:
           name: ${{ matrix.vsce_target }}
           path: '*.vsix'
@@ -96,7 +96,7 @@ jobs:
     needs: build
     if: success() && inputs.deploy_type == 'prerelease'
     steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
       - name: Publish Prerelease to Marketplace
         run: npx vsce publish --pre-release --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
@@ -108,7 +108,7 @@ jobs:
     needs: build
     if: success() && inputs.deploy_type == 'stable'
     steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
       - name: Publish Stable to Marketplace
         run: npx vsce publish --no-git-tag-version --packagePath $(find . -iname *.vsix)
         env:
@@ -120,7 +120,7 @@ jobs:
     needs: build
     if: success() && inputs.deploy_type == 'stable'
     steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # https://github.com/actions/download-artifact/releases/tag/v3.0.2
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
       - name: Publish Stable to OpenVSX
         run: npx ovsx publish --packagePath $(find . -iname *.vsix)
         env:
