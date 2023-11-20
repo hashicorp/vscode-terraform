@@ -24,8 +24,8 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # https://github.com/actions/checkout/releases/tag/v4.1.1
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # https://github.com/actions/setup-node/releases/tag/v3.8.1
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
           node-version-file: '.nvmrc'
       - name: npm install
@@ -47,8 +47,8 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # https://github.com/actions/checkout/releases/tag/v4.1.1
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # https://github.com/actions/setup-node/releases/tag/v3.8.1
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
           node-version-file: '.nvmrc'
       - name: npm install
@@ -76,8 +76,8 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # https://github.com/actions/checkout/releases/tag/v4.1.1
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # https://github.com/actions/setup-node/releases/tag/v3.8.1
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
           node-version-file: '.nvmrc'
       - name: Set up Xvfb (Ubuntu)
