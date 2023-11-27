@@ -141,6 +141,12 @@ If a Run has been Planned or Applied, you can view the raw log for each by expan
 
 ![](docs/tfc/plan_apply_view.gif)
 
+To sign out or log out of your Terraform Cloud session, click the Accounts icon next to the Settings icon in the Activity Bar and select "Sign Out":
+
+![](docs/tfc/log_out.png)
+
+This will clear the currently saved token and allow you to login using a different token.
+
 ### Terraform Module and Provider Explorer
 
 List Terraform modules used in the current open document in the Explorer Pane, or drag to the Side Bar pane for an expanded view.
