@@ -421,32 +421,32 @@
     "commands": [
       {
         "command": "terraform.generateBugReport",
-        "title": "Terraform: Generate Bug Report"
+        "title": "HashiCorp Terraform: Generate Bug Report"
       },
       {
         "command": "terraform.enableLanguageServer",
-        "title": "Terraform: Enable Language Server"
+        "title": "HashiCorp Terraform: Enable Language Server"
       },
       {
         "command": "terraform.disableLanguageServer",
-        "title": "Terraform: Disable Language Server"
+        "title": "HashiCorp Terraform: Disable Language Server"
       },
       {
         "command": "terraform.init",
-        "title": "Terraform: init"
+        "title": "HashiCorp Terraform: init"
       },
       {
         "command": "terraform.initCurrent",
-        "title": "Terraform: init current folder",
+        "title": "HashiCorp Terraform: init current folder",
         "icon": "$(cloud-download)"
       },
       {
         "command": "terraform.validate",
-        "title": "Terraform: validate"
+        "title": "HashiCorp Terraform: validate"
       },
       {
         "command": "terraform.plan",
-        "title": "Terraform: plan"
+        "title": "HashiCorp Terraform: plan"
       },
       {
         "command": "terraform.modules.refreshList",
