@@ -138,13 +138,15 @@ export class TerraformCloudFeature implements vscode.Disposable {
       }
     });
 
-    workspaceView.onDidChangeVisibility((event) => {
+    workspaceView.onDidChangeVisibility(async (event) => {
       if (event.visible) {
         // the view is visible so show the status bar
         this.statusBar.show();
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', true);
       } else {
         // hide statusbar because user isn't looking at our views
         this.statusBar.hide();
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', false);
       }
     });
 
