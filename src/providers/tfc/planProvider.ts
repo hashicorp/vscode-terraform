@@ -9,22 +9,13 @@ import { Writable } from 'stream';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { ZodiosError, isErrorFromAlias } from '@zodios/core';
-import { apiErrorsToString } from '../../terraformCloud/errors';
+import { ZodiosError } from '@zodios/core';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
-import { GetDiagnosticSeverityIcon, GetChangeActionIcon, GetDriftChangeActionMessage } from './helpers';
-import {
-  Change,
-  ChangeSummary,
-  Diagnostic,
-  DriftSummary,
-  LogLine,
-  OutputChange,
-  Outputs,
-} from '../../terraformCloud/log';
+import { GetChangeActionIcon, GetDriftChangeActionMessage } from './helpers';
+import { Change, ChangeSummary, Diagnostic, DriftSummary, LogLine, Outputs } from '../../terraformCloud/log';
 import { PlanTreeItem } from './runProvider';
+import { DiagnosticSummary, DiagnosticsItem, OutputsItem, isItemWithChildren, ItemWithChildren } from './logHelpers';
 
 export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -190,13 +181,6 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
           handleAuthError();
           return;
         }
-
-        if (isErrorFromAlias(apiClient.api, 'listRuns', error)) {
-          message += apiErrorsToString(error.response.data.errors);
-          vscode.window.showErrorMessage(message);
-          this.reporter.sendTelemetryException(error);
-          return;
-        }
       }
 
       if (error instanceof Error) {
@@ -227,14 +211,6 @@ interface PlanLog {
   outputs?: Outputs;
   diagnostics?: Diagnostic[];
   diagnosticSummary?: DiagnosticSummary;
-}
-
-interface ItemWithChildren {
-  getChildren(): vscode.TreeItem[];
-}
-
-function isItemWithChildren(element: object): element is ItemWithChildren {
-  return 'getChildren' in element;
 }
 
 class PlannedChangesItem extends vscode.TreeItem implements ItemWithChildren {
@@ -330,71 +306,4 @@ class DriftChangeItem extends vscode.TreeItem {
     this.description = message;
     this.tooltip = new vscode.MarkdownString(`\`${change.resource.addr}\` _${message}_`);
   }
-}
-
-class OutputChangeItem extends vscode.TreeItem {
-  constructor(name: string, output: OutputChange) {
-    super(name, vscode.TreeItemCollapsibleState.None);
-    this.id = 'output/' + output.action + '/' + name;
-    this.iconPath = GetChangeActionIcon(output.action);
-    this.description = output.action;
-    if (output.sensitive) {
-      this.description += ' (sensitive)';
-    }
-  }
-}
-
-class OutputsItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private outputs: Outputs) {
-    super(`${outputs.size} outputs`, vscode.TreeItemCollapsibleState.Expanded);
-  }
-
-  getChildren(): vscode.TreeItem[] {
-    const items: vscode.TreeItem[] = [];
-    Object.entries(this.outputs).forEach(([name, change]: [string, OutputChange]) => {
-      items.push(new OutputChangeItem(name, change));
-    });
-    return items;
-  }
-}
-
-class DiagnosticsItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private diagnostics: Diagnostic[], summary: DiagnosticSummary) {
-    const labels: string[] = [];
-    if (summary.warningCount === 1) {
-      labels.push(`1 warning`);
-    } else if (summary.warningCount > 1) {
-      labels.push(`${summary.warningCount} warnings`);
-    }
-    if (summary.errorCount === 1) {
-      labels.push(`1 error`);
-    } else if (summary.errorCount > 1) {
-      labels.push(`${summary.errorCount} errors`);
-    }
-    super(labels.join(', '), vscode.TreeItemCollapsibleState.Expanded);
-  }
-
-  getChildren(): vscode.TreeItem[] {
-    return this.diagnostics.map((diagnostic) => new DiagnosticItem(diagnostic));
-  }
-}
-
-class DiagnosticItem extends vscode.TreeItem {
-  constructor(diagnostic: Diagnostic) {
-    super(diagnostic.summary, vscode.TreeItemCollapsibleState.None);
-    this.description = diagnostic.severity;
-    const icon = GetDiagnosticSeverityIcon(diagnostic.severity);
-    this.iconPath = icon;
-
-    const tooltip = new vscode.MarkdownString();
-    tooltip.supportThemeIcons = true;
-    tooltip.appendMarkdown(`$(${icon.id}) **${diagnostic.summary}**\n\n`);
-    tooltip.appendMarkdown(diagnostic.detail);
-    this.tooltip = tooltip;
-  }
-}
-
-interface DiagnosticSummary {
-  errorCount: number;
-  warningCount: number;
 }

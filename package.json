@@ -508,6 +508,11 @@
         "icon": "$(output)"
       },
       {
+        "command": "terraform.cloud.run.viewApply",
+        "title": "View apply output",
+        "icon": "$(output)"
+      },
+      {
         "command": "terraform.cloud.organization.picker",
         "title": "HashiCorp Terraform Cloud: Pick Organization",
         "icon": "$(account)"
@@ -578,6 +583,10 @@
         },
         {
           "command": "terraform.cloud.run.apply.downloadLog",
+          "when": "false"
+        },
+        {
+          "command": "terraform.cloud.run.viewApply",
           "when": "false"
         },
         {
@@ -652,7 +661,12 @@
         },
         {
           "command": "terraform.cloud.run.apply.downloadLog",
-          "when": "view == terraform.cloud.runs && viewItem =~ /hasApply/",
+          "when": "view == terraform.cloud.runs && viewItem =~ /hasRawApply/",
+          "group": "inline"
+        },
+        {
+          "command": "terraform.cloud.run.viewApply",
+          "when": "view == terraform.cloud.runs && viewItem =~ /hasStructuredApply/",
           "group": "inline"
         }
       ]
@@ -685,6 +699,11 @@
           "id": "terraform.cloud.run.plan",
           "name": "Plan",
           "when": "terraform.cloud.run.viewingPlan"
+        },
+        {
+          "id": "terraform.cloud.run.apply",
+          "name": "Apply",
+          "when": "terraform.cloud.run.viewingApply"
         }
       ]
     },
@@ -755,6 +774,10 @@
       {
         "view": "terraform.cloud.run.plan",
         "contents": "Select a run to view a plan"
+      },
+      {
+        "view": "terraform.cloud.run.apply",
+        "contents": "Select a run to view an apply"
       }
     ]
   },

@@ -18,6 +18,7 @@ import {
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
 import { TerraformCloudWebUrl } from '../terraformCloud';
 import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
+import { ApplyTreeDataProvider } from '../providers/tfc/applyProvider';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -64,7 +65,20 @@ export class TerraformCloudFeature implements vscode.Disposable {
       treeDataProvider: planDataProvider,
     });
 
-    const runDataProvider = new RunTreeDataProvider(this.context, this.reporter, outputChannel, planDataProvider);
+    const applyDataProvider = new ApplyTreeDataProvider(this.context, this.reporter, outputChannel);
+    const applyView = vscode.window.createTreeView('terraform.cloud.run.apply', {
+      canSelectMany: false,
+      showCollapseAll: true,
+      treeDataProvider: applyDataProvider,
+    });
+
+    const runDataProvider = new RunTreeDataProvider(
+      this.context,
+      this.reporter,
+      outputChannel,
+      planDataProvider,
+      applyDataProvider,
+    );
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
       canSelectMany: false,
       showCollapseAll: true,
@@ -89,6 +103,8 @@ export class TerraformCloudFeature implements vscode.Disposable {
       runView,
       planView,
       planDataProvider,
+      applyView,
+      applyDataProvider,
       runDataProvider,
       workspaceDataProvider,
       workspaceView,
@@ -105,6 +121,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
         // call the TFC Run provider with the workspace
         runDataProvider.refresh(item);
         planDataProvider.refresh();
+        applyDataProvider.refresh();
       }
     });
 
@@ -117,6 +134,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
         workspaceDataProvider.refresh();
         runDataProvider.refresh();
         planDataProvider.refresh();
+        applyDataProvider.refresh();
       }
     });
 
