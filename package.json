@@ -5,7 +5,7 @@
   "description": "Syntax highlighting and autocompletion for Terraform",
   "version": "2.29.0",
   "publisher": "hashicorp",
-  "appInsightsKey": "885372d2-6f3c-499f-9d25-b8b219983a52",
+  "appInsightsKey": "5c5e4528-ba18-47cc-9966-878084d4b135",
   "license": "MPL-2.0",
   "preview": false,
   "private": true,
