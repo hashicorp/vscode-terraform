@@ -1,3 +1,25 @@
+## [2.29.1] (2023-12-12)
+
+ENHANCEMENTS:
+
+* Add new panel for Terraform Cloud structured plans ([#1590](https://github.com/hashicorp/vscode-terraform/pull/1590))
+* Add new panel for Terraform Cloud structured applies ([#1647](https://github.com/hashicorp/vscode-terraform/pull/1647))
+* Document TFC account log out ([#1642](https://github.com/hashicorp/vscode-terraform/pull/1642))
+* Add support for conditional expression ([hcl-lang#326](https://github.com/hashicorp/hcl-lang/pull/326))
+* Add support for template expressions ([hcl-lang#322](https://github.com/hashicorp/hcl-lang/pull/322))
+* Reflect new SSO endpoint override in S3 backend ([terraform-schema#302](https://github.com/hashicorp/terraform-schema/pull/302))
+* Reflect new proxy settings in S3 backend ([terraform-schema#301](https://github.com/hashicorp/terraform-schema/pull/301))
+* Reflect new `skip_s3_checksum` attribute in S3 backend ([terraform-schema#295](https://github.com/hashicorp/terraform-schema/pull/295))
+
+BUG FIXES:
+
+* Improve traversal completion for lists, tuples, and sets ([hcl-lang#344](https://github.com/hashicorp/hcl-lang/pull/344))
+* Update version resolution for empty constraints ([terraform-schema#296](https://github.com/hashicorp/terraform-schema/pull/296))
+
+INTERNAL:
+
+* Update Node to v18 ([#1625](https://github.com/hashicorp/vscode-terraform/pull/1625))
+
 ## [2.29.0] (2023-11-08)
 
 ENHANCEMENTS:
@@ -830,7 +852,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.1...main
+[2.29.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.0...v2.29.1
 [2.29.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.2...v2.29.0
 [2.28.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.1...v2.28.2
 [2.28.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.0...v2.28.1
