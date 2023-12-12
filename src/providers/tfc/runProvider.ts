@@ -20,6 +20,7 @@ import { PlanAttributes } from '../../terraformCloud/plan';
 import { ApplyAttributes } from '../../terraformCloud/apply';
 import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
 import { PlanTreeDataProvider } from './planProvider';
+import { ApplyTreeDataProvider } from './applyProvider';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCRunTreeItem>();
@@ -31,6 +32,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
     private planDataProvider: PlanTreeDataProvider,
+    private applyDataProvider: ApplyTreeDataProvider,
   ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
@@ -55,6 +57,15 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingPlan', true);
         await vscode.commands.executeCommand('terraform.cloud.run.plan.focus');
         this.planDataProvider.refresh(plan);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.viewApply', async (apply: ApplyTreeItem) => {
+        if (!apply.logReadUrl) {
+          await vscode.window.showErrorMessage(`No apply log found for ${apply.id}`);
+          return;
+        }
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingApply', true);
+        await vscode.commands.executeCommand('terraform.cloud.run.apply.focus');
+        this.applyDataProvider.refresh(apply);
       }),
     );
   }
@@ -206,8 +217,8 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         const status = plan.data.attributes.status;
         const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
         const item = new PlanTreeItem(root.planId, label, plan.data.attributes);
-        if (status === 'unreachable') {
-          item.label = 'Plan will not run';
+        if (status === 'unreachable' || status === 'pending') {
+          item.label = label;
         } else {
           if (this.isJsonExpected(plan.data.attributes, root.attributes['terraform-version'])) {
             item.contextValue = 'hasStructuredPlan';
@@ -225,13 +236,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         const status = apply.data.attributes.status;
         const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
         const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes);
-        switch (status) {
-          case 'unreachable':
-            item.label = 'Apply will not run';
-            break;
-          default:
-            item.contextValue = 'hasApply';
-            break;
+        if (status === 'unreachable' || status === 'pending') {
+          item.label = label;
+        } else {
+          if (this.isJsonExpected(apply.data.attributes, root.attributes['terraform-version'])) {
+            item.contextValue = 'hasStructuredApply';
+          } else {
+            item.contextValue = 'hasRawApply';
+          }
         }
         items.push(item);
       }
@@ -240,7 +252,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     return items;
   }
 
-  private isJsonExpected(attributes: PlanAttributes, terraformVersion: string): boolean {
+  private isJsonExpected(attributes: PlanAttributes | ApplyAttributes, terraformVersion: string): boolean {
     const jsonSupportedVersion = '> 0.15.2';
     if (!semver.satisfies(terraformVersion, jsonSupportedVersion)) {
       return false;
@@ -322,7 +334,7 @@ export class PlanTreeItem extends vscode.TreeItem {
   }
 }
 
-class ApplyTreeItem extends vscode.TreeItem {
+export class ApplyTreeItem extends vscode.TreeItem {
   public logReadUrl = '';
   constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
     super(label);

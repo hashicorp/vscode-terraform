@@ -10,6 +10,7 @@ export const applyAttributes = z.object({
   'resource-additions': z.number().nullable(),
   'resource-changes': z.number().nullable(),
   'resource-destructions': z.number().nullable(),
+  'structured-run-output-enabled': z.boolean(),
   status: z.string(),
   'status-timestamps': z.object({
     'queued-at': z.string().optional(),

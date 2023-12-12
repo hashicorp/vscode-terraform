@@ -13,6 +13,8 @@ export interface LogLine {
 
   // type=planned_change | type=resource_drift
   change?: Change;
+  // type=apply_start | type=apply_progress | type=apply_complete | type=apply_errored
+  hook?: AppliedChange;
   // type=change_summary
   changes?: ChangeSummary;
   // type=outputs
@@ -61,6 +63,14 @@ export interface Change {
   action: ChangeAction;
   reason?: ChangeReason;
   importing?: Importing;
+}
+
+export interface AppliedChange {
+  resource: Resource;
+  action: ChangeAction;
+  elapsed_seconds: number;
+  id_key?: string;
+  id_value?: string;
 }
 
 export type ChangeAction = 'noop' | 'create' | 'read' | 'update' | 'replace' | 'delete' | 'move' | 'import';
@@ -114,7 +124,7 @@ export interface Outputs {
 }
 
 export interface OutputChange {
-  action: ChangeAction;
+  action?: ChangeAction; // only present in plan logs, not apply logs
   sensitive: boolean;
 }
 
