@@ -1,5 +1,9 @@
 ## [2.29.1] (2023-12-13)
 
+BREAKING CHANGES:
+
+* Publishing extensions for the `win32-ia32` target has been disabled, so we can no longer provide builds for Windows 32bit. (see [microsoft/vscode-vsce#908](https://github.com/microsoft/vscode-vsce/pull/908) and [microsoft/vscode#195559](https://github.com/microsoft/vscode/pull/195559))
+
 ENHANCEMENTS:
 
 * Add new panel for Terraform Cloud structured plans ([#1590](https://github.com/hashicorp/vscode-terraform/pull/1590))
