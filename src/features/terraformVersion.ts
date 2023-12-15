@@ -26,6 +26,10 @@ export class TerraformVersionFeature implements StaticFeature {
     private outputChannel: vscode.OutputChannel,
   ) {}
 
+  clear(): void {
+    // TODO
+  }
+
   getState(): FeatureState {
     return {
       kind: 'static',

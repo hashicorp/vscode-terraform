@@ -22,6 +22,10 @@ export class TelemetryFeature implements StaticFeature {
 
   constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
 
+  clear(): void {
+    // TODO
+  }
+
   getState(): FeatureState {
     return {
       kind: 'static',

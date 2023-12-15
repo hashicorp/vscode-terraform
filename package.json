@@ -7,7 +7,7 @@
   "publisher": "hashicorp",
   "appInsightsKey": "885372d2-6f3c-499f-9d25-b8b219983a52",
   "license": "MPL-2.0",
-  "preview": false,
+  "preview": true,
   "private": true,
   "extensionKind": [
     "workspace"
@@ -15,7 +15,7 @@
   "engines": {
     "npm": "~9.X",
     "node": "~18.X",
-    "vscode": "^1.75.1"
+    "vscode": "^1.78.0"
   },
   "langServer": {
     "version": "0.32.4"
@@ -47,6 +47,9 @@
     "type": "git",
     "url": "https://github.com/hashicorp/vscode-terraform.git"
   },
+  "extensionDependencies": [
+    "ms-vscode.wasm-wasi-core"
+  ],
   "activationEvents": [
     "onAuthenticationRequest:terraform",
     "onView:terraform-modules",
@@ -54,7 +57,7 @@
     "workspaceContains:**/*.tfvars"
   ],
   "main": "./out/extension",
-  "browser": "./out/web/extension",
+  "browser": "./dist/web/extension.js",
   "contributes": {
     "authentication": [
       {
@@ -420,6 +423,11 @@
     ],
     "commands": [
       {
+        "command": "wasm-wasi-c-example.run",
+        "category": "WASM Example",
+        "title": "Run C Hello World"
+      },
+      {
         "command": "terraform.cloud.login",
         "title": "HashiCorp Terraform Cloud: Login"
       },
@@ -782,12 +790,13 @@
     ]
   },
   "scripts": {
+    "esbuild": "node ./bin/esbuild.js",
     "prepare": "npm run download:artifacts",
     "compile": "webpack",
     "compile:test": "tsc -p ./",
     "compile:prod": "webpack --mode production --devtool hidden-source-map",
     "watch": "webpack --watch --mode development",
-    "web": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./testFixture",
+    "web": "npm run compile && vscode-test-web --verbose --printServerLog --browserType=chromium --extensionDevelopmentPath=. --extensionId=ms-vscode.wasm-wasi-core@prerelease ./testFixture",
     "web:serve": "npx serve --cors -l 5001",
     "web:tunnel": "npx localtunnel -p 5001",
     "download:artifacts": "ts-node ./build/downloader.ts",
@@ -803,11 +812,14 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",
+    "@vscode/wasm-wasi": "^0.13.0-pre.1",
     "@zodios/core": "^10.9.2",
     "@zodios/plugins": "^10.6.0",
     "axios": "^1.4.0",
+    "esbuild-plugin-polyfill-node": "^0.3.0",
     "semver": "^7.5.4",
-    "vscode-languageclient": "8.1.0",
+    "setimmediate": "^1.0.5",
+    "vscode-languageclient": "^9.0.2-next.1",
     "vscode-uri": "^3.0.7",
     "which": "^3.0.1",
     "zod": "^3.21.4"
@@ -826,10 +838,11 @@
     "@typescript-eslint/eslint-plugin": "^5.59.5",
     "@typescript-eslint/parser": "^5.59.5",
     "@vscode/test-electron": "^2.3.8",
-    "@vscode/test-web": "^0.0.43",
+    "@vscode/test-web": "^0.0.49",
     "@vscode/vsce": "^2.19.0",
     "assert": "^2.0.0",
     "chai": "^4.3.7",
+    "esbuild": "^0.19.9",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",

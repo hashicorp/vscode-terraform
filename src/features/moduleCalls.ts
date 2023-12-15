@@ -21,6 +21,10 @@ export class ModuleCallsFeature implements StaticFeature {
 
   constructor(private client: BaseLanguageClient, private view: ModuleCallsDataProvider) {}
 
+  clear(): void {
+    // TODO
+  }
+
   getState(): FeatureState {
     return {
       kind: 'static',

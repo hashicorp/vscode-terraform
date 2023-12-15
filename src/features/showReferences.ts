@@ -35,6 +35,10 @@ export class ShowReferencesFeature implements StaticFeature {
 
   constructor(private _client: BaseLanguageClient) {}
 
+  clear(): void {
+    // TODO
+  }
+
   getState(): FeatureState {
     return {
       kind: 'static',

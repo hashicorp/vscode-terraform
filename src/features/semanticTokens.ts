@@ -25,6 +25,10 @@ interface ObjectWithId {
 export class CustomSemanticTokens implements StaticFeature {
   constructor(private _client: BaseLanguageClient, private manifest: PartialManifest) {}
 
+  clear(): void {
+    // TODO
+  }
+
   getState(): FeatureState {
     return {
       kind: 'static',
