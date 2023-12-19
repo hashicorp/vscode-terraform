@@ -16,23 +16,8 @@
       }
     },
     {
-      "type": "process",
-      "label": "terraformInit",
-      "isBackground": true,
-      "command": "terraform",
-      "args": ["init"],
-      "options": {
-        "cwd": "${workspaceFolder}/testFixture"
-      },
-      "presentation": {
-        "reveal": "never",
-        "group": "watchers"
-      },
-      "group": "build"
-    },
-    {
       "label": "tasks: watch-tests",
-      "dependsOn": ["npm: watch", "terraformInit"],
+      "dependsOn": ["npm: watch"],
       "problemMatcher": []
     },
     {
