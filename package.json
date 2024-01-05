@@ -152,7 +152,7 @@
         "description": "Traversal step"
       },
       {
-        "id": "hcl-typeCapsule",
+        "id": "hcl-typeComplex",
         "superType": "keyword",
         "description": "Type (complex)"
       },
@@ -200,7 +200,7 @@
           "hcl-traversalStep": [
             "variable.other.readwrite"
           ],
-          "hcl-typeCapsule": [
+          "hcl-typeComplex": [
             "keyword.control"
           ],
           "hcl-typePrimitive": [
