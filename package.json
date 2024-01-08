@@ -420,37 +420,33 @@
     ],
     "commands": [
       {
-        "command": "terraform.cloud.login",
-        "title": "HashiCorp Terraform Cloud: Login"
-      },
-      {
         "command": "terraform.generateBugReport",
-        "title": "Terraform: Generate Bug Report"
+        "title": "HashiCorp Terraform: Generate Bug Report"
       },
       {
         "command": "terraform.enableLanguageServer",
-        "title": "Terraform: Enable Language Server"
+        "title": "HashiCorp Terraform: Enable Language Server"
       },
       {
         "command": "terraform.disableLanguageServer",
-        "title": "Terraform: Disable Language Server"
+        "title": "HashiCorp Terraform: Disable Language Server"
       },
       {
         "command": "terraform.init",
-        "title": "Terraform: init"
+        "title": "HashiCorp Terraform: init"
       },
       {
         "command": "terraform.initCurrent",
-        "title": "Terraform: init current folder",
+        "title": "HashiCorp Terraform: init current folder",
         "icon": "$(cloud-download)"
       },
       {
         "command": "terraform.validate",
-        "title": "Terraform: validate"
+        "title": "HashiCorp Terraform: validate"
       },
       {
         "command": "terraform.plan",
-        "title": "Terraform: plan"
+        "title": "HashiCorp Terraform: plan"
       },
       {
         "command": "terraform.modules.refreshList",
@@ -473,39 +469,51 @@
         "icon": "$(book)"
       },
       {
+        "command": "terraform.cloud.login",
+        "title": "HashiCorp Terraform Cloud: Login",
+        "enablement": "terraform.cloud.signed-in === false"
+      },
+      {
         "command": "terraform.cloud.workspaces.refresh",
         "title": "Refresh",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.workspaces.viewInBrowser",
         "title": "View workspace",
-        "icon": "$(globe)"
+        "icon": "$(globe)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.runs.refresh",
         "title": "Refresh",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.run.viewInBrowser",
         "title": "View run",
-        "icon": "$(globe)"
+        "icon": "$(globe)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.run.plan.downloadLog",
         "title": "View raw plan log",
-        "icon": "$(console)"
+        "icon": "$(console)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.run.viewPlan",
         "title": "View plan output",
-        "icon": "$(output)"
+        "icon": "$(output)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.run.apply.downloadLog",
         "title": "View raw apply log",
-        "icon": "$(output)"
+        "icon": "$(output)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.run.viewApply",
@@ -515,12 +523,14 @@
       {
         "command": "terraform.cloud.organization.picker",
         "title": "HashiCorp Terraform Cloud: Pick Organization",
-        "icon": "$(account)"
+        "icon": "$(account)",
+        "enablement": "terraform.cloud.signed-in"
       },
       {
         "command": "terraform.cloud.workspaces.filterByProject",
         "title": "Filter by project",
-        "icon": "$(filter)"
+        "icon": "$(filter)",
+        "enablement": "terraform.cloud.signed-in"
       }
     ],
     "menus": {
@@ -566,6 +576,14 @@
           "when": "false"
         },
         {
+          "command": "terraform.cloud.login",
+          "when": "terraform.cloud.signed-in === false && terraform.cloud.views.visible"
+        },
+        {
+          "command": "terraform.cloud.organization.picker",
+          "when": "terraform.cloud.signed-in"
+        },
+        {
           "command": "terraform.cloud.workspaces.viewInBrowser",
           "when": "false"
         },
@@ -582,6 +600,10 @@
           "when": "false"
         },
         {
+          "command": "terraform.cloud.runs.refresh",
+          "when": "false"
+        },
+        {
           "command": "terraform.cloud.run.apply.downloadLog",
           "when": "false"
         },
@@ -590,7 +612,12 @@
           "when": "false"
         },
         {
-          "command": "terraform.cloud.organization.picker"
+          "command": "terraform.cloud.workspaces.filterByProject",
+          "when": "false"
+        },
+        {
+          "command": "terraform.cloud.workspaces.refresh",
+          "when": "false"
         }
       ],
       "view/title": [
