@@ -5,11 +5,15 @@
 
 import * as path from 'path';
 import * as Mocha from 'mocha';
+import * as vscode from 'vscode';
 import { glob } from 'glob';
 import { server } from './mocks/server';
 import { apiClient, tokenPluginId } from '../../terraformCloud';
 
 export async function run(): Promise<void> {
+  // wait for the extension to activate before running tests
+  await vscode.extensions.getExtension('hashicorp.terraform')?.activate();
+
   // Create the mocha test
   const mocha = new Mocha({
     ui: 'tdd',
