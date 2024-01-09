@@ -147,9 +147,9 @@
         "description": "Keyword"
       },
       {
-        "id": "hcl-traversalStep",
+        "id": "hcl-referenceStep",
         "superType": "variable",
-        "description": "Traversal step"
+        "description": "Reference step"
       },
       {
         "id": "hcl-typeComplex",
@@ -197,7 +197,7 @@
           "hcl-keyword": [
             "keyword.control"
           ],
-          "hcl-traversalStep": [
+          "hcl-referenceStep": [
             "variable.other.readwrite"
           ],
           "hcl-typeComplex": [
