@@ -56,12 +56,6 @@
   "main": "./out/extension",
   "browser": "./out/web/extension",
   "contributes": {
-    "authentication": [
-      {
-        "id": "terraformcloud",
-        "label": "HashiCorp Terraform Cloud"
-      }
-    ],
     "languages": [
       {
         "id": "terraform",
