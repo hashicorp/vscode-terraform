@@ -38,15 +38,9 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
-        const activeEditor = getActiveTextEditor();
-
-        if (!isTerraformFile(activeEditor?.document)) {
-          return;
-        }
-
-        if (event && activeEditor) {
-          this.refresh();
-        }
+        // most of the time this is called when the user switches tabs or closes the file
+        // we already check for state inside the getprovider function, so we can just call refresh here
+        this.refresh();
       }),
       vscode.commands.registerCommand('terraform.providers.openDocumentation', (module: ModuleProviderItem) => {
         if (module.docsLink) {
@@ -75,27 +69,49 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   async getProvider(): Promise<ModuleProviderItem[]> {
     const activeEditor = getActiveTextEditor();
 
+    await vscode.commands.executeCommand('setContext', 'terraform.providers.documentOpened', true);
+    await vscode.commands.executeCommand('setContext', 'terraform.providers.documentIsTerraform', true);
+    await vscode.commands.executeCommand('setContext', 'terraform.providers.lspConnected', true);
+    await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', false);
+    await vscode.commands.executeCommand('setContext', 'terraform.providers.noProviders', false);
+
     if (activeEditor?.document === undefined) {
+      // there is no open document
+      await vscode.commands.executeCommand('setContext', 'terraform.providers.documentOpened', false);
       return [];
     }
 
     if (!isTerraformFile(activeEditor.document)) {
+      // the open file is not a terraform file
+      await vscode.commands.executeCommand('setContext', 'terraform.providers.documentIsTerraform', false);
+      return [];
+    }
+
+    if (this.client === undefined) {
+      // connection to terraform-ls failed
+      await vscode.commands.executeCommand('setContext', 'terraform.providers.lspConnected', false);
       return [];
     }
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    if (this.client === undefined) {
+
+    let response: terraform.ModuleProvidersResponse;
+    try {
+      response = await terraform.moduleProviders(documentURI.toString(), this.client, this.reporter);
+      if (response === null) {
+        // no response from terraform-ls
+        await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', true);
+        return [];
+      }
+    } catch {
+      // error from terraform-ls
+      await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', true);
       return [];
     }
 
     try {
-      const response = await terraform.moduleProviders(documentURI.toString(), this.client, this.reporter);
-      if (response === null) {
-        return [];
-      }
-
-      return Object.entries(response.provider_requirements).map(
+      const list = Object.entries(response.provider_requirements).map(
         ([provider, details]) =>
           new ModuleProviderItem(
             provider,
@@ -105,7 +121,15 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
             details.docs_link,
           ),
       );
+
+      if (list.length === 0) {
+        await vscode.commands.executeCommand('setContext', 'terraform.providers.noProviders', true);
+      }
+
+      return list;
     } catch {
+      // error mapping response
+      await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', true);
       return [];
     }
   }
