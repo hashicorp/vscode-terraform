@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import { PluginId, Zodios, ZodiosEndpointDefinition, ZodiosInstance, ZodiosPlugin } from "@zodios/core";
 import { pluginHeader, pluginToken } from "@zodios/plugins";
 import { accountEndpoints } from "../../terraformCloud/account";
