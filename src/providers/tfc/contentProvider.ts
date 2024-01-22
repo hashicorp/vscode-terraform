@@ -6,10 +6,12 @@
 import axios from 'axios';
 import * as vscode from 'vscode';
 
-import { apiClient } from '../../terraformCloud';
 import stripAnsi from './helpers';
+import { TerraformCloudApiProvider } from './apiProvider';
 
 export class PlanLogContentProvider implements vscode.TextDocumentContentProvider {
+  constructor(private apiProvider: TerraformCloudApiProvider){}
+
   onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
   onDidChange = this.onDidChangeEmitter.event;
 
@@ -53,7 +55,7 @@ export class PlanLogContentProvider implements vscode.TextDocumentContentProvide
   }
 
   private async getPlanLogUrl(id: string) {
-    const plan = await apiClient.getPlan({
+    const plan = await this.apiProvider.apiClient.getPlan({
       params: {
         plan_id: id,
       },
@@ -63,7 +65,7 @@ export class PlanLogContentProvider implements vscode.TextDocumentContentProvide
   }
 
   private async getApplyLogUrl(id: string) {
-    const apply = await apiClient.getApply({
+    const apply = await this.apiProvider.apiClient.getApply({
       params: {
         apply_id: id,
       },

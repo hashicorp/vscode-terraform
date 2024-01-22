@@ -8,7 +8,6 @@ import axios from 'axios';
 import * as semver from 'semver';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
@@ -21,6 +20,7 @@ import { ApplyAttributes } from '../../terraformCloud/apply';
 import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
 import { PlanTreeDataProvider } from './planProvider';
 import { ApplyTreeDataProvider } from './applyProvider';
+import { TerraformCloudApiProvider } from './apiProvider';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCRunTreeItem>();
@@ -33,6 +33,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     private outputChannel: vscode.OutputChannel,
     private planDataProvider: PlanTreeDataProvider,
     private applyDataProvider: ApplyTreeDataProvider,
+    private apiProvider: TerraformCloudApiProvider
   ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
@@ -122,7 +123,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     }
 
     try {
-      const runs = await apiClient.listRuns({
+      const runs = await this.apiProvider.apiClient.listRuns({
         params: { workspace_id: workspace.id },
         queries: {
           'page[size]': 100,
@@ -146,7 +147,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
       const items: RunTreeItem[] = [];
       for (let index = 0; index < runs.data.length; index++) {
         const run = runs.data[index];
-        const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
+        const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace,this.apiProvider);
 
         runItem.contextValue = 'isRun';
         runItem.organizationName = organization;
@@ -185,7 +186,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
           return [];
         }
 
-        if (isErrorFromAlias(apiClient.api, 'listRuns', error)) {
+        if (isErrorFromAlias(this.apiProvider.apiClient.api, 'listRuns', error)) {
           message += apiErrorsToString(error.response.data.errors);
           vscode.window.showErrorMessage(message);
           this.reporter.sendTelemetryException(error);
@@ -212,7 +213,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     const items = [];
     const root = element as RunTreeItem;
     if (root.planId) {
-      const plan = await apiClient.getPlan({ params: { plan_id: root.planId } });
+      const plan = await this.apiProvider.apiClient.getPlan({ params: { plan_id: root.planId } });
       if (plan) {
         const status = plan.data.attributes.status;
         const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
@@ -231,11 +232,11 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     }
 
     if (root.applyId) {
-      const apply = await apiClient.getApply({ params: { apply_id: root.applyId } });
+      const apply = await this.apiProvider.apiClient.getApply({ params: { apply_id: root.applyId } });
       if (apply) {
         const status = apply.data.attributes.status;
         const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
-        const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes);
+        const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes,this.apiProvider);
         if (status === 'unreachable' || status === 'pending') {
           item.label = label;
         } else {
@@ -302,7 +303,7 @@ export class RunTreeItem extends vscode.TreeItem {
   public applyAttributes?: ApplyAttributes;
   public applyId?: string;
 
-  constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem) {
+  constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem,public apiProvider:TerraformCloudApiProvider) {
     super(attributes.message, vscode.TreeItemCollapsibleState.None);
     this.id = id;
 
@@ -313,7 +314,7 @@ export class RunTreeItem extends vscode.TreeItem {
 
   public get websiteUri(): vscode.Uri {
     return vscode.Uri.parse(
-      `${TerraformCloudWebUrl}/${this.organizationName}/workspaces/${this.workspace.attributes.name}/runs/${this.id}`,
+      `${this.apiProvider.TerraformCloudWebUrl()}/${this.organizationName}/workspaces/${this.workspace.attributes.name}/runs/${this.id}`,
     );
   }
 }
@@ -336,7 +337,7 @@ export class PlanTreeItem extends vscode.TreeItem {
 
 export class ApplyTreeItem extends vscode.TreeItem {
   public logReadUrl = '';
-  constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
+  constructor(public id: string, public label: string, public attributes: ApplyAttributes,private apiProvider: TerraformCloudApiProvider) {
     super(label);
     this.iconPath = GetPlanApplyStatusIcon(attributes.status);
     if (attributes) {
@@ -357,14 +358,14 @@ async function runMarkdown(item: RunTreeItem) {
   markdown.supportThemeIcons = true;
 
   const configurationVersion = item.configurationVersionId
-    ? await apiClient.getConfigurationVersion({
+    ? await item.apiProvider.apiClient.getConfigurationVersion({
         params: {
           configuration_id: item.configurationVersionId,
         },
       })
     : undefined;
   const ingress = configurationVersion?.data.relationships['ingress-attributes']?.data?.id
-    ? await apiClient.getIngressAttributes({
+    ? await item.apiProvider.apiClient.getIngressAttributes({
         params: {
           configuration_id: configurationVersion.data.id,
         },
@@ -374,7 +375,7 @@ async function runMarkdown(item: RunTreeItem) {
   const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
 
   if (item.createdByUserId) {
-    const user = await apiClient.getUser({
+    const user = await item.apiProvider.apiClient.getUser({
       params: {
         user_id: item.createdByUserId,
       },

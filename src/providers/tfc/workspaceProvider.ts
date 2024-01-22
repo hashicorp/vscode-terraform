@@ -7,7 +7,6 @@ import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
-import { apiClient, TerraformCloudWebUrl } from '../../terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
@@ -17,6 +16,7 @@ import { APIQuickPick, handleAuthError, handleZodiosError } from './uiHelpers';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import axios from 'axios';
 import { apiErrorsToString } from '../../terraformCloud/errors';
+import { TerraformCloudApiProvider } from './apiProvider';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -31,6 +31,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     private runDataProvider: RunTreeDataProvider,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
+    private apiProvider: TerraformCloudApiProvider
   ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
@@ -50,14 +51,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         'terraform.cloud.workspaces.viewInBrowser',
         (workspaceItem: WorkspaceTreeItem) => {
           this.reporter.sendTelemetryEvent('tfc-workspaces-viewInBrowser');
-          const workspaceURL = `${TerraformCloudWebUrl}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
+          const workspaceURL = `${this.apiProvider.TerraformCloudWebUrl()}/${workspaceItem.organization}/workspaces/${workspaceItem.attributes.name}`;
           vscode.env.openExternal(vscode.Uri.parse(workspaceURL));
         },
       ),
       vscode.commands.registerCommand('terraform.cloud.organization.viewInBrowser', () => {
         this.reporter.sendTelemetryEvent('tfc-organization-viewInBrowser');
         const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-        const orgURL = `${TerraformCloudWebUrl}/${organization}`;
+        const orgURL = `${this.apiProvider.TerraformCloudWebUrl()}/${organization}`;
         vscode.env.openExternal(vscode.Uri.parse(orgURL));
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => {
@@ -92,7 +93,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
 
     const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
-    const projectAPIResource = new ProjectsAPIResource(organization, this.outputChannel, this.reporter);
+    const projectAPIResource = new ProjectsAPIResource(organization, this.outputChannel, this.reporter,this.apiProvider);
     const projectQuickPick = new APIQuickPick(projectAPIResource);
     const project = await projectQuickPick.pick();
 
@@ -151,7 +152,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
 
     try {
-      const workspaceResponse = await apiClient.listWorkspaces({
+      const workspaceResponse = await this.apiProvider.apiClient.listWorkspaces({
         params: {
           organization_name: organization,
         },
@@ -173,7 +174,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       // TODO? we could skip this request if a project filter is set,
       // but with the addition of more filters, we could still get
       // projects from different workspaces
-      const projectResponse = await apiClient.listProjects({
+      const projectResponse = await this.apiProvider.apiClient.listProjects({
         params: {
           organization_name: organization,
         },
@@ -188,7 +189,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
 
         // check if the user has pending invitation to the org
         // as that may be a reason for zero workspaces
-        const memberships = await apiClient.listOrganizationMemberships({});
+        const memberships = await this.apiProvider.apiClient.listOrganizationMemberships({});
         const pendingMembership = memberships.data.filter(
           (membership) =>
             membership.relationships.organization.data.id === organization &&
@@ -218,7 +219,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         const lastestRun = workspaceResponse.included
           ? workspaceResponse.included.find((run) => run.id === lastRunId)
           : undefined;
-        const link = vscode.Uri.joinPath(vscode.Uri.parse(TerraformCloudWebUrl), workspace.links['self-html']);
+        const link = vscode.Uri.joinPath(vscode.Uri.parse(this.apiProvider.TerraformCloudWebUrl()), workspace.links['self-html']);
 
         items.push(
           new WorkspaceTreeItem(
@@ -255,8 +256,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         }
 
         if (
-          isErrorFromAlias(apiClient.api, 'listWorkspaces', error) ||
-          isErrorFromAlias(apiClient.api, 'listProjects', error)
+          isErrorFromAlias(this.apiProvider.apiClient.api, 'listWorkspaces', error) ||
+          isErrorFromAlias(this.apiProvider.apiClient.api, 'listProjects', error)
         ) {
           message += apiErrorsToString(error.response.data.errors);
           vscode.window.showErrorMessage(message);

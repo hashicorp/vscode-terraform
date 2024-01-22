@@ -474,6 +474,11 @@
         "enablement": "terraform.cloud.signed-in === false"
       },
       {
+        "command": "terraform.cloud.logout",
+        "title": "HashiCorp Terraform Cloud: Logout",
+        "enablement": "terraform.cloud.signed-in === true"
+      },
+      {
         "command": "terraform.cloud.workspaces.refresh",
         "title": "Refresh",
         "icon": "$(refresh)",
@@ -581,6 +586,10 @@
         },
         {
           "command": "terraform.cloud.organization.picker",
+          "when": "terraform.cloud.signed-in"
+        },
+        {
+          "command": "terraform.cloud.logout",
           "when": "terraform.cloud.signed-in"
         },
         {

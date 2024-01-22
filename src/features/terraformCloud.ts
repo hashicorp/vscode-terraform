@@ -16,9 +16,9 @@ import {
   RefreshOrganizationItem,
 } from '../providers/tfc/organizationPicker';
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
-import { TerraformCloudWebUrl } from '../terraformCloud';
 import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
 import { ApplyTreeDataProvider } from '../providers/tfc/applyProvider';
+import { TerraformCloudApiProvider } from '../providers/tfc/apiProvider';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -28,14 +28,20 @@ export class TerraformCloudFeature implements vscode.Disposable {
     private reporter: TelemetryReporter,
     outputChannel: vscode.OutputChannel,
   ) {
+    let apiProvider = new TerraformCloudApiProvider(
+      TerraformCloudApiProvider.defaultHostname,
+      context.extension.packageJSON.version,
+      undefined
+    );
     const authProvider = new TerraformCloudAuthenticationProvider(
       context.secrets,
       context,
       this.reporter,
       outputChannel,
+      apiProvider,
     );
     this.context.subscriptions.push(
-      vscode.workspace.registerTextDocumentContentProvider('vscode-terraform', new PlanLogContentProvider()),
+      vscode.workspace.registerTextDocumentContentProvider('vscode-terraform', new PlanLogContentProvider(apiProvider)),
     );
     this.statusBar = new OrganizationStatusBar(context);
 
@@ -78,6 +84,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       outputChannel,
       planDataProvider,
       applyDataProvider,
+      apiProvider,
     );
     const runView = vscode.window.createTreeView('terraform.cloud.runs', {
       canSelectMany: false,
@@ -90,6 +97,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       runDataProvider,
       this.reporter,
       outputChannel,
+      apiProvider
     );
     const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
       canSelectMany: false,
@@ -157,13 +165,13 @@ export class TerraformCloudFeature implements vscode.Disposable {
         if (organization === '') {
           return [];
         }
-        const terraformCloudURL = `${TerraformCloudWebUrl}/${organization}/workspaces/new`;
+        const terraformCloudURL = `${apiProvider.TerraformCloudWebUrl()}/${organization}/workspaces/new`;
         await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
       }),
       vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-pick-organization');
 
-        const organizationAPIResource = new OrganizationAPIResource(outputChannel, reporter);
+        const organizationAPIResource = new OrganizationAPIResource(outputChannel, reporter,apiProvider);
         const organizationQuickPick = new APIQuickPick(organizationAPIResource);
         let choice: vscode.QuickPickItem | undefined;
 

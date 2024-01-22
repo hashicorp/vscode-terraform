@@ -4,13 +4,13 @@
  */
 
 import * as vscode from 'vscode';
-import { apiClient } from '../../terraformCloud';
 import { Project } from '../../terraformCloud/project';
 import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import axios from 'axios';
 import { apiErrorsToString } from '../../terraformCloud/errors';
+import { TerraformCloudApiProvider } from './apiProvider';
 
 export class ResetProjectItem implements vscode.QuickPickItem {
   get label() {
@@ -43,10 +43,11 @@ export class ProjectsAPIResource implements APIResource {
     private organizationName: string,
     private outputChannel: vscode.OutputChannel,
     private reporter: TelemetryReporter,
+    private apiProvider: TerraformCloudApiProvider,
   ) {}
 
   private async createProjectItems(organization: string, search?: string): Promise<ProjectItem[]> {
-    const projects = await apiClient.listProjects({
+    const projects = await this.apiProvider.apiClient.listProjects({
       params: {
         organization_name: organization,
       },
@@ -78,7 +79,7 @@ export class ProjectsAPIResource implements APIResource {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         handleAuthError();
         return picks;
-      } else if (isErrorFromAlias(apiClient.api, 'listProjects', error)) {
+      } else if (isErrorFromAlias(this.apiProvider.apiClient.api, 'listProjects', error)) {
         message += apiErrorsToString(error.response.data.errors);
         this.reporter.sendTelemetryException(error);
       } else if (error instanceof Error) {

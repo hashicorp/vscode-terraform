@@ -4,15 +4,16 @@
  */
 
 import * as vscode from 'vscode';
-import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
 import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
 import { Organization } from '../../terraformCloud/organization';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import axios from 'axios';
 import { apiErrorsToString } from '../../terraformCloud/errors';
 import TelemetryReporter from '@vscode/extension-telemetry';
+import { TerraformCloudApiProvider } from './apiProvider';
 
 export class CreateOrganizationItem implements vscode.QuickPickItem {
+  constructor(private apiProvider:TerraformCloudApiProvider){}
   get label() {
     return '$(add) Create new organization';
   }
@@ -20,7 +21,7 @@ export class CreateOrganizationItem implements vscode.QuickPickItem {
     return 'Open the browser to create a new organization';
   }
   async open() {
-    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations/new`));
+    await vscode.env.openExternal(vscode.Uri.parse(`${this.apiProvider.TerraformCloudWebUrl()}/organizations/new`));
   }
   get alwaysShow() {
     return true;
@@ -52,10 +53,10 @@ export class OrganizationAPIResource implements APIResource {
   placeholder = 'Choose an organization (type to search)';
   ignoreFocusOut = true;
 
-  constructor(private outputChannel: vscode.OutputChannel, private reporter: TelemetryReporter) {}
+  constructor(private outputChannel: vscode.OutputChannel, private reporter: TelemetryReporter, private apiProvider: TerraformCloudApiProvider) {}
 
   private async createOrganizationItems(search?: string): Promise<OrganizationItem[]> {
-    const organizations = await apiClient.listOrganizations({
+    const organizations = await this.apiProvider.apiClient.listOrganizations({
       // Include query parameter only if search argument is passed
       ...(search && {
         queries: {
@@ -74,7 +75,7 @@ export class OrganizationAPIResource implements APIResource {
   }
 
   async fetchItems(query?: string): Promise<vscode.QuickPickItem[]> {
-    const createItem = new CreateOrganizationItem();
+    const createItem = new CreateOrganizationItem(this.apiProvider);
     const refreshItem = new RefreshOrganizationItem();
     const picks: vscode.QuickPickItem[] = [
       createItem,
@@ -95,7 +96,7 @@ export class OrganizationAPIResource implements APIResource {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         handleAuthError();
         return picks;
-      } else if (isErrorFromAlias(apiClient.api, 'listOrganizations', error)) {
+      } else if (isErrorFromAlias(this.apiProvider.apiClient.api, 'listOrganizations', error)) {
         message += apiErrorsToString(error.response.data.errors);
         this.reporter.sendTelemetryException(error);
       } else if (error instanceof Error) {
