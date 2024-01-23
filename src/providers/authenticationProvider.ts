@@ -11,6 +11,7 @@ import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import { apiErrorsToString } from '../terraformCloud/errors';
 import { handleZodiosError } from './tfc/uiHelpers';
 import { TerraformCloudApiProvider } from './tfc/apiProvider';
+import { platform } from 'process';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {
   // This id isn't used for anything yet, so we set it to a constant
@@ -393,8 +394,13 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   }
   private async getTerraformCLICredentials():Promise<Map<string,TerraformCloudToken>|Error>{
     // detect if stored auth token is present
+    // On windows:
+    // ~/AppData/Roaming/terraform.d/credentials.tfrc.json
+    // On others:
     // ~/.terraform.d/credentials.tfrc.json
-    const credFilePath = path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
+    const credFilePath = process.platform==='win32'?
+      path.join(os.homedir(),'AppData','Roaming','terraform.d','credentials.tfrc.json'):
+      path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
     if ((await this.pathExists(credFilePath)) === false) {
       return new Error('Terraform credential file not found. Please login using the Terraform CLI and try again.');
     }
