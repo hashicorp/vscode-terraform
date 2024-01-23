@@ -1,3 +1,21 @@
+## [2.29.3] (2024-01-23)
+
+ENHANCEMENTS:
+
+* Remove authentication provider registration to allow disabling the extension ([#1670](https://github.com/hashicorp/vscode-terraform/pull/1670))
+* Enable interpolated map keys and object attribute names ([terraform-schema#316](https://github.com/hashicorp/terraform-schema/pull/316))
+* Add support for complex index expressions ([hcl-lang#365](https://github.com/hashicorp/hcl-lang/pull/365))
+* Add support for parenthesis on RHS ([hcl-lang#366](https://github.com/hashicorp/hcl-lang/pull/366))
+* Add support for parenthesis on LHS (map keys & attribute names) ([hcl-lang#367](https://github.com/hashicorp/hcl-lang/pull/367))
+
+BUG FIXES:
+
+* Revert "Alert on `wsl.localhost` Path ([#1522](https://github.com/hashicorp/terraform-ls/pull/1522))" ([#1597](https://github.com/hashicorp/terraform-ls/pull/1597))
+
+INTERNAL:
+
+* build(deps): Bump workflows to latest trusted versions ([#1675](https://github.com/hashicorp/vscode-terraform/pull/1675))
+
 ## [2.29.2] (2024-01-16)
 
 BREAKING CHANGES:
@@ -882,7 +900,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.2...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...main
+[2.29.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.2...v2.29.3
 [2.29.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.1...v2.29.2
 [2.29.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.0...v2.29.1
 [2.29.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.2...v2.29.0
