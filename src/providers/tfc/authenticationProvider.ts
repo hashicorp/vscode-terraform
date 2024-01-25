@@ -7,7 +7,13 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { earlyApiClient, TerraformCloudHost, TerraformCloudWebUrl } from '../../api/terraformCloud';
+import {
+  apiSetup,
+  earlyApiClient,
+  earlySetupForHostname,
+  TerraformCloudHost,
+  TerraformCloudWebUrl,
+} from '../../api/terraformCloud';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import { apiErrorsToString } from '../../api/terraformCloud/errors';
 import { handleZodiosError } from './uiHelpers';
@@ -26,6 +32,10 @@ class TerraformCloudSession implements vscode.AuthenticationSession {
    * @param account The user account for the specified token
    */
   constructor(public readonly accessToken: string, public account: vscode.AuthenticationSessionAccountInformation) {}
+}
+
+interface TerraformCloudToken {
+  token: string;
 }
 
 class InvalidToken extends Error {
@@ -51,7 +61,7 @@ class TerraformCloudSessionHandler {
     return session;
   }
 
-  async store(token: string): Promise<TerraformCloudSession> {
+  async store(hostname: string, token: string): Promise<TerraformCloudSession> {
     try {
       const user = await earlyApiClient.getAccount({
         headers: {
@@ -65,6 +75,7 @@ class TerraformCloudSessionHandler {
       });
 
       await this.secretStorage.store(this.sessionKey, JSON.stringify(session));
+      apiSetup();
       return session;
     } catch (error) {
       if (error instanceof ZodiosError) {
@@ -170,6 +181,12 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // - `vscode.authentication.getSessions` was called with `forceNewSession: true`
   // - The end user initiates the "silent" auth flow via the Accounts menu
   async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
+    const tfcHostname = await this.promptForTFCHostname();
+    if (!tfcHostname) {
+      this.logger.error('User did not provide a TFC instance');
+      throw new Error('TFC instance is required');
+    }
+    earlySetupForHostname(tfcHostname);
     // Prompt for the UAT.
     const token = await this.promptForToken();
     if (!token) {
@@ -178,7 +195,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     }
 
     try {
-      const session = await this.sessionHandler.store(token);
+      const session = await this.sessionHandler.store(tfcHostname, token);
       this.reporter.sendTelemetryEvent('tfc-login-success');
       this.logger.info('Successfully logged in to HCP Terraform');
 
@@ -252,6 +269,59 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this._onDidChangeSessions.fire({ added: added, removed: removed, changed: changed });
   }
 
+  private async promptForTFCHostname(): Promise<string | undefined> {
+    // Retrieve existing Hostnames from TFC credentials file
+    const tfcCredentials = await this.getTerraformCLICredentials();
+    const newHostSelection = {
+      label: 'New Hostname',
+      detail: 'Connect to a new Terraform Cloud hostname',
+    };
+    const defaultHostName = {
+      label: 'app.terraform.io',
+      detail: 'Default Terraform Cloud hostname',
+    };
+    const hostnames = [newHostSelection, defaultHostName];
+    if (tfcCredentials instanceof Error) {
+      this.logger.info('Terraform cloud credential file not yet initialized.');
+    } else {
+      tfcCredentials.delete('app.terraform.io');
+      for (const key of tfcCredentials.keys()) {
+        hostnames.push({
+          label: key,
+          detail: `${key} Terraform Cloud instance`,
+        });
+      }
+    }
+
+    const choice = await vscode.window.showQuickPick(hostnames, {
+      canPickMany: false,
+      ignoreFocusOut: true,
+      placeHolder: 'Choose Terraform Cloud hostname to connect to',
+      title: 'HashiCorp Terraform Cloud Authentication',
+    });
+
+    if (choice === undefined) {
+      return undefined;
+    }
+
+    let hostname: string | undefined;
+    switch (choice.label) {
+      case newHostSelection.label:
+        // Prompt for the TFC hostname.
+        hostname = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: 'app.terraform.io',
+          value: 'app.terraform.io',
+          prompt: 'Enter a Terraform Cloud hostname',
+          password: false,
+        });
+        break;
+      default:
+        hostname = choice.label;
+        break;
+    }
+    return hostname;
+  }
   private async promptForToken(): Promise<string | undefined> {
     const choice = await vscode.window.showQuickPick(
       [
@@ -313,8 +383,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
     return token;
   }
-
-  private async getTerraformCLIToken() {
+  private async getTerraformCLICredentials(): Promise<Map<string, TerraformCloudToken> | Error> {
     // detect if stored auth token is present
     // On windows:
     // ~/AppData/Roaming/terraform.d/credentials.tfrc.json
@@ -325,35 +394,32 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         ? path.join(os.homedir(), 'AppData', 'Roaming', 'terraform.d', 'credentials.tfrc.json')
         : path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
     if ((await this.pathExists(credFilePath)) === false) {
-      vscode.window.showErrorMessage(
-        'Terraform credential file not found. Please login using the Terraform CLI and try again.',
-      );
-      return undefined;
+      return new Error('Terraform credential file not found. Please login using the Terraform CLI and try again.');
     }
-
-    // read and marshall json file
+    const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
     let text: string;
     try {
-      const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
       text = Buffer.from(content).toString('utf8');
     } catch (error) {
-      vscode.window.showErrorMessage(
-        'Failed to read configuration file. Please login using the Terraform CLI and try again',
-      );
-      return undefined;
+      return new Error('Failed to read configuration file. Please login using the Terraform CLI and try again');
     }
 
-    // find app.terraform.io token
+    // Parse credential file
     try {
       const data = JSON.parse(text);
-      const cred = data.credentials[TerraformCloudHost];
-      return cred.token;
+      return new Map<string, TerraformCloudToken>(Object.entries(data.credentials));
     } catch (error) {
-      vscode.window.showErrorMessage(
-        `No token found for ${TerraformCloudHost}. Please login using the Terraform CLI and try again`,
-      );
+      return new Error(`Failed to parse configuration file. Please login using the Terraform CLI and try again`);
+    }
+  }
+
+  private async getTerraformCLIToken(): Promise<string | undefined> {
+    const creds = await this.getTerraformCLICredentials();
+    if (creds instanceof Error) {
+      vscode.window.showErrorMessage(creds.message);
       return undefined;
     }
+    return creds.get(TerraformCloudHost)?.token;
   }
 
   private async pathExists(filePath: string): Promise<boolean> {
