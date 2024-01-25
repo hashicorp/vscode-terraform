@@ -18,10 +18,10 @@ import { userEndpoints } from './user';
 import { configurationVersionEndpoints } from './configurationVersion';
 import { ingressAttributesEndpoints } from './ingressAttribute';
 
-export const TerraformCloudHost = 'app.terraform.io';
+export let TerraformCloudHost = 'app.terraform.io';
 
-export const TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
-export const TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
+export let TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
+export let TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
 
 const jsonHeader = pluginHeader('Content-Type', async () => 'application/vnd.api+json');
 
@@ -41,12 +41,12 @@ function pluginLogger(): ZodiosPlugin {
   };
 }
 
-export const earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
+export let earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
 earlyApiClient.use(jsonHeader);
 earlyApiClient.use(userAgentHeader);
 earlyApiClient.use(pluginLogger());
 
-export const apiClient = new Zodios(TerraformCloudAPIUrl, [
+export let apiClient = new Zodios(TerraformCloudAPIUrl, [
   ...accountEndpoints,
   ...organizationEndpoints,
   ...projectEndpoints,
@@ -62,7 +62,7 @@ apiClient.use(jsonHeader);
 apiClient.use(userAgentHeader);
 apiClient.use(pluginLogger());
 
-export const tokenPluginId = apiClient.use(
+export let tokenPluginId = apiClient.use(
   pluginToken({
     getToken: async () => {
       // TODO: Consider passing it as a dependency instead of global access to make testing easier
@@ -73,3 +73,46 @@ export const tokenPluginId = apiClient.use(
     },
   }),
 );
+
+export function earlySetupForHostname(hostname: string) {
+  // Hostname setup
+  TerraformCloudHost = hostname;
+  TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
+  TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
+  // EarlyApiClient setup
+  earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
+  earlyApiClient.use(jsonHeader);
+  earlyApiClient.use(userAgentHeader);
+  earlyApiClient.use(pluginLogger());
+}
+
+export function apiSetup() {
+  // ApiClient setup
+  apiClient = new Zodios(TerraformCloudAPIUrl, [
+    ...accountEndpoints,
+    ...organizationEndpoints,
+    ...projectEndpoints,
+    ...workspaceEndpoints,
+    ...runEndpoints,
+    ...planEndpoints,
+    ...applyEndpoints,
+    ...userEndpoints,
+    ...configurationVersionEndpoints,
+    ...ingressAttributesEndpoints,
+  ]);
+  apiClient.use(jsonHeader);
+  apiClient.use(userAgentHeader);
+  apiClient.use(pluginLogger());
+
+  tokenPluginId = apiClient.use(
+    pluginToken({
+      getToken: async () => {
+        // TODO: Consider passing it as a dependency instead of global access to make testing easier
+        const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
+          createIfNone: true,
+        });
+        return session ? session.accessToken : undefined;
+      },
+    }),
+  );
+}
