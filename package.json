@@ -762,7 +762,7 @@
       },
       {
         "view": "terraform.providers",
-        "contents": "There are no installed providers found for the current open file.\n[Learn more about providers](https://www.terraform.io/docs/language/modules/develop/index.html)",
+        "contents": "There are no installed providers found for the current open file.\n[Learn more about providers](https://www.terraform.io/docs/language/providers/index.html)",
         "when": "terraform.providers.noProviders === true"
       },
       {

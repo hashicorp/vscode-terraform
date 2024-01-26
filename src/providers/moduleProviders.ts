@@ -37,7 +37,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   constructor(ctx: vscode.ExtensionContext, private client: LanguageClient, private reporter: TelemetryReporter) {
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
-      vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
+      vscode.window.onDidChangeActiveTextEditor(async () => {
         // most of the time this is called when the user switches tabs or closes the file
         // we already check for state inside the getprovider function, so we can just call refresh here
         this.refresh();

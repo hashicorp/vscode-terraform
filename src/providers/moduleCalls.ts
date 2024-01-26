@@ -75,7 +75,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }
       }),
-      vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
+      vscode.window.onDidChangeActiveTextEditor(async () => {
         // most of the time this is called when the user switches tabs or closes the file
         // we already check for state inside the getModule function, so we can just call refresh here
         this.refresh();
