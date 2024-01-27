@@ -443,3 +443,4 @@ See the [CHANGELOG](https://github.com/hashicorp/vscode-terraform/blob/main/CHAN
 ## Credits
 
 - [Mikael Olenfalk](https://github.com/mauve) - creating and supporting the [vscode-terraform](https://github.com/mauve/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
+- [Hashicorp Terraform](https://github.com/mauve) - creating and supporting the [vscode-terraform](https://github.com/hashicorp/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
