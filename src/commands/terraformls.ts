@@ -38,6 +38,12 @@ export class TerraformLSCommands implements vscode.Disposable {
 
         await config('terraform').update('languageServer.enable', false, scope);
       }),
+      vscode.commands.registerCommand('terraform.openSettingsJson', async () => {
+        // this opens the default settings window (either UI or json)
+        await vscode.commands.executeCommand('workbench.action.openSettings', {
+          revealSetting: { key: 'terraform.languageServer.enable', edit: true },
+        });
+      }),
     ];
   }
 

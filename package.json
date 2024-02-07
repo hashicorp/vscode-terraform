@@ -752,7 +752,7 @@
     "viewsWelcome": [
       {
         "view": "terraform.providers",
-        "contents": "This view requires the language server to be enabled. Please enable it in your Settings:\n[Open Settings]()",
+        "contents": "This view requires the language server to be enabled:\n[Open Settings](command:terraform.openSettingsJson)",
         "when": "config.languageServer.enable === false"
       },
       {
@@ -777,7 +777,7 @@
       },
       {
         "view": "terraform.modules",
-        "contents": "This view requires the language server to be enabled. Please enable it in your Settings:\n[Open Settings]()",
+        "contents": "This view requires the language server to be enabled:\n[Open Settings](command:terraform.openSettingsJson)",
         "when": "config.languageServer.enable === false"
       },
       {
