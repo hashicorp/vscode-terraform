@@ -752,11 +752,53 @@
     "viewsWelcome": [
       {
         "view": "terraform.providers",
-        "contents": "The active editor cannot provide information about installed providers. [Learn more about providers](https://www.terraform.io/docs/language/providers/index.html). You may need to update your language server version."
+        "contents": "This view requires the language server to be enabled:\n[Open Settings](command:terraform.openSettingsJson)",
+        "when": "config.terraform.languageServer.enable === false"
+      },
+      {
+        "view": "terraform.providers",
+        "contents": "There are no open Terraform files. Please open a Terraform configuration file to see installed providers.",
+        "when": "config.terraform.languageServer.enable && terraform.providers.documentOpened === false"
+      },
+      {
+        "view": "terraform.providers",
+        "contents": "The active document is not a Terraform file. Please open a Terraform configuration file to see installed providers.",
+        "when": "config.terraform.languageServer.enable && terraform.providers.documentIsTerraform === false"
+      },
+      {
+        "view": "terraform.providers",
+        "contents": "There are no installed providers found for the current open file.\n[Learn more about providers](https://www.terraform.io/docs/language/providers/index.html)",
+        "when": "config.terraform.languageServer.enable && terraform.providers.noProviders === true"
+      },
+      {
+        "view": "terraform.providers",
+        "contents": "The active editor cannot provide information about installed providers.\n[Learn more about providers](https://www.terraform.io/docs/language/providers/index.html)",
+        "when": "config.terraform.languageServer.enable && terraform.providers.noResponse === true"
       },
       {
         "view": "terraform.modules",
-        "contents": "The active editor cannot provide information about installed modules. [Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html) You may need to run 'terraform get' or update your language server version."
+        "contents": "This view requires the language server to be enabled:\n[Open Settings](command:terraform.openSettingsJson)",
+        "when": "config.terraform.languageServer.enable === false"
+      },
+      {
+        "view": "terraform.modules",
+        "contents": "There are no open Terraform files. Please open a Terraform configuration file to see installed modules.",
+        "when": "config.terraform.languageServer.enable && terraform.modules.documentOpened === false"
+      },
+      {
+        "view": "terraform.modules",
+        "contents": "The active document is not a Terraform file. Please open a Terraform configuration file to see installed modules.",
+        "when": "config.terraform.languageServer.enable && terraform.modules.documentIsTerraform === false"
+      },
+      {
+        "view": "terraform.modules",
+        "contents": "There are no installed modules found for the current open file.\n[Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html)",
+        "when": "config.terraform.languageServer.enable && terraform.modules.noModules === true"
+      },
+      {
+        "view": "terraform.modules",
+        "contents": "The active editor cannot provide information about installed modules.\n[Learn more about modules](https://www.terraform.io/docs/language/modules/develop/index.html)",
+        "when": "config.terraform.languageServer.enable && terraform.modules.noResponse === true"
       },
       {
         "view": "terraform.cloud.workspaces",
