@@ -753,27 +753,27 @@
       {
         "view": "terraform.providers",
         "contents": "This view requires the language server to be enabled:\n[Open Settings](command:terraform.openSettingsJson)",
-        "when": "config.languageServer.enable === false"
+        "when": "config.terraform.languageServer.enable === false"
       },
       {
         "view": "terraform.providers",
         "contents": "There are no open Terraform files. Please open a Terraform configuration file to see installed providers.",
-        "when": "config.languageServer.enable && terraform.providers.documentOpened === false"
+        "when": "config.terraform.languageServer.enable && terraform.providers.documentOpened === false"
       },
       {
         "view": "terraform.providers",
         "contents": "The active document is not a Terraform file. Please open a Terraform configuration file to see installed providers.",
-        "when": "config.languageServer.enable && terraform.providers.documentIsTerraform === false"
+        "when": "config.terraform.languageServer.enable && terraform.providers.documentIsTerraform === false"
       },
       {
         "view": "terraform.providers",
         "contents": "There are no installed providers found for the current open file.\n[Learn more about providers](https://www.terraform.io/docs/language/providers/index.html)",
-        "when": "config.languageServer.enable && terraform.providers.noProviders === true"
+        "when": "config.terraform.languageServer.enable && terraform.providers.noProviders === true"
       },
       {
         "view": "terraform.providers",
         "contents": "The active editor cannot provide information about installed providers.\n[Learn more about providers](https://www.terraform.io/docs/language/providers/index.html)",
-        "when": "config.languageServer.enable && terraform.providers.noResponse === true"
+        "when": "config.terraform.languageServer.enable && terraform.providers.noResponse === true"
       },
       {
         "view": "terraform.modules",
