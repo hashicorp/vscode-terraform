@@ -586,7 +586,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "opentofu",
+          "id": "terraform",
           "title": "OpenTofu",
           "icon": "assets/icons/vs_code_terraform.svg"
         }

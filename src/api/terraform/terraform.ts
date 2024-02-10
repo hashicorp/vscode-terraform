@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest, LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
@@ -55,55 +54,39 @@ export interface TerraformInfoResponse {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export async function terraformVersion(
-  moduleUri: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-): Promise<TerraformInfoResponse> {
+export async function terraformVersion(moduleUri: string, client: LanguageClient): Promise<TerraformInfoResponse> {
   const command = 'terraform-ls.module.terraform';
 
-  const response = await execWorkspaceLSCommand<TerraformInfoResponse>(command, moduleUri, client, reporter);
+  const response = await execWorkspaceLSCommand<TerraformInfoResponse>(command, moduleUri, client);
 
   return response;
 }
 
-export async function moduleCallers(
-  moduleUri: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-): Promise<ModuleCallersResponse> {
+export async function moduleCallers(moduleUri: string, client: LanguageClient): Promise<ModuleCallersResponse> {
   const command = 'terraform-ls.module.callers';
 
-  const response = await execWorkspaceLSCommand<ModuleCallersResponse>(command, moduleUri, client, reporter);
+  const response = await execWorkspaceLSCommand<ModuleCallersResponse>(command, moduleUri, client);
 
   return response;
 }
 
-export async function moduleCalls(
-  moduleUri: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-): Promise<ModuleCallsResponse> {
+export async function moduleCalls(moduleUri: string, client: LanguageClient): Promise<ModuleCallsResponse> {
   const command = 'terraform-ls.module.calls';
 
-  const response = await execWorkspaceLSCommand<ModuleCallsResponse>(command, moduleUri, client, reporter);
+  const response = await execWorkspaceLSCommand<ModuleCallsResponse>(command, moduleUri, client);
 
   return response;
 }
 
-export async function moduleProviders(
-  moduleUri: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-): Promise<ModuleProvidersResponse> {
+export async function moduleProviders(moduleUri: string, client: LanguageClient): Promise<ModuleProvidersResponse> {
   const command = 'terraform-ls.module.providers';
 
-  const response = await execWorkspaceLSCommand<ModuleProvidersResponse>(command, moduleUri, client, reporter);
+  const response = await execWorkspaceLSCommand<ModuleProvidersResponse>(command, moduleUri, client);
 
   return response;
 }
 
-export async function initAskUserCommand(client: LanguageClient, reporter: TelemetryReporter) {
+export async function initAskUserCommand(client: LanguageClient) {
   try {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     const selected = await vscode.window.showOpenDialog({
@@ -121,7 +104,7 @@ export async function initAskUserCommand(client: LanguageClient, reporter: Telem
     const moduleUri = selected[0];
     const command = `terraform-ls.terraform.init`;
 
-    return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
+    return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client);
   } catch (error) {
     if (error instanceof Error) {
       vscode.window.showErrorMessage(error.message);
@@ -131,9 +114,9 @@ export async function initAskUserCommand(client: LanguageClient, reporter: Telem
   }
 }
 
-export async function initCurrentOpenFileCommand(client: LanguageClient, reporter: TelemetryReporter) {
+export async function initCurrentOpenFileCommand(client: LanguageClient) {
   try {
-    await terraformCommand('initCurrent', client, reporter);
+    await terraformCommand('initCurrent', client);
   } catch (error) {
     if (error instanceof Error) {
       vscode.window.showErrorMessage(error.message);
@@ -143,9 +126,9 @@ export async function initCurrentOpenFileCommand(client: LanguageClient, reporte
   }
 }
 
-export async function command(command: string, client: LanguageClient, reporter: TelemetryReporter, useShell = false) {
+export async function command(command: string, client: LanguageClient, useShell = false) {
   try {
-    await terraformCommand(command, client, reporter, useShell);
+    await terraformCommand(command, client, useShell);
   } catch (error) {
     if (error instanceof Error) {
       vscode.window.showErrorMessage(error.message);
@@ -155,12 +138,7 @@ export async function command(command: string, client: LanguageClient, reporter:
   }
 }
 
-async function terraformCommand(
-  command: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-  useShell = false,
-): Promise<void> {
+async function terraformCommand(command: string, client: LanguageClient, useShell = false): Promise<void> {
   const textEditor = getActiveTextEditor();
   if (textEditor === undefined) {
     vscode.window.showErrorMessage(`Open a Terraform module file and then run terraform ${command} again`);
@@ -168,7 +146,7 @@ async function terraformCommand(
   }
 
   const moduleUri = Utils.dirname(textEditor.document.uri);
-  const response = await moduleCallers(moduleUri.toString(), client, reporter);
+  const response = await moduleCallers(moduleUri.toString(), client);
 
   const selectedModule = await getSelectedModule(moduleUri, response.callers);
   if (selectedModule === undefined) {
@@ -192,26 +170,19 @@ async function terraformCommand(
     terminal.sendText(terraformCommand);
     terminal.show();
 
-    reporter.sendTelemetryEvent('execShellCommand', { command: command });
     return;
   }
 
   const fullCommand = `terraform-ls.terraform.${command}`;
 
-  return execWorkspaceLSCommand<void>(fullCommand, selectedModule, client, reporter);
+  return execWorkspaceLSCommand<void>(fullCommand, selectedModule, client);
 }
 
-async function execWorkspaceLSCommand<T>(
-  command: string,
-  moduleUri: string,
-  client: LanguageClient,
-  reporter: TelemetryReporter,
-): Promise<T> {
+async function execWorkspaceLSCommand<T>(command: string, moduleUri: string, client: LanguageClient): Promise<T> {
   // record whether we use terraform.init or terraform.initcurrent vscode commands
   // this is hacky, but better than propagating down another parameter just to handle
   // which init command we used
   if (command === 'terraform-ls.terraform.initCurrent') {
-    reporter.sendTelemetryEvent('execWorkspaceCommand', { command: command });
     // need to change to terraform-ls command after detection
     command = 'terraform-ls.terraform.init';
   }

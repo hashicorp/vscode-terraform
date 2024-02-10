@@ -9,7 +9,6 @@ import { ClientCapabilities, FeatureState, ServerCapabilities, StaticFeature } f
 import { getActiveTextEditor } from '../utils/vscode';
 import { ExperimentalClientCapabilities } from './types';
 import { Utils } from 'vscode-uri';
-import TelemetryReporter from '@vscode/extension-telemetry';
 import { LanguageClient } from 'vscode-languageclient/node';
 import * as lsStatus from '../status/language';
 import * as versionStatus from '../status/installedVersion';
@@ -20,11 +19,7 @@ export class TerraformVersionFeature implements StaticFeature {
 
   private clientTerraformVersionCommandId = 'client.refreshTerraformVersion';
 
-  constructor(
-    private client: LanguageClient,
-    private reporter: TelemetryReporter,
-    private outputChannel: vscode.OutputChannel,
-  ) {}
+  constructor(private client: LanguageClient, private outputChannel: vscode.OutputChannel) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}
@@ -60,7 +55,7 @@ export class TerraformVersionFeature implements StaticFeature {
 
         lsStatus.setLanguageServerBusy();
 
-        const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
+        const response = await terraform.terraformVersion(moduleDir.toString(), this.client);
         versionStatus.setVersion(response.discovered_version || 'unknown');
         requiredVersionStatus.setVersion(response.required_version || 'any');
 
