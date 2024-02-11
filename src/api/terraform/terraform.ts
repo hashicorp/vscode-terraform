@@ -93,7 +93,7 @@ export async function initAskUserCommand(client: LanguageClient) {
       canSelectFiles: false,
       canSelectFolders: true,
       canSelectMany: false,
-      title: 'Choose which workspace to initialize with terraform init',
+      title: 'Choose which workspace to initialize with tofu init',
       defaultUri: workspaceFolders ? workspaceFolders[0]?.uri : undefined,
       openLabel: 'Initialize',
     });
@@ -141,7 +141,7 @@ export async function command(command: string, client: LanguageClient, useShell 
 async function terraformCommand(command: string, client: LanguageClient, useShell = false): Promise<void> {
   const textEditor = getActiveTextEditor();
   if (textEditor === undefined) {
-    vscode.window.showErrorMessage(`Open a Terraform module file and then run terraform ${command} again`);
+    vscode.window.showErrorMessage(`Open a OpenTofu module file and then run tofu ${command} again`);
     return;
   }
 
@@ -154,10 +154,10 @@ async function terraformCommand(command: string, client: LanguageClient, useShel
   }
 
   if (useShell) {
-    const terminalName = `Terraform ${selectedModule}`;
+    const terminalName = `OpenTofu ${selectedModule}`;
     const moduleURI = vscode.Uri.parse(selectedModule);
     const terraformCommand = await vscode.window.showInputBox({
-      value: `terraform ${command}`,
+      value: `tofu ${command}`,
       prompt: `Run in ${selectedModule}`,
     });
     if (terraformCommand === undefined) {
@@ -166,7 +166,7 @@ async function terraformCommand(command: string, client: LanguageClient, useShel
 
     const terminal =
       vscode.window.terminals.find((t) => t.name === terminalName) ||
-      vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
+      vscode.window.createTerminal({ name: `OpenTofu ${selectedModule}`, cwd: moduleURI });
     terminal.sendText(terraformCommand);
     terminal.show();
 
@@ -211,7 +211,7 @@ async function getSelectedModule(moduleUri: vscode.Uri, moduleCallers: ModuleCal
       moduleCallers.map((m) => m.uri),
       {
         canPickMany: false,
-        title: 'Choose which workspace to initialize with terraform init',
+        title: 'Choose which workspace to initialize with tofu init',
       },
     );
     if (selected === undefined) {

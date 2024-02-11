@@ -22,7 +22,7 @@ interface VSCodeExtension {
 export class GenerateBugReportCommand implements vscode.Disposable {
   constructor(private ctx: vscode.ExtensionContext) {
     this.ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.generateBugReport', async () => {
+      vscode.commands.registerCommand('opentofu.generateBugReport', async () => {
         const problemText = await vscode.window.showInputBox({
           title: 'Generate a Bug Report',
           prompt: 'Enter a short description of the problem or hit enter to submit now',
@@ -32,7 +32,7 @@ export class GenerateBugReportCommand implements vscode.Disposable {
         const extensions = this.getExtensions();
         const body = await this.generateBody(extensions, problemText);
         const encodedBody = encodeURIComponent(body);
-        const fullUrl = `https://github.com/hashicorp/vscode-terraform/issues/new?body=${encodedBody}`;
+        const fullUrl = `https://github.com/gamunu/vscode-opentofu/issues/new?body=${encodedBody}`;
         vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(fullUrl));
       }),
     );
@@ -173,7 +173,7 @@ Outdated:\t${info.outdated}
   }
 
   async getRuntimeInfo(): Promise<TerraformInfo> {
-    const terraformExe = 'terraform';
+    const terraformExe = 'tofu';
     const spawn = child_process.spawnSync;
 
     // try to get version from a newer terraform binary

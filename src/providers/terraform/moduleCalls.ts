@@ -65,11 +65,11 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
   private svg = '';
 
   constructor(ctx: vscode.ExtensionContext, public client: LanguageClient) {
-    this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
+    this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'opentofu.svg'));
 
     ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
-      vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
+      vscode.commands.registerCommand('opentofu.modules.refreshList', () => this.refresh()),
+      vscode.commands.registerCommand('opentofu.modules.openDocumentation', (module: ModuleCallItem) => {
         if (module.docsLink) {
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }

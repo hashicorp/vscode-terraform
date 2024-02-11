@@ -38,7 +38,7 @@ export class ModuleProvidersFeature implements StaticFeature {
   }
 
   public async initialize(capabilities: ServerCapabilities): Promise<void> {
-    this.disposables.push(vscode.window.registerTreeDataProvider('terraform.providers', this.view));
+    this.disposables.push(vscode.window.registerTreeDataProvider('opentofu.providers', this.view));
 
     if (!capabilities.experimental?.refreshModuleProviders) {
       console.log("Server doesn't support client.refreshModuleProviders");

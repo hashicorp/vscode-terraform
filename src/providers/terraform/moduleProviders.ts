@@ -41,7 +41,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
         // we already check for state inside the getprovider function, so we can just call refresh here
         this.refresh();
       }),
-      vscode.commands.registerCommand('terraform.providers.openDocumentation', (module: ModuleProviderItem) => {
+      vscode.commands.registerCommand('opentofu.providers.openDocumentation', (module: ModuleProviderItem) => {
         if (module.docsLink) {
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }

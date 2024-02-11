@@ -33,8 +33,8 @@ import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import * as lsStatus from './status/language';
 
-const id = 'terraform';
-const brand = `HashiCorp Terraform`;
+const id = 'opentofu';
+const brand = `OpenTofu`;
 const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
@@ -53,7 +53,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // always register commands needed to control terraform-ls
   context.subscriptions.push(new TerraformLSCommands());
 
-  if (config('terraform').get<boolean>('languageServer.enable') === false) {
+  if (config('opentofu').get<boolean>('languageServer.enable') === false) {
     return;
   }
 
@@ -61,7 +61,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const serverOptions = await getServerOptions(lsPath, outputChannel);
 
-  const initializationOptions = getInitializationOptions();
+  const initializationOptions = await getInitializationOptions();
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
@@ -74,7 +74,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tfdeploy.hcl'),
       ],
     },
-    diagnosticCollectionName: 'HashiCorpTerraform',
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
     initializationOptions: initializationOptions,
@@ -84,10 +83,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
       let msg = 'Failure to start terraform-ls. Please check your configuration settings and reload this window';
 
-      const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
+      const serverArgs = config('opentofu').get<string[]>('languageServer.args', []);
       if (serverArgs[0] !== 'serve') {
         msg =
-          'You need at least a "serve" argument in the `terraform.languageServer.args` setting. Please check your configuration settings and reload this window';
+          'You need at least a "serve" argument in the `opentofu.languageServer.args` setting. Please check your configuration settings and reload this window';
       }
 
       outputChannel.appendLine(msg);
@@ -113,12 +112,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
               outputChannel.show();
               break;
             case 'Open Settings':
-              await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hashicorp.terraform');
+              await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:OpenTofu.tofu');
               break;
             case 'More Info':
               await vscode.commands.executeCommand(
                 'vscode.open',
-                vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform#troubleshooting'),
+                vscode.Uri.parse('https://github.com/gamunu/vscode-opentofu#troubleshooting'),
               );
               break;
           }
@@ -130,7 +129,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       error: (error: Error, message: Message, count: number) => {
         return {
-          message: `Terraform LS connection error: (${count ?? 0})\n${error?.message}\n${message?.jsonrpc}`,
+          message: `OpenTofu LS connection error: (${count ?? 0})\n${error?.message}\n${message?.jsonrpc}`,
           action: ErrorAction.Shutdown,
         };
       },

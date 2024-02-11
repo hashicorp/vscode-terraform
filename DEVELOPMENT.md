@@ -27,7 +27,7 @@ After cloning the repo, run `npm install` to install dependencies. There's an in
 > npm run compile
 ```
 
-> In order to use an independently built or installed version of terraform-ls, you will need to set `terraform.languageServer.path` to the correct executable path.
+> In order to use an independently built or installed version of terraform-ls, you will need to set `opentofu.languageServer.path` to the correct executable path.
 
 ## Running the Extension
 
