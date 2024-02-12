@@ -466,11 +466,11 @@
       },
       {
         "command": "opentofu.init",
-        "title": "HashiCorp Terraform: init"
+        "title": "OpenTofu: init"
       },
       {
         "command": "opentofu.initCurrent",
-        "title": "HashiCorp Terraform: init current folder",
+        "title": "OpenTofu: init current folder",
         "icon": "$(cloud-download)"
       },
       {
@@ -514,11 +514,11 @@
         },
         {
           "command": "opentofu.init",
-          "when": "config.terraform.languageServer.enable == true"
+          "when": "config.opentofu.languageServer.enable == true"
         },
         {
           "command": "opentofu.initCurrent",
-          "when": "config.terraform.languageServer.enable == true"
+          "when": "config.opentofu.languageServer.enable == true"
         },
         {
           "command": "opentofu.validate",

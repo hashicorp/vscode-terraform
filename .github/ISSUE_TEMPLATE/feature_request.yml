@@ -5,15 +5,15 @@ assignees: []
 body:
   - type: markdown
     attributes:
-      value: We use GitHub issues for tracking bugs and enhancements. For questions, please use [the community forum](https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/) where there are more people ready to help.
+      value: We use GitHub issues for tracking bugs and enhancements. For questions, please use [the github discussions](https://github.com/gamunu/vscode-opentofu/discussions) where there are more people ready to help.
 
   - type: input
     id: version
     attributes:
       label: Extension Version
       description: |
-        Find this in the VS Code UI: Extensions Pane -> Installed -> HashiCorp Terraform
-      placeholder: v2.26.1
+        Find this in the VS Code UI: Extensions Pane -> Installed -> OpenTofu
+      placeholder: v0.1.0
     validations:
       required: true
 
@@ -69,8 +69,8 @@ body:
       placeholder: |
         - #123
         - #456
-        - hashicorp/terraform#789
-        - https://developer.hashicorp.com/terraform/language/expressions/dynamic-blocks
+        - opentofu/opentofu#1
+        - https://opentofu.org/docs/language/expressions/dynamic-blocks/
     validations:
       required: false
 

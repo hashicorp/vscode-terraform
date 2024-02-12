@@ -379,3 +379,10 @@ We are an open source project on GitHub and would enjoy your contributions! Cons
 
 - [Mikael Olenfalk](https://github.com/mauve) - creating the [vscode-terraform](https://github.com/mauve/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
 - [Hashicorp Terraform](https://github.com/mauve) - creating the [vscode-terraform](https://github.com/hashicorp/vscode-terraform) extension, which was used as a starting point and inspiration for this extension.
+
+# Trademarks
+
+This project mentions the following registered trademarks:
+
+- The names Terraform (registered trademark of HashiCorp) and OpenTofu (registered trademark of Linux Foundation) are used in this project for informational purposes only.
+- This project does not claim any affiliation with or endorsement by the owners of the mentioned trademarks.
