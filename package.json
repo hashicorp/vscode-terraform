@@ -3,7 +3,7 @@
   "name": "opentofu",
   "displayName": "OpenTofu",
   "description": "Syntax highlighting and autocompletion for OpenTofu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "gamunu",
   "license": "MPL-2.0",
   "preview": false,

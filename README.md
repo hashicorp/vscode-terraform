@@ -1,13 +1,13 @@
 # OpenTofu Extension for Visual Studio Code
 
- [OpenTofu Extension for Visual Studio Code (VS Code)](https://marketplace.visualstudio.com/items?itemName=gamunu.opentofu) with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [OpenTofu](https://opentofu.org/) files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
+[OpenTofu Extension for Visual Studio Code (VS Code)](https://marketplace.visualstudio.com/items?itemName=gamunu.opentofu) with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [OpenTofu](https://opentofu.org/) files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
 
-⚠️ **Important:** 
+⚠️ **Important:**
+
 - <span style="color: red;">This extension is not compatible with the HashiCorp Terraform extension when both are active simultaneously.</span> Using them together could lead to unexpected behavior or errors.
 - We discover and set the `opentofu.languageServer.opentofu.path` if it is unconfigured. This ensures that the Terraform language server uses the `tofu` command instead of the terraform command. In the future, if a OpenToFu language server becomes available, this setting will no longer be necessary.
 
 We apologize for any inconvenience this may cause, and we appreciate your understanding.
-
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ Read the [Troubleshooting Guide](#troubleshooting) for answers to common questio
 
 - [IntelliSense](#intellisense-and-autocomplete) Edit your code with auto-completion of providers, resource names, data sources, attributes and more
 - [Syntax validation](#syntax-validation) Provides inline diagnostics for invalid configuration as you type
-- [Syntax highlighting](#syntax-highlighting) Highlighting syntax from Terraform 0.12 to 1.X
+- [Syntax highlighting](#syntax-highlighting) Highlighting syntax from OpenTofu 1.X
 - [Code Navigation](#code-navigation) Navigate through your codebase with Go to Definition and Symbol support
 - [Code Formatting](#code-formatting) Format your code with `tofu fmt` automatically
 - [Code Snippets](#code-snippets) Shortcuts for common snippets like `for_each` and `variable`
@@ -62,13 +62,13 @@ Completing the snippet allows you to tab complete through each attribute and blo
 
 ### Syntax Validation
 
-Terraform configuration files are validated when opened and on change, and invalid code is marked with diagnostics.
+OpenTofu configuration files are validated when opened and on change, and invalid code is marked with diagnostics.
 
 HCL syntax is checked for e.g. missing control characters like `}`, `"` or others in the wrong place.
 
 ![](docs/validation-rule-hcl.png)
 
-Enhanced validation of selected Terraform language constructs in both `*.tf` and `*.tfvars` files based on detected Terraform version and provider versions is also provided. This can highlight deprecations, missing required attributes or blocks, references to undeclared variables and more, [as documented](https://github.com/hashicorp/terraform-ls/blob/main/docs/validation.md#enhanced-validation).
+Enhanced validation of selected OpenTofu language constructs in both `*.tf` and `*.tfvars` files based on detected OpenTofu version and provider versions is also provided. This can highlight deprecations, missing required attributes or blocks, references to undeclared variables and more, [as documented](https://github.com/hashicorp/terraform-ls/blob/main/docs/validation.md#enhanced-validation).
 
 ![](docs/validation-rule-missing-attribute.png)
 
@@ -80,7 +80,7 @@ The enhanced validation feature is enabled by default but can be disabled using 
 "opentofu.validation.enableEnhancedValidation": false
 ```
 
-The extension also provides validation through [`tofu validate`](https://opentofu.org/docs/cli/commands/validate/). This can be triggered via command palette. Unlike the other validation methods, this one requires the Terraform CLI installed and a previous successful run of `tofu init` (i.e. local installation of all providers and modules) to function correctly. It is the slowest method, but the most thorough - i.e. it will catch the most mistakes.
+The extension also provides validation through [`tofu validate`](https://opentofu.org/docs/cli/commands/validate/). This can be triggered via command palette. Unlike the other validation methods, this one requires the OpenTofu CLI installed and a previous successful run of `tofu init` (i.e. local installation of all providers and modules) to function correctly. It is the slowest method, but the most thorough - i.e. it will catch the most mistakes.
 
 ![](docs/validation-cli-command.png)
 
@@ -96,7 +96,7 @@ OpenTofu syntax highlighting recognizes language constructs of OpenTofu version 
 
 While editing, you can right-click different identifiers to take advantage of several convenient commands
 
-- `Go to Definition` (`F12`) navigates to the code that defines the construct where your cursor is. This command is helpful when you're working with Terraform modules and variables defined in other files than the currently opened document.
+- `Go to Definition` (`F12`) navigates to the code that defines the construct where your cursor is. This command is helpful when you're working with OpenTofu modules and variables defined in other files than the currently opened document.
 - `Peek Definition` (`Alt+F12`) displays the relevant code snippet for the construct where your cursor is directly in the current editor instead of navigating to another file.
 - `Go to Declaration` navigates to the place where the variable or other construct is declared.
 - `Peek Declaration` displays the declaration directly inside the current editor.
@@ -105,12 +105,11 @@ While editing, you can right-click different identifiers to take advantage of se
 
 This extension utilizes [`tofu fmt`](https://opentofu.org/docs/cli/commands/fmt/) to rewrite an open document to a canonical format and style. This command applies a subset of the [OpenTofu language style conventions](https://opentofu.org/docs/language/syntax/style/), along with other minor adjustments for readability.
 
-
 See the [Formatting](#formatting) Configuration section for information on how to configure this feature.
 
 ### Code Snippets
 
-The extension provides several snippets to accelerate adding Terraform code to your configuration files:
+The extension provides several snippets to accelerate adding OpenTofu code to your configuration files:
 
 - `fore` - For Each
 - `module` - Module
@@ -118,7 +117,6 @@ The extension provides several snippets to accelerate adding Terraform code to y
 - `provisioner` - Provisioner
 - `vare` - Empty variable
 - `varm` - Map Variable
-
 
 ### OpenTofu Module and Provider Explorer
 
@@ -140,10 +138,10 @@ List OpenTofu providers used in the current open document in the Explorer Pane, 
 
 The extension provides access to several OpenTofu commands through the Command Palette:
 
-- tofu: init
-- tofu: init current folder
-- tofu: validate
-- tofu: plan
+- OpenTofu: init
+- OpenTofu: init current folder
+- OpenTofu: validate
+- OpenTofu: plan
 
 ## Requirements
 
@@ -189,14 +187,14 @@ The extension will pick up new schema for OpenTofu providers you reference in yo
 
 To provide the extension with an up-to-date schema for the OpenTofu providers used in your configuration:
 
-1. Open any folder or VS Code workspace containing OpenTofu files. 
-1. Open the Command Palette and run `tofu: init current folder` or perform a `tofu init` from the terminal.
+1. Open any folder or VS Code workspace containing OpenTofu files.
+1. Open the Command Palette and run `OpenTofu: init current folder` or perform a `tofu init` from the terminal.
 
 ### Remote Extension support
 
-The Visual Studio Code [Remote - WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) lets you use the Windows Subsystem for Linux (WSL) as your full-time development environment right from VS Code. You can author Terraform configuration files in a Linux-based environment, use Linux-specific toolchains and utilities from the comfort of Windows.
+The Visual Studio Code [Remote - WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) lets you use the Windows Subsystem for Linux (WSL) as your full-time development environment right from VS Code. You can author OpenTofu configuration files in a Linux-based environment, use Linux-specific toolchains and utilities from the comfort of Windows.
 
-The Remote WSL extension runs the [HashiCorp Extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) and other extensions directly in WSL so you can edit files located in WSL or the mounted Windows filesystem (for example /mnt/c) without worrying about pathing issues, binary compatibility, or other cross-OS challenges.
+The Remote WSL extension runs the [OpenTofu Extension](https://marketplace.visualstudio.com/items?itemName=gamunu.opentofu) and other extensions directly in WSL so you can edit files located in WSL or the mounted Windows filesystem (for example /mnt/c) without worrying about pathing issues, binary compatibility, or other cross-OS challenges.
 
 For a detailed walkthrough for how to get started using WSL and VS Code, see https://code.visualstudio.com/docs/remote/wsl-tutorial.
 
@@ -208,7 +206,7 @@ This extension offers several configuration options. To modify these open the [V
 
 ### Code Completion
 
-An experimental option can be enabled to prefill required fields when completing Terraform blocks with the following setting:
+An experimental option can be enabled to prefill required fields when completing OpenTofu blocks with the following setting:
 
 ```json
 "opentofu.experimentalFeatures.prefillRequiredFields": true
@@ -241,35 +239,35 @@ Display reference counts above top level blocks and attributes
 To enable automatic formatting, it is recommended that the following be added to the extension settings for the OpenTofu extension:
 
 ```json
-"[opentofu]": {
-  "editor.defaultFormatter": "opentofu.tofu",
+"[terraform]": {
+  "editor.defaultFormatter": "gamunu.opentofu",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file"
 },
-"[opentofu-vars]": {
-  "editor.defaultFormatter": "opentofu.tofu",
+"[terraform-vars]": {
+  "editor.defaultFormatter": "gamunu.opentofu",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file"
 }
 ```
 
-> It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows which extension to use to format your files. It is possible to have more than one extension installed which claim a capability to format Terraform files.
+> It is recommended to set `editor.defaultFormatter` to ensure that VS Code knows which extension to use to format your files. It is possible to have more than one extension installed which claim a capability to format OpenTofu files.
 
 When using the `editor.formatOnSaveMode` setting, only `file` is currently supported. The `modifications` or `modificationsIfAvailable` settings [use the currently configured SCM](https://code.visualstudio.com/updates/v1_49#_only-format-modified-text) to detect file line ranges that have changed and send those ranges to the formatter. The `file` setting works because `tofu fmt` was originally designed for formatting an entire file, not ranges. If you don't have an SCM enabled for the files you are editing, `modifications` won't work at all. The `modificationsIfAvailable` setting will fall back to `file` if there is no SCM and will appear to work sometimes.
 
-If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to automatically format Terraform files, use the following configuration:
+If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to automatically format OpenTofu files, use the following configuration:
 
 ```json
 "editor.formatOnSave": true,
-"[opentofu]": {
-  "editor.defaultFormatter": "opentofu.tofu",
+"[terraform]": {
+  "editor.defaultFormatter": "gamunu.opentofu",
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.formatAll.opentofu": true
   },
 },
-"[opentofu-vars]": {
-  "editor.defaultFormatter": "opentofu.tofu",
+"[terraform-vars]": {
+  "editor.defaultFormatter": "gamunu.opentofu",
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.formatAll.opentofu": true
@@ -277,9 +275,9 @@ If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to auto
 }
 ```
 
-This will keep the global `editor.formatOnSave` for other languages you use, and configure the Terraform extension to only format during a `codeAction` sweep.
+This will keep the global `editor.formatOnSave` for other languages you use, and configure the OpenTofu extension to only format during a `codeAction` sweep.
 
-> **Note**: Ensure that the terraform binary is present in the environment `PATH` variable. If the terraform binary cannot be found, formatting will silently fail.
+> **Note**: Ensure that the tofu binary is present in the environment `PATH` variable. If the tofu binary cannot be found, formatting will silently fail.
 
 ### Validation
 
@@ -289,7 +287,7 @@ An experimental validate-on-save option can be enabled with the following settin
 "opentofu.experimentalFeatures.validateOnSave": true
 ```
 
-This will create diagnostics for any elements that fail validation. You can also run `terraform validate` by issuing the `Terraform: validate` in the command palette.
+This will create diagnostics for any elements that fail validation. You can also run `tofu validate` by issuing the `OpenTofu: validate` in the command palette.
 
 ### Multiple Workspaces
 
@@ -322,7 +320,7 @@ If you want to automatically ignore certain directories when terraform-ls indexe
 
 ### OpenTofu command options
 
-You can configure the path to the Terraform binary used by terraform-ls to perform operations inside the editor by configuring this setting:
+You can configure the path to the tofu binary used by terraform-ls to perform operations inside the editor by configuring this setting:
 
 ```json
 "opentofu.languageServer.path": "C:/some/folder/path"
@@ -334,7 +332,7 @@ You can override the opentofu execution timeout by configuring this setting:
 "opentofu.languageServer.timeout": "30"
 ```
 
-You can set the path Terraform logs (`TF_LOG_PATH`) by configuring this setting:
+You can set the path OpenTofu logs (`TF_LOG_PATH`) by configuring this setting:
 
 ```json
 "opentofu.languageServer.logFilePath": "C:/some/folder/path/log-{{varname}}.log"
@@ -357,13 +355,13 @@ Supports variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varname
 
 ### Generate a bug report
 
-Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `OpenTofu: Generate Bug Report`. This will inspect the VS Code version, the Terraform extension version, the terraform-ls version and the list of installed extensions and open a browser window with GitHub loaded. You can then inspect the information provided, edit if desired, and submit the issue.
+Experience a problem? You can have VS Code open a Github issue in our repo with all the information filled out for you. Open the Command Palette and invoke `OpenTofu: Generate Bug Report`. This will inspect the VS Code version, the OpenTofu extension version, the terraform-ls version and the list of installed extensions and open a browser window with GitHub loaded. You can then inspect the information provided, edit if desired, and submit the issue.
 
 ### Reload the extension
 
-If you haven't seen the Problems Pane update in awhile, or hover and intellisense doesn't seem to showing up, you might not know what to do. Sometimes the Terraform extension can experience problems which cause the editor to not respond. The extension has a way of [reporting the problem](#generate-a-bug-report), but there is something you can do to get right back to working after reporting the problem: reload the Terraform extension.
+If you haven't seen the Problems Pane update in awhile, or hover and intellisense doesn't seem to showing up, you might not know what to do. Sometimes the OpenTofu extension can experience problems which cause the editor to not respond. The extension has a way of [reporting the problem](#generate-a-bug-report), but there is something you can do to get right back to working after reporting the problem: reload the OpenTofu extension.
 
-You can reload the Terraform extension by opening the command palette and starting to type `Reload`. A list of commands will appear, select `Reload Window`. This will reload the Visual Studio Code window without closing down the entire editor, and without losing any work currently open in the editor.
+You can reload the OpenTofu extension by opening the command palette and starting to type `Reload`. A list of commands will appear, select `Reload Window`. This will reload the Visual Studio Code window without closing down the entire editor, and without losing any work currently open in the editor.
 
 ### Pin to a specific version of the extension
 
