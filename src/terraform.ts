@@ -34,7 +34,7 @@ export interface ModuleCallsResponse {
   module_calls: ModuleCall[];
 }
 
-interface ModuleProvidersResponse {
+export interface ModuleProvidersResponse {
   v: number;
   provider_requirements: {
     [provider: string]: {

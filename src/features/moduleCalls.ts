@@ -39,8 +39,11 @@ export class ModuleCallsFeature implements StaticFeature {
 
     if (!capabilities.experimental?.refreshModuleCalls) {
       console.log('Server does not support client.refreshModuleCalls');
+      await vscode.commands.executeCommand('setContext', 'terraform.modules.supported', false);
       return;
     }
+
+    await vscode.commands.executeCommand('setContext', 'terraform.modules.supported', true);
 
     const d = this.client.onRequest(CLIENT_MODULE_CALLS_CMD_ID, () => {
       this.view?.refresh();

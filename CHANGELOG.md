@@ -1,3 +1,21 @@
+## [2.29.4] (2024-02-13)
+
+ENHANCEMENTS:
+
+* Improve module providers and module calls welcome views ([#1676](https://github.com/hashicorp/vscode-terraform/pull/1676))
+* Support `for`-`in`-`if` expressions ([hcl-lang#368](https://github.com/hashicorp/hcl-lang/pull/368))
+
+BUG FIXES:
+
+* Fix prefix completion in template interpolation ([hcl-lang#371](https://github.com/hashicorp/hcl-lang/pull/371))
+* Fix language server crash on prefix completion with leading space ([hcl-lang#373](https://github.com/hashicorp/hcl-lang/pull/373))
+* Fix language server crash on missing symbols in client capabilities ([terraform-ls#1619](https://github.com/hashicorp/terraform-ls/pull/1619))
+
+INTERNAL:
+
+* Add CONTRIBUTING file ([#1680](https://github.com/hashicorp/vscode-terraform/pull/1680))
+* build(deps): Bump workflows to latest trusted versions ([#1687](https://github.com/hashicorp/vscode-terraform/pull/1687), [#1690](https://github.com/hashicorp/vscode-terraform/pull/1690))
+
 ## [2.29.3] (2024-01-23)
 
 ENHANCEMENTS:
@@ -900,7 +918,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...main
+[2.29.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...v2.29.4
 [2.29.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.2...v2.29.3
 [2.29.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.1...v2.29.2
 [2.29.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.0...v2.29.1

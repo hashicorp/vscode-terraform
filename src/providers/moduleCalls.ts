@@ -75,16 +75,10 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }
       }),
-      vscode.window.onDidChangeActiveTextEditor(async (event: vscode.TextEditor | undefined) => {
-        const activeEditor = getActiveTextEditor();
-
-        if (!isTerraformFile(activeEditor?.document)) {
-          return;
-        }
-
-        if (event && activeEditor) {
-          this.refresh();
-        }
+      vscode.window.onDidChangeActiveTextEditor(async () => {
+        // most of the time this is called when the user switches tabs or closes the file
+        // we already check for state inside the getModule function, so we can just call refresh here
+        this.refresh();
       }),
     );
   }
@@ -109,26 +103,48 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
   async getModules(): Promise<ModuleCallItem[]> {
     const activeEditor = getActiveTextEditor();
 
+    await vscode.commands.executeCommand('setContext', 'terraform.modules.documentOpened', true);
+    await vscode.commands.executeCommand('setContext', 'terraform.modules.documentIsTerraform', true);
+    await vscode.commands.executeCommand('setContext', 'terraform.modules.lspConnected', true);
+    await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', false);
+    await vscode.commands.executeCommand('setContext', 'terraform.modules.noModules', false);
+
     if (activeEditor?.document === undefined) {
+      // there is no open document
+      await vscode.commands.executeCommand('setContext', 'terraform.modules.documentOpened', false);
       return [];
     }
 
     if (!isTerraformFile(activeEditor.document)) {
+      // the open file is not a terraform file
+      await vscode.commands.executeCommand('setContext', 'terraform.modules.documentIsTerraform', false);
+      return [];
+    }
+
+    if (this.client === undefined) {
+      // connection to terraform-ls failed
+      await vscode.commands.executeCommand('setContext', 'terraform.modules.lspConnected', false);
       return [];
     }
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
-    if (this.client === undefined) {
+
+    let response: terraform.ModuleCallsResponse;
+    try {
+      response = await terraform.moduleCalls(documentURI.toString(), this.client, this.reporter);
+      if (response === null) {
+        // no response from terraform-ls
+        await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);
+        return [];
+      }
+    } catch {
+      // error from terraform-ls
+      await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);
       return [];
     }
 
     try {
-      const response = await terraform.moduleCalls(documentURI.toString(), this.client, this.reporter);
-      if (response === null) {
-        return [];
-      }
-
       const list = response.module_calls.map((m) => {
         return this.toModuleCall(
           m.name,
@@ -141,8 +157,14 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
         );
       });
 
+      if (list.length === 0) {
+        await vscode.commands.executeCommand('setContext', 'terraform.modules.noModules', true);
+      }
+
       return list;
     } catch {
+      // error mapping response
+      await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);
       return [];
     }
   }
