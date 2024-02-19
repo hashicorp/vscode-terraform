@@ -702,7 +702,7 @@
     "chai": "^4.3.7",
     "esbuild-loader": "^4.1.0",
     "eslint": "^8.40.0",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "mocha": "^10.2.0",
     "msw": "^2.0.11",
