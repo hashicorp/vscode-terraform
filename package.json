@@ -21,7 +21,7 @@
     "version": "0.33.0-beta1"
   },
   "syntax": {
-    "version": "0.4.2"
+    "version": "0.4.4"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
