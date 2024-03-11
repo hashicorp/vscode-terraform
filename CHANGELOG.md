@@ -1,3 +1,19 @@
+## [2.30.2024022914] (2024-02-29)
+
+ENHANCEMENTS:
+
+* Support new provider defined functions syntax ([syntax#99](https://github.com/hashicorp/syntax/pull/99))
+
+BUG FIXES:
+
+* Fix `for` expression collection constraints ([hcl-lang#375](https://github.com/hashicorp/hcl-lang/pull/375))
+* Fix panics on `nil` expressions ([hcl-lang#376](https://github.com/hashicorp/hcl-lang/pull/376))
+* Fix panics on `nil` expressions in early decoder ([terraform-schema#324](https://github.com/hashicorp/terraform-schema/pull/324))
+
+INTERNAL:
+
+* build(deps): Bump workflows to latest trusted versions ([#1695](https://github.com/hashicorp/vscode-terraform/pull/1695)
+
 ## [2.29.4] (2024-02-13)
 
 ENHANCEMENTS:
