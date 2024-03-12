@@ -1,3 +1,13 @@
+## [2.29.5] (2024-03-11)
+
+BUG FIXES:
+
+* Fix `for` expression collection constraints ([hcl-lang#375](https://github.com/hashicorp/hcl-lang/pull/375))
+
+INTERNAL:
+
+* build(deps): Bump workflows to latest trusted versions ([#1695](https://github.com/hashicorp/vscode-terraform/pull/1695), [#1704](https://github.com/hashicorp/vscode-terraform/pull/1704), [#1706](https://github.com/hashicorp/vscode-terraform/pull/1706))
+
 ## [2.29.4] (2024-02-13)
 
 ENHANCEMENTS:
@@ -918,7 +928,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.5...main
+[2.29.5]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...v2.29.5
 [2.29.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...v2.29.4
 [2.29.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.2...v2.29.3
 [2.29.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.1...v2.29.2
