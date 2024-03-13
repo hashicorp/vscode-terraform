@@ -28,23 +28,23 @@ const organizations = z.object({
     .optional(),
 });
 
-const organizationMemberships = z.object({
-  data: z.array(
-    z.object({
-      id: z.string(),
-      attributes: z.object({
-        status: z.enum(['active', 'invited']),
-      }),
-      relationships: z.object({
-        organization: z.object({
-          data: z.object({
-            id: z.string(),
-          }),
-        }),
+const organizationMemebrship = z.object({
+  id: z.string(),
+  attributes: z.object({
+    status: z.enum(['active', 'invited']),
+  }),
+  relationships: z.object({
+    organization: z.object({
+      data: z.object({
+        id: z.string(),
       }),
     }),
-  ),
+  }),
 });
+const organizationMemberships = z.object({
+  data: z.array(organizationMemebrship),
+});
+export type OrganizationMembership = z.infer<typeof organizationMemebrship>;
 
 export const organizationEndpoints = makeApi([
   {

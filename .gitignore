@@ -11,3 +11,4 @@ testFixture/.terraform.lock.hcl
 testFixture/.vscode
 .terraform/
 .vscode-test-web
+.wdio-vscode-service
