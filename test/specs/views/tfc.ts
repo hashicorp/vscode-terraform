@@ -4,14 +4,7 @@
  */
 import { browser, expect } from '@wdio/globals';
 import { fail } from 'assert';
-import {
-  Workbench,
-  CustomTreeItem,
-  SideBarView,
-  ViewSection,
-  ViewControl,
-  WelcomeContentButton,
-} from 'wdio-vscode-service';
+import { Workbench, SideBarView, ViewSection, ViewControl, WelcomeContentButton } from 'wdio-vscode-service';
 import { Key } from 'webdriverio';
 
 let workbench: Workbench;
@@ -33,14 +26,6 @@ describe('TFC ViewContainer', function () {
 
   describe('not logged in', () => {
     let terraformViewControl: ViewControl | undefined;
-
-    before(async () => {
-      // TODO: login to TFC
-    });
-
-    after(async () => {
-      // TODO: logout of TFC
-    });
 
     beforeEach(async () => {
       terraformViewControl = await workbench.getActivityBar().getViewControl('HashiCorp Terraform Cloud');
@@ -72,14 +57,6 @@ describe('TFC ViewContainer', function () {
 
   describe('logged in', () => {
     let terraformViewControl: ViewControl | undefined;
-
-    before(async () => {
-      // TODO: login to TFC
-    });
-
-    after(async () => {
-      // TODO: logout of TFC
-    });
 
     beforeEach(async () => {
       terraformViewControl = await workbench.getActivityBar().getViewControl('HashiCorp Terraform Cloud');
@@ -126,9 +103,9 @@ describe('TFC ViewContainer', function () {
       // detect quickpick and select Existing user token
       browser.keys(['ArrowDown', Key.Enter]);
 
-      // enter token in input box and hit enter
+      // TODO: enter token in input box and hit enter
 
-      // verify you are logged in
+      // TODO: verify you are logged in
     });
   });
 });
