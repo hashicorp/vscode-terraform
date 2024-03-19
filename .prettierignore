@@ -5,4 +5,5 @@ package-lock.json
 node_modules/
 .vscode-test/
 .vscode-test-web/
+.wdio-vscode-service/
 language-configuration.json

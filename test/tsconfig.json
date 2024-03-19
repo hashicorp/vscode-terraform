@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "types": ["node", "@wdio/globals/types", "@wdio/mocha-framework", "expect-webdriverio", "wdio-vscode-service"],
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "module": "ESNext",
+    "target": "ES2021",
+    "isolatedModules": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "strict": true /* enable all strict type-checking options */,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "composite": true
+  }
+}
