@@ -1,3 +1,17 @@
+## [2.30.2024032714] (2024-03-27)
+
+ENHANCEMENTS:
+
+* Support new provider-defined functions ([terraform-ls#1636](https://github.com/hashicorp/terraform-ls/pull/1636))
+
+INTERNAL:
+
+* Bump axios from 1.6.5 to 1.6.8 ([#1712](https://github.com/hashicorp/vscode-terraform/pull/1712))
+* Bump ts-loader from 9.5.0 to 9.5.1 ([#1715](https://github.com/hashicorp/vscode-terraform/pull/1715))
+* Bump chai from 4.3.10 to 4.4.1 ([#1714](https://github.com/hashicorp/vscode-terraform/pull/1714))
+* Webdriver.io End to End Testing ([#1691](https://github.com/hashicorp/vscode-terraform/pull/1691))
+* Bump msw from 1.3.2 to 1.3.3 ([#1717](https://github.com/hashicorp/vscode-terraform/pull/1717))
+
 ## [2.30.2024022914] (2024-02-29)
 
 ENHANCEMENTS:
