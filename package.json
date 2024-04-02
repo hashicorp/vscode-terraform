@@ -83,7 +83,11 @@
         "extensions": [
           ".tfstack.hcl"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_stacks.svg",
+          "light": "assets/icons/terraform_stacks.svg"
+        }
       },
       {
         "id": "terraform-deployment",
@@ -93,7 +97,11 @@
         "extensions": [
           ".tfdeploy.hcl"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_stacks.svg",
+          "light": "assets/icons/terraform_stacks.svg"
+        }
       },
       {
         "id": "json",
