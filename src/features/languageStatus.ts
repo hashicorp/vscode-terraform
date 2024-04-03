@@ -19,6 +19,9 @@ export class LanguageStatusFeature implements StaticFeature {
     private outputChannel: vscode.OutputChannel,
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  clear(): void {}
+
   getState(): FeatureState {
     return {
       kind: 'static',

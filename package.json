@@ -15,7 +15,7 @@
   "engines": {
     "npm": "~10.X",
     "node": "~18.X",
-    "vscode": "^1.82.3"
+    "vscode": "^1.86.2"
   },
   "langServer": {
     "version": "0.33.1"
@@ -871,7 +871,7 @@
     "@zodios/plugins": "^10.6.0",
     "axios": "^1.4.0",
     "semver": "^7.5.4",
-    "vscode-languageclient": "8.1.0",
+    "vscode-languageclient": "^9.0.1",
     "vscode-uri": "^3.0.7",
     "which": "^3.0.1",
     "zod": "^3.21.4"

@@ -22,6 +22,9 @@ export class TelemetryFeature implements StaticFeature {
 
   constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  clear(): void {}
+
   getState(): FeatureState {
     return {
       kind: 'static',
