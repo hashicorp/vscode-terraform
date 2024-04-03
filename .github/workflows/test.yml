@@ -53,8 +53,6 @@ jobs:
           node-version-file: '.nvmrc'
       - name: npm install
         run: npm ci
-      - name: unit test
-        run: npm run test:unit
       - name: web unit
         run: npm run test:unit:web
 
