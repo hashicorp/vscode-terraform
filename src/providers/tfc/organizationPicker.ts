@@ -48,7 +48,7 @@ class OrganizationItem implements vscode.QuickPickItem {
 
 export class OrganizationAPIResource implements APIResource {
   name = 'organizations';
-  title = 'Welcome to Terraform Cloud';
+  title = 'Welcome to HCP Terraform';
   placeholder = 'Choose an organization (type to search)';
   ignoreFocusOut = true;
 

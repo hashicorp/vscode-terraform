@@ -12,7 +12,7 @@ export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   gitlab: 'GitLab',
   github: 'GitHub',
   terraform: 'Terraform',
-  'terraform+cloud': 'Terraform Cloud',
+  'terraform+cloud': 'HCP Terraform',
   tfeAPI: 'API',
   'tfe-api': 'API',
   module: 'No-code Module',

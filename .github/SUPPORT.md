@@ -4,4 +4,4 @@ If you have questions about Terraform VS Code extension usage, please feel free 
 
 ## Enterprise/Commercial Support
 
-If you are an existing Terraform Cloud or Enterprise customer on a [plan](https://www.hashicorp.com/products/terraform/pricing) with support included, please submit a HashiCorp support request or email tf-cloud@hashicorp.support
+If you are an existing HCP Terraform or Terraform Enterprise customer on a [plan](https://www.hashicorp.com/products/terraform/pricing) with support included, please submit a HashiCorp support request or email tf-cloud@hashicorp.support

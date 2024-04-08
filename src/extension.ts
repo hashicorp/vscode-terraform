@@ -43,7 +43,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-vars' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
-const tfcOutputChannel = vscode.window.createOutputChannel('HashiCorp Terraform Cloud');
+const tfcOutputChannel = vscode.window.createOutputChannel('HashiCorp Cloud Platform Terraform');
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
