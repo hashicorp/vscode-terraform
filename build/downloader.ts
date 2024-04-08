@@ -3,10 +3,15 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import got from 'got';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as releases from '@hashicorp/js-releases';
+import axios from 'axios';
+
+async function fileFromUrl(url: string): Promise<Buffer> {
+  const response = await axios.get(url, { responseType: 'arraybuffer' });
+  return Buffer.from(response.data, 'binary');
+}
 
 function getPlatform(platform: string) {
   if (platform === 'win32') {
@@ -128,8 +133,10 @@ async function downloadSyntax(info: ExtensionInfo) {
   if (process.env.downloader_log === 'true') {
     console.log(`Downloading: ${url}`);
   }
-  const content = await got({ url }).text();
-  fs.writeFileSync(fpath, content);
+  // const content = await got({ url }).text();
+  // fs.writeFileSync(fpath, content);
+  const buffer = await fileFromUrl(url);
+  fs.writeFileSync(fpath, buffer);
   if (process.env.downloader_log === 'true') {
     console.log(`Download completed: ${fpath}`);
   }

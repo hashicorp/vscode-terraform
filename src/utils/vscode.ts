@@ -35,10 +35,6 @@ export function getScope(section: string, settingName: string): vscode.Configura
   return target;
 }
 
-export function getWorkspaceFolder(folderName: string): vscode.WorkspaceFolder | undefined {
-  return vscode.workspace.getWorkspaceFolder(vscode.Uri.parse(folderName));
-}
-
 // getActiveTextEditor returns an active (visible and focused) TextEditor
 // We intentionally do *not* use vscode.window.activeTextEditor here
 // because it also contains Output panes which are considered editors
