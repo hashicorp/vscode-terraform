@@ -12,6 +12,7 @@ type Api = typeof apiClient.api;
 
 export function mockGet<Path extends ZodiosPathsByMethod<Api, 'get'>>(
   path: Path,
+  // eslint-disable-next-line @typescript-eslint/ban-types
   resolver: ResponseResolver<{}, never, Awaited<ZodiosResponseByPath<Api, 'get', Path>>>,
 ) {
   return http.get(`${TerraformCloudAPIUrl}${path}`, resolver);
