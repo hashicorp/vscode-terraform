@@ -92,6 +92,8 @@ class TerraformCloudSessionHandler {
 }
 export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
   static providerLabel = 'HashiCorp Cloud Platform Terraform';
+  // These are IDs and session keys that are used to identify the provider and the session in VS Code secret storage
+  // we cannot change these in the rebrand without the user losing the previous session
   static providerID = 'HashiCorpTerraformCloud';
   private sessionKey = 'HashiCorpTerraformCloudSession';
   private logger: vscode.LogOutputChannel;
@@ -270,7 +272,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         canPickMany: false,
         ignoreFocusOut: true,
         placeHolder: 'Choose a method to enter a HCP Terraform user token',
-        title: 'HashiCorp Cloud Platform Terraform Authentication',
+        title: 'HCP Terraform Authentication',
       },
     );
     if (choice === undefined) {

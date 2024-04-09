@@ -464,7 +464,7 @@
       },
       {
         "command": "terraform.cloud.login",
-        "title": "HashiCorp HCP Terraform: Login",
+        "title": "HCP Terraform: Login",
         "enablement": "terraform.cloud.signed-in === false"
       },
       {
@@ -516,7 +516,7 @@
       },
       {
         "command": "terraform.cloud.organization.picker",
-        "title": "HashiCorp HCP Terraform: Pick Organization",
+        "title": "HCP Terraform: Pick Organization",
         "icon": "$(account)",
         "enablement": "terraform.cloud.signed-in"
       },
@@ -737,7 +737,7 @@
         },
         {
           "id": "terraform-cloud",
-          "title": "HashiCorp Cloud Platform Terraform",
+          "title": "HCP Terraform",
           "icon": "assets/icons/vs_code_terraform_cloud.svg"
         }
       ],
