@@ -881,7 +881,7 @@
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^16.18.36",
+    "@types/node": "^18.x",
     "@types/vscode": "~1.82.0",
     "@types/webpack-env": "^1.18.0",
     "@types/which": "^3.0.0",
