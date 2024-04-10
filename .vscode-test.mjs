@@ -9,7 +9,7 @@ import { defineConfig } from '@vscode/test-cli';
 
 const config = defineConfig({
   version: process.env['VSCODE_VERSION'] ?? 'stable',
-  workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? './testFixture',
+  workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? './test/fixtures',
   launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
   files: 'out/test/**/*.test.js',
   mocha: {

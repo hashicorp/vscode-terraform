@@ -6,11 +6,23 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { expect } from 'chai';
-import { getDocUri, open } from '../helper';
+import { activateExtension, getDocUri, open } from '../helper';
 
-suite('code actions', () => {
+suite('code actions', function suite() {
+  const docUri = getDocUri('actions.tf');
+
+  this.beforeAll(async () => {
+    await open(docUri);
+    await activateExtension();
+  });
+
   teardown(async () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+  });
+
+  test('language is registered', async () => {
+    const doc = await vscode.workspace.openTextDocument(docUri);
+    assert.equal(doc.languageId, 'terraform', 'document language should be `terraform`');
   });
 
   test('supported actions', async () => {
@@ -21,9 +33,6 @@ suite('code actions', () => {
       .getConfiguration('editor')
       // eslint-disable-next-line @typescript-eslint/naming-convention
       .update('codeActionsOnSave', { 'source.formatAll.terraform': true }, vscode.ConfigurationTarget.Workspace);
-
-    const docUri = getDocUri('actions.tf');
-    await open(docUri);
 
     const supported = [
       new vscode.CodeAction('Format Document', vscode.CodeActionKind.Source.append('formatAll').append('terraform')),

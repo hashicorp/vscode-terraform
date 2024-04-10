@@ -5,10 +5,10 @@
 
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateExtension, getDocUri, open, testSymbols } from '../helper';
+import { activateExtension, getDocUri, open, testHover } from '../helper';
 
-suite('document symbols', function suite() {
-  const docUri = getDocUri('sample.tf');
+suite('hover', function suite() {
+  const docUri = getDocUri('main.tf');
 
   this.beforeAll(async () => {
     await open(docUri);
@@ -24,7 +24,14 @@ suite('document symbols', function suite() {
     assert.equal(doc.languageId, 'terraform', 'document language should be `terraform`');
   });
 
-  test('returns symbols', async () => {
-    await testSymbols(docUri, ['provider "vault"', 'resource "vault_auth_backend" "b"', 'module "local"']);
+  test('returns definition for module source', async () => {
+    await testHover(docUri, new vscode.Position(0, 1), [
+      new vscode.Hover(
+        new vscode.MarkdownString(
+          '**terraform** _Block_\n\nTerraform block used to configure some high-level behaviors of Terraform',
+        ),
+        new vscode.Range(new vscode.Position(14, 12), new vscode.Position(14, 20)),
+      ),
+    ]);
   });
 });
