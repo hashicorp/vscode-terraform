@@ -53,6 +53,8 @@ jobs:
           node-version-file: '.nvmrc'
       - name: npm install
         run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
       - name: web unit
         run: npm run test:unit:web
 
