@@ -17,7 +17,7 @@ const snippets = [
 ];
 
 suite('Language Server Completion', function suite() {
-  const docUri = getDocUri('actions.tf');
+  const docUri = getDocUri('empty.tf');
 
   this.beforeAll(async () => {
     await open(docUri);
@@ -48,7 +48,7 @@ suite('Language Server Completion', function suite() {
       new vscode.CompletionItem('terraform', vscode.CompletionItemKind.Class),
       new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
     ];
-    // expected.push(...snippets);
+    expected.push(...snippets);
     await testCompletion(docUri, new vscode.Position(0, 0), {
       items: expected,
     });

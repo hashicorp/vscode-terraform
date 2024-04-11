@@ -27,13 +27,27 @@ export async function testCompletion(
   position: vscode.Position,
   expectedCompletionList: vscode.CompletionList,
 ) {
-  const actualCompletionList = (await vscode.commands.executeCommand(
+  const actualCompletionList = await vscode.commands.executeCommand<vscode.CompletionList>(
     'vscode.executeCompletionItemProvider',
     docUri,
     position,
-  )) as vscode.CompletionList;
+  );
 
-  assert.equal(actualCompletionList.items.length, expectedCompletionList.items.length);
+  console.log('---actualCompletionList---');
+
+  actualCompletionList.items.forEach((item) => {
+    console.log(item.label);
+  });
+  console.log('---');
+
+  console.log('---expectedCompletionList---');
+
+  expectedCompletionList.items.forEach((item) => {
+    console.log(item.label);
+  });
+
+  console.log(`actual: ${actualCompletionList.items.length} expected: ${expectedCompletionList.items.length}`);
+  assert.deepStrictEqual(actualCompletionList.items.length, expectedCompletionList.items.length);
   expectedCompletionList.items.forEach((expectedItem, i) => {
     const actualItem = actualCompletionList.items[i];
     assert.deepStrictEqual(actualItem.label, expectedItem.label);
