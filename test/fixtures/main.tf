@@ -20,7 +20,12 @@ module "compute" {
 
   instance_name = "terraform-machine"
 
+}
 
+resource "aws_instance" "name" {
 
 }
 
+resource "google_access_context_manager_access_level" "name" {
+  
+}
