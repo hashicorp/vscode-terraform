@@ -4,8 +4,6 @@
  */
 
 import { defineConfig } from '@vscode/test-cli';
-// import { apiClient, tokenPluginId } from './src/terraformCloud';
-// import { server } from './src/test/integration/mocks/server';
 
 const config = defineConfig({
   version: process.env['VSCODE_VERSION'] ?? 'stable',
@@ -16,15 +14,8 @@ const config = defineConfig({
     ui: 'tdd',
     color: true,
     timeout: 100000,
+    require: ['./out/test/mockSetup.js'],
   },
 });
-
-// how to do this?
-// config.mocha.globalSetup = () => {
-//   apiClient.eject(tokenPluginId);
-
-//   server.listen();
-// };
-// config.mocha.globalTeardown = () => server.close();
 
 export default config;
