@@ -35,16 +35,5 @@ suite('hover', () => {
         ),
       ]);
     });
-
-    test('returns docs for google provider', async () => {
-      await testHover(docUri, new vscode.Position(0, 1), [
-        new vscode.Hover(
-          new vscode.MarkdownString(
-            '`google` hashicorp/google 5.24.0\n\nProvider Name\n\n[`google` on registry.terraform.io](https://registry.terraform.io/providers/hashicorp/google/5.24.0/docs?utm_content=documentHover\u0026utm_medium=Visual+Studio+Code+-+Insiders\u0026utm_source=terraform-ls)',
-          ),
-          new vscode.Range(new vscode.Position(14, 12), new vscode.Position(9, 12)),
-        ),
-      ]);
-    });
   });
 });

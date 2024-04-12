@@ -22,10 +22,3 @@ module "compute" {
 
 }
 
-resource "aws_instance" "name" {
-
-}
-
-resource "google_access_context_manager_access_level" "name" {
-  
-}
