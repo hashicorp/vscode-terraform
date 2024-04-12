@@ -97,9 +97,16 @@ suite('completion', () => {
         new vscode.CompletionItem('"./compute"', vscode.CompletionItemKind.Text),
       ];
 
+      if (vscode.version <= '1.82.3') {
+        expected.push(...snippets);
+      }
+
       // module "compute" {
       //   source = "./compute"
-      await testCompletion(docUri, new vscode.Position(18, 14), {
+      //               ^
+      const location = new vscode.Position(18, 14);
+
+      await testCompletion(docUri, location, {
         items: expected,
       });
     });
