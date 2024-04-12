@@ -95,22 +95,11 @@ suite('completion', () => {
       const expected = [
         new vscode.CompletionItem('"./ai"', vscode.CompletionItemKind.Text),
         new vscode.CompletionItem('"./compute"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"cloudposse/label/null"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/eks/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/iam/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/kms/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/lambda/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/rds/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/s3-bucket/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/security-group/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-aws-modules/vpc/aws"', vscode.CompletionItemKind.Text),
-        new vscode.CompletionItem('"terraform-google-modules/project-factory/google"', vscode.CompletionItemKind.Text),
       ];
-      expected.push(...snippets);
 
       // module "compute" {
       //   source = "./compute"
-      await testCompletion(docUri, new vscode.Position(18, 11), {
+      await testCompletion(docUri, new vscode.Position(18, 14), {
         items: expected,
       });
     });
