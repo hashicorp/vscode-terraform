@@ -168,7 +168,8 @@ const lsTarget = process.env.ls_target;
 if (lsTarget !== undefined) {
   const tgt = lsTarget.split('_');
   os = tgt[0];
-  arch = tgt[1];
+
+  arch = tgt[1] as NodeJS.Architecture;
 }
 
 run(os, arch);
