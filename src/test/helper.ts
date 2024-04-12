@@ -42,11 +42,11 @@ export async function testCompletion(
 }
 
 export async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedCompletionList: vscode.Hover[]) {
-  const actualhover = (await vscode.commands.executeCommand(
+  const actualhover = await vscode.commands.executeCommand<vscode.Hover[]>(
     'vscode.executeHoverProvider',
     docUri,
     position,
-  )) as vscode.Hover[];
+  );
 
   assert.equal(actualhover.length, expectedCompletionList.length);
   expectedCompletionList.forEach((expectedItem, i) => {
@@ -104,10 +104,10 @@ export async function testReferences(
 }
 
 export async function testSymbols(docUri: vscode.Uri, symbolNames: string[]) {
-  const symbols = (await vscode.commands.executeCommand(
+  const symbols = await vscode.commands.executeCommand<vscode.SymbolInformation[]>(
     'vscode.executeDocumentSymbolProvider',
     docUri,
-  )) as vscode.SymbolInformation[];
+  );
 
   assert.strictEqual(symbols.length, symbolNames.length);
   symbols.forEach((symbol, i) => {
