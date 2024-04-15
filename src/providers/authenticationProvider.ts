@@ -314,8 +314,14 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
   private async getTerraformCLIToken() {
     // detect if stored auth token is present
+    // On windows:
+    // ~/AppData/Roaming/terraform.d/credentials.tfrc.json
+    // On others:
     // ~/.terraform.d/credentials.tfrc.json
-    const credFilePath = path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
+    const credFilePath =
+      process.platform === 'win32'
+        ? path.join(os.homedir(), 'AppData', 'Roaming', 'terraform.d', 'credentials.tfrc.json')
+        : path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
     if ((await this.pathExists(credFilePath)) === false) {
       vscode.window.showErrorMessage(
         'Terraform credential file not found. Please login using the Terraform CLI and try again.',
