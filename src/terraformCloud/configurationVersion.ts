@@ -12,8 +12,6 @@ export const CONFIGURATION_SOURCE: { [id: string]: string } = {
   gitlab: 'GitLab',
   github: 'GitHub',
   terraform: 'Terraform',
-  // TODO: check that the map is rebranded
-  // 'terraform+cloud': 'HCP Terraform',
   'terraform+cloud': 'Terraform Cloud',
   tfeAPI: 'API',
   'tfe-api': 'API',
