@@ -28,7 +28,7 @@ describe('VS Code Extension Testing', () => {
       'Run and Debug',
       'Extensions',
       'HashiCorp Terraform',
-      'HashiCorp Terraform Cloud',
+      'HCP Terraform',
     ]);
   });
 

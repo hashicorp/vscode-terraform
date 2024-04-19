@@ -213,7 +213,7 @@ export class OrganizationStatusBar implements vscode.Disposable {
     this.organizationStatusBar.name = 'TFCOrganizationBar';
     this.organizationStatusBar.command = {
       command: 'terraform.cloud.organization.picker',
-      title: 'Choose your Terraform Cloud Organization',
+      title: 'Choose your HCP Terraform Organization',
     };
   }
 

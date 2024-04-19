@@ -91,7 +91,9 @@ class TerraformCloudSessionHandler {
   }
 }
 export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
-  static providerLabel = 'HashiCorp Terraform Cloud';
+  static providerLabel = 'HashiCorp Cloud Platform Terraform';
+  // These are IDs and session keys that are used to identify the provider and the session in VS Code secret storage
+  // we cannot change these in the rebrand without the user losing the previous session
   static providerID = 'HashiCorpTerraformCloud';
   private sessionKey = 'HashiCorpTerraformCloudSession';
   private logger: vscode.LogOutputChannel;
@@ -147,7 +149,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     try {
       const session = await this.sessionPromise;
       if (session) {
-        this.logger.info('Successfully fetched Terraform Cloud session');
+        this.logger.info('Successfully fetched HCP Terraform session');
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
         return [session];
       } else {
@@ -178,7 +180,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     try {
       const session = await this.sessionHandler.store(token);
       this.reporter.sendTelemetryEvent('tfc-login-success');
-      this.logger.info('Successfully logged in to Terraform Cloud');
+      this.logger.info('Successfully logged in to HCP Terraform');
 
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
 
@@ -263,14 +265,14 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         },
         {
           label: 'Generate a user token',
-          detail: 'Open the Terraform Cloud website to generate a new token',
+          detail: 'Open the HCP Terraform website to generate a new token',
         },
       ],
       {
         canPickMany: false,
         ignoreFocusOut: true,
-        placeHolder: 'Choose a method to enter a Terraform Cloud user token',
-        title: 'HashiCorp Terraform Cloud Authentication',
+        placeHolder: 'Choose a method to enter a HCP Terraform user token',
+        title: 'HCP Terraform Authentication',
       },
     );
     if (choice === undefined) {
@@ -287,7 +289,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: 'User access token',
-          prompt: 'Enter a Terraform Cloud user access token',
+          prompt: 'Enter a HCP Terraform user access token',
           password: true,
         });
         break;
@@ -297,7 +299,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         token = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: 'User access token',
-          prompt: 'Enter a Terraform Cloud user access token',
+          prompt: 'Enter a HCP Terraform user access token',
           password: true,
         });
         break;
