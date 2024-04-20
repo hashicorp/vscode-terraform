@@ -684,7 +684,7 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.x",
-    "@types/vscode": "~1.86",
+    "@types/vscode": "~1.88.0",
     "@types/webpack-env": "^1.18.0",
     "@types/which": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
