@@ -81,7 +81,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     initializationFailedHandler: (error: ResponseError<InitializeError> | Error | any) => {
       initializationError = error;
 
-      let msg = 'Failure to start terraform-ls. Please check your configuration settings and reload this window';
+      let msg = 'Failure to start opentofu-ls. Please check your configuration settings and reload this window';
 
       const serverArgs = config('opentofu').get<string[]>('languageServer.args', []);
       if (serverArgs[0] !== 'serve') {
@@ -160,10 +160,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         // write to log and stop attempting to restart server
         // initializationFailedHandler will handle showing an error to user
         outputChannel.appendLine(
-          'Failure to start terraform-ls. Please check your configuration settings and reload this window',
+          'Failure to start opentofu-ls. Please check your configuration settings and reload this window',
         );
         return {
-          message: 'Failure to start terraform-ls. Please check your configuration settings and reload this window',
+          message: 'Failure to start opentofu-ls. Please check your configuration settings and reload this window',
           action: CloseAction.DoNotRestart,
         };
       },

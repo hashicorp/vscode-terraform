@@ -13,11 +13,11 @@
   ],
   "engines": {
     "npm": "~10.X",
-    "node": "~18.X",
-    "vscode": "^1.86.2"
+    "node": "~20.X",
+    "vscode": "^1.82.3"
   },
   "langServer": {
-    "version": "0.34.0"
+    "version": "0.1.0"
   },
   "syntax": {
     "version": "0.5.0"
@@ -679,7 +679,6 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@hashicorp/js-releases": "^1.7.1",
     "@playwright/browser-chromium": "^1.39.0",
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
@@ -687,10 +686,11 @@
     "@types/node": "^18.x",
     "@types/vscode": "~1.86",
     "@types/webpack-env": "^1.18.0",
-    "@types/which": "^3.0.0",
+    "@types/which": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
-    "@vscode/test-electron": "^2.3.8",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.3.9",
     "@vscode/test-web": "^0.0.52",
     "@vscode/vsce": "^2.19.0",
     "@wdio/cli": "^8.38.1",

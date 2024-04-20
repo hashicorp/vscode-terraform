@@ -39,9 +39,9 @@ export class ServerPath {
     }
 
     if (process.platform === 'win32') {
-      return 'terraform-ls.exe';
+      return 'opentofu-ls.exe';
     }
-    return 'terraform-ls';
+    return 'opentofu-ls';
   }
 
   public async resolvedPathToBinary(): Promise<string> {

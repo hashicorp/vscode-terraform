@@ -2,8 +2,6 @@
  * Copyright (c) HashiCorp, Inc.
  * SPDX-License-Identifier: MPL-2.0
  */
-
-import * as which from 'which';
 import { config } from './utils/vscode';
 
 export interface InitializationOptions {
@@ -44,19 +42,11 @@ export async function getInitializationOptions() {
     enableEnhancedValidation: true,
   });
 
-  const path = await getTofuPath();
-
   const terraform = config('opentofu').get<TerraformOptions>('languageServer.opentofu', {
     path: '',
     timeout: '',
     logFilePath: '',
   });
-
-  // TODO: remove this when we have a opentofu-ls
-  // If the path is not set, we will try to discover it
-  if (!terraform.path) {
-    terraform.path = path;
-  }
 
   const indexing = config('opentofu').get<IndexingOptions>('languageServer.indexing', {
     ignoreDirectoryNames: [],
@@ -83,9 +73,4 @@ export async function getInitializationOptions() {
   };
 
   return initializationOptions;
-}
-
-async function getTofuPath(): Promise<string> {
-  const path = await which('tofu.exe', { nothrow: true });
-  return path;
 }

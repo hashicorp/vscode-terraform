@@ -5,15 +5,15 @@
 
 import * as vscode from 'vscode';
 
-const brand = `HashiCorp Terraform`;
+const brand = `OpenTofu`;
 const outputChannel = vscode.window.createOutputChannel(brand);
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(outputChannel);
 
-  outputChannel.appendLine(`Started: Terraform ${vscode.env.appHost}`);
+  outputChannel.appendLine(`Started: OpenTofu ${vscode.env.appHost}`);
 }
 
 export function deactivate() {
-  outputChannel.appendLine(`Stopped: Terraform ${vscode.env.appHost}`);
+  outputChannel.appendLine(`Stopped: OpenTofu ${vscode.env.appHost}`);
 }

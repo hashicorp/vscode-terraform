@@ -38,10 +38,6 @@ const extensionConfig = {
     mocha: 'commonjs mocha', // don't bundle
     '@vscode/test-electron': 'commonjs @vscode/test-electron', // don't bundle
     vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
-    // These dependencies are ignored because we don't use them, and App Insights has try-catch protecting their loading if they don't exist
-    // See: https://github.com/microsoft/vscode-extension-telemetry/issues/41#issuecomment-598852991
-    'applicationinsights-native-metrics': 'commonjs applicationinsights-native-metrics',
-    '@opentelemetry/tracing': 'commonjs @opentelemetry/tracing',
   },
   resolve: {
     mainFields: ['module', 'main'],
@@ -115,10 +111,6 @@ const webExtensionConfig = {
   externals: {
     // modules added here also need to be added in the .vscodeignore file
     vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
-    // These dependencies are ignored because we don't use them, and App Insights has try-catch protecting their loading if they don't exist
-    // See: https://github.com/microsoft/vscode-extension-telemetry/issues/41#issuecomment-598852991
-    'applicationinsights-native-metrics': 'commonjs applicationinsights-native-metrics',
-    '@opentelemetry/tracing': 'commonjs @opentelemetry/tracing',
   },
   performance: {
     hints: false,
