@@ -14,7 +14,7 @@
   "engines": {
     "npm": "~10.X",
     "node": "~20.X",
-    "vscode": "^1.82.3"
+    "vscode": "^1.86.0"
   },
   "langServer": {
     "version": "0.1.0"
