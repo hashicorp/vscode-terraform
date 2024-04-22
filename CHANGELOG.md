@@ -1,8 +1,5 @@
 ## [2.31.0] (2024-04-22)
 
-<!-- Release notes generated using configuration in .github/release.yml at main -->
-
-
 ENHANCEMENTS:
 
 * Fix finding TFC credential file on windows ([#1735](https://github.com/hashicorp/vscode-terraform/pull/1735))
