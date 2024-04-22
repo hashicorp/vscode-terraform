@@ -1,3 +1,21 @@
+## [2.30.1] (2024-04-22)
+
+ENHANCEMENTS:
+
+* Fix finding TFC credential file on windows ([#1735](https://github.com/hashicorp/vscode-terraform/pull/1735))
+* Rename TFC to HCP Terraform ([#1741](https://github.com/hashicorp/vscode-terraform/pull/1741))
+* Rename TFC to HCP Terraform in documentation ([terraform-ls#1687](https://github.com/hashicorp/terraform-ls/pull/1687))
+* Rename TFC to HCP Terraform in hover documentation ([terraform-schema#1687](https://github.com/hashicorp/terraform-schema/pull/343))
+
+INTERNAL:
+
+* Add end to end extension to language server testing ([#1739](https://github.com/hashicorp/vscode-terraform/pull/1739))
+* Update npm engine requirements to 10 ([#1740](https://github.com/hashicorp/vscode-terraform/pull/1740))
+* Update MSW to 2.0 ([#1657](https://github.com/hashicorp/vscode-terraform/pull/1657))
+* Bump typescript from 5.4.4 to 5.4.5 ([#1738](https://github.com/hashicorp/vscode-terraform/pull/1738))
+* Bump @vscode/vsce from 2.24.0 to 2.25.0 ([#1743](https://github.com/hashicorp/vscode-terraform/pull/1743))
+* Bump @playwright/browser-chromium from 1.42.1 to 1.43.1 ([#1742](https://github.com/hashicorp/vscode-terraform/pull/1742))
+
 ## [2.30.0] (2024-04-10)
 
 ENHANCEMENTS:
@@ -964,7 +982,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.1...main
+[2.30.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...v2.30.1
 [2.30.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.5...v2.30.0
 [2.29.5]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...v2.29.5
 [2.29.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...v2.29.4
