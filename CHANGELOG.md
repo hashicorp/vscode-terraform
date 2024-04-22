@@ -1,5 +1,26 @@
 ## [2.31.0] (2024-04-22)
 
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+
+ENHANCEMENTS:
+
+* Fix finding TFC credential file on windows ([#1735](https://github.com/hashicorp/vscode-terraform/pull/1735))
+* Rename TFC to HCP Terraform ([#1741](https://github.com/hashicorp/vscode-terraform/pull/1741))
+* Rename TFC to HCP Terraform in documentation ([terraform-ls#1687](https://github.com/hashicorp/terraform-ls/pull/1687))
+* Rename TFC to HCP Terraform in hover documentation ([terraform-schema#1687](https://github.com/hashicorp/terraform-schema/pull/343))
+
+INTERNAL:
+
+* Remove token from delete-artifact action ([terraform-ls#1685](https://github.com/hashicorp/terraform-ls/pull/1685))
+* Revert "Use Terraform 1.8-rc1 for bundling schemas (#1669)" ([terraform-ls#1686](https://github.com/hashicorp/terraform-ls/pull/1686))
+* Add end to end extension to language server testing ([#1739](https://github.com/hashicorp/vscode-terraform/pull/1739))
+* Update npm engine requirements to 10 ([#1740](https://github.com/hashicorp/vscode-terraform/pull/1740))
+* Update MSW to 2.0 ([#1657](https://github.com/hashicorp/vscode-terraform/pull/1657))
+* Bump typescript from 5.4.4 to 5.4.5 ([#1738](https://github.com/hashicorp/vscode-terraform/pull/1738))
+* Bump @vscode/vsce from 2.24.0 to 2.25.0 ([#1743](https://github.com/hashicorp/vscode-terraform/pull/1743))
+* Bump @playwright/browser-chromium from 1.42.1 to 1.43.1 ([#1742](https://github.com/hashicorp/vscode-terraform/pull/1742))
+
 ## [2.30.0] (2024-04-10)
 
 ENHANCEMENTS:
