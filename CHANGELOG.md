@@ -9,8 +9,6 @@ ENHANCEMENTS:
 
 INTERNAL:
 
-* Remove token from delete-artifact action ([terraform-ls#1685](https://github.com/hashicorp/terraform-ls/pull/1685))
-* Revert "Use Terraform 1.8-rc1 for bundling schemas (#1669)" ([terraform-ls#1686](https://github.com/hashicorp/terraform-ls/pull/1686))
 * Add end to end extension to language server testing ([#1739](https://github.com/hashicorp/vscode-terraform/pull/1739))
 * Update npm engine requirements to 10 ([#1740](https://github.com/hashicorp/vscode-terraform/pull/1740))
 * Update MSW to 2.0 ([#1657](https://github.com/hashicorp/vscode-terraform/pull/1657))
@@ -984,7 +982,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...main
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.31.0...main
+[2.31.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...v2.31.0
 [2.30.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.5...v2.30.0
 [2.29.5]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...v2.29.5
 [2.29.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...v2.29.4
