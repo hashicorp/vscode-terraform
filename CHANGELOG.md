@@ -1,4 +1,4 @@
-## [2.31.0] (2024-04-22)
+## [2.30.1] (2024-04-22)
 
 ENHANCEMENTS:
 
@@ -982,8 +982,8 @@ For information on prior major and minor releases, see their changelogs:
 
 
 <!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.31.0...main
-[2.31.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...v2.31.0
+[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.1...main
+[2.30.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...v2.30.1
 [2.30.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.5...v2.30.0
 [2.29.5]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...v2.29.5
 [2.29.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...v2.29.4
