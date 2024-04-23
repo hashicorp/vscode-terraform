@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import { assert } from 'chai';
-import { activateExtension, getDocUri, open, testCompletion } from '../helper';
+import { activateExtension, getDocUri, open, testCompletion } from '../../helper';
 
 const snippets = [
   new vscode.CompletionItem({ label: 'fore', description: 'For Each' }, vscode.CompletionItemKind.Snippet),

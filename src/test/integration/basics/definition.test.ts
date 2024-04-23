@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateExtension, getDocUri, open, testDefinitions } from '../helper';
+import { activateExtension, getDocUri, open, testDefinitions } from '../../helper';
 
 suite('definitions', () => {
   suite('go to module definition', function suite() {

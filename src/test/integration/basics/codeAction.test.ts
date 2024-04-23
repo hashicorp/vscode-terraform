@@ -6,7 +6,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { expect } from 'chai';
-import { activateExtension, getDocUri, open } from '../helper';
+import { activateExtension, getDocUri, open } from '../../helper';
 
 suite('code actions', () => {
   suite('format all', function suite() {
