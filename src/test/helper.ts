@@ -18,8 +18,12 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 }
 
 export const getDocUri = (p: string): vscode.Uri => {
-  const documentPath = path.resolve(__dirname, '../../src/test/integration/basics/workspace', p);
-  return vscode.Uri.file(documentPath);
+  const workspaceUri = vscode.workspace.workspaceFolders?.at(0)?.uri;
+
+  if (!workspaceUri) {
+    throw new Error(`No workspace folder found while trying to create uri for file "${p}".`);
+  }
+  return vscode.Uri.joinPath(workspaceUri, p);
 };
 
 export async function testCompletion(
