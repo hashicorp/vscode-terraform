@@ -18,7 +18,7 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 }
 
 export const getDocUri = (p: string): vscode.Uri => {
-  const documentPath = path.resolve(__dirname, '../../test/fixtures', p);
+  const documentPath = path.resolve(__dirname, '../../src/test/integration/basics/workspace', p);
   return vscode.Uri.file(documentPath);
 };
 
