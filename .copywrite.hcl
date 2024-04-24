@@ -10,5 +10,7 @@ project {
     ".github/ISSUE_TEMPLATE/**",
     "testFixture/**",
     "test/fixtures/**",
+    "src/test/integration/*/workspace/**",
+    ".vscode-test/**",
   ]
 }
