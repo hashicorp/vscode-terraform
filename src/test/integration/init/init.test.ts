@@ -5,10 +5,10 @@
 
 import * as vscode from 'vscode';
 import { assert } from 'chai';
-import { activateExtension, getDocUri, open } from '../../helper';
+import { activateExtension, getDocUri, open, testCompletion } from '../../helper';
 
 suite('init', () => {
-  suite('completes from bundled provider schema', function suite() {
+  suite('with bundled provider schema', function suite() {
     const docUri = getDocUri('main.tf');
 
     this.beforeAll(async () => {
@@ -23,6 +23,15 @@ suite('init', () => {
     test('language is registered', async () => {
       const doc = await vscode.workspace.openTextDocument(docUri);
       assert.equal(doc.languageId, 'terraform', 'document language should be `terraform`');
+    });
+
+    test('completes resource available in bundled schema', async () => {
+      // aws_eip_domain_name was added in provider version 5.46.0
+      const expected = [new vscode.CompletionItem('aws_eip_domain_name', vscode.CompletionItemKind.Field)];
+
+      await testCompletion(docUri, new vscode.Position(13, 26), {
+        items: expected,
+      });
     });
   });
 });
