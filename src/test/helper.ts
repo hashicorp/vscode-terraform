@@ -37,12 +37,33 @@ export async function testCompletion(
     position,
   );
 
-  assert.deepStrictEqual(actualCompletionList.items.length, expectedCompletionList.items.length);
-  expectedCompletionList.items.forEach((expectedItem, i) => {
-    const actualItem = actualCompletionList.items[i];
-    assert.deepStrictEqual(actualItem.label, expectedItem.label);
-    assert.deepStrictEqual(actualItem.kind, expectedItem.kind);
-  });
+  try {
+    assert.deepStrictEqual(
+      actualCompletionList.items.length,
+      expectedCompletionList.items.length,
+      `Expected ${expectedCompletionList.items.length} completions but got ${actualCompletionList.items.length}`,
+    );
+    expectedCompletionList.items.forEach((expectedItem, i) => {
+      const actualItem = actualCompletionList.items[i];
+      assert.deepStrictEqual(
+        actualItem.label,
+        expectedItem.label,
+        `Expected label ${expectedItem.label} but got ${actualItem.label}`,
+      );
+      assert.deepStrictEqual(
+        actualItem.kind,
+        expectedItem.kind,
+        `Expected kind ${
+          expectedItem.kind ? vscode.CompletionItemKind[expectedItem.kind] : expectedItem.kind
+        } but got ${actualItem.kind ? vscode.CompletionItemKind[actualItem.kind] : actualItem.kind}`,
+      );
+    });
+  } catch (e) {
+    // print out the actual and expected completion lists for easier debugging when the test fails
+    console.log('expectedCompletionList', expectedCompletionList);
+    console.log('actualCompletionList', actualCompletionList);
+    throw e;
+  }
 }
 
 export async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedCompletionList: vscode.Hover[]) {
