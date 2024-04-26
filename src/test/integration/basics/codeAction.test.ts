@@ -6,7 +6,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { expect } from 'chai';
-import { activateExtension, getDocUri, open } from '../../helper';
+import { activateExtension, getDocUri, open, sleep } from '../../helper';
 
 suite('code actions', () => {
   suite('format all', function suite() {
@@ -27,20 +27,12 @@ suite('code actions', () => {
     });
 
     test('formats the document', async () => {
-      await vscode.workspace
-        .getConfiguration('terraform')
-        .update('languageServer.enable', true, vscode.ConfigurationTarget.Workspace);
-      await vscode.workspace
-        .getConfiguration('editor')
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        .update('codeActionsOnSave', { 'source.formatAll.terraform': true }, vscode.ConfigurationTarget.Workspace);
-
       const supported = [
         new vscode.CodeAction('Format Document', vscode.CodeActionKind.Source.append('formatAll').append('terraform')),
       ];
 
       // wait till the LS is ready to accept a code action request
-      await new Promise((r) => setTimeout(r, 1000));
+      await sleep(1000);
 
       for (let index = 0; index < supported.length; index++) {
         const wanted = supported[index];
