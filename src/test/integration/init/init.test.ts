@@ -109,21 +109,15 @@ suite('init', () => {
 
     test('completes module from downloaded schema', async () => {
       const expected = [
-        new vscode.CompletionItem('allow_users_to_change_password', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('count', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('create_account_password_policy', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('depends_on', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('get_caller_identity', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('hard_expiry', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('max_password_age', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('minimum_password_length', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('password_reuse_prevention', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('prefix', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('providers', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('require_lowercase_characters', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('require_numbers', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('require_symbols', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('require_uppercase_characters', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('suffix', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('unique-include-numbers', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('unique-length', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('unique-seed', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('version', vscode.CompletionItemKind.Property),
         // snippets
         new vscode.CompletionItem({ label: 'fore', description: 'For Each' }, vscode.CompletionItemKind.Snippet),
