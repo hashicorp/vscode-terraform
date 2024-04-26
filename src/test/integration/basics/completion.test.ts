@@ -56,7 +56,7 @@ suite('completion', () => {
     });
   });
 
-  suite('module completion', function suite() {
+  suite('local module completion', function suite() {
     const docUri = getDocUri('main.tf');
 
     this.beforeAll(async () => {
@@ -107,6 +107,37 @@ suite('completion', () => {
       const location = new vscode.Position(18, 14);
 
       await testCompletion(docUri, location, {
+        items: expected,
+      });
+    });
+  });
+
+  suite('registry module completion', function suite() {
+    const docUri = getDocUri('registry_module.tf');
+
+    this.beforeAll(async () => {
+      await open(docUri);
+      await activateExtension();
+    });
+
+    teardown(async () => {
+      await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    });
+
+    test('language is registered', async () => {
+      const doc = await vscode.workspace.openTextDocument(docUri);
+      assert.equal(doc.languageId, 'terraform', 'document language should be `terraform`');
+    });
+
+    test('inputs of a registry module', async () => {
+      const expected = [
+        new vscode.CompletionItem('count', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('external_nat_ip_ids', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('external_nat_ips', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
+      ];
+
+      await testCompletion(docUri, new vscode.Position(4, 11), {
         items: expected,
       });
     });
