@@ -144,7 +144,7 @@ export async function activateExtension() {
   const ext = vscode.extensions.getExtension('hashicorp.terraform');
   if (!ext?.isActive) {
     await ext?.activate();
-    sleep(1000);
+    await sleep(1000);
   }
 }
 
