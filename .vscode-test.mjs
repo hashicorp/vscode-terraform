@@ -16,16 +16,16 @@ const testSuiteFolderNames = fs.readdirSync(BASE_SRC_PATH, { withFileTypes: true
   .filter(entry => fs.existsSync(path.join(BASE_SRC_PATH, entry.name, "workspace"))) // ... that contain a workspace folder are valid
   .map(entry => entry.name);
 
-const configs = testSuiteFolderNames.map(folderName => ({
+const configs = testSuiteFolderNames.map((folderName) => ({
   version: process.env['VSCODE_VERSION'] ?? 'stable',
-  workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, "workspace"),
+  workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, 'workspace'),
   launchArgs: ['--profile-temp', '--disable-extensions', '--disable-workspace-trust'],
   files: `${BASE_OUT_PATH}/${folderName}/*.test.js`,
   mocha: {
     ui: 'tdd',
     color: true,
     timeout: 100000,
-    require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites
+    // require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites
   },
 }));
 
