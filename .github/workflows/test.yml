@@ -89,9 +89,12 @@ jobs:
         run: terraform version
       - name: Clean Install Dependencies
         run: npm ci
-      - run: xvfb-run -a npm test
+      - run: |
+          export DISPLAY=":0"
+          # xvfb-run -a npm test
         if: runner.os == 'Linux'
         env:
+          DISPLAY: :99
           VSCODE_VERSION: ${{ matrix.vscode }}
       - run: npm test
         if: runner.os != 'Linux'
