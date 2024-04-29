@@ -19,7 +19,7 @@ const testSuiteFolderNames = fs.readdirSync(BASE_SRC_PATH, { withFileTypes: true
 const configs = testSuiteFolderNames.map(folderName => ({
   version: process.env['VSCODE_VERSION'] ?? 'stable',
   workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, "workspace"),
-  launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
+  launchArgs: ['--profile-temp', '--disable-extensions', '--disable-workspace-trust'],
   files: `${BASE_OUT_PATH}/${folderName}/*.test.js`,
   mocha: {
     ui: 'tdd',
