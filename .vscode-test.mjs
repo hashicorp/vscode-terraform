@@ -21,6 +21,9 @@ const configs = testSuiteFolderNames.map((folderName) => ({
   workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, 'workspace'),
   launchArgs: ['--profile-temp', '--disable-extensions', '--disable-workspace-trust'],
   files: `${BASE_OUT_PATH}/${folderName}/*.test.js`,
+  env: {
+    DISPLAY: ':99.0',
+  },
   mocha: {
     ui: 'tdd',
     color: true,
