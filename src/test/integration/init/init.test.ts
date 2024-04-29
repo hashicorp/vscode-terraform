@@ -42,6 +42,11 @@ suite('init', () => {
       await open(docUri);
       await activateExtension();
 
+      // test if this helps the test to pass in CI
+      await vscode.workspace
+        .getConfiguration('editor')
+        .update('wordBasedSuggestions', 'off', vscode.ConfigurationTarget.Workspace);
+
       // run terraform init command to download provider schema
       await vscode.commands.executeCommand('terraform.initCurrent');
       // wait for schema to be loaded
