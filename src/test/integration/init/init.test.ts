@@ -140,7 +140,7 @@ suite('init', () => {
         new vscode.CompletionItem({ label: 'varm', description: 'Map variable' }, vscode.CompletionItemKind.Snippet),
       ];
 
-      await testCompletion(docUri, new vscode.Position(2, 5), {
+      await testCompletion(docUri, new vscode.Position(2, 0), {
         items: expected,
       });
     });
