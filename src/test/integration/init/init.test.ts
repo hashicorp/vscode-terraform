@@ -140,10 +140,6 @@ suite('init', () => {
         new vscode.CompletionItem({ label: 'varm', description: 'Map variable' }, vscode.CompletionItemKind.Snippet),
       ];
 
-      // run tree sh command via exec sync
-      const workspace = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath;
-      execSync('tree .terraform', { cwd: workspace, stdio: 'inherit' });
-
       await testCompletion(docUri, new vscode.Position(2, 5), {
         items: expected,
       });
