@@ -94,7 +94,7 @@ suite('init', () => {
       // run terraform init command to download provider schema
       await vscode.commands.executeCommand('terraform.initCurrent');
       // wait for schema to be loaded
-      await sleep(5_000);
+      await sleep(10_000);
     });
 
     this.afterAll(async () => {
