@@ -91,17 +91,8 @@ jobs:
         run: npm ci
       - run: |
           # Start server
-          /usr/bin/Xvfb :99 -screen 0 1024x768x24 &
-          sleep 1
-
-          # Make sure it's running
-          ps aux | grep Xvfb --color=always | grep -v grep
-
-          # Run tests
-          DISPLAY=:99.0 npm test
-
-          # Kill server
-          killall Xvfb
+          sudo apt-get update && sudo apt-get install libgconf-2-4 -y & sleep 1
+          xvfb-run --auto-servernum --server-args='-screen 0, 1600x900x24' npm test
         if: runner.os == 'Linux'
         env:
           VSCODE_VERSION: ${{ matrix.vscode }}
