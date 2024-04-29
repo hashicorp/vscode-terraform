@@ -91,7 +91,7 @@ jobs:
         run: npm ci
       - run: |
           export DISPLAY=":0"
-          # xvfb-run -a npm test
+          xvfb-run -a npm test
         if: runner.os == 'Linux'
         env:
           DISPLAY: :99
