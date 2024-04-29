@@ -22,14 +22,12 @@
       "name": "Run Extension Tests",
       "type": "extensionHost",
       "request": "launch",
-      "runtimeExecutable": "${execPath}",
+      "testConfiguration": "${workspaceFolder}/.vscode-test.js",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/out/test/integration/index",
         "${workspaceFolder}/testFixture"
-      ],
-      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "tasks: watch-tests"
+      ]
     },
     {
       "name": "Run Web Extension Tests",
