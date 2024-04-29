@@ -6,6 +6,7 @@
 import * as vscode from 'vscode';
 import { assert } from 'chai';
 import { activateExtension, getDocUri, open, testCompletion, sleep } from '../../helper';
+import { execSync } from 'child_process';
 
 suite('init', () => {
   suite('with bundled provider schema', function suite() {
@@ -138,6 +139,10 @@ suite('init', () => {
         new vscode.CompletionItem({ label: 'vare', description: 'Empty variable' }, vscode.CompletionItemKind.Snippet),
         new vscode.CompletionItem({ label: 'varm', description: 'Map variable' }, vscode.CompletionItemKind.Snippet),
       ];
+
+      // run tree sh command via exec sync
+      const workspace = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath;
+      execSync('tree .terraform', { cwd: workspace, stdio: 'inherit' });
 
       await testCompletion(docUri, new vscode.Position(2, 5), {
         items: expected,
