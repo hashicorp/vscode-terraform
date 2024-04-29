@@ -90,8 +90,18 @@ jobs:
       - name: Clean Install Dependencies
         run: npm ci
       - run: |
-          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 & echo ">>> Started xvfb"
-          npm run test
+          # Start server
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 &
+          sleep 1
+
+          # Make sure it's running
+          ps aux | grep Xvfb --color=always | grep -v grep
+
+          # Run tests
+          DISPLAY=:99.0 npm test
+
+          # Kill server
+          killall Xvfb
         if: runner.os == 'Linux'
         env:
           VSCODE_VERSION: ${{ matrix.vscode }}
