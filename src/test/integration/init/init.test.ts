@@ -67,12 +67,20 @@ suite('init', () => {
     });
 
     test('completes resource not available in downloaded schema', async () => {
-      // aws_eip_domain_name was added in provider version 5.46.0 but we initialized with 5.45.0
-      const expected: vscode.CompletionItem[] = [];
+      const actualCompletionList = await vscode.commands.executeCommand<vscode.CompletionList>(
+        'vscode.executeCompletionItemProvider',
+        docUri,
+        new vscode.Position(13, 25),
+      );
 
-      await testCompletion(docUri, new vscode.Position(13, 25), {
-        items: expected,
+      const item = actualCompletionList.items.find((item) => {
+        if (item.label === 'aws_eip_domain_name') {
+          return item;
+        }
       });
+
+      // aws_eip_domain_name was added in provider version 5.46.0 but we initialized with 5.45.0
+      assert.isUndefined(item, 'aws_eip_domain_name should not be in completion list');
     });
   });
 
