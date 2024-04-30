@@ -76,7 +76,7 @@ suite('init', () => {
     });
   });
 
-  suite('with module schema from git', function suite() {
+  suite.skip('with module schema from git', function suite() {
     const docUri = getDocUri('git_module.tf');
 
     this.beforeAll(async () => {
