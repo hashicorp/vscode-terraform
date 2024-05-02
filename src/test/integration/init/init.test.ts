@@ -84,6 +84,15 @@ suite('init', () => {
     });
   });
 
+  // This test is skipped as it fails weirdly on CI. It works fine locally and on Windows and OS X in CI.
+  // On Ubuntu it fails with the following behavior:
+  // We have a matrix build running the tests on three different VS Code versions. When this test fails, it
+  // fails on one or two of the VS Code versions, but not all three (so far). The weird thing is that the
+  // succeeding job changes between commits and retries of the failed job continue to fail. The current suspicion
+  // is that it is placed on some Ubuntu machine that has a different configuration than the others and that retries
+  // will run on the same machine the job was assigned to initially.
+  // When failing, it is missing the inputs for the module that should have been downloaded from the git repository
+  // via Terraform init. There are no errors in the logs indicating anything wrong.
   suite.skip('with module schema from git', function suite() {
     const docUri = getDocUri('git_module.tf');
 
