@@ -18,8 +18,12 @@ export async function open(docUri: vscode.Uri): Promise<void> {
 }
 
 export const getDocUri = (p: string): vscode.Uri => {
-  const documentPath = path.resolve(__dirname, '../../test/fixtures', p);
-  return vscode.Uri.file(documentPath);
+  const workspaceUri = vscode.workspace.workspaceFolders?.at(0)?.uri;
+
+  if (!workspaceUri) {
+    throw new Error(`No workspace folder found while trying to create uri for file "${p}".`);
+  }
+  return vscode.Uri.joinPath(workspaceUri, p);
 };
 
 export async function testCompletion(
@@ -33,12 +37,33 @@ export async function testCompletion(
     position,
   );
 
-  assert.deepStrictEqual(actualCompletionList.items.length, expectedCompletionList.items.length);
-  expectedCompletionList.items.forEach((expectedItem, i) => {
-    const actualItem = actualCompletionList.items[i];
-    assert.deepStrictEqual(actualItem.label, expectedItem.label);
-    assert.deepStrictEqual(actualItem.kind, expectedItem.kind);
-  });
+  try {
+    assert.deepStrictEqual(
+      actualCompletionList.items.length,
+      expectedCompletionList.items.length,
+      `Expected ${expectedCompletionList.items.length} completions but got ${actualCompletionList.items.length}`,
+    );
+    expectedCompletionList.items.forEach((expectedItem, i) => {
+      const actualItem = actualCompletionList.items[i];
+      assert.deepStrictEqual(
+        actualItem.label,
+        expectedItem.label,
+        `Expected label ${expectedItem.label} but got ${actualItem.label}`,
+      );
+      assert.deepStrictEqual(
+        actualItem.kind,
+        expectedItem.kind,
+        `Expected kind ${
+          expectedItem.kind ? vscode.CompletionItemKind[expectedItem.kind] : expectedItem.kind
+        } but got ${actualItem.kind ? vscode.CompletionItemKind[actualItem.kind] : actualItem.kind}`,
+      );
+    });
+  } catch (e) {
+    // print out the actual and expected completion lists for easier debugging when the test fails
+    console.log('expectedCompletionList', expectedCompletionList);
+    console.log('actualCompletionList', actualCompletionList);
+    throw e;
+  }
 }
 
 export async function testHover(docUri: vscode.Uri, position: vscode.Position, expectedCompletionList: vscode.Hover[]) {
@@ -119,7 +144,7 @@ export async function activateExtension() {
   const ext = vscode.extensions.getExtension('hashicorp.terraform');
   if (!ext?.isActive) {
     await ext?.activate();
-    sleep(1000);
+    await sleep(1000);
   }
 }
 

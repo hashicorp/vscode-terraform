@@ -5,11 +5,11 @@
 
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { activateExtension, getDocUri, open, testHover } from '../helper';
+import { activateExtension, getDocUri, open, testReferences } from '../../helper';
 
-suite('hover', () => {
-  suite('core schema', function suite() {
-    const docUri = getDocUri('main.tf');
+suite('references', () => {
+  suite('module references', function suite() {
+    const docUri = getDocUri('variables.tf');
 
     this.beforeAll(async () => {
       await open(docUri);
@@ -25,13 +25,15 @@ suite('hover', () => {
       assert.equal(doc.languageId, 'terraform', 'document language should be `terraform`');
     });
 
-    test('returns docs for terraform block', async () => {
-      await testHover(docUri, new vscode.Position(0, 1), [
-        new vscode.Hover(
-          new vscode.MarkdownString(
-            '**terraform** _Block_\n\nTerraform block used to configure some high-level behaviors of Terraform',
-          ),
+    test('returns definition for module source', async () => {
+      await testReferences(docUri, new vscode.Position(12, 10), [
+        new vscode.Location(
+          getDocUri('main.tf'),
           new vscode.Range(new vscode.Position(14, 12), new vscode.Position(14, 20)),
+        ),
+        new vscode.Location(
+          getDocUri('terraform.tfvars'),
+          new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 4)),
         ),
       ]);
     });

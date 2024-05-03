@@ -847,7 +847,8 @@
   "scripts": {
     "prepare": "npm run download:artifacts",
     "compile": "webpack",
-    "compile:test": "tsc -p ./",
+    "compile:test": "tsc --project ./",
+    "compile:test:watch": "tsc --project ./ --watch",
     "compile:prod": "webpack --mode production --devtool hidden-source-map",
     "watch": "webpack --watch --mode development",
     "web": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./testFixture",
