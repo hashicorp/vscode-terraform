@@ -18,3 +18,4 @@ jobs:
     steps:
       - name: Remove stale and waiting-response labels
         run: gh issue edit ${{ github.event.issue.html_url }} --remove-label stale,waiting-response
+
