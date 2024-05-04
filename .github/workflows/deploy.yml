@@ -1,3 +1,4 @@
+---
 name: Publish Extension release
 
 permissions:
@@ -40,9 +41,6 @@ jobs:
           - vsce_target: linux-arm64
             ls_target: linux_arm64
             npm_config_arch: arm64
-          - vsce_target: linux-armhf
-            ls_target: linux_arm
-            npm_config_arch: arm
           - vsce_target: darwin-x64
             ls_target: darwin_amd64
             npm_config_arch: x64
