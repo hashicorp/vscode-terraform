@@ -4,7 +4,6 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as assert from 'assert';
 
 export async function open(docUri: vscode.Uri): Promise<void> {
