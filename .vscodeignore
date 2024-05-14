@@ -24,3 +24,6 @@ DEVELOPMENT.md
 ROADMAP.md
 jest.config.js
 tsconfig.json
+test/
+.copywrite.hcl
+.vscode-test.mjs
