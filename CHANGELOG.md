@@ -349,6 +349,7 @@ ENHANCEMENTS:
  - Improve error handling on initialization ([#1327](https://github.com/hashicorp/vscode-terraform/pull/1327))
  - Parse `optional()` object attribute _default values_ correctly, as introduced in Terraform v1.3 ([terraform-schema#184](https://github.com/hashicorp/terraform-schema/pull/184))
  
+
 ## [2.25.2] (2022-12-15)
 
 BUG FIXES:
@@ -398,7 +399,6 @@ BUG FIXES:
 INTERNAL:
 
  - Reduce duplicate error telemetry [#1230](https://github.com/hashicorp/vscode-terraform/pull/1230)
-
 
 ## [2.24.2] (2022-09-07)
 
@@ -980,71 +980,3 @@ For information on prior major and minor releases, see their changelogs:
 * [v1.4.0 and earlier](https://github.com/hashicorp/vscode-terraform/blob/v1.4.0/CHANGELOG.md#140)
 * [v0.0.23 and earlier](https://github.com/hashicorp/vscode-terraform/blob/0.0.23/CHANGELOG.md#0.0.23)
 
-
-<!-- Links to tag comparisons -->
-[Unreleased]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.1...main
-[2.30.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.30.0...v2.30.1
-[2.30.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.5...v2.30.0
-[2.29.5]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.4...v2.29.5
-[2.29.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.3...v2.29.4
-[2.29.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.2...v2.29.3
-[2.29.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.1...v2.29.2
-[2.29.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.29.0...v2.29.1
-[2.29.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.2...v2.29.0
-[2.28.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.1...v2.28.2
-[2.28.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.28.0...v2.28.1
-[2.28.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.2...v2.28.0
-[2.27.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.1...v2.27.2
-[2.27.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.27.0...v2.27.1
-[2.27.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.1...v2.27.0
-[2.26.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.26.0...v2.26.1
-[2.26.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.4...v2.26.0
-[2.25.4]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.3...v2.25.4
-[2.25.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.2...v2.25.3
-[2.25.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.1...v2.25.2
-[2.25.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.25.0...v2.25.1
-[2.25.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.3...v2.25.0
-[2.24.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.2...v2.24.3
-[2.24.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.1...v2.24.2
-[2.24.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.24.0...v2.24.1
-[2.24.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.23.0...v2.24.0
-[2.23.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.22.0...v2.23.0
-[2.22.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.21.0...v2.22.0
-[2.21.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.1...v2.21.0
-[2.20.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.20.0...v2.20.1
-[2.20.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.19.0...v2.20.0
-[2.19.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.18.0...v2.19.0
-[2.18.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.17.0...v2.18.0
-[2.17.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.16.0...v2.17.0
-[2.16.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.15.0...v2.16.0
-[2.15.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.14.0...v2.15.0
-[2.14.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.13.2...v2.14.0
-[2.13.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.13.1...v2.13.2
-[2.13.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.13.0...v2.13.1
-[2.13.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.12.1...v2.13.0
-[2.12.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.12.0...v2.12.1
-[2.12.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.11.0...v2.12.0
-[2.11.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.10.2...v2.11.0
-[2.10.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.10.1...v2.10.2
-[2.10.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.10.0...v2.10.1
-[2.10.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.9.1...v2.10.0
-[2.9.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.9.0...v2.9.1
-[2.9.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.8.3...v2.9.0
-[2.8.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.8.2...v2.8.3
-[2.8.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.8.1...v2.8.2
-[2.8.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.8.0...v2.8.1
-[2.8.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.7.0...v2.8.0
-[2.7.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.6.0...v2.7.0
-[2.6.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.5.0...v2.6.0
-[2.5.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.4.0...v2.5.0
-[2.4.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.3.0...v2.4.0
-[2.3.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.2.3...v2.3.0
-[2.2.3]: https://github.com/hashicorp/vscode-terraform/compare/v2.2.2...v2.2.3
-[2.2.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.2.1...v2.2.2
-[2.2.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.2.0...v2.2.1
-[2.2.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.1.1...v2.2.0
-[2.1.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.1.0...v2.1.1
-[2.1.0]: https://github.com/hashicorp/vscode-terraform/compare/v2.0.2...v2.1.0
-[2.0.2]: https://github.com/hashicorp/vscode-terraform/compare/v2.0.1...v2.0.2
-[2.0.1]: https://github.com/hashicorp/vscode-terraform/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/hashicorp/vscode-terraform/compare/v1.4.0...v2.0.0
