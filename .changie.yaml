@@ -24,10 +24,22 @@ custom:
     minInt: 1
 kinds:
 - label: ENHANCEMENTS
+  auto: minor
 - label: BUG FIXES
+  auto: patch
 - label: INTERNAL
 - label: NOTES
 - label: BREAKING CHANGES
+  auto: minor
 newlines:
-  afterChangelogVersion: 1
+  afterKind: 1
+  beforeKind: 1
+  endOfVersion: 2
 envPrefix: CHANGIE_
+replacements:
+  - path: package.json
+    find: '  "version": ".*",'
+    replace: '  "version": "{{.VersionNoPrefix}}",'
+  - path: package-lock.json
+    find: '  "version": ".*",'
+    replace: '  "version": "{{.VersionNoPrefix}}",'
