@@ -27,3 +27,5 @@ tsconfig.json
 test/
 .copywrite.hcl
 .vscode-test.mjs
+.changie.yaml
+.changes
