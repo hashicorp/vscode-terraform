@@ -5,11 +5,11 @@
 
 import TelemetryReporter from '@vscode/extension-telemetry';
 import * as path from 'path';
-import * as terraform from '../api/terraform/terraform';
+import * as terraform from '../../api/terraform/terraform';
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
+import { getActiveTextEditor, isTerraformFile } from '../../utils/vscode';
 
 class ModuleCallItem extends vscode.TreeItem {
   constructor(

@@ -5,7 +5,7 @@
 
 import { ZodiosError } from '@zodios/core';
 import * as vscode from 'vscode';
-import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 export interface APIResource {

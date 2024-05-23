@@ -11,7 +11,7 @@ import {
   ServerCapabilities,
   StaticFeature,
 } from 'vscode-languageclient';
-import { ModuleProvidersDataProvider } from '../providers/moduleProviders';
+import { ModuleProvidersDataProvider } from '../providers/terraform/moduleProviders';
 import { ExperimentalClientCapabilities } from './types';
 
 export const CLIENT_MODULE_PROVIDERS_CMD_ID = 'client.refreshModuleProviders';

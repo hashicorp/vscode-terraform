@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import * as terraform from '../api/terraform/terraform';
+import * as terraform from '../../api/terraform/terraform';
 import * as vscode from 'vscode';
 import { Utils } from 'vscode-uri';
-import { getActiveTextEditor, isTerraformFile } from '../utils/vscode';
+import { getActiveTextEditor, isTerraformFile } from '../../utils/vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
 import TelemetryReporter from '@vscode/extension-telemetry';
 

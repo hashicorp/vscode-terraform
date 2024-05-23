@@ -9,7 +9,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { PlanTreeDataProvider } from '../providers/tfc/planProvider';
-import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from '../providers/tfc/authenticationProvider';
 import {
   CreateOrganizationItem,
   OrganizationAPIResource,

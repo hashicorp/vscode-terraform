@@ -8,7 +8,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
 import { apiClient, TerraformCloudWebUrl } from '../../api/terraformCloud';
-import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../api/terraformCloud/workspace';

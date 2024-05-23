@@ -9,7 +9,7 @@ import * as semver from 'semver';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { TerraformCloudWebUrl, apiClient } from '../../api/terraformCloud';
-import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../api/terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetPlanApplyStatusIcon, GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';

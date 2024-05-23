@@ -9,7 +9,7 @@ import { Writable } from 'stream';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import { ZodiosError } from '@zodios/core';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { GetChangeActionIcon } from './helpers';
