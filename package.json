@@ -858,7 +858,6 @@
     "vscode:prepublish": "npm run compile:prod",
     "package": "vsce package",
     "test": "npm run compile:test && vscode-test",
-    "test:unit:web": "npm run compile && vscode-test-web --headless --browser=chromium --extensionDevelopmentPath=. --extensionTestsPath=./out/web/test/integration/index.js",
     "lint": "eslint src --ext ts",
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
