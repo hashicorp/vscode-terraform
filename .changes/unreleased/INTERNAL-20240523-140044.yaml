@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Organize code placement for better maintainability
+time: 2024-05-23T14:00:44.954055-04:00
+custom:
+    Issue: "1758"
+    Repository: vscode-terraform
