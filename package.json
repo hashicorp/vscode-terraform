@@ -893,6 +893,7 @@
     "@vscode/vsce": "^2.19.0",
     "assert": "^2.0.0",
     "chai": "^4.3.7",
+    "esbuild-loader": "^4.1.0",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
