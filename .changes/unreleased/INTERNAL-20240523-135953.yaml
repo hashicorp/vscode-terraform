@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Remove old web testing infrastructure and update the test GHA
+time: 2024-05-23T13:59:53.457285-04:00
+custom:
+    Issue: "1759"
+    Repository: vscode-terraform
