@@ -44,7 +44,6 @@ jobs:
         os:
           - windows-latest
           - macos-latest
-          - macos-11.0
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
