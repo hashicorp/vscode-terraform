@@ -7,9 +7,9 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { earlyApiClient, TerraformCloudHost, TerraformCloudWebUrl } from '../terraformCloud';
+import { earlyApiClient, TerraformCloudHost, TerraformCloudWebUrl } from '../api/terraformCloud';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
-import { apiErrorsToString } from '../terraformCloud/errors';
+import { apiErrorsToString } from '../api/terraformCloud/errors';
 import { handleZodiosError } from './tfc/uiHelpers';
 
 class TerraformCloudSession implements vscode.AuthenticationSession {

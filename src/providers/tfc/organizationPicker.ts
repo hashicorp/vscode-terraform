@@ -4,12 +4,12 @@
  */
 
 import * as vscode from 'vscode';
-import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
+import { TerraformCloudWebUrl, apiClient } from '../../api/terraformCloud';
 import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
-import { Organization } from '../../terraformCloud/organization';
+import { Organization } from '../../api/terraformCloud/organization';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import axios from 'axios';
-import { apiErrorsToString } from '../../terraformCloud/errors';
+import { apiErrorsToString } from '../../api/terraformCloud/errors';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 export class CreateOrganizationItem implements vscode.QuickPickItem {

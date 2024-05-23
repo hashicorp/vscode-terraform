@@ -6,7 +6,7 @@
 import axios from 'axios';
 import * as vscode from 'vscode';
 
-import { apiClient } from '../../terraformCloud';
+import { apiClient } from '../../api/terraformCloud';
 import stripAnsi from './helpers';
 
 export class PlanLogContentProvider implements vscode.TextDocumentContentProvider {

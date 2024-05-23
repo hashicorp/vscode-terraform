@@ -7,8 +7,8 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 import { ExecuteCommandParams, ExecuteCommandRequest, LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';
-import { getActiveTextEditor } from './utils/vscode';
-import { clientSupportsCommand } from './utils/clientHelpers';
+import { getActiveTextEditor } from './../../utils/vscode';
+import { clientSupportsCommand } from './../../utils/clientHelpers';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface ModuleCaller {

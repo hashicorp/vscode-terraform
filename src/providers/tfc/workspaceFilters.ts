@@ -4,13 +4,13 @@
  */
 
 import * as vscode from 'vscode';
-import { apiClient } from '../../terraformCloud';
-import { Project } from '../../terraformCloud/project';
+import { apiClient } from '../../api/terraformCloud';
+import { Project } from '../../api/terraformCloud/project';
 import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import axios from 'axios';
-import { apiErrorsToString } from '../../terraformCloud/errors';
+import { apiErrorsToString } from '../../api/terraformCloud/errors';
 
 export class ResetProjectItem implements vscode.QuickPickItem {
   get label() {

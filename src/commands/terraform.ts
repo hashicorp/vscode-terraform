@@ -6,7 +6,7 @@
 import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
-import * as terraform from '../terraform';
+import * as terraform from '../api/terraform/terraform';
 
 export class TerraformCommands implements vscode.Disposable {
   private commands: vscode.Disposable[];

@@ -7,16 +7,16 @@ import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
-import { apiClient, TerraformCloudWebUrl } from '../../terraformCloud';
+import { apiClient, TerraformCloudWebUrl } from '../../api/terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
-import { WorkspaceAttributes } from '../../terraformCloud/workspace';
-import { RunAttributes } from '../../terraformCloud/run';
+import { WorkspaceAttributes } from '../../api/terraformCloud/workspace';
+import { RunAttributes } from '../../api/terraformCloud/run';
 import { APIQuickPick, handleAuthError, handleZodiosError } from './uiHelpers';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import axios from 'axios';
-import { apiErrorsToString } from '../../terraformCloud/errors';
+import { apiErrorsToString } from '../../api/terraformCloud/errors';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();

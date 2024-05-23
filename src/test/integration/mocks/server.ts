@@ -6,7 +6,7 @@
 import { ZodiosPathsByMethod, ZodiosResponseByPath } from '@zodios/core/lib/zodios.types';
 import { ResponseResolver, http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { TerraformCloudAPIUrl, apiClient } from '../../../terraformCloud';
+import { TerraformCloudAPIUrl, apiClient } from '../../../api/terraformCloud';
 
 type Api = typeof apiClient.api;
 

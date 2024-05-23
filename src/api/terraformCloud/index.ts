@@ -6,7 +6,7 @@
 import * as vscode from 'vscode';
 import { Zodios, ZodiosPlugin } from '@zodios/core';
 import { pluginToken, pluginHeader } from '@zodios/plugins';
-import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from '../../providers/authenticationProvider';
 import { accountEndpoints } from './account';
 import { organizationEndpoints } from './organization';
 import { projectEndpoints } from './project';

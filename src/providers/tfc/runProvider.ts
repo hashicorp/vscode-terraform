@@ -8,17 +8,17 @@ import axios from 'axios';
 import * as semver from 'semver';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { TerraformCloudWebUrl, apiClient } from '../../terraformCloud';
+import { TerraformCloudWebUrl, apiClient } from '../../api/terraformCloud';
 import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
-import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../terraformCloud/run';
+import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../api/terraformCloud/run';
 import { WorkspaceTreeItem } from './workspaceProvider';
 import { GetPlanApplyStatusIcon, GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
-import { apiErrorsToString } from '../../terraformCloud/errors';
+import { apiErrorsToString } from '../../api/terraformCloud/errors';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
-import { PlanAttributes } from '../../terraformCloud/plan';
-import { ApplyAttributes } from '../../terraformCloud/apply';
-import { CONFIGURATION_SOURCE } from '../../terraformCloud/configurationVersion';
+import { PlanAttributes } from '../../api/terraformCloud/plan';
+import { ApplyAttributes } from '../../api/terraformCloud/apply';
+import { CONFIGURATION_SOURCE } from '../../api/terraformCloud/configurationVersion';
 import { PlanTreeDataProvider } from './planProvider';
 import { ApplyTreeDataProvider } from './applyProvider';
 

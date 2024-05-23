@@ -5,7 +5,7 @@
 
 import TelemetryReporter from '@vscode/extension-telemetry';
 import * as path from 'path';
-import * as terraform from '../terraform';
+import * as terraform from '../api/terraform/terraform';
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { Utils } from 'vscode-uri';

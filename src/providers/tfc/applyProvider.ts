@@ -13,7 +13,7 @@ import { TerraformCloudAuthenticationProvider } from '../authenticationProvider'
 import { ZodiosError } from '@zodios/core';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { GetChangeActionIcon } from './helpers';
-import { AppliedChange, ChangeSummary, Diagnostic, LogLine, Outputs } from '../../terraformCloud/log';
+import { AppliedChange, ChangeSummary, Diagnostic, LogLine, Outputs } from '../../api/terraformCloud/log';
 import { ApplyTreeItem } from './runProvider';
 import { OutputsItem, DiagnosticsItem, DiagnosticSummary, ItemWithChildren, isItemWithChildren } from './logHelpers';
 

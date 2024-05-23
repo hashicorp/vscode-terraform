@@ -16,7 +16,7 @@ import {
   RefreshOrganizationItem,
 } from '../providers/tfc/organizationPicker';
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
-import { TerraformCloudWebUrl } from '../terraformCloud';
+import { TerraformCloudWebUrl } from '../api/terraformCloud';
 import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
 import { ApplyTreeDataProvider } from '../providers/tfc/applyProvider';
 
