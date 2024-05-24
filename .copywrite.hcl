@@ -12,5 +12,6 @@ project {
     "test/fixtures/**",
     "src/test/integration/*/workspace/**",
     ".vscode-test/**",
+    ".changes/**"
   ]
 }
