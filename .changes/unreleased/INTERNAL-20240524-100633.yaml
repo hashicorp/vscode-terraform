@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Cache npm packages in GHA
+time: 2024-05-24T10:06:33.229796-04:00
+custom:
+    Issue: "1762"
+    Repository: vscode-terraform
