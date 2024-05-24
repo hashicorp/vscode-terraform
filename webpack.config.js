@@ -56,11 +56,7 @@ const extensionConfig = {
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader',
-          },
-        ],
+        loader: 'esbuild-loader',
       },
     ],
   },
@@ -103,11 +99,7 @@ const webExtensionConfig = {
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader',
-          },
-        ],
+        loader: 'esbuild-loader',
       },
     ],
   },
