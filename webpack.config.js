@@ -78,7 +78,6 @@ const webExtensionConfig = {
   target: 'webworker', // extensions run in a webworker context
   entry: {
     extension: './src/web/extension.ts',
-    'test/integration/index': './src/web/test/integration/index.ts',
   },
   output: {
     filename: '[name].js',

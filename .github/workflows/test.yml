@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - f-tfc
     paths-ignore:
       - 'syntaxes/**'
       - 'tests/**'
@@ -12,7 +11,6 @@ on:
   pull_request:
     branches:
       - main
-      - f-tfc
     paths-ignore:
       - 'syntaxes/**'
       - 'tests/**'
@@ -35,29 +33,6 @@ jobs:
       - name: format
         run: npm run check-format
 
-  unit:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - windows-latest
-          - macos-latest
-          - ubuntu-latest
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 3
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-        with:
-          node-version-file: '.nvmrc'
-      - name: npm install
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install chromium
-      - name: web unit
-        run: npm run test:unit:web
-
   test:
     strategy:
       fail-fast: false
@@ -69,7 +44,6 @@ jobs:
         os:
           - windows-latest
           - macos-latest
-          - macos-11.0
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
@@ -80,11 +54,6 @@ jobs:
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version-file: '.nvmrc'
-      - name: Set up Xvfb (Ubuntu)
-        run: |
-          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-          echo ">>> Started xvfb"
-        if: matrix.os == 'ubuntu-latest'
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -95,8 +64,8 @@ jobs:
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests
+        run: xvfb-run -a npm test
+        if: runner.os == 'Linux'
+      - name: Run Tests
         run: npm test
-        env:
-          CI: true
-          DISPLAY: ':99.0'
-          VSCODE_VERSION: ${{ matrix.vscode }}
+        if: runner.os != 'Linux'

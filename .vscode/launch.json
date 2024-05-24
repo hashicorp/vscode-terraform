@@ -17,33 +17,6 @@
       "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentKind=web"],
       "outFiles": ["${workspaceFolder}/out/web/**/*.js"],
       "preLaunchTask": "npm: watch"
-    },
-    {
-      "name": "Run Extension Tests",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test/integration/index",
-        "${workspaceFolder}/testFixture"
-      ],
-      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "tasks: watch-tests"
-    },
-    {
-      "name": "Run Web Extension Tests",
-      "type": "extensionHost",
-      "debugWebWorkerHost": true,
-      "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionDevelopmentKind=web",
-        "--extensionTestsPath=${workspaceFolder}/out/web/test/integration/index",
-        "${workspaceFolder}/testFixture"
-      ],
-      "outFiles": ["${workspaceFolder}/out/web/**/*.js"],
-      "preLaunchTask": "npm: watch"
     }
   ]
 }
