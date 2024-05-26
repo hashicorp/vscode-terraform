@@ -73,10 +73,17 @@ function getExtensionInfo(): ExtensionInfo {
 async function downloadLanguageServer(platform: string, architecture: string, extInfo: ExtensionInfo) {
   const cwd = path.resolve(__dirname);
 
+  const os = getPlatform(platform);
+  const arch = getArch(architecture);
+
   const buildDir = path.basename(cwd);
   const repoDir = cwd.replace(buildDir, '');
   const installPath = path.join(repoDir, 'bin');
-  const filename = process.platform === 'win32' ? 'opentofu-ls.exe' : 'opentofu-ls';
+  const filename = os === 'windows' ? 'opentofu-ls.exe' : 'opentofu-ls';
+  const packageName =
+    os === 'windows'
+      ? `opentofu-ls_${extInfo.languageServerVersion}_${os}_${arch}.exe`
+      : `opentofu-ls_${extInfo.languageServerVersion}_${os}_${arch}`;
   const filePath = path.join(installPath, filename);
   if (fs.existsSync(filePath)) {
     if (process.env.downloader_log === 'true') {
@@ -86,14 +93,6 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
   }
 
   fs.mkdirSync(installPath);
-
-  const os = getPlatform(platform);
-  const arch = getArch(architecture);
-
-  const packageName =
-    os === 'windows'
-      ? `opentofu-ls_${extInfo.languageServerVersion}_${os}_${arch}.exe`
-      : `opentofu-ls_${extInfo.languageServerVersion}_${os}_${arch}`;
 
   await fetchVersion({
     repository: 'gamunu/opentofu-ls',
