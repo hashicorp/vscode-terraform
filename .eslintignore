@@ -3,4 +3,3 @@ out
 testFixture
 **/*/__mocks__
 **/*.d.ts
-.wdio-vscode-service/

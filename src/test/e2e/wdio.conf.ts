@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { join } from 'path';
+import url from 'node:url';
 import path from 'node:path';
-import { fileURLToPath } from 'url';
+
 import type { Options } from '@wdio/types';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+const extensionPath = path.join(__dirname, '..', '..', '..');
+const workspacePath = path.join(__dirname, '..', 'fixtures');
 
 export const config: Options.Testrunner = {
   //
@@ -21,7 +22,7 @@ export const config: Options.Testrunner = {
   autoCompileOpts: {
     autoCompile: true,
     tsNodeOpts: {
-      project: './tsconfig.json',
+      project: path.join(__dirname, 'tsconfig.json'),
       transpileOnly: true,
     },
   },
@@ -41,7 +42,7 @@ export const config: Options.Testrunner = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  specs: ['./specs/**/*.ts'],
+  specs: ['./specs/**/*.e2e.ts'],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -71,12 +72,12 @@ export const config: Options.Testrunner = {
   capabilities: [
     {
       browserName: 'vscode',
-      // TODO: change when stable supports chrome downloading
       browserVersion: process.env.VSCODE_VERSION || 'stable', // also possible: "insiders" or a specific version e.g. "1.80.0"
+      // cacheDir: path.join(__dirname, '.chromedriver-cache'),
       'wdio:vscodeOptions': {
         // points to directory where extension package.json is located
-        extensionPath: path.join(__dirname, '..'),
-        workspacePath: path.join(__dirname, '../testFixture'),
+        extensionPath,
+        workspacePath,
         // optional VS Code settings
         userSettings: {
           'editor.fontSize': 14,
@@ -89,7 +90,6 @@ export const config: Options.Testrunner = {
           'disable-extensions': true,
           'disable-workspace-trust': true,
         },
-        // verboseLogging: true,
       },
     },
   ],
@@ -101,7 +101,6 @@ export const config: Options.Testrunner = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  // logLevel: 'info',
   logLevel: 'warn',
   //
   // Set specific log levels per logger
@@ -126,7 +125,7 @@ export const config: Options.Testrunner = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: '',
+  // baseUrl: 'http://localhost:8080',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -143,6 +142,7 @@ export const config: Options.Testrunner = {
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
   services: ['vscode'],
+  // services: [['vscode', { cachePath: path.join(__dirname, '.wdio-vscode-service') }]],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -165,7 +165,6 @@ export const config: Options.Testrunner = {
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
-  //   reporters: ['spec', 'json'],
   reporters: ['spec'],
 
   // Options to be passed to Mocha.

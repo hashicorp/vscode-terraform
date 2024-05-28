@@ -2,7 +2,6 @@
 .vscode
 .vscode-test
 .vscode-test-web
-.wdio-vscode-service
 build/
 docs/
 lsp/
@@ -24,7 +23,7 @@ DEVELOPMENT.md
 ROADMAP.md
 jest.config.js
 tsconfig.json
-test/
+src/test/
 .copywrite.hcl
 .vscode-test.mjs
 .changie.yaml

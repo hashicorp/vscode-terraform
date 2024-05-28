@@ -1,3 +1,0 @@
-variable "agi" {
-  default = false
-}
