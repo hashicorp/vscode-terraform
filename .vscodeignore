@@ -24,5 +24,4 @@ docs/
 node_modules/
 ROADMAP.md
 src/
-src/test/
 tsconfig.json
