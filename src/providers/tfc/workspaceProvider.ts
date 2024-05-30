@@ -32,6 +32,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
   ) {
+    vscode.authentication.onDidChangeSessions((e) => {
+      // Refresh the workspace list if the user changes session
+      if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
+        this.reset();
+        this.refresh();
+        runDataProvider.refresh();
+      }
+    });
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-refresh');

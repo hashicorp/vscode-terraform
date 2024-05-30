@@ -120,6 +120,12 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       this.sessionKey,
     );
     ctx.subscriptions.push(
+      vscode.authentication.registerAuthenticationProvider(
+        TerraformCloudAuthenticationProvider.providerID,
+        TerraformCloudAuthenticationProvider.providerLabel,
+        this,
+        { supportsMultipleAccounts: false },
+      ),
       vscode.commands.registerCommand('terraform.cloud.login', async () => {
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
           createIfNone: true,

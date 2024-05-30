@@ -27,6 +27,14 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
   ) {
+    // TODO: move this as the login/organization picker is fleshed out
+    // where it can handle things better
+    vscode.authentication.onDidChangeSessions((e) => {
+      // Refresh the workspace list if the user changes session
+      if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
+        this.refresh();
+      }
+    });
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.apply.refresh', () => {
         this.reporter.sendTelemetryEvent('tfc-run-apply-refresh');

@@ -34,6 +34,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     private planDataProvider: PlanTreeDataProvider,
     private applyDataProvider: ApplyTreeDataProvider,
   ) {
+    // TODO: move this as the login/organization picker is fleshed out
+    // where it can handle things better
+    vscode.authentication.onDidChangeSessions((e) => {
+      // Refresh the workspace list if the user changes session
+      if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
+        this.refresh();
+      }
+    });
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
         this.downloadPlanLog(run);

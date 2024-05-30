@@ -28,17 +28,14 @@ export class TerraformCloudFeature implements vscode.Disposable {
     private reporter: TelemetryReporter,
     outputChannel: vscode.OutputChannel,
   ) {
+    this.statusBar = new OrganizationStatusBar(context);
+
     const authProvider = new TerraformCloudAuthenticationProvider(
       context.secrets,
       context,
       this.reporter,
       outputChannel,
     );
-    this.context.subscriptions.push(
-      vscode.workspace.registerTextDocumentContentProvider('vscode-terraform', new PlanLogContentProvider()),
-    );
-    this.statusBar = new OrganizationStatusBar(context);
-
     authProvider.onDidChangeSessions(async (event) => {
       if (event && event.added && event.added.length > 0) {
         await vscode.commands.executeCommand('terraform.cloud.organization.picker');
@@ -49,13 +46,8 @@ export class TerraformCloudFeature implements vscode.Disposable {
       }
     });
 
-    context.subscriptions.push(
-      vscode.authentication.registerAuthenticationProvider(
-        TerraformCloudAuthenticationProvider.providerID,
-        TerraformCloudAuthenticationProvider.providerLabel,
-        authProvider,
-        { supportsMultipleAccounts: false },
-      ),
+    this.context.subscriptions.push(
+      vscode.workspace.registerTextDocumentContentProvider('vscode-terraform', new PlanLogContentProvider()),
     );
 
     const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, outputChannel);
@@ -120,19 +112,6 @@ export class TerraformCloudFeature implements vscode.Disposable {
       if (item instanceof WorkspaceTreeItem) {
         // call the TFC Run provider with the workspace
         runDataProvider.refresh(item);
-        planDataProvider.refresh();
-        applyDataProvider.refresh();
-      }
-    });
-
-    // TODO: move this as the login/organization picker is fleshed out
-    // where it can handle things better
-    vscode.authentication.onDidChangeSessions((e) => {
-      // Refresh the workspace list if the user changes session
-      if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
-        workspaceDataProvider.reset();
-        workspaceDataProvider.refresh();
-        runDataProvider.refresh();
         planDataProvider.refresh();
         applyDataProvider.refresh();
       }
