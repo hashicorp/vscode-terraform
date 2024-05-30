@@ -8,6 +8,4 @@ bin
 node_modules
 npm-debug.log
 out
-src/test/fixtures
-src/test/integration/*/workspace/**
 syntaxes
