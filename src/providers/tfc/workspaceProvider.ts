@@ -4,23 +4,25 @@
  */
 
 import * as vscode from 'vscode';
+import * as semver from 'semver';
+import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
-
-import { RunTreeDataProvider } from './runProvider';
 import { apiClient, TerraformCloudWebUrl } from '../../api/terraformCloud';
 import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
-import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
+import { GetPlanApplyStatusIcon, GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
 import { WorkspaceAttributes } from '../../api/terraformCloud/workspace';
-import { RunAttributes } from '../../api/terraformCloud/run';
+import { RUN_SOURCE, RunAttributes, TRIGGER_REASON } from '../../api/terraformCloud/run';
 import { APIQuickPick, handleAuthError, handleZodiosError } from './uiHelpers';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
-import axios from 'axios';
 import { apiErrorsToString } from '../../api/terraformCloud/errors';
 import { OrganizationAPIResource, CreateOrganizationItem, RefreshOrganizationItem } from './organizationPicker';
 import { OrganizationStatusBar } from '../../features/terraformCloud';
 import { ApplyTreeDataProvider } from './applyProvider';
 import { PlanTreeDataProvider } from './planProvider';
+import { ApplyAttributes } from '../../api/terraformCloud/apply';
+import { PlanAttributes } from '../../api/terraformCloud/plan';
+import { CONFIGURATION_SOURCE } from '../../api/terraformCloud/configurationVersion';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -34,7 +36,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     private ctx: vscode.ExtensionContext,
     private planDataProvider: PlanTreeDataProvider,
     private applyDataProvider: ApplyTreeDataProvider,
-    private runDataProvider: RunTreeDataProvider,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
     private statusBar: OrganizationStatusBar,
@@ -55,7 +56,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       const item = event.selection[0];
       if (item instanceof WorkspaceTreeItem) {
         // call the TFC Run provider with the workspace
-        this.runDataProvider.refresh(item);
         this.planDataProvider.refresh();
         this.applyDataProvider.refresh();
       }
@@ -77,23 +77,20 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
         this.reset();
         this.refresh();
-        runDataProvider.refresh();
       }
     });
 
     this.ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
+      vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-refresh');
         this.reset();
         this.refresh();
-        this.runDataProvider.refresh(workspaceItem);
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.resetProjectFilter', () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter-reset');
         this.projectFilter = undefined;
         this.reset();
         this.refresh();
-        this.runDataProvider.refresh();
       }),
       vscode.commands.registerCommand(
         'terraform.cloud.workspaces.viewInBrowser',
@@ -116,7 +113,6 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       vscode.commands.registerCommand('terraform.cloud.workspaces.loadMore', async () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-loadMore');
         this.refresh();
-        this.runDataProvider.refresh();
       }),
       vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-new-workspace');
@@ -165,11 +161,64 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
         // filter reset will refresh workspaces
       }),
+      vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
+        this.downloadPlanLog(run);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: ApplyTreeItem) =>
+        this.downloadApplyLog(run),
+      ),
+      vscode.commands.registerCommand('terraform.cloud.run.viewInBrowser', (run: RunTreeItem) => {
+        this.reporter.sendTelemetryEvent('tfc-runs-viewInBrowser');
+        vscode.env.openExternal(run.websiteUri);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.viewPlan', async (plan: PlanTreeItem) => {
+        if (!plan.logReadUrl) {
+          await vscode.window.showErrorMessage(`No plan found for ${plan.id}`);
+          return;
+        }
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingPlan', true);
+        await vscode.commands.executeCommand('terraform.cloud.run.plan.focus');
+        this.planDataProvider.refresh(plan);
+      }),
+      vscode.commands.registerCommand('terraform.cloud.run.viewApply', async (apply: ApplyTreeItem) => {
+        if (!apply.logReadUrl) {
+          await vscode.window.showErrorMessage(`No apply log found for ${apply.id}`);
+          return;
+        }
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingApply', true);
+        await vscode.commands.executeCommand('terraform.cloud.run.apply.focus');
+        this.applyDataProvider.refresh(apply);
+      }),
     );
+  }
+
+  async resolveTreeItem(item: vscode.TreeItem, element: TFCRunTreeItem): Promise<vscode.TreeItem> {
+    if (element instanceof RunTreeItem) {
+      item.tooltip = await runMarkdown(element);
+    }
+    return item;
   }
 
   refresh(): void {
     this.didChangeTreeData.fire();
+  }
+
+  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    return element;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getChildren(element?: any): vscode.ProviderResult<vscode.TreeItem[]> {
+    if (element) {
+      if (element instanceof WorkspaceTreeItem) {
+        return this.getRuns(element as WorkspaceTreeItem);
+      }
+      if (element instanceof RunTreeItem) {
+        return this.getRunDetails(element);
+      }
+    }
+
+    return this.buildChildren();
   }
 
   // This resets the internal cache, e.g. after logout
@@ -178,7 +227,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     this.cache = [];
   }
 
-  async filterByProject(): Promise<void> {
+  private async filterByProject(): Promise<void> {
     const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
       createIfNone: false,
     });
@@ -201,20 +250,159 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
     this.reset();
     this.refresh();
-    this.runDataProvider.refresh();
   }
 
-  getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
-    return element;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getChildren(element?: any): vscode.ProviderResult<vscode.TreeItem[]> {
-    if (element) {
-      return [element];
+  private async getRuns(workspace: WorkspaceTreeItem): Promise<vscode.TreeItem[]> {
+    const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+    if (organization === '') {
+      return [];
     }
 
-    return this.buildChildren();
+    const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
+      createIfNone: false,
+    });
+
+    if (session === undefined) {
+      return [];
+    }
+
+    try {
+      const runs = await apiClient.listRuns({
+        params: { workspace_id: workspace.id },
+        queries: {
+          'page[size]': 100,
+        },
+      });
+
+      this.reporter.sendTelemetryEvent('tfc-fetch-runs', undefined, {
+        totalCount: runs.meta.pagination['total-count'],
+      });
+
+      if (runs.data.length === 0) {
+        return [
+          {
+            label: `No runs found for ${workspace.attributes.name}`,
+            tooltip: `No runs found for ${workspace.attributes.name}`,
+            contextValue: 'empty',
+          },
+        ];
+      }
+
+      const items: RunTreeItem[] = [];
+      for (let index = 0; index < runs.data.length; index++) {
+        const run = runs.data[index];
+        const runItem = new RunTreeItem(run.id, run.attributes, workspace);
+
+        runItem.contextValue = 'isRun';
+        runItem.organizationName = organization;
+
+        runItem.configurationVersionId = run.relationships['configuration-version']?.data?.id;
+        runItem.createdByUserId = run.relationships['created-by']?.data?.id;
+
+        runItem.planId = run.relationships.plan?.data?.id;
+        runItem.applyId = run.relationships.apply?.data?.id;
+        if (runItem.planId || runItem.applyId) {
+          runItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+        }
+
+        items.push(runItem);
+      }
+
+      return items;
+    } catch (error) {
+      let message = `Failed to list runs in ${workspace.attributes.name} (${workspace.id}): `;
+
+      if (error instanceof ZodiosError) {
+        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        return [];
+      }
+
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          handleAuthError();
+          return [];
+        }
+
+        if (error.response?.status === 404) {
+          vscode.window.showWarningMessage(
+            `Workspace ${workspace.attributes.name} (${workspace.id}) not found, please pick another one`,
+          );
+          return [];
+        }
+
+        if (isErrorFromAlias(apiClient.api, 'listRuns', error)) {
+          message += apiErrorsToString(error.response.data.errors);
+          vscode.window.showErrorMessage(message);
+          this.reporter.sendTelemetryException(error);
+          return [];
+        }
+      }
+
+      if (error instanceof Error) {
+        message += error.message;
+        vscode.window.showErrorMessage(message);
+        this.reporter.sendTelemetryException(error);
+        return [];
+      }
+
+      if (typeof error === 'string') {
+        message += error;
+      }
+      vscode.window.showErrorMessage(message);
+      return [];
+    }
+  }
+
+  private async getRunDetails(element: RunTreeItem) {
+    const items = [];
+    const root = element as RunTreeItem;
+    if (root.planId) {
+      const plan = await apiClient.getPlan({ params: { plan_id: root.planId } });
+      if (plan) {
+        const status = plan.data.attributes.status;
+        const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
+        const item = new PlanTreeItem(root.planId, label, plan.data.attributes);
+        if (status === 'unreachable' || status === 'pending') {
+          item.label = label;
+        } else {
+          if (this.isJsonExpected(plan.data.attributes, root.attributes['terraform-version'])) {
+            item.contextValue = 'hasStructuredPlan';
+          } else {
+            item.contextValue = 'hasRawPlan';
+          }
+        }
+        items.push(item);
+      }
+    }
+
+    if (root.applyId) {
+      const apply = await apiClient.getApply({ params: { apply_id: root.applyId } });
+      if (apply) {
+        const status = apply.data.attributes.status;
+        const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
+        const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes);
+        if (status === 'unreachable' || status === 'pending') {
+          item.label = label;
+        } else {
+          if (this.isJsonExpected(apply.data.attributes, root.attributes['terraform-version'])) {
+            item.contextValue = 'hasStructuredApply';
+          } else {
+            item.contextValue = 'hasRawApply';
+          }
+        }
+        items.push(item);
+      }
+    }
+
+    return items;
+  }
+
+  private isJsonExpected(attributes: PlanAttributes | ApplyAttributes, terraformVersion: string): boolean {
+    const jsonSupportedVersion = '> 0.15.2';
+    if (!semver.satisfies(terraformVersion, jsonSupportedVersion)) {
+      return false;
+    }
+    return attributes['structured-run-output-enabled'];
   }
 
   private async buildChildren() {
@@ -230,6 +418,30 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
     }
 
     return items;
+  }
+
+  private async downloadPlanLog(run: PlanTreeItem) {
+    if (!run.id) {
+      await vscode.window.showErrorMessage(`No plan found for ${run.id}`);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(run.documentUri);
+    return await vscode.window.showTextDocument(doc, {
+      preview: false,
+    });
+  }
+
+  private async downloadApplyLog(run: ApplyTreeItem) {
+    if (!run.id) {
+      await vscode.window.showErrorMessage(`No apply found for ${run.id}`);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(run.documentUri);
+    return await vscode.window.showTextDocument(doc, {
+      preview: false,
+    });
   }
 
   private async getWorkspaces(): Promise<vscode.TreeItem[]> {
@@ -381,6 +593,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   }
 }
 
+export type TFCRunTreeItem = RunTreeItem | PlanTreeItem | ApplyTreeItem | vscode.TreeItem;
+
 export class LoadMoreTreeItem extends vscode.TreeItem {
   constructor() {
     super('Load more...', vscode.TreeItemCollapsibleState.None);
@@ -407,7 +621,7 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
     public weblink: vscode.Uri,
     public lastRun?: RunAttributes,
   ) {
-    super(attributes.name, vscode.TreeItemCollapsibleState.None);
+    super(attributes.name, vscode.TreeItemCollapsibleState.Collapsed);
 
     this.description = `[${this.projectName}]`;
     this.iconPath = GetRunStatusIcon(this.lastRun?.status);
@@ -446,4 +660,143 @@ ___
 
     this.tooltip = new vscode.MarkdownString(text, true);
   }
+}
+
+export class RunTreeItem extends vscode.TreeItem {
+  public organizationName?: string;
+  public configurationVersionId?: string;
+  public createdByUserId?: string;
+
+  public planAttributes?: PlanAttributes;
+  public planId?: string;
+
+  public applyAttributes?: ApplyAttributes;
+  public applyId?: string;
+
+  constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem) {
+    super(attributes.message, vscode.TreeItemCollapsibleState.None);
+    this.id = id;
+
+    this.workspace = workspace;
+    this.iconPath = GetRunStatusIcon(attributes.status);
+    this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
+  }
+
+  public get websiteUri(): vscode.Uri {
+    return vscode.Uri.parse(
+      `${TerraformCloudWebUrl}/${this.organizationName}/workspaces/${this.workspace.attributes.name}/runs/${this.id}`,
+    );
+  }
+}
+
+export class PlanTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+
+  constructor(public id: string, public label: string, public attributes: PlanAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
+  }
+
+  public get documentUri(): vscode.Uri {
+    return vscode.Uri.parse(`vscode-terraform://plan/${this.id}`);
+  }
+}
+
+export class ApplyTreeItem extends vscode.TreeItem {
+  public logReadUrl = '';
+  constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
+    super(label);
+    this.iconPath = GetPlanApplyStatusIcon(attributes.status);
+    if (attributes) {
+      this.logReadUrl = attributes['log-read-url'] ?? '';
+    }
+  }
+
+  public get documentUri(): vscode.Uri {
+    return vscode.Uri.parse(`vscode-terraform://apply/${this.id}`);
+  }
+}
+
+async function runMarkdown(item: RunTreeItem) {
+  const markdown: vscode.MarkdownString = new vscode.MarkdownString();
+
+  // to allow image resizing
+  markdown.supportHtml = true;
+  markdown.supportThemeIcons = true;
+
+  const configurationVersion = item.configurationVersionId
+    ? await apiClient.getConfigurationVersion({
+        params: {
+          configuration_id: item.configurationVersionId,
+        },
+      })
+    : undefined;
+  const ingress = configurationVersion?.data.relationships['ingress-attributes']?.data?.id
+    ? await apiClient.getIngressAttributes({
+        params: {
+          configuration_id: configurationVersion.data.id,
+        },
+      })
+    : undefined;
+
+  const createdAtTime = RelativeTimeFormat(item.attributes['created-at']);
+
+  if (item.createdByUserId) {
+    const user = await apiClient.getUser({
+      params: {
+        user_id: item.createdByUserId,
+      },
+    });
+
+    markdown.appendMarkdown(
+      `<img src="${user.data.attributes['avatar-url']}" width="20"> **${user.data.attributes.username}**`,
+    );
+  } else if (ingress) {
+    markdown.appendMarkdown(
+      `<img src="${ingress.data.attributes['sender-avatar-url']}" width="20"> **${ingress.data.attributes['sender-username']}**`,
+    );
+  }
+
+  const triggerReason = TRIGGER_REASON[item.attributes['trigger-reason']];
+  const icon = GetRunStatusIcon(item.attributes.status);
+  const msg = GetRunStatusMessage(item.attributes.status);
+
+  markdown.appendMarkdown(` ${triggerReason} from ${RUN_SOURCE[item.attributes.source]} ${createdAtTime}`);
+  markdown.appendMarkdown(`
+
+-----
+_____
+| | |
+-:|--
+| **Run ID**   | \`${item.id}\` |
+| **Status** | $(${icon.id}) ${msg} |
+`);
+  if (ingress && configurationVersion && configurationVersion.data.attributes.source) {
+    // Blind shortening like this may not be appropriate
+    // due to hash collisions but we just mimic what TFC does here
+    // which is fairly safe since it's just UI/text, not URL.
+    const shortCommitSha = ingress.data.attributes['commit-sha'].slice(0, 8);
+
+    const cfgSource = CONFIGURATION_SOURCE[configurationVersion.data.attributes.source];
+    markdown.appendMarkdown(`| **Configuration** | From ${cfgSource} by <img src="${
+      ingress.data.attributes['sender-avatar-url']
+    }" width="20"> ${ingress.data.attributes['sender-username']} **Branch** ${
+      ingress.data.attributes.branch
+    } **Repo** [${ingress.data.attributes.identifier}](${ingress.data.attributes['clone-url']}) |
+| **Commit** | [${shortCommitSha}](${ingress.data.attributes['commit-url']}): ${
+      ingress.data.attributes['commit-message'].split('\n')[0]
+    } |
+`);
+  } else {
+    markdown.appendMarkdown(`| **Configuration** | From ${item.attributes.source} |
+`);
+  }
+
+  markdown.appendMarkdown(`| **Trigger** | ${triggerReason} |
+| **Execution Mode** | ${item.workspace.attributes['execution-mode']} |
+`);
+  return markdown;
 }

@@ -6,7 +6,6 @@
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { WorkspaceTreeDataProvider } from '../providers/tfc/workspaceProvider';
-import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { PlanTreeDataProvider } from '../providers/tfc/planProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/tfc/authenticationProvider';
 import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
@@ -44,18 +43,10 @@ export class TerraformCloudFeature implements vscode.Disposable {
     );
     const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, outputChannel);
     const applyDataProvider = new ApplyTreeDataProvider(this.context, this.reporter, outputChannel);
-    const runDataProvider = new RunTreeDataProvider(
-      this.context,
-      this.reporter,
-      outputChannel,
-      planDataProvider,
-      applyDataProvider,
-    );
     const workspaceDataProvider = new WorkspaceTreeDataProvider(
       this.context,
       planDataProvider,
       applyDataProvider,
-      runDataProvider,
       this.reporter,
       outputChannel,
       this.statusBar,
@@ -65,8 +56,8 @@ export class TerraformCloudFeature implements vscode.Disposable {
       planLogProvider,
       planDataProvider,
       applyDataProvider,
-      runDataProvider,
       workspaceDataProvider,
+      authProvider,
     );
   }
 

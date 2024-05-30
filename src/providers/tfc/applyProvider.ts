@@ -14,8 +14,8 @@ import { ZodiosError } from '@zodios/core';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { GetChangeActionIcon } from './helpers';
 import { AppliedChange, ChangeSummary, Diagnostic, LogLine, Outputs } from '../../api/terraformCloud/log';
-import { ApplyTreeItem } from './runProvider';
 import { OutputsItem, DiagnosticsItem, DiagnosticSummary, ItemWithChildren, isItemWithChildren } from './logHelpers';
+import { ApplyTreeItem } from './workspaceProvider';
 
 export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();

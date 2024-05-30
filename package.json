@@ -644,11 +644,6 @@
           "command": "terraform.cloud.workspaces.refresh",
           "when": "view == terraform.cloud.workspaces",
           "group": "navigation"
-        },
-        {
-          "command": "terraform.cloud.runs.refresh",
-          "when": "view == terraform.cloud.runs",
-          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -667,27 +662,27 @@
         },
         {
           "command": "terraform.cloud.run.viewInBrowser",
-          "when": "view == terraform.cloud.runs && viewItem =~ /isRun/",
+          "when": "view == terraform.cloud.workspaces && viewItem =~ /isRun/",
           "group": "inline"
         },
         {
           "command": "terraform.cloud.run.plan.downloadLog",
-          "when": "view == terraform.cloud.runs && viewItem =~ /hasRawPlan/",
+          "when": "view == terraform.cloud.workspaces && viewItem =~ /hasRawPlan/",
           "group": "inline"
         },
         {
           "command": "terraform.cloud.run.viewPlan",
-          "when": "view == terraform.cloud.runs && viewItem =~ /hasStructuredPlan/",
+          "when": "view == terraform.cloud.workspaces && viewItem =~ /hasStructuredPlan/",
           "group": "inline"
         },
         {
           "command": "terraform.cloud.run.apply.downloadLog",
-          "when": "view == terraform.cloud.runs && viewItem =~ /hasRawApply/",
+          "when": "view == terraform.cloud.workspaces && viewItem =~ /hasRawApply/",
           "group": "inline"
         },
         {
           "command": "terraform.cloud.run.viewApply",
-          "when": "view == terraform.cloud.runs && viewItem =~ /hasStructuredApply/",
+          "when": "view == terraform.cloud.workspaces && viewItem =~ /hasStructuredApply/",
           "group": "inline"
         }
       ]
@@ -708,11 +703,6 @@
           "id": "terraform.cloud.workspaces",
           "name": "Workspaces",
           "contextualTitle": "HCP Terraform workspaces"
-        },
-        {
-          "id": "terraform.cloud.runs",
-          "name": "Runs",
-          "contextualTitle": "HCP Terraform runs"
         }
       ],
       "terraform-cloud-panel": [
@@ -829,10 +819,6 @@
         "view": "terraform.cloud.workspaces",
         "contents": "There are no workspaces in this project\n[Create a new workspace](command:terraform.cloud.workspaces.picker)\n[Clear filter](command:terraform.cloud.workspaces.resetProjectFilter)",
         "when": "terraform.cloud.signed-in && terraform.cloud.organizationsExist && terraform.cloud.organizationsChosen && terraform.cloud.projectFilterUsed && !terraform.cloud.workspacesExist"
-      },
-      {
-        "view": "terraform.cloud.runs",
-        "contents": "Select a workspace to view a list of runs"
       },
       {
         "view": "terraform.cloud.run.plan",
