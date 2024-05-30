@@ -36,10 +36,6 @@ describe('TFC ViewContainer', function () {
     });
 
     it('should have workspaces view', async () => {
-      // const openViewContainerElem = await terraformViewContainer.elem;
-      // const workspaceView = await openViewContainerElem.$$('h3[title="Workspaces"]');
-      // expect(workspaceView).toHaveLength(1);
-
       callSection = await terraformViewContainer.getContent().getSection('WORKSPACES');
       expect(callSection).toBeDefined();
 
@@ -50,10 +46,6 @@ describe('TFC ViewContainer', function () {
     });
 
     it('should have runs view', async () => {
-      // const openViewContainerElem = await terraformViewContainer.elem;
-      // const runsView = await openViewContainerElem.$$('h3[title="Runs"]');
-      // expect(runsView).toHaveLength(1);
-
       callSection = await terraformViewContainer.getContent().getSection('RUNS');
       expect(callSection).toBeDefined();
     });
@@ -71,10 +63,6 @@ describe('TFC ViewContainer', function () {
     });
 
     it('should login', async () => {
-      // const openViewContainerElem = await terraformViewContainer.elem;
-      // const workspaceView = await openViewContainerElem.$$('h3[title="Workspaces"]');
-      // expect(workspaceView).toHaveLength(1);
-
       callSection = await terraformViewContainer.getContent().getSection('WORKSPACES');
       expect(callSection).toBeDefined();
 

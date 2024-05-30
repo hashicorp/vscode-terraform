@@ -55,17 +55,6 @@ describe('Terraform ViewContainer', function () {
       });
 
       it('should have providers view', async () => {
-        // const openViewContainerElem = await openViewContainer?.elem;
-        // // iterate over all h3 elements and check if the title is "PROVIDERS"
-        // const foo = await openViewContainerElem?.$$('h3');
-        // for (const elem of foo) {
-        //   const text = await elem.getText();
-
-        //   console.log(text);
-        // }
-        // const commandViewElem = await openViewContainerElem?.$$('h3[title="PROVIDERS"]');
-        // expect(commandViewElem).toHaveLength(1);
-
         callSection = await openViewContainer?.getContent().getSection('PROVIDERS');
         expect(callSection).toBeDefined();
       });
@@ -107,10 +96,6 @@ describe('Terraform ViewContainer', function () {
       });
 
       it('should have module calls view', async () => {
-        // const openViewContainerElem = await openViewContainer?.elem;
-        // const welcomeViewElem = await openViewContainerElem?.$$('h3[title="MODULE CALLS"]');
-
-        // expect(welcomeViewElem).toHaveLength(1);
         callSection = await openViewContainer?.getContent().getSection('MODULE CALLS');
         expect(callSection).toBeDefined();
       });
