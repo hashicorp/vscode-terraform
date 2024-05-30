@@ -27,6 +27,11 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
   ) {
+    const planView = vscode.window.createTreeView('terraform.cloud.run.plan', {
+      canSelectMany: false,
+      showCollapseAll: true,
+      treeDataProvider: this,
+    });
     // TODO: move this as the login/organization picker is fleshed out
     // where it can handle things better
     vscode.authentication.onDidChangeSessions((e) => {
@@ -36,6 +41,7 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
       }
     });
     this.ctx.subscriptions.push(
+      planView,
       vscode.commands.registerCommand('terraform.cloud.run.plan.refresh', () => {
         this.reporter.sendTelemetryEvent('tfc-run-plan-refresh');
         this.refresh(this.plan);

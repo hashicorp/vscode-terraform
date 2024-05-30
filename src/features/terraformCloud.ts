@@ -5,18 +5,10 @@
 
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-
-import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
+import { WorkspaceTreeDataProvider } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { PlanTreeDataProvider } from '../providers/tfc/planProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/tfc/authenticationProvider';
-import {
-  CreateOrganizationItem,
-  OrganizationAPIResource,
-  RefreshOrganizationItem,
-} from '../providers/tfc/organizationPicker';
-import { APIQuickPick } from '../providers/tfc/uiHelpers';
-import { TerraformCloudWebUrl } from '../api/terraformCloud';
 import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
 import { ApplyTreeDataProvider } from '../providers/tfc/applyProvider';
 
@@ -46,24 +38,12 @@ export class TerraformCloudFeature implements vscode.Disposable {
       }
     });
 
-    this.context.subscriptions.push(
-      vscode.workspace.registerTextDocumentContentProvider('vscode-terraform', new PlanLogContentProvider()),
+    const planLogProvider = vscode.workspace.registerTextDocumentContentProvider(
+      'vscode-terraform',
+      new PlanLogContentProvider(),
     );
-
     const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, outputChannel);
-    const planView = vscode.window.createTreeView('terraform.cloud.run.plan', {
-      canSelectMany: false,
-      showCollapseAll: true,
-      treeDataProvider: planDataProvider,
-    });
-
     const applyDataProvider = new ApplyTreeDataProvider(this.context, this.reporter, outputChannel);
-    const applyView = vscode.window.createTreeView('terraform.cloud.run.apply', {
-      canSelectMany: false,
-      showCollapseAll: true,
-      treeDataProvider: applyDataProvider,
-    });
-
     const runDataProvider = new RunTreeDataProvider(
       this.context,
       this.reporter,
@@ -71,112 +51,22 @@ export class TerraformCloudFeature implements vscode.Disposable {
       planDataProvider,
       applyDataProvider,
     );
-    const runView = vscode.window.createTreeView('terraform.cloud.runs', {
-      canSelectMany: false,
-      showCollapseAll: true,
-      treeDataProvider: runDataProvider,
-    });
-
     const workspaceDataProvider = new WorkspaceTreeDataProvider(
       this.context,
+      planDataProvider,
+      applyDataProvider,
       runDataProvider,
       this.reporter,
       outputChannel,
+      this.statusBar,
     );
-    const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
-      canSelectMany: false,
-      showCollapseAll: true,
-      treeDataProvider: workspaceDataProvider,
-    });
-    const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
-    workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
 
     this.context.subscriptions.push(
-      runView,
-      planView,
+      planLogProvider,
       planDataProvider,
-      applyView,
       applyDataProvider,
       runDataProvider,
       workspaceDataProvider,
-      workspaceView,
-    );
-
-    workspaceView.onDidChangeSelection((event) => {
-      if (event.selection.length <= 0) {
-        return;
-      }
-
-      // we don't allow multi-select yet so this will always be one
-      const item = event.selection[0];
-      if (item instanceof WorkspaceTreeItem) {
-        // call the TFC Run provider with the workspace
-        runDataProvider.refresh(item);
-        planDataProvider.refresh();
-        applyDataProvider.refresh();
-      }
-    });
-
-    workspaceView.onDidChangeVisibility(async (event) => {
-      if (event.visible) {
-        // the view is visible so show the status bar
-        this.statusBar.show();
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', true);
-      } else {
-        // hide statusbar because user isn't looking at our views
-        this.statusBar.hide();
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', false);
-      }
-    });
-
-    this.context.subscriptions.push(
-      vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
-        this.reporter.sendTelemetryEvent('tfc-new-workspace');
-        const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
-        if (organization === '') {
-          return [];
-        }
-        const terraformCloudURL = `${TerraformCloudWebUrl}/${organization}/workspaces/new`;
-        await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
-      }),
-      vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
-        this.reporter.sendTelemetryEvent('tfc-pick-organization');
-
-        const organizationAPIResource = new OrganizationAPIResource(outputChannel, reporter);
-        const organizationQuickPick = new APIQuickPick(organizationAPIResource);
-        let choice: vscode.QuickPickItem | undefined;
-
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          choice = await organizationQuickPick.pick(false);
-
-          if (choice === undefined) {
-            // user exited without answering, so don't do anything
-            return;
-          } else if (choice instanceof CreateOrganizationItem) {
-            this.reporter.sendTelemetryEvent('tfc-pick-organization-create');
-
-            // open the browser an re-run the loop
-            choice.open();
-            continue;
-          } else if (choice instanceof RefreshOrganizationItem) {
-            this.reporter.sendTelemetryEvent('tfc-pick-organization-refresh');
-            // re-run the loop
-            continue;
-          }
-
-          break;
-        }
-
-        // user chose an organization so update the statusbar and make sure its visible
-        organizationQuickPick.hide();
-        this.statusBar.show(choice.label);
-        workspaceView.title = `Workspace - (${choice.label})`;
-
-        // project filter should be cleared on org change
-        await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
-        // filter reset will refresh workspaces
-      }),
     );
   }
 

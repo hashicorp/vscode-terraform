@@ -17,6 +17,10 @@ import { APIQuickPick, handleAuthError, handleZodiosError } from './uiHelpers';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import axios from 'axios';
 import { apiErrorsToString } from '../../api/terraformCloud/errors';
+import { OrganizationAPIResource, CreateOrganizationItem, RefreshOrganizationItem } from './organizationPicker';
+import { OrganizationStatusBar } from '../../features/terraformCloud';
+import { ApplyTreeDataProvider } from './applyProvider';
+import { PlanTreeDataProvider } from './planProvider';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -28,10 +32,46 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
 
   constructor(
     private ctx: vscode.ExtensionContext,
+    private planDataProvider: PlanTreeDataProvider,
+    private applyDataProvider: ApplyTreeDataProvider,
     private runDataProvider: RunTreeDataProvider,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
+    private statusBar: OrganizationStatusBar,
   ) {
+    const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
+      canSelectMany: false,
+      showCollapseAll: true,
+      treeDataProvider: this,
+    });
+    const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+    workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
+    workspaceView.onDidChangeSelection((event) => {
+      if (event.selection.length <= 0) {
+        return;
+      }
+
+      // we don't allow multi-select yet so this will always be one
+      const item = event.selection[0];
+      if (item instanceof WorkspaceTreeItem) {
+        // call the TFC Run provider with the workspace
+        this.runDataProvider.refresh(item);
+        this.planDataProvider.refresh();
+        this.applyDataProvider.refresh();
+      }
+    });
+    workspaceView.onDidChangeVisibility(async (event) => {
+      if (event.visible) {
+        // the view is visible so show the status bar
+        this.statusBar.show();
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', true);
+      } else {
+        // hide statusbar because user isn't looking at our views
+        this.statusBar.hide();
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', false);
+      }
+    });
+
     vscode.authentication.onDidChangeSessions((e) => {
       // Refresh the workspace list if the user changes session
       if (e.provider.id === TerraformCloudAuthenticationProvider.providerID) {
@@ -40,6 +80,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         runDataProvider.refresh();
       }
     });
+
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.refresh', (workspaceItem: WorkspaceTreeItem) => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-refresh');
@@ -76,6 +117,53 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         this.reporter.sendTelemetryEvent('tfc-workspaces-loadMore');
         this.refresh();
         this.runDataProvider.refresh();
+      }),
+      vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
+        this.reporter.sendTelemetryEvent('tfc-new-workspace');
+        const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+        if (organization === '') {
+          return [];
+        }
+        const terraformCloudURL = `${TerraformCloudWebUrl}/${organization}/workspaces/new`;
+        await vscode.env.openExternal(vscode.Uri.parse(terraformCloudURL));
+      }),
+      vscode.commands.registerCommand('terraform.cloud.organization.picker', async () => {
+        this.reporter.sendTelemetryEvent('tfc-pick-organization');
+
+        const organizationAPIResource = new OrganizationAPIResource(outputChannel, reporter);
+        const organizationQuickPick = new APIQuickPick(organizationAPIResource);
+        let choice: vscode.QuickPickItem | undefined;
+
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          choice = await organizationQuickPick.pick(false);
+
+          if (choice === undefined) {
+            // user exited without answering, so don't do anything
+            return;
+          } else if (choice instanceof CreateOrganizationItem) {
+            this.reporter.sendTelemetryEvent('tfc-pick-organization-create');
+
+            // open the browser an re-run the loop
+            choice.open();
+            continue;
+          } else if (choice instanceof RefreshOrganizationItem) {
+            this.reporter.sendTelemetryEvent('tfc-pick-organization-refresh');
+            // re-run the loop
+            continue;
+          }
+
+          break;
+        }
+
+        // user chose an organization so update the statusbar and make sure its visible
+        organizationQuickPick.hide();
+        this.statusBar.show(choice.label);
+        workspaceView.title = `Workspace - (${choice.label})`;
+
+        // project filter should be cleared on org change
+        await vscode.commands.executeCommand('terraform.cloud.workspaces.resetProjectFilter');
+        // filter reset will refresh workspaces
       }),
     );
   }

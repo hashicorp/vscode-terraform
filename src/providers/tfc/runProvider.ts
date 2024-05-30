@@ -34,6 +34,11 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     private planDataProvider: PlanTreeDataProvider,
     private applyDataProvider: ApplyTreeDataProvider,
   ) {
+    const runView = vscode.window.createTreeView('terraform.cloud.runs', {
+      canSelectMany: false,
+      showCollapseAll: true,
+      treeDataProvider: this,
+    });
     // TODO: move this as the login/organization picker is fleshed out
     // where it can handle things better
     vscode.authentication.onDidChangeSessions((e) => {
@@ -43,6 +48,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
       }
     });
     this.ctx.subscriptions.push(
+      runView,
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
         this.downloadPlanLog(run);
       }),
