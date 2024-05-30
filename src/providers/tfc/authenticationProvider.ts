@@ -274,21 +274,21 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const tfcCredentials = await this.getTerraformCLICredentials();
     const newHostSelection = {
       label: 'New Hostname',
-      detail: 'Connect to a new Terraform Cloud hostname',
+      detail: 'Connect to a new HCP Terraform hostname',
     };
     const defaultHostName = {
       label: 'app.terraform.io',
-      detail: 'Default Terraform Cloud hostname',
+      detail: 'Default HCP Terraform hostname',
     };
     const hostnames = [newHostSelection, defaultHostName];
     if (tfcCredentials instanceof Error) {
-      this.logger.info('Terraform cloud credential file not yet initialized.');
+      this.logger.info('HCP Terraform credential file not yet initialized.');
     } else {
       tfcCredentials.delete('app.terraform.io');
       for (const key of tfcCredentials.keys()) {
         hostnames.push({
           label: key,
-          detail: `${key} Terraform Cloud instance`,
+          detail: `${key} HCP Terraform instance`,
         });
       }
     }
@@ -296,8 +296,8 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const choice = await vscode.window.showQuickPick(hostnames, {
       canPickMany: false,
       ignoreFocusOut: true,
-      placeHolder: 'Choose Terraform Cloud hostname to connect to',
-      title: 'HashiCorp Terraform Cloud Authentication',
+      placeHolder: 'Choose HCP Terraform hostname to connect to',
+      title: 'HashiCorp HCP Terraform Authentication',
     });
 
     if (choice === undefined) {
@@ -312,7 +312,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
           ignoreFocusOut: true,
           placeHolder: 'app.terraform.io',
           value: 'app.terraform.io',
-          prompt: 'Enter a Terraform Cloud hostname',
+          prompt: 'Enter a HCP Terraform hostname',
           password: false,
         });
         break;
