@@ -9,11 +9,11 @@ import { Writable } from 'stream';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { TerraformCloudAuthenticationProvider } from '../authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import { ZodiosError } from '@zodios/core';
 import { handleAuthError, handleZodiosError } from './uiHelpers';
 import { GetChangeActionIcon, GetDriftChangeActionMessage } from './helpers';
-import { Change, ChangeSummary, Diagnostic, DriftSummary, LogLine, Outputs } from '../../terraformCloud/log';
+import { Change, ChangeSummary, Diagnostic, DriftSummary, LogLine, Outputs } from '../../api/terraformCloud/log';
 import { PlanTreeItem } from './runProvider';
 import { DiagnosticSummary, DiagnosticsItem, OutputsItem, isItemWithChildren, ItemWithChildren } from './logHelpers';
 

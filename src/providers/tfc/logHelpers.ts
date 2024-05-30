@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { Outputs, OutputChange, Diagnostic } from '../../terraformCloud/log';
+import { Outputs, OutputChange, Diagnostic } from '../../api/terraformCloud/log';
 import { GetChangeActionIcon, GetDiagnosticSeverityIcon } from './helpers';
 
 export interface DiagnosticSummary {

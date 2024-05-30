@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { apiClient, tokenPluginId } from '../terraformCloud';
+import { apiClient, tokenPluginId } from '../api/terraformCloud';
 import { server } from './integration/mocks/server';
 
 export async function mochaGlobalSetup() {

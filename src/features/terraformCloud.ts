@@ -9,14 +9,14 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import { WorkspaceTreeDataProvider, WorkspaceTreeItem } from '../providers/tfc/workspaceProvider';
 import { RunTreeDataProvider } from '../providers/tfc/runProvider';
 import { PlanTreeDataProvider } from '../providers/tfc/planProvider';
-import { TerraformCloudAuthenticationProvider } from '../providers/authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from '../providers/tfc/authenticationProvider';
 import {
   CreateOrganizationItem,
   OrganizationAPIResource,
   RefreshOrganizationItem,
 } from '../providers/tfc/organizationPicker';
 import { APIQuickPick } from '../providers/tfc/uiHelpers';
-import { TerraformCloudWebUrl } from '../terraformCloud';
+import { TerraformCloudWebUrl } from '../api/terraformCloud';
 import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
 import { ApplyTreeDataProvider } from '../providers/tfc/applyProvider';
 

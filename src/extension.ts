@@ -19,8 +19,8 @@ import {
 } from 'vscode-languageclient/node';
 import { getServerOptions } from './utils/clientHelpers';
 import { GenerateBugReportCommand } from './commands/generateBugReport';
-import { ModuleCallsDataProvider } from './providers/moduleCalls';
-import { ModuleProvidersDataProvider } from './providers/moduleProviders';
+import { ModuleCallsDataProvider } from './providers/terraform/moduleCalls';
+import { ModuleProvidersDataProvider } from './providers/terraform/moduleProviders';
 import { ServerPath } from './utils/serverPath';
 import { config, handleLanguageClientStartError } from './utils/vscode';
 import { TelemetryFeature } from './features/telemetry';

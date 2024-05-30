@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode';
-import { ChangeAction, DiagnosticSeverity } from '../../terraformCloud/log';
+import { ChangeAction, DiagnosticSeverity } from '../../api/terraformCloud/log';
 
 export function GetPlanApplyStatusIcon(status?: string): vscode.ThemeIcon {
   switch (status) {

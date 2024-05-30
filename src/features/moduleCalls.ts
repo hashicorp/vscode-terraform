@@ -11,7 +11,7 @@ import {
   ServerCapabilities,
   StaticFeature,
 } from 'vscode-languageclient';
-import { ModuleCallsDataProvider } from '../providers/moduleCalls';
+import { ModuleCallsDataProvider } from '../providers/terraform/moduleCalls';
 import { ExperimentalClientCapabilities } from './types';
 
 const CLIENT_MODULE_CALLS_CMD_ID = 'client.refreshModuleCalls';
