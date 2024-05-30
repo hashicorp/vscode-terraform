@@ -21,4 +21,3 @@ module "compute" {
   instance_name = "terraform-machine"
 
 }
-

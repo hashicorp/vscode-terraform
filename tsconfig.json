@@ -11,5 +11,5 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", ".vscode-test", ".vscode-test-web", "test"]
+  "exclude": ["node_modules", ".vscode-test", ".vscode-test-web", "src/test/e2e"]
 }

@@ -21,14 +21,14 @@ describe('TFC ViewContainer', function () {
   it('should have TFC viewcontainer', async () => {
     const viewContainers = await workbench.getActivityBar().getViewControls();
     const titles = await Promise.all(viewContainers.map((vc) => vc.getTitle()));
-    expect(titles).toContain('HashiCorp Terraform Cloud');
+    expect(titles).toContain('HCP Terraform');
   });
 
   describe('not logged in', () => {
     let terraformViewControl: ViewControl | undefined;
 
     beforeEach(async () => {
-      terraformViewControl = await workbench.getActivityBar().getViewControl('HashiCorp Terraform Cloud');
+      terraformViewControl = await workbench.getActivityBar().getViewControl('HCP Terraform');
       expect(terraformViewControl).toBeDefined();
       await terraformViewControl?.wait();
       await terraformViewControl?.openView();
@@ -36,22 +36,18 @@ describe('TFC ViewContainer', function () {
     });
 
     it('should have workspaces view', async () => {
-      const openViewContainerElem = await terraformViewContainer.elem;
-      const workspaceView = await openViewContainerElem.$$('h3[title="Workspaces"]');
-      expect(workspaceView).toHaveLength(1);
-
       callSection = await terraformViewContainer.getContent().getSection('WORKSPACES');
+      expect(callSection).toBeDefined();
 
       const welcome = await callSection.findWelcomeContent();
 
       const text = await welcome?.getTextSections();
-      expect(text).toContain('In order to use Terraform Cloud features, you need to be logged in');
+      expect(text).toContain('In order to use HCP Terraform features, you need to be logged in');
     });
 
     it('should have runs view', async () => {
-      const openViewContainerElem = await terraformViewContainer.elem;
-      const runsView = await openViewContainerElem.$$('h3[title="Runs"]');
-      expect(runsView).toHaveLength(1);
+      callSection = await terraformViewContainer.getContent().getSection('RUNS');
+      expect(callSection).toBeDefined();
     });
   });
 
@@ -59,7 +55,7 @@ describe('TFC ViewContainer', function () {
     let terraformViewControl: ViewControl | undefined;
 
     beforeEach(async () => {
-      terraformViewControl = await workbench.getActivityBar().getViewControl('HashiCorp Terraform Cloud');
+      terraformViewControl = await workbench.getActivityBar().getViewControl('HCP Terraform');
       expect(terraformViewControl).toBeDefined();
       await terraformViewControl?.wait();
       await terraformViewControl?.openView();
@@ -67,16 +63,13 @@ describe('TFC ViewContainer', function () {
     });
 
     it('should login', async () => {
-      const openViewContainerElem = await terraformViewContainer.elem;
-      const workspaceView = await openViewContainerElem.$$('h3[title="Workspaces"]');
-      expect(workspaceView).toHaveLength(1);
-
       callSection = await terraformViewContainer.getContent().getSection('WORKSPACES');
+      expect(callSection).toBeDefined();
 
       const welcome = await callSection.findWelcomeContent();
 
       const text = await welcome?.getTextSections();
-      expect(text).toContain('In order to use Terraform Cloud features, you need to be logged in');
+      expect(text).toContain('In order to use HCP Terraform features, you need to be logged in');
 
       const buttons = await welcome?.getButtons();
       expect(buttons).toHaveLength(1);

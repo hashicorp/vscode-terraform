@@ -12,10 +12,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function getTestWorkspacePath() {
-  return path.join(__dirname, '../../../', 'testFixture');
-}
-
 describe('Terraform language tests', () => {
   let statusBar: StatusBar;
 
@@ -23,7 +19,7 @@ describe('Terraform language tests', () => {
     const workbench = await browser.getWorkbench();
     statusBar = workbench.getStatusBar();
 
-    const testFile = path.join(getTestWorkspacePath(), `sample.tf`);
+    const testFile = path.join(__dirname, '../../../', 'fixtures', `sample.tf`);
     browser.executeWorkbench((vscode, fileToOpen) => {
       vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fileToOpen));
     }, testFile);
