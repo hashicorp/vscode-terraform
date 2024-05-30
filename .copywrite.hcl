@@ -12,7 +12,7 @@ project {
     ".vscode-test/**",
     ".wdio-vscode-service/**",
     "**/node_modules/**",
-    "out/**"
+    "out/**",
     "src/test/fixtures/**",
     "src/test/integration/*/workspace/**",
   ]
