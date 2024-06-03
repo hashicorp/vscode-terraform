@@ -21,9 +21,6 @@ import { apiErrorsToString } from '../../../api/terraformCloud/errors';
 import { OrganizationAPIResource } from '../organization/organizationPicker';
 import { CreateOrganizationItem } from '../organization/createOrganizationItem';
 import { RefreshOrganizationItem } from '../organization/refreshOrganizationItem';
-import { OrganizationStatusBar } from '../../../features/terraformCloud';
-import { ApplyTreeDataProvider } from '../apply/applyProvider';
-import { PlanTreeDataProvider } from '../plan/planProvider';
 import { ApplyAttributes } from '../../../api/terraformCloud/apply';
 import { PlanAttributes } from '../../../api/terraformCloud/plan';
 import { CONFIGURATION_SOURCE } from '../../../api/terraformCloud/configurationVersion';
@@ -39,6 +36,21 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
+  private readonly didChangeSelection = new vscode.EventEmitter<void | vscode.TreeItem>();
+  public readonly onDidChangeSelection = this.didChangeSelection.event;
+
+  private readonly didChangeVisibility = new vscode.EventEmitter<boolean>();
+  public readonly onDidChangeVisibility = this.didChangeVisibility.event;
+
+  private readonly didChangeTitle = new vscode.EventEmitter<string>();
+  public readonly onDidChangeTitle = this.didChangeTitle.event;
+
+  private readonly planSelected = new vscode.EventEmitter<PlanTreeItem>();
+  public readonly onDidplanSelected = this.planSelected.event;
+
+  private readonly applySelected = new vscode.EventEmitter<ApplyTreeItem>();
+  public readonly onDidApplySelected = this.applySelected.event;
+
   private projectFilter: string | undefined;
   private pageSize = 50;
   private cache: vscode.TreeItem[] = [];
@@ -46,11 +58,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
 
   constructor(
     private ctx: vscode.ExtensionContext,
-    private planDataProvider: PlanTreeDataProvider,
-    private applyDataProvider: ApplyTreeDataProvider,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
-    private statusBar: OrganizationStatusBar,
   ) {
     const workspaceView = vscode.window.createTreeView('terraform.cloud.workspaces', {
       canSelectMany: false,
@@ -67,20 +76,14 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       // we don't allow multi-select yet so this will always be one
       const item = event.selection[0];
       if (item instanceof WorkspaceTreeItem) {
-        // call the TFC Run provider with the workspace
-        this.planDataProvider.refresh();
-        this.applyDataProvider.refresh();
+        this.didChangeSelection.fire(item);
       }
     });
     workspaceView.onDidChangeVisibility(async (event) => {
       if (event.visible) {
-        // the view is visible so show the status bar
-        this.statusBar.show();
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', true);
+        this.didChangeVisibility.fire(true);
       } else {
-        // hide statusbar because user isn't looking at our views
-        this.statusBar.hide();
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', false);
+        this.didChangeVisibility.fire(false);
       }
     });
 
@@ -166,7 +169,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
 
         // user chose an organization so update the statusbar and make sure its visible
         organizationQuickPick.hide();
-        this.statusBar.show(choice.label);
+        this.didChangeTitle.fire(choice.label);
         workspaceView.title = `Workspace - (${choice.label})`;
 
         // project filter should be cleared on org change
@@ -190,7 +193,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         }
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingPlan', true);
         await vscode.commands.executeCommand('terraform.cloud.run.plan.focus');
-        this.planDataProvider.refresh(plan);
+        this.planSelected.fire(plan);
       }),
       vscode.commands.registerCommand('terraform.cloud.run.viewApply', async (apply: ApplyTreeItem) => {
         if (!apply.logReadUrl) {
@@ -199,7 +202,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         }
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.run.viewingApply', true);
         await vscode.commands.executeCommand('terraform.cloud.run.apply.focus');
-        this.applyDataProvider.refresh(apply);
+        this.applySelected.fire(apply);
       }),
     );
   }

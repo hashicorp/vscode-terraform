@@ -10,6 +10,8 @@ import { PlanTreeDataProvider } from '../providers/tfc/plan/planProvider';
 import { TerraformCloudAuthenticationProvider } from '../providers/tfc/auth/authenticationProvider';
 import { PlanLogContentProvider } from '../providers/tfc/plan/contentProvider';
 import { ApplyTreeDataProvider } from '../providers/tfc/apply/applyProvider';
+import { PlanTreeItem } from '../providers/tfc/plan/planTreeItem';
+import { ApplyTreeItem } from '../providers/tfc/workspace/applyTreeItem';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -43,14 +45,33 @@ export class TerraformCloudFeature implements vscode.Disposable {
     );
     const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, this.outputChannel);
     const applyDataProvider = new ApplyTreeDataProvider(this.context, this.reporter, this.outputChannel);
-    const workspaceDataProvider = new WorkspaceTreeDataProvider(
-      this.context,
-      planDataProvider,
-      applyDataProvider,
-      this.reporter,
-      this.outputChannel,
-      this.statusBar,
-    );
+    const workspaceDataProvider = new WorkspaceTreeDataProvider(this.context, this.reporter, this.outputChannel);
+    workspaceDataProvider.onDidChangeSelection(async (workspace) => {
+      if (workspace) {
+        planDataProvider.refresh();
+        applyDataProvider.refresh();
+      }
+    });
+    workspaceDataProvider.onDidChangeTitle(async (title) => {
+      this.statusBar.show(title);
+    });
+    workspaceDataProvider.onDidChangeVisibility(async (visibile) => {
+      if (visibile === true) {
+        // the view is visible so show the status bar
+        this.statusBar.show();
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', true);
+      } else {
+        // hide statusbar because user isn't looking at our views
+        this.statusBar.hide();
+        await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', false);
+      }
+    });
+    workspaceDataProvider.onDidplanSelected(async (plan: PlanTreeItem) => {
+      planDataProvider.refresh(plan);
+    });
+    workspaceDataProvider.onDidApplySelected(async (apply: ApplyTreeItem) => {
+      applyDataProvider.refresh(apply);
+    });
 
     this.context.subscriptions.push(
       planLogProvider,
