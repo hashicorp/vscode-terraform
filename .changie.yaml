@@ -28,7 +28,9 @@ kinds:
 - label: BUG FIXES
   auto: patch
 - label: INTERNAL
+  auto: patch
 - label: NOTES
+  auto: patch
 - label: BREAKING CHANGES
   auto: minor
 newlines:
