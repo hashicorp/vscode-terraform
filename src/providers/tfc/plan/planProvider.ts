@@ -9,13 +9,16 @@ import { Writable } from 'stream';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from '../auth/authenticationProvider';
 import { ZodiosError } from '@zodios/core';
-import { handleAuthError, handleZodiosError } from './uiHelpers';
-import { GetChangeActionIcon, GetDriftChangeActionMessage } from './helpers';
-import { Change, ChangeSummary, Diagnostic, DriftSummary, LogLine, Outputs } from '../../api/terraformCloud/log';
-import { DiagnosticSummary, DiagnosticsItem, OutputsItem, isItemWithChildren, ItemWithChildren } from './logHelpers';
-import { PlanTreeItem } from './workspaceProvider';
+import { handleAuthError } from '../helpers';
+import { handleZodiosError } from '../helpers';
+import { LogLine } from '../../../api/terraformCloud/log';
+import { DiagnosticsItem, OutputsItem, isItemWithChildren } from '../logHelpers';
+import { PlanTreeItem } from './planTreeItem';
+import { DriftChangesItem } from './driftChangesItem';
+import { PlannedChangesItem } from './plannedChangesItem';
+import { PlanLog } from './planLog';
 
 export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -214,110 +217,5 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
 
   dispose() {
     //
-  }
-}
-
-interface PlanLog {
-  plannedChanges?: Change[];
-  changeSummary?: ChangeSummary;
-  driftChanges?: Change[];
-  driftSummary?: DriftSummary;
-  outputs?: Outputs;
-  diagnostics?: Diagnostic[];
-  diagnosticSummary?: DiagnosticSummary;
-}
-
-class PlannedChangesItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private plannedChanges: Change[], summary?: ChangeSummary) {
-    let label = 'Planned changes';
-    if (summary) {
-      const labels: string[] = [];
-      if (summary.import > 0) {
-        labels.push(`${summary.import} to import`);
-      }
-      if (summary.add > 0) {
-        labels.push(`${summary.add} to add`);
-      }
-      if (summary.change > 0) {
-        labels.push(`${summary.change} to change`);
-      }
-      if (summary.remove > 0) {
-        labels.push(`${summary.remove} to destroy`);
-      }
-      if (labels.length > 0) {
-        label = `Planned changes: ${labels.join(', ')}`;
-      }
-    }
-    super(label, vscode.TreeItemCollapsibleState.Expanded);
-  }
-
-  getChildren(): vscode.TreeItem[] {
-    return this.plannedChanges.map((change) => new PlannedChangeItem(change));
-  }
-}
-
-class PlannedChangeItem extends vscode.TreeItem {
-  constructor(public change: Change) {
-    let label = change.resource.addr;
-    if (change.previous_resource) {
-      label = `${change.previous_resource.addr} → ${change.resource.addr}`;
-    }
-
-    super(label, vscode.TreeItemCollapsibleState.None);
-    this.id = change.action + '/' + change.resource.addr;
-    this.iconPath = GetChangeActionIcon(change.action);
-    this.description = change.action;
-
-    const tooltip = new vscode.MarkdownString();
-    if (change.previous_resource) {
-      tooltip.appendMarkdown(
-        `\`${change.previous_resource.addr}\` planned to _${change.action}_ to \`${change.resource.addr}\``,
-      );
-    } else if (change.importing) {
-      tooltip.appendMarkdown(
-        `Planned to _${change.action}_ \`${change.resource.addr}\` (id=\`${change.importing.id}\`)`,
-      );
-    } else {
-      tooltip.appendMarkdown(`Planned to _${change.action}_ \`${change.resource.addr}\``);
-    }
-    this.tooltip = tooltip;
-  }
-}
-
-class DriftChangesItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private driftChanges: Change[], summary?: DriftSummary) {
-    let label = `Drifted resources`;
-    if (summary) {
-      const details = [];
-      if (summary.changed > 0) {
-        details.push(`${summary.changed} changed`);
-      }
-      if (summary.deleted > 0) {
-        details.push(`${summary.deleted} deleted`);
-      }
-      label = `Drifted resources: ${details.join(', ')}`;
-    }
-
-    super(label, vscode.TreeItemCollapsibleState.Expanded);
-  }
-
-  getChildren(): vscode.TreeItem[] {
-    return this.driftChanges.map((change) => new DriftChangeItem(change));
-  }
-}
-
-class DriftChangeItem extends vscode.TreeItem {
-  constructor(public change: Change) {
-    let label = change.resource.addr;
-    if (change.previous_resource) {
-      label = `${change.previous_resource.addr} → ${change.resource.addr}`;
-    }
-
-    super(label, vscode.TreeItemCollapsibleState.None);
-    this.id = 'drift/' + change.action + '/' + change.resource.addr;
-    this.iconPath = GetChangeActionIcon(change.action);
-    const message = GetDriftChangeActionMessage(change.action);
-    this.description = message;
-    this.tooltip = new vscode.MarkdownString(`\`${change.resource.addr}\` _${message}_`);
   }
 }

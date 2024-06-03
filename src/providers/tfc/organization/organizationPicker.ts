@@ -4,47 +4,17 @@
  */
 
 import * as vscode from 'vscode';
-import { TerraformCloudWebUrl, apiClient } from '../../api/terraformCloud';
-import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
-import { Organization } from '../../api/terraformCloud/organization';
+import { apiClient } from '../../../api/terraformCloud';
+import { APIResource } from '../apiPicker';
+import { handleAuthError } from '../helpers';
+import { handleZodiosError } from '../helpers';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import axios from 'axios';
-import { apiErrorsToString } from '../../api/terraformCloud/errors';
+import { apiErrorsToString } from '../../../api/terraformCloud/errors';
 import TelemetryReporter from '@vscode/extension-telemetry';
-
-export class CreateOrganizationItem implements vscode.QuickPickItem {
-  get label() {
-    return '$(add) Create new organization';
-  }
-  get detail() {
-    return 'Open the browser to create a new organization';
-  }
-  async open() {
-    await vscode.env.openExternal(vscode.Uri.parse(`${TerraformCloudWebUrl}/organizations/new`));
-  }
-  get alwaysShow() {
-    return true;
-  }
-}
-
-export class RefreshOrganizationItem implements vscode.QuickPickItem {
-  get label() {
-    return '$(refresh) Refresh organizations';
-  }
-  get detail() {
-    return 'Refetch all organizations';
-  }
-  get alwaysShow() {
-    return true;
-  }
-}
-
-class OrganizationItem implements vscode.QuickPickItem {
-  constructor(protected organization: Organization) {}
-  get label() {
-    return this.organization.attributes.name;
-  }
-}
+import { RefreshOrganizationItem } from './refreshOrganizationItem';
+import { CreateOrganizationItem } from './createOrganizationItem';
+import { OrganizationItem } from './organizationItem';
 
 export class OrganizationAPIResource implements APIResource {
   name = 'organizations';

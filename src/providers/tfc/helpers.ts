@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+import TelemetryReporter from '@vscode/extension-telemetry';
+import { ZodiosError } from '@zodios/core';
 import * as vscode from 'vscode';
 import { ChangeAction, DiagnosticSeverity } from '../../api/terraformCloud/log';
+import { TerraformCloudAuthenticationProvider } from './auth/authenticationProvider';
 
 export function GetPlanApplyStatusIcon(status?: string): vscode.ThemeIcon {
   switch (status) {
@@ -188,6 +191,8 @@ export function GetDiagnosticSeverityIcon(severity: DiagnosticSeverity): vscode.
       return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.orange'));
     case 'error':
       return new vscode.ThemeIcon('error', new vscode.ThemeColor('charts.red'));
+    default:
+      return new vscode.ThemeIcon('info', new vscode.ThemeColor('charts.blue'));
   }
 }
 
@@ -242,4 +247,33 @@ const ansiRegex = new RegExp(
 
 export default function stripAnsi(text: string) {
   return text.replace(ansiRegex, '');
+}
+
+export async function handleZodiosError(
+  error: ZodiosError,
+  msgPrefix: string,
+  outputChannel: vscode.OutputChannel,
+  reporter: TelemetryReporter,
+) {
+  reporter.sendTelemetryException(error);
+  outputChannel.append(JSON.stringify({ cause: error.cause }, undefined, 2));
+  const chosenItem = await vscode.window.showErrorMessage(
+    `${msgPrefix} Response validation failed. Please report this as a bug.`,
+    'Report bug',
+  );
+  if (chosenItem === 'Report bug') {
+    outputChannel.show(true);
+    vscode.commands.executeCommand('terraform.generateBugReport');
+    return;
+  }
+}
+
+export async function handleAuthError() {
+  // TODO: clear org
+  await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
+    createIfNone: false,
+    forceNewSession: {
+      detail: 'Your token is invalid or has expired. Please generate a new token',
+    },
+  });
 }

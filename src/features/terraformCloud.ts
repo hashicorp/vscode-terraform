@@ -5,11 +5,11 @@
 
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { WorkspaceTreeDataProvider } from '../providers/tfc/workspaceProvider';
-import { PlanTreeDataProvider } from '../providers/tfc/planProvider';
-import { TerraformCloudAuthenticationProvider } from '../providers/tfc/authenticationProvider';
-import { PlanLogContentProvider } from '../providers/tfc/contentProvider';
-import { ApplyTreeDataProvider } from '../providers/tfc/applyProvider';
+import { WorkspaceTreeDataProvider } from '../providers/tfc/workspace/workspaceProvider';
+import { PlanTreeDataProvider } from '../providers/tfc/plan/planProvider';
+import { TerraformCloudAuthenticationProvider } from '../providers/tfc/auth/authenticationProvider';
+import { PlanLogContentProvider } from '../providers/tfc/plan/contentProvider';
+import { ApplyTreeDataProvider } from '../providers/tfc/apply/applyProvider';
 
 export class TerraformCloudFeature implements vscode.Disposable {
   private statusBar: OrganizationStatusBar;
@@ -17,7 +17,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
   constructor(
     private context: vscode.ExtensionContext,
     private reporter: TelemetryReporter,
-    outputChannel: vscode.OutputChannel,
+    private outputChannel: vscode.OutputChannel,
   ) {
     this.statusBar = new OrganizationStatusBar(context);
 
@@ -25,7 +25,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       context.secrets,
       context,
       this.reporter,
-      outputChannel,
+      this.outputChannel,
     );
     authProvider.onDidChangeSessions(async (event) => {
       if (event && event.added && event.added.length > 0) {
@@ -41,14 +41,14 @@ export class TerraformCloudFeature implements vscode.Disposable {
       'vscode-terraform',
       new PlanLogContentProvider(),
     );
-    const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, outputChannel);
-    const applyDataProvider = new ApplyTreeDataProvider(this.context, this.reporter, outputChannel);
+    const planDataProvider = new PlanTreeDataProvider(this.context, this.reporter, this.outputChannel);
+    const applyDataProvider = new ApplyTreeDataProvider(this.context, this.reporter, this.outputChannel);
     const workspaceDataProvider = new WorkspaceTreeDataProvider(
       this.context,
       planDataProvider,
       applyDataProvider,
       this.reporter,
-      outputChannel,
+      this.outputChannel,
       this.statusBar,
     );
 

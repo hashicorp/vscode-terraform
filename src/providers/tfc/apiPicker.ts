@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { ZodiosError } from '@zodios/core';
 import * as vscode from 'vscode';
-import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
-import TelemetryReporter from '@vscode/extension-telemetry';
 
 export interface APIResource {
   readonly name: string;
@@ -64,33 +61,4 @@ export class APIQuickPick {
   hide() {
     this.quickPick.hide();
   }
-}
-
-export async function handleZodiosError(
-  error: ZodiosError,
-  msgPrefix: string,
-  outputChannel: vscode.OutputChannel,
-  reporter: TelemetryReporter,
-) {
-  reporter.sendTelemetryException(error);
-  outputChannel.append(JSON.stringify({ cause: error.cause }, undefined, 2));
-  const chosenItem = await vscode.window.showErrorMessage(
-    `${msgPrefix} Response validation failed. Please report this as a bug.`,
-    'Report bug',
-  );
-  if (chosenItem === 'Report bug') {
-    outputChannel.show(true);
-    vscode.commands.executeCommand('terraform.generateBugReport');
-    return;
-  }
-}
-
-export async function handleAuthError() {
-  // TODO: clear org
-  await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
-    createIfNone: false,
-    forceNewSession: {
-      detail: 'Your token is invalid or has expired. Please generate a new token',
-    },
-  });
 }

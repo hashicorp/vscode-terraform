@@ -9,13 +9,15 @@ import { Writable } from 'stream';
 import axios from 'axios';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
-import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
+import { TerraformCloudAuthenticationProvider } from '../auth/authenticationProvider';
 import { ZodiosError } from '@zodios/core';
-import { handleAuthError, handleZodiosError } from './uiHelpers';
-import { GetChangeActionIcon } from './helpers';
-import { AppliedChange, ChangeSummary, Diagnostic, LogLine, Outputs } from '../../api/terraformCloud/log';
-import { OutputsItem, DiagnosticsItem, DiagnosticSummary, ItemWithChildren, isItemWithChildren } from './logHelpers';
-import { ApplyTreeItem } from './workspaceProvider';
+import { handleAuthError } from '../helpers';
+import { handleZodiosError } from '../helpers';
+import { LogLine } from '../../../api/terraformCloud/log';
+import { OutputsItem, DiagnosticsItem, isItemWithChildren } from '../logHelpers';
+import { ApplyTreeItem } from '../workspace/applyTreeItem';
+import { AppliedChangesItem } from './appliedChangesItem';
+import { ApplyLog } from './applyLog';
 
 export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
   private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
@@ -192,61 +194,5 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
 
   dispose() {
     //
-  }
-}
-
-interface ApplyLog {
-  appliedChanges?: AppliedChange[];
-  changeSummary?: ChangeSummary;
-  outputs?: Outputs;
-  diagnostics?: Diagnostic[];
-  diagnosticSummary?: DiagnosticSummary;
-}
-
-class AppliedChangesItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private appliedChanges: AppliedChange[], summary?: ChangeSummary) {
-    let label = 'Applied changes';
-    if (summary) {
-      const labels: string[] = [];
-      if (summary.import > 0) {
-        labels.push(`${summary.import} imported`);
-      }
-      if (summary.add > 0) {
-        labels.push(`${summary.add} added`);
-      }
-      if (summary.change > 0) {
-        labels.push(`${summary.change} changed`);
-      }
-      if (summary.remove > 0) {
-        labels.push(`${summary.remove} destroyed`);
-      }
-      if (labels.length > 0) {
-        label = `Applied changes: ${labels.join(', ')}`;
-      }
-    }
-    super(label, vscode.TreeItemCollapsibleState.Expanded);
-  }
-
-  getChildren(): vscode.TreeItem[] {
-    return this.appliedChanges.map((change) => new AppliedChangeItem(change));
-  }
-}
-
-class AppliedChangeItem extends vscode.TreeItem {
-  constructor(public change: AppliedChange) {
-    const label = change.resource.addr;
-
-    super(label, vscode.TreeItemCollapsibleState.None);
-    this.id = change.action + '/' + change.resource.addr;
-    this.iconPath = GetChangeActionIcon(change.action);
-
-    this.description = change.action;
-    if (change.id_key && change.id_value) {
-      this.description = `${change.id_key}=${change.id_value}`;
-    }
-
-    const tooltip = new vscode.MarkdownString();
-    tooltip.appendMarkdown(`_${change.action}_ \`${change.resource.addr}\``);
-    this.tooltip = tooltip;
   }
 }

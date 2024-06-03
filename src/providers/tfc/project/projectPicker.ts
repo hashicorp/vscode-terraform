@@ -4,35 +4,16 @@
  */
 
 import * as vscode from 'vscode';
-import { apiClient } from '../../api/terraformCloud';
-import { Project } from '../../api/terraformCloud/project';
-import { APIResource, handleAuthError, handleZodiosError } from './uiHelpers';
+import { apiClient } from '../../../api/terraformCloud';
+import { APIResource } from '../apiPicker';
+import { handleAuthError } from '../helpers';
+import { handleZodiosError } from '../helpers';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import { ZodiosError, isErrorFromAlias } from '@zodios/core';
 import axios from 'axios';
-import { apiErrorsToString } from '../../api/terraformCloud/errors';
-
-export class ResetProjectItem implements vscode.QuickPickItem {
-  get label() {
-    return '$(clear-all) Clear project filter. Show all workspaces';
-  }
-  get description() {
-    return '';
-  }
-  get alwaysShow() {
-    return true;
-  }
-}
-
-class ProjectItem implements vscode.QuickPickItem {
-  constructor(protected project: Project) {}
-  get label() {
-    return this.project.attributes.name;
-  }
-  get description() {
-    return this.project.id;
-  }
-}
+import { apiErrorsToString } from '../../../api/terraformCloud/errors';
+import { ResetProjectItem } from './resetProjectItem';
+import { ProjectItem } from './projectItem';
 
 export class ProjectsAPIResource implements APIResource {
   name = 'projects';
