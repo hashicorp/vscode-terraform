@@ -36,7 +36,9 @@
       "strings": "off",
       "other": "off"
     },
-    "files.trimTrailingWhitespace": false
+    "files.trimTrailingWhitespace": false,
+    "files.insertFinalNewline": false,
+    "files.trimFinalNewlines": false
   },
   "[typescript]": {
     "editor.codeActionsOnSave": {
