@@ -1,6 +1,0 @@
-kind: BUG FIXES
-body: Fix data race in schema merging logic
-time: 2024-06-06T10:47:29.137057+02:00
-custom:
-  Issue: "397"
-  Repository: hcl-lang

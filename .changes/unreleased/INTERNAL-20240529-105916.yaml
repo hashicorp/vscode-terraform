@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Move TF and HCP Terraform view testing to test folder
-time: 2024-05-29T10:59:16.195857-04:00
-custom:
-    Issue: "1765"
-    Repository: vscode-terraform
