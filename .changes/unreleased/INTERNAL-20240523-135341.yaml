@@ -1,5 +1,5 @@
 kind: INTERNAL
-body: Remove old web testing infrastructure and update the test GHA
+body: Ignore changie logs in vsix package
 time: 2024-05-23T13:53:41.899594-04:00
 custom:
     Issue: "1760"

@@ -862,7 +862,8 @@
     "prettier": "prettier \"**/*.+(js|json|ts)\"",
     "format": "npm run prettier -- --write",
     "check-format": "npm run prettier -- --check",
-    "wdio": "npm run compile && wdio run ./src/test/e2e/wdio.conf.ts"
+    "wdio": "npm run compile && wdio run ./src/test/e2e/wdio.conf.ts",
+    "changelog:build": "changie batch auto && changie merge && npm i --package-lock-only"
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.4.9",

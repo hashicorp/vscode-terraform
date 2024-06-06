@@ -5,9 +5,9 @@ changesDir: .changes
 unreleasedDir: unreleased
 changelogPath: CHANGELOG.md
 versionExt: md
-versionFormat: '## {{.Version}} ({{.Time.Format "02 January 2006"}})'
+versionFormat: '## {{.VersionNoPrefix}} ({{.Time.Format "2006-01-02"}})'
 kindFormat: '{{.Kind}}:'
-changeFormat: |
+changeFormat: |-
   * {{.Body}} ([{{- if not (eq .Custom.Repository "vscode-terraform")}}{{.Custom.Repository}}{{- end}}#{{.Custom.Issue}}](https://github.com/hashicorp/{{.Custom.Repository}}/issues/{{.Custom.Issue}}))
 custom:
   - key: Repository
@@ -40,8 +40,5 @@ newlines:
 envPrefix: CHANGIE_
 replacements:
   - path: package.json
-    find: '  "version": ".*",'
-    replace: '  "version": "{{.VersionNoPrefix}}",'
-  - path: package-lock.json
     find: '  "version": ".*",'
     replace: '  "version": "{{.VersionNoPrefix}}",'
