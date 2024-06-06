@@ -7,7 +7,7 @@ changelogPath: CHANGELOG.md
 versionExt: md
 versionFormat: '## {{.Version}} ({{.Time.Format "02 January 2006"}})'
 kindFormat: '{{.Kind}}:'
-changeFormat: |
+changeFormat: |-
   * {{.Body}} ([{{- if not (eq .Custom.Repository "vscode-terraform")}}{{.Custom.Repository}}{{- end}}#{{.Custom.Issue}}](https://github.com/hashicorp/{{.Custom.Repository}}/issues/{{.Custom.Issue}}))
 custom:
   - key: Repository
