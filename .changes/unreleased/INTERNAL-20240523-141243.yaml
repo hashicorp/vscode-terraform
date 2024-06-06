@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Use esbuild with webpack to speed up development time
-time: 2024-05-23T14:12:43.278453-04:00
-custom:
-    Issue: "1761"
-    Repository: vscode-terraform
