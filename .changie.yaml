@@ -42,6 +42,3 @@ replacements:
   - path: package.json
     find: '  "version": ".*",'
     replace: '  "version": "{{.VersionNoPrefix}}",'
-  - path: package-lock.json
-    find: '  "version": ".*",'
-    replace: '  "version": "{{.VersionNoPrefix}}",'
