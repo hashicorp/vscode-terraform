@@ -31,7 +31,11 @@ class TerraformCloudSession implements vscode.AuthenticationSession {
    * @param accessToken The personal access token to use for authentication
    * @param account The user account for the specified token
    */
-  constructor(public readonly accessToken: string, public account: vscode.AuthenticationSessionAccountInformation) {}
+  constructor(
+    public readonly accessToken: string,
+    public readonly hostName: string,
+    public account: vscode.AuthenticationSessionAccountInformation,
+  ) {}
 }
 
 interface TerraformCloudToken {
@@ -69,13 +73,13 @@ class TerraformCloudSessionHandler {
         },
       });
 
-      const session = new TerraformCloudSession(token, {
+      const session = new TerraformCloudSession(token, hostname, {
         label: user.data.attributes.username,
         id: user.data.id,
       });
 
       await this.secretStorage.store(this.sessionKey, JSON.stringify(session));
-      apiSetup();
+      apiSetup(session.hostName);
       return session;
     } catch (error) {
       if (error instanceof ZodiosError) {
@@ -111,7 +115,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private sessionHandler: TerraformCloudSessionHandler;
   // this property is used to determine if the session has been changed in another window of VS Code
   // it's a promise, so we can set in the constructor where we can't execute async code
-  private sessionPromise: Promise<vscode.AuthenticationSession | undefined>;
+  private sessionPromise: Promise<TerraformCloudSession | undefined>;
   private disposable: vscode.Disposable | undefined;
 
   private _onDidChangeSessions =
@@ -160,6 +164,8 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     try {
       const session = await this.sessionPromise;
       if (session) {
+        earlySetupForHostname(session.hostName);
+        apiSetup(session.hostName);
         this.logger.info('Successfully fetched HCP Terraform session');
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
         return [session];
