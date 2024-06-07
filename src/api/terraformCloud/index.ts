@@ -86,7 +86,10 @@ export function earlySetupForHostname(hostname: string) {
   earlyApiClient.use(pluginLogger());
 }
 
-export function apiSetup() {
+export function apiSetup(hostname: string) {
+  TerraformCloudHost = hostname;
+  TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
+  TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
   // ApiClient setup
   apiClient = new Zodios(TerraformCloudAPIUrl, [
     ...accountEndpoints,
