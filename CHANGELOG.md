@@ -1,3 +1,9 @@
+## 2.31.2024061114 (2024-06-11)
+
+ENHANCEMENTS:
+
+* Re-architect the language server for improved performance and resource utilization ([terraform-ls#1667](https://github.com/hashicorp/terraform-ls/issues/1667))
+
 ## 2.30.2 (2024-06-06)
 
 BUG FIXES:
