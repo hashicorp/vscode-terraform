@@ -20,13 +20,7 @@ MINOR=$(echo $VERSION | cut -d. -f2)
 NEW_PATCH=`git log -1 --format=%cd --date="format:%Y%m%d%H"` # e.g. 2023050312
 VER="$MAJOR.$MINOR.$NEW_PATCH"
 
-# Update the language server version if passed via the workflow
-if [ -z "${LANGUAGE_SERVER_VERSION:-}" ]; then
-  LANGUAGE_SERVER_VERSION="$(jq -r .langServer.version package.json)"
-fi
+npm version $VER --no-git-tag-version --no-commit-hooks
 
-# Update versions in package.json
-(cat package.json | jq --arg VER $VER --arg LANGVER $LANGUAGE_SERVER_VERSION '
-.version=$VER |
-.langServer.version=$LANGVER
-') > /tmp/package.json && mv /tmp/package.json package.json
+changie batch "v$VER"
+changie merge
