@@ -54,14 +54,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
-      - name: Set prerelease in package.json
-        if: inputs.deploy_type == 'prerelease'
-        id: set-preview
-        run: |
-          ./build/preview.sh
-        env:
-          LANGUAGE_SERVER_VERSION: ${{ github.event.inputs.langserver }}
-
       - name: Setup Node
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
