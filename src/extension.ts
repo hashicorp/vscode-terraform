@@ -41,6 +41,8 @@ const brand = `HashiCorp Terraform`;
 const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
+  { scheme: 'file', language: 'terraform-stacks' },
+  { scheme: 'file', language: 'terraform-deployment' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
 const tfcOutputChannel = vscode.window.createOutputChannel('HCP Terraform');
