@@ -130,9 +130,9 @@ async function downloadSyntax(info: ExtensionInfo) {
 
   if (fs.existsSync(installPath)) {
     if (process.env.downloader_log === 'true') {
-      console.log(`Syntax path exists at ${installPath}. Exiting`);
+      console.log(`Syntax path exists at ${installPath}. Removing`);
     }
-    return;
+    fs.rmSync(installPath, { recursive: true });
   }
 
   fs.mkdirSync(installPath);
