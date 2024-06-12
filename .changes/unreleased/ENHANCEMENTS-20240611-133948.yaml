@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Re-architect the language server for improved performance and resource utilization
-time: 2024-06-11T13:39:48.445375-04:00
-custom:
-    Issue: "1667"
-    Repository: terraform-ls
