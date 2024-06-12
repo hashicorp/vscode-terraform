@@ -115,13 +115,13 @@
       },
       {
         "language": "terraform-stacks",
-        "scopeName": "source.hcl.terraform",
-        "path": "./syntaxes/terraform.tmGrammar.json"
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
       },
       {
         "language": "terraform-deployment",
-        "scopeName": "source.hcl.terraform",
-        "path": "./syntaxes/terraform.tmGrammar.json"
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
       }
     ],
     "semanticTokenTypes": [
