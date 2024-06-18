@@ -76,6 +76,26 @@
         "configuration": "./language-configuration.json"
       },
       {
+        "id": "terraform-stack",
+        "aliases": [
+          "Terraform Stack"
+        ],
+        "extensions": [
+          ".tfstack.hcl"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "terraform-deploy",
+        "aliases": [
+          "Terraform Deployment"
+        ],
+        "extensions": [
+          ".tfdeploy.hcl"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
         "id": "json",
         "extensions": [
           ".tfstate"
@@ -92,6 +112,16 @@
         "language": "terraform-vars",
         "scopeName": "source.hcl.terraform",
         "path": "./syntaxes/terraform.tmGrammar.json"
+      },
+      {
+        "language": "terraform-stack",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-deploy",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
       }
     ],
     "semanticTokenTypes": [

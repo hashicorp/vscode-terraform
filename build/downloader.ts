@@ -108,38 +108,44 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
   });
 }
 
+async function downloadFile(url: string, installPath: string) {
+  if (process.env.downloader_log === 'true') {
+    console.log(`Downloading: ${url}`);
+  }
+
+  const buffer = await fileFromUrl(url);
+  fs.writeFileSync(installPath, buffer);
+  if (process.env.downloader_log === 'true') {
+    console.log(`Download completed: ${installPath}`);
+  }
+}
+
 async function downloadSyntax(info: ExtensionInfo) {
   const release = `v${info.syntaxVersion}`;
-
-  const productName = info.name.replace('-preview', '');
-  const fileName = `${productName}.tmGrammar.json`;
 
   const cwd = path.resolve(__dirname);
   const buildDir = path.basename(cwd);
   const repoDir = cwd.replace(buildDir, '');
   const installPath = path.join(repoDir, 'syntaxes');
 
-  const fpath = path.join(installPath, fileName);
-  if (fs.existsSync(fpath)) {
+  if (fs.existsSync(installPath)) {
     if (process.env.downloader_log === 'true') {
-      console.log(`Syntax path exists at ${fpath}. Exiting`);
+      console.log(`Syntax path exists at ${installPath}. Removing`);
     }
-    return;
+    fs.rmSync(installPath, { recursive: true });
   }
 
   fs.mkdirSync(installPath);
 
-  const url = `https://github.com/hashicorp/syntax/releases/download/${release}/${fileName}`;
-  if (process.env.downloader_log === 'true') {
-    console.log(`Downloading: ${url}`);
-  }
-  // const content = await got({ url }).text();
-  // fs.writeFileSync(fpath, content);
-  const buffer = await fileFromUrl(url);
-  fs.writeFileSync(fpath, buffer);
-  if (process.env.downloader_log === 'true') {
-    console.log(`Download completed: ${fpath}`);
-  }
+  const productName = info.name.replace('-preview', '');
+  const terraformSyntaxFile = `${productName}.tmGrammar.json`;
+  const hclSyntaxFile = `hcl.tmGrammar.json`;
+
+  let url = `https://github.com/hashicorp/syntax/releases/download/${release}/${terraformSyntaxFile}`;
+  await downloadFile(url, path.join(installPath, terraformSyntaxFile));
+
+  url = `https://github.com/hashicorp/syntax/releases/download/${release}/${hclSyntaxFile}`;
+  await downloadFile(url, path.join(installPath, hclSyntaxFile));
 }
 
 async function run(platform: string, architecture: string) {
