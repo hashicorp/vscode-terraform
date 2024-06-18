@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: This adds a new file icon for the Stacks language which will apply to all tfstack.hcl and tfdeploy.hcl files
+time: 2024-06-11T15:23:45.846172-04:00
+custom:
+    Issue: "1774"
+    Repository: vscode-terraform
