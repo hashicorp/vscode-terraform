@@ -17,6 +17,7 @@ import { applyEndpoints } from './apply';
 import { userEndpoints } from './user';
 import { configurationVersionEndpoints } from './configurationVersion';
 import { ingressAttributesEndpoints } from './ingressAttribute';
+import { pingEndpoints } from './instance';
 
 export let TerraformCloudHost = 'app.terraform.io';
 
@@ -40,6 +41,25 @@ function pluginLogger(): ZodiosPlugin {
     },
   };
 }
+
+function responseHeaderLogger(): ZodiosPlugin {
+  return {
+    response: async (api, config, response) => {
+      console.log('Response appname:', response.headers['tfp-appname']);
+      console.log('Response api-version:', response.headers['tfp-api-version']);
+
+      response.data = {
+        appName: response.headers['tfp-appname'],
+        apiVersion: response.headers['tfp-api-version'],
+        ...response.data,
+      };
+
+      return response;
+    },
+  };
+}
+
+export let pingClient = new Zodios(TerraformCloudAPIUrl, pingEndpoints);
 
 export let earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
 earlyApiClient.use(jsonHeader);
@@ -73,6 +93,17 @@ export let tokenPluginId = apiClient.use(
     },
   }),
 );
+
+export function setupPingClient(hostname: string) {
+  // Hostname setup
+  const url = `https://${hostname}/api/v2`;
+
+  pingClient = new Zodios(url, pingEndpoints);
+  pingClient.use(jsonHeader);
+  pingClient.use(userAgentHeader);
+  pingClient.use(pluginLogger());
+  pingClient.use(responseHeaderLogger());
+}
 
 export function earlySetupForHostname(hostname: string) {
   // Hostname setup
