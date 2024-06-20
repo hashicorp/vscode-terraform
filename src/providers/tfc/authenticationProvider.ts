@@ -167,22 +167,38 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getSessions(scopes?: string[] | undefined): Promise<readonly vscode.AuthenticationSession[]> {
     try {
-      const session = await this.sessionPromise;
-      if (session) {
-        earlySetupForHostname(session.hostName);
-        apiSetup(session.hostName);
-        this.logger.info('Successfully fetched HCP Terraform session');
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
-        return [session];
-      } else {
+      let session = await this.sessionPromise;
+      if (!session) {
+        // no session stored, create a new one
         return [];
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        vscode.window.showErrorMessage(error.message);
-      } else if (typeof error === 'string') {
-        vscode.window.showErrorMessage(error);
+
+      if (session.hostName === '' || session.hostName === undefined) {
+        // we have a valid session but the hostname is not set
+        // this is most likely an old session that needs to be updated
+        // if hostname is undefined, we need to set it to the default
+        session = await this.sessionHandler.store(TerraformCloudHost, session.accessToken);
       }
+
+      // setup the API client for getting the user info
+      earlySetupForHostname(session.hostName);
+      // setup the API client for the session
+      apiSetup(session.hostName);
+
+      this.logger.info('Successfully fetched HCP Terraform session');
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
+
+      return [session];
+    } catch (error) {
+      let message = 'Failed to get HCP Terraform session';
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
+      }
+
+      this.logger.info(message);
+      vscode.window.showErrorMessage(message);
       return [];
     }
   }
