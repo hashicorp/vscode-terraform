@@ -107,6 +107,7 @@ class TerraformCloudSessionHandler {
     return this.secretStorage.delete(this.sessionKey);
   }
 }
+
 export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
   static providerLabel = 'HashiCorp Cloud Platform Terraform';
   // These are IDs and session keys that are used to identify the provider and the session in VS Code secret storage
@@ -218,7 +219,10 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     const token = await this.promptForToken();
     if (!token) {
       this.logger.error('User did not provide a token');
-      throw new Error('Token is required');
+      // throw new InvalidToken();
+      this.reporter.sendTelemetryEvent('tfc-login-fail', { reason: 'Invalid token' });
+      vscode.window.showErrorMessage(`Invalid token. Please try again`);
+      return this.createSession(_scopes);
     }
 
     try {
