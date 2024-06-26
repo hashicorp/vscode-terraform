@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Allow custom HCP Terraform or Terraform Enterprise instance selection
+time: 2024-06-26T11:01:38.516768-04:00
+custom:
+    Issue: "1678"
+    Repository: vscode-terraform
