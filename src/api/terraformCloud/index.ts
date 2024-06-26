@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import { Zodios, ZodiosPlugin } from '@zodios/core';
-import { pluginToken, pluginHeader } from '@zodios/plugins';
+import { pluginToken, pluginHeader, pluginBaseURL } from '@zodios/plugins';
 import { TerraformCloudAuthenticationProvider } from '../../providers/tfc/authenticationProvider';
 import { accountEndpoints } from './account';
 import { organizationEndpoints } from './organization';
@@ -61,12 +61,12 @@ function responseHeaderLogger(): ZodiosPlugin {
 
 export let pingClient = new Zodios(TerraformCloudAPIUrl, pingEndpoints);
 
-export let earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
+export const earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
 earlyApiClient.use(jsonHeader);
 earlyApiClient.use(userAgentHeader);
 earlyApiClient.use(pluginLogger());
 
-export let apiClient = new Zodios(TerraformCloudAPIUrl, [
+export const apiClient = new Zodios(TerraformCloudAPIUrl, [
   ...accountEndpoints,
   ...organizationEndpoints,
   ...projectEndpoints,
@@ -82,7 +82,7 @@ apiClient.use(jsonHeader);
 apiClient.use(userAgentHeader);
 apiClient.use(pluginLogger());
 
-export let tokenPluginId = apiClient.use(
+export const tokenPluginId = apiClient.use(
   pluginToken({
     getToken: async () => {
       // TODO: Consider passing it as a dependency instead of global access to make testing easier
@@ -111,42 +111,13 @@ export function earlySetupForHostname(hostname: string) {
   TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
   TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
   // EarlyApiClient setup
-  earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
-  earlyApiClient.use(jsonHeader);
-  earlyApiClient.use(userAgentHeader);
-  earlyApiClient.use(pluginLogger());
+  earlyApiClient.use(pluginBaseURL(TerraformCloudAPIUrl));
 }
 
-export function apiSetup(hostname: string) {
+export function apiSetupForHostName(hostname: string) {
   TerraformCloudHost = hostname;
   TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
   TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
   // ApiClient setup
-  apiClient = new Zodios(TerraformCloudAPIUrl, [
-    ...accountEndpoints,
-    ...organizationEndpoints,
-    ...projectEndpoints,
-    ...workspaceEndpoints,
-    ...runEndpoints,
-    ...planEndpoints,
-    ...applyEndpoints,
-    ...userEndpoints,
-    ...configurationVersionEndpoints,
-    ...ingressAttributesEndpoints,
-  ]);
-  apiClient.use(jsonHeader);
-  apiClient.use(userAgentHeader);
-  apiClient.use(pluginLogger());
-
-  tokenPluginId = apiClient.use(
-    pluginToken({
-      getToken: async () => {
-        // TODO: Consider passing it as a dependency instead of global access to make testing easier
-        const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
-          createIfNone: true,
-        });
-        return session ? session.accessToken : undefined;
-      },
-    }),
-  );
+  apiClient.use(pluginBaseURL(TerraformCloudAPIUrl));
 }

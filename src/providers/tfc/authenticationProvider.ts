@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import {
-  apiSetup,
+  apiSetupForHostName,
   earlyApiClient,
   earlySetupForHostname,
   pingClient,
@@ -81,7 +81,7 @@ class TerraformCloudSessionHandler {
       });
 
       await this.secretStorage.store(this.sessionKey, JSON.stringify(session));
-      apiSetup(session.hostName);
+      apiSetupForHostName(session.hostName);
       return session;
     } catch (error) {
       if (error instanceof ZodiosError) {
@@ -184,7 +184,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       // setup the API client for getting the user info
       earlySetupForHostname(session.hostName);
       // setup the API client for the session
-      apiSetup(session.hostName);
+      apiSetupForHostName(session.hostName);
 
       this.logger.info('Successfully fetched HCP Terraform session');
       await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
