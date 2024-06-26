@@ -83,6 +83,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tf'),
         vscode.workspace.createFileSystemWatcher('**/*.tfvars'),
         vscode.workspace.createFileSystemWatcher('**/*.tfstack.hcl'),
+        vscode.workspace.createFileSystemWatcher('**/*.tfdeploy.hcl'),
       ],
     },
     diagnosticCollectionName: 'HashiCorpTerraform',
