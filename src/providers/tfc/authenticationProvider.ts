@@ -7,7 +7,15 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { earlyApiClient, TerraformCloudHost, TerraformCloudWebUrl } from '../../api/terraformCloud';
+import {
+  apiSetupForHostName,
+  earlyApiClient,
+  earlySetupForHostname,
+  pingClient,
+  setupPingClient,
+  TerraformCloudHost,
+  TerraformCloudWebUrl,
+} from '../../api/terraformCloud';
 import { isErrorFromAlias, ZodiosError } from '@zodios/core';
 import { apiErrorsToString } from '../../api/terraformCloud/errors';
 import { handleZodiosError } from './uiHelpers';
@@ -25,7 +33,15 @@ class TerraformCloudSession implements vscode.AuthenticationSession {
    * @param accessToken The personal access token to use for authentication
    * @param account The user account for the specified token
    */
-  constructor(public readonly accessToken: string, public account: vscode.AuthenticationSessionAccountInformation) {}
+  constructor(
+    public readonly accessToken: string,
+    public readonly hostName: string,
+    public account: vscode.AuthenticationSessionAccountInformation,
+  ) {}
+}
+
+interface TerraformCloudToken {
+  token: string;
 }
 
 class InvalidToken extends Error {
@@ -51,7 +67,7 @@ class TerraformCloudSessionHandler {
     return session;
   }
 
-  async store(token: string): Promise<TerraformCloudSession> {
+  async store(hostname: string, token: string): Promise<TerraformCloudSession> {
     try {
       const user = await earlyApiClient.getAccount({
         headers: {
@@ -59,12 +75,13 @@ class TerraformCloudSessionHandler {
         },
       });
 
-      const session = new TerraformCloudSession(token, {
+      const session = new TerraformCloudSession(token, hostname, {
         label: user.data.attributes.username,
         id: user.data.id,
       });
 
       await this.secretStorage.store(this.sessionKey, JSON.stringify(session));
+      apiSetupForHostName(session.hostName);
       return session;
     } catch (error) {
       if (error instanceof ZodiosError) {
@@ -90,6 +107,7 @@ class TerraformCloudSessionHandler {
     return this.secretStorage.delete(this.sessionKey);
   }
 }
+
 export class TerraformCloudAuthenticationProvider implements vscode.AuthenticationProvider, vscode.Disposable {
   static providerLabel = 'HashiCorp Cloud Platform Terraform';
   // These are IDs and session keys that are used to identify the provider and the session in VS Code secret storage
@@ -100,7 +118,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   private sessionHandler: TerraformCloudSessionHandler;
   // this property is used to determine if the session has been changed in another window of VS Code
   // it's a promise, so we can set in the constructor where we can't execute async code
-  private sessionPromise: Promise<vscode.AuthenticationSession | undefined>;
+  private sessionPromise: Promise<TerraformCloudSession | undefined>;
   private disposable: vscode.Disposable | undefined;
 
   private _onDidChangeSessions =
@@ -113,13 +131,15 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     private outputChannel: vscode.OutputChannel,
   ) {
     this.logger = vscode.window.createOutputChannel('HashiCorp Authentication', { log: true });
+
     this.sessionHandler = new TerraformCloudSessionHandler(
       this.outputChannel,
       this.reporter,
       this.secretStorage,
       this.sessionKey,
     );
-    ctx.subscriptions.push(
+
+    this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.login', async () => {
         const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
           createIfNone: true,
@@ -129,6 +149,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     );
 
     this.sessionPromise = this.sessionHandler.get();
+
     this.disposable = vscode.Disposable.from(
       this.secretStorage.onDidChange((e) => {
         if (e.key === this.sessionKey) {
@@ -147,20 +168,38 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getSessions(scopes?: string[] | undefined): Promise<readonly vscode.AuthenticationSession[]> {
     try {
-      const session = await this.sessionPromise;
-      if (session) {
-        this.logger.info('Successfully fetched HCP Terraform session');
-        await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
-        return [session];
-      } else {
+      let session = await this.sessionPromise;
+      if (!session) {
+        // no session stored, create a new one
         return [];
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        vscode.window.showErrorMessage(error.message);
-      } else if (typeof error === 'string') {
-        vscode.window.showErrorMessage(error);
+
+      if (session.hostName === '' || session.hostName === undefined) {
+        // we have a valid session but the hostname is not set
+        // this is most likely an old session that needs to be updated
+        // if hostname is undefined, we need to set it to the default
+        session = await this.sessionHandler.store(TerraformCloudHost, session.accessToken);
       }
+
+      // setup the API client for getting the user info
+      earlySetupForHostname(session.hostName);
+      // setup the API client for the session
+      apiSetupForHostName(session.hostName);
+
+      this.logger.info('Successfully fetched HCP Terraform session');
+      await vscode.commands.executeCommand('setContext', 'terraform.cloud.signed-in', true);
+
+      return [session];
+    } catch (error) {
+      let message = 'Failed to get HCP Terraform session';
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
+      }
+
+      this.logger.info(message);
+      vscode.window.showErrorMessage(message);
       return [];
     }
   }
@@ -170,15 +209,24 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
   // - `vscode.authentication.getSessions` was called with `forceNewSession: true`
   // - The end user initiates the "silent" auth flow via the Accounts menu
   async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
+    const tfcHostname = await this.promptForTFCHostname();
+    if (!tfcHostname) {
+      this.logger.error('User did not provide a TFC instance');
+      throw new Error('TFC instance is required');
+    }
+    earlySetupForHostname(tfcHostname);
     // Prompt for the UAT.
     const token = await this.promptForToken();
     if (!token) {
       this.logger.error('User did not provide a token');
-      throw new Error('Token is required');
+      // throw new InvalidToken();
+      this.reporter.sendTelemetryEvent('tfc-login-fail', { reason: 'Invalid token' });
+      vscode.window.showErrorMessage(`Invalid token. Please try again`);
+      return this.createSession(_scopes);
     }
 
     try {
-      const session = await this.sessionHandler.store(token);
+      const session = await this.sessionHandler.store(tfcHostname, token);
       this.reporter.sendTelemetryEvent('tfc-login-success');
       this.logger.info('Successfully logged in to HCP Terraform');
 
@@ -252,6 +300,75 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this._onDidChangeSessions.fire({ added: added, removed: removed, changed: changed });
   }
 
+  private async promptForTFCHostname(): Promise<string | undefined> {
+    const hostnames = [];
+
+    try {
+      // Retrieve existing Hostnames from TFC credentials file
+      const tfcCredentials = await this.getTerraformCLICredentials();
+      for (const key of tfcCredentials.keys()) {
+        setupPingClient(key);
+        const instance = await pingClient.ping();
+        if (!instance) {
+          continue;
+        }
+
+        hostnames.push({
+          detail: key,
+          label: `${instance.appName} instance`,
+        });
+      }
+    } catch (error) {
+      // If there is an error, it's likely that the credential file is not present
+      // or there is an issue with the file itself
+      // In this case, we'll just continue with just the default hostname
+      this.logger.info('Terraform credential file not yet initialized.');
+      const defaultHostName = {
+        detail: 'app.terraform.io',
+        label: 'Default HCP Terraform instance',
+      };
+      hostnames.push(defaultHostName);
+    }
+
+    // Add the new hostname option no matter if there is a credential file or not
+    // so the user can select a new hostname if they want to
+    const newHostSelection = {
+      label: 'New Instance',
+      detail: 'Connect to a new HCP Terraform or Terraform enterprise instance',
+    };
+    hostnames.push(newHostSelection);
+
+    const choice = await vscode.window.showQuickPick(hostnames, {
+      canPickMany: false,
+      ignoreFocusOut: true,
+      placeHolder: 'Choose the HCP Terraform or Terraform Enterprise instance to connect to',
+      title: 'HashiCorp Authentication',
+    });
+
+    if (choice === undefined) {
+      return undefined;
+    }
+
+    let hostname: string | undefined;
+    switch (choice.label) {
+      case newHostSelection.label:
+        // Prompt for the TFC hostname.
+        hostname = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: 'app.terraform.io',
+          value: 'app.terraform.io',
+          prompt: 'Enter a HCP Terraform hostname',
+          password: false,
+        });
+        break;
+      default:
+        hostname = choice.detail;
+        break;
+    }
+
+    return hostname;
+  }
+
   private async promptForToken(): Promise<string | undefined> {
     const choice = await vscode.window.showQuickPick(
       [
@@ -314,7 +431,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     return token;
   }
 
-  private async getTerraformCLIToken() {
+  private async getTerraformCLICredentials(): Promise<Map<string, TerraformCloudToken>> {
     // detect if stored auth token is present
     // On windows:
     // ~/AppData/Roaming/terraform.d/credentials.tfrc.json
@@ -325,34 +442,43 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         ? path.join(os.homedir(), 'AppData', 'Roaming', 'terraform.d', 'credentials.tfrc.json')
         : path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
     if ((await this.pathExists(credFilePath)) === false) {
-      vscode.window.showErrorMessage(
+      throw new TerraformCredentialFileError(
         'Terraform credential file not found. Please login using the Terraform CLI and try again.',
       );
-      return undefined;
     }
 
-    // read and marshall json file
+    const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
     let text: string;
     try {
-      const content = await vscode.workspace.fs.readFile(vscode.Uri.file(credFilePath));
       text = Buffer.from(content).toString('utf8');
     } catch (error) {
-      vscode.window.showErrorMessage(
+      throw new TerraformCredentialFileError(
         'Failed to read configuration file. Please login using the Terraform CLI and try again',
       );
-      return undefined;
     }
 
-    // find app.terraform.io token
+    // Parse credential file
     try {
       const data = JSON.parse(text);
-      const cred = data.credentials[TerraformCloudHost];
-      return cred.token;
+      return new Map<string, TerraformCloudToken>(Object.entries(data.credentials));
     } catch (error) {
-      vscode.window.showErrorMessage(
-        `No token found for ${TerraformCloudHost}. Please login using the Terraform CLI and try again`,
+      throw new TerraformCredentialFileError(
+        `Failed to parse configuration file. Please login using the Terraform CLI and try again`,
       );
-      return undefined;
+    }
+  }
+
+  private async getTerraformCLIToken(): Promise<string | undefined> {
+    let creds: Map<string, TerraformCloudToken>;
+
+    try {
+      creds = await this.getTerraformCLICredentials();
+      return creds.get(TerraformCloudHost)?.token;
+    } catch (error) {
+      if (error instanceof TerraformCredentialFileError) {
+        vscode.window.showErrorMessage(error.message);
+        return undefined;
+      }
     }
   }
 
@@ -367,5 +493,12 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
   dispose() {
     this.disposable?.dispose();
+  }
+}
+
+class TerraformCredentialFileError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'TerraformCredentialFileError';
   }
 }

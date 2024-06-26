@@ -5,7 +5,7 @@
 
 import * as vscode from 'vscode';
 import { Zodios, ZodiosPlugin } from '@zodios/core';
-import { pluginToken, pluginHeader } from '@zodios/plugins';
+import { pluginToken, pluginHeader, pluginBaseURL } from '@zodios/plugins';
 import { TerraformCloudAuthenticationProvider } from '../../providers/tfc/authenticationProvider';
 import { accountEndpoints } from './account';
 import { organizationEndpoints } from './organization';
@@ -17,11 +17,12 @@ import { applyEndpoints } from './apply';
 import { userEndpoints } from './user';
 import { configurationVersionEndpoints } from './configurationVersion';
 import { ingressAttributesEndpoints } from './ingressAttribute';
+import { pingEndpoints } from './instance';
 
-export const TerraformCloudHost = 'app.terraform.io';
+export let TerraformCloudHost = 'app.terraform.io';
 
-export const TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
-export const TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
+export let TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
+export let TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
 
 const jsonHeader = pluginHeader('Content-Type', async () => 'application/vnd.api+json');
 
@@ -40,6 +41,25 @@ function pluginLogger(): ZodiosPlugin {
     },
   };
 }
+
+function responseHeaderLogger(): ZodiosPlugin {
+  return {
+    response: async (api, config, response) => {
+      console.log('Response appname:', response.headers['tfp-appname']);
+      console.log('Response api-version:', response.headers['tfp-api-version']);
+
+      response.data = {
+        appName: response.headers['tfp-appname'],
+        apiVersion: response.headers['tfp-api-version'],
+        ...response.data,
+      };
+
+      return response;
+    },
+  };
+}
+
+export let pingClient = new Zodios(TerraformCloudAPIUrl, pingEndpoints);
 
 export const earlyApiClient = new Zodios(TerraformCloudAPIUrl, accountEndpoints);
 earlyApiClient.use(jsonHeader);
@@ -73,3 +93,31 @@ export const tokenPluginId = apiClient.use(
     },
   }),
 );
+
+export function setupPingClient(hostname: string) {
+  // Hostname setup
+  const url = `https://${hostname}/api/v2`;
+
+  pingClient = new Zodios(url, pingEndpoints);
+  pingClient.use(jsonHeader);
+  pingClient.use(userAgentHeader);
+  pingClient.use(pluginLogger());
+  pingClient.use(responseHeaderLogger());
+}
+
+export function earlySetupForHostname(hostname: string) {
+  // Hostname setup
+  TerraformCloudHost = hostname;
+  TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
+  TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
+  // EarlyApiClient setup
+  earlyApiClient.use(pluginBaseURL(TerraformCloudAPIUrl));
+}
+
+export function apiSetupForHostName(hostname: string) {
+  TerraformCloudHost = hostname;
+  TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
+  TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
+  // ApiClient setup
+  apiClient.use(pluginBaseURL(TerraformCloudAPIUrl));
+}
