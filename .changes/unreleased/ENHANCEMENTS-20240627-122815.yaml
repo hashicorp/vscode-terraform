@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Add support for the new `templatestring` functions in Terraform 1.9
-time: 2024-06-27T12:28:15.989119-04:00
-custom:
-    Issue: "357"
-    Repository: terraform-ls
