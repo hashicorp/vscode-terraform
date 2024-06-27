@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Declare support for Terraform Stack files
-time: 2024-06-11T15:24:55.009488-04:00
-custom:
-    Issue: "1773"
-    Repository: vscode-terraform
