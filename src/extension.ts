@@ -35,6 +35,7 @@ import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import * as lsStatus from './status/language';
 import { TerraformCloudFeature } from './features/terraformCloud';
+import { TerminalLinkProvider } from './providers/terminalLinkProvider';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -216,6 +217,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   } catch (error) {
     await handleLanguageClientStartError(error, context, reporter);
   }
+
+  const provider = new TerminalLinkProvider(client);
+  context.subscriptions.push(vscode.window.registerTerminalLinkProvider(provider));
 }
 
 export async function deactivate(): Promise<void> {
