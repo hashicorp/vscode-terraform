@@ -1,6 +1,10 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+component "foo" {
+
+}
+
 component "s3" {
   source = "./s3"
 
