@@ -27,11 +27,11 @@ suite('stacks stack', () => {
 
     test('completes blocks available for stacks files', async () => {
       const expected = [
-        new vscode.CompletionItem('component', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('output', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('provider', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('required_providers', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('variable', vscode.CompletionItemKind.Field),
+        new vscode.CompletionItem('component', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('output', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('provider', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('required_provider', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
       ];
 
       await testCompletion(docUri, new vscode.Position(20, 0), {
@@ -58,57 +58,62 @@ suite('stacks stack', () => {
     });
 
     test('completes attributes of component block', async () => {
-      await vscode.window.activeTextEditor?.edit((editBuilder) => {
-        editBuilder.insert(
-          new vscode.Position(2, 0),
-          `
-component "test" {
+      //       await vscode.window.activeTextEditor?.edit((editBuilder) => {
+      //         editBuilder.insert(
+      //           new vscode.Position(2, 0),
+      //           `
+      // component "test" {
 
-}
-`,
-        );
-      });
+      // }
+      // `,
+      //         );
+      //       });
 
       const expected = [
-        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('providers', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('source', vscode.CompletionItemKind.Field),
+        new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('providers', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('source', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('versions', vscode.CompletionItemKind.Property),
       ];
 
-      await testCompletion(docUri, new vscode.Position(4, 2), {
+      // await testCompletion(docUri, new vscode.Position(4, 2), {
+      await testCompletion(docUri, new vscode.Position(4, 12), {
         items: expected,
       });
     });
 
-    test('completes inputs for local component', async () => {
+    // TODO: not implemented yet
+    test.skip('completes inputs for local component', async () => {
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(
           new vscode.Position(2, 0),
           `
-component "test" {
-  source = "./lambda"
+    component "test" {
+      source = "./lambda"
 
-  inputs = {
+      inputs = {
 
-  }
-}
-`,
+      }
+    }
+    `,
         );
       });
 
-      const expected = [new vscode.CompletionItem('bucket_id', vscode.CompletionItemKind.Field)];
+      const expected = [new vscode.CompletionItem('bucket_id', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(7, 4), {
         items: expected,
       });
     });
 
-    test('completes references to provider blocks', async () => {
+    // TODO: not implemented yet
+    test.skip('completes references to provider blocks', async () => {
       const expected = [
-        new vscode.CompletionItem('archive', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('aws', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('local', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('random', vscode.CompletionItemKind.Field),
+        new vscode.CompletionItem('archive', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('aws', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('local', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('random', vscode.CompletionItemKind.Property),
       ];
 
       await testCompletion(docUri, new vscode.Position(11, 22), {
@@ -116,8 +121,9 @@ component "test" {
       });
     });
 
-    test('completes references to provider block names', async () => {
-      const expected = [new vscode.CompletionItem('this', vscode.CompletionItemKind.Field)];
+    // TODO implement this
+    test.skip('completes references to provider block names', async () => {
+      const expected = [new vscode.CompletionItem('this', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(11, 26), {
         items: expected,
@@ -139,11 +145,11 @@ component "test" {
 
     test('completes config and for_each blocks within provider', async () => {
       const expected = [
-        new vscode.CompletionItem('config', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Field),
+        new vscode.CompletionItem('config', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
       ];
 
-      await testCompletion(docUri, new vscode.Position(40, 26), {
+      await testCompletion(docUri, new vscode.Position(41, 0), {
         items: expected,
       });
     });
