@@ -38,6 +38,8 @@ provider "aws" "this" {
   }
 }
 
-provider "random" "this" {}
+provider "random" "this" {
+
+}
 provider "archive" "this" {}
 provider "local" "this" {}

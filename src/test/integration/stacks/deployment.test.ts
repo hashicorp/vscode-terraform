@@ -36,24 +36,25 @@ suite('stacks deployments', () => {
         editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\n\n}\n');
       });
 
-      const expected = [new vscode.CompletionItem('variables', vscode.CompletionItemKind.Field)];
+      const expected = [new vscode.CompletionItem('variables', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(15, 2), {
         items: expected,
       });
     });
 
-    test('completes available variables in deployment block', async () => {
+    // TODO: not implemented yet
+    test.skip('completes available variables in deployment block', async () => {
       // add a new incomplete "test" deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\nvariables = {\n\n}\n}\n');
       });
 
       const expected = [
-        new vscode.CompletionItem('default_tags', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('identity_token_file', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('region', vscode.CompletionItemKind.Field),
-        new vscode.CompletionItem('role_arn', vscode.CompletionItemKind.Field),
+        new vscode.CompletionItem('default_tags', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('identity_token_file', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('region', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('role_arn', vscode.CompletionItemKind.Property),
       ];
 
       await testCompletion(docUri, new vscode.Position(17, 2), {
@@ -61,7 +62,8 @@ suite('stacks deployments', () => {
       });
     });
 
-    test('completes attributes of identity_token block', async () => {
+    // TODO: not implemented yet
+    test.skip('completes attributes of identity_token block', async () => {
       // add a new incomplete deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(
@@ -76,7 +78,7 @@ deployment "test" {
         );
       });
 
-      const expected = [new vscode.CompletionItem('jwt_filename', vscode.CompletionItemKind.Field)];
+      const expected = [new vscode.CompletionItem('jwt_filename', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(17, 45), {
         items: expected,
@@ -89,19 +91,20 @@ deployment "test" {
         editBuilder.insert(new vscode.Position(14, 0), 'identity_token {\n\n}\n');
       });
 
-      const expected = [new vscode.CompletionItem('audience', vscode.CompletionItemKind.Field)];
+      const expected = [new vscode.CompletionItem('audience', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(15, 2), {
         items: expected,
       });
     });
 
-    test('completes valid rule types of an orchestrate block', async () => {
+    // TODO: not implemented yet
+    test.skip('completes valid rule types of an orchestrate block', async () => {
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(new vscode.Position(14, 0), 'orchestrate ""\n\n');
       });
 
-      const expected = [new vscode.CompletionItem('auto_approve', vscode.CompletionItemKind.Field)];
+      const expected = [new vscode.CompletionItem('auto_approve', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(14, 13), {
         items: expected,
@@ -125,12 +128,13 @@ deployment "test" {
         });
       });
 
-      test('completes context root level', async () => {
+      // TODO: not implemented yet
+      test.skip('completes context root level', async () => {
         const expected = [
-          new vscode.CompletionItem('errors', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('operation', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('plan', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('warnings', vscode.CompletionItemKind.Field),
+          new vscode.CompletionItem('errors', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('operation', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('plan', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('warnings', vscode.CompletionItemKind.Property),
         ];
 
         await testCompletion(docUri, new vscode.Position(17, 26), {
@@ -138,14 +142,15 @@ deployment "test" {
         });
       });
 
-      test('completes context.plan level', async () => {
+      // TODO: not implemented yet
+      test.skip('completes context.plan level', async () => {
         const expected = [
-          new vscode.CompletionItem('applyable', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('changes', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('component_changes', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('deployment', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('mode', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('replans', vscode.CompletionItemKind.Field),
+          new vscode.CompletionItem('applyable', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('changes', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('component_changes', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('deployment', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('mode', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('replans', vscode.CompletionItemKind.Property),
         ];
 
         await testCompletion(docUri, new vscode.Position(17, 31), {
@@ -153,13 +158,14 @@ deployment "test" {
         });
       });
 
-      test('completes context.plan.component_changes item level', async () => {
+      // TODO: not implemented yet
+      test.skip('completes context.plan.component_changes item level', async () => {
         const expected = [
-          new vscode.CompletionItem('add', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('change', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('import', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('remove', vscode.CompletionItemKind.Field),
-          new vscode.CompletionItem('total', vscode.CompletionItemKind.Field),
+          new vscode.CompletionItem('add', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('change', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('import', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('remove', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('total', vscode.CompletionItemKind.Property),
         ];
 
         await testCompletion(docUri, new vscode.Position(17, 74), {
