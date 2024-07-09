@@ -3,6 +3,7 @@
 
 changesDir: .changes
 unreleasedDir: unreleased
+headerPath: header.tpl.md
 changelogPath: CHANGELOG.md
 versionExt: md
 versionFormat: '## {{.VersionNoPrefix}} ({{.Time.Format "2006-01-02"}})'
