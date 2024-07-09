@@ -1,12 +1,10 @@
-## 2.31.0 (2024-06-27)
+# Changelog
+
+## 2.32.2024070910 (2024-07-09)
 
 ENHANCEMENTS:
 
-* Allow custom HCP Terraform or Terraform Enterprise instance selection ([#1678](https://github.com/hashicorp/vscode-terraform/issues/1678))
-* Declare support for Terraform Stack files ([#1773](https://github.com/hashicorp/vscode-terraform/issues/1773))
-* Adds file icons for the Stacks language which will apply to all tfstack.hcl and tfdeploy.hcl files ([#1774](https://github.com/hashicorp/vscode-terraform/issues/1774))
-* Add support for the new `templatestring` functions in Terraform 1.9 ([terraform-ls#357](https://github.com/hashicorp/terraform-ls/issues/357))
-* Introduce provisioners to `removed` blocks in Terraform 1.9 ([terraform-schema#358](https://github.com/hashicorp/terraform-schema/issues/358))
+* Add initial support for Terraform Stacks files and Deployment files. This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Stacks and Deployment files ([terraform-ls#1745](https://github.com/hashicorp/terraform-ls/issues/1745))
 
 ## 2.31.2024061114 (2024-06-11)
 
@@ -17,6 +15,16 @@ ENHANCEMENTS:
 This marks the completion of a major refactoring effort. The language server will now start up much faster and use less resources, especially on larger workspaces. We achieve this by doing less work during the initial walk of a workspace. Instead, we only parse modules with open files. Whenever a file of a module is opened, we schedule all the jobs needed to understand the contents of that directory (and the referenced modules).
 
 We have tested this with workspaces and configurations of different sizes, but still expect some bugs. Please give this preview a try and let us know how it works for you.
+
+## 2.31.0 (2024-06-27)
+
+ENHANCEMENTS:
+
+* Allow custom HCP Terraform or Terraform Enterprise instance selection ([#1678](https://github.com/hashicorp/vscode-terraform/issues/1678))
+* Declare support for Terraform Stack files ([#1773](https://github.com/hashicorp/vscode-terraform/issues/1773))
+* Adds file icons for the Stacks language which will apply to all tfstack.hcl and tfdeploy.hcl files ([#1774](https://github.com/hashicorp/vscode-terraform/issues/1774))
+* Add support for the new `templatestring` functions in Terraform 1.9 ([terraform-ls#357](https://github.com/hashicorp/terraform-ls/issues/357))
+* Introduce provisioners to `removed` blocks in Terraform 1.9 ([terraform-schema#358](https://github.com/hashicorp/terraform-schema/issues/358))
 
 ## 2.30.2 (2024-06-06)
 
