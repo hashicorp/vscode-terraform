@@ -25,6 +25,13 @@ export const getDocUri = (p: string): vscode.Uri => {
   return vscode.Uri.joinPath(workspaceUri, p);
 };
 
+export async function moveCursor(position: vscode.Position): Promise<void> {
+  if (!vscode.window.activeTextEditor) {
+    throw new Error('No active text editor. please use vscode.workspace.openTextDocument() to open a document first');
+  }
+  vscode.window.activeTextEditor.selections = [new vscode.Selection(position, position)];
+}
+
 export async function testCompletion(
   docUri: vscode.Uri,
   position: vscode.Position,
