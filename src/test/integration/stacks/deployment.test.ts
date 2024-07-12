@@ -120,7 +120,7 @@ deployment "test" {
   orchestrate "auto_approve" "no_api_gateway_changes" {
     check {
       condition = context.plan.component_changes["component.api_gateway"].total == 0
-      error_message = "Changes proposed to api_gateway component."
+      reason = "Changes proposed to api_gateway component."
     }
   }
   `,
