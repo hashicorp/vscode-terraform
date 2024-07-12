@@ -30,13 +30,13 @@ suite('stacks deployments', () => {
       assert.equal(doc.languageId, 'terraform-deploy', 'document language should be `terraform-deploy`');
     });
 
-    test('completes variables attribute in deployment block', async () => {
+    test('completes inputs attribute in deployment block', async () => {
       // add a new incomplete "test" deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\n\n}\n');
       });
 
-      const expected = [new vscode.CompletionItem('variables', vscode.CompletionItemKind.Property)];
+      const expected = [new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property)];
 
       await testCompletion(docUri, new vscode.Position(15, 2), {
         items: expected,
@@ -44,10 +44,10 @@ suite('stacks deployments', () => {
     });
 
     // TODO: not implemented yet
-    test.skip('completes available variables in deployment block', async () => {
+    test.skip('completes available inputs in deployment block', async () => {
       // add a new incomplete "test" deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
-        editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\nvariables = {\n\n}\n}\n');
+        editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\ninputs = {\n\n}\n}\n');
       });
 
       const expected = [
@@ -70,7 +70,7 @@ suite('stacks deployments', () => {
           new vscode.Position(14, 0),
           `
 deployment "test" {
-  variables = {
+  inputs = {
     identity_token_file = identity_token.aws.
   }
 }
