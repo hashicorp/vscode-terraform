@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Introduce a workflow that checks for changelog entries
+time: 2024-07-12T13:05:24.169474+02:00
+custom:
+    Issue: "1796"
+    Repository: vscode-terraform
