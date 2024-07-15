@@ -30,7 +30,7 @@ suite('stacks stack', () => {
         new vscode.CompletionItem('component', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('output', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('provider', vscode.CompletionItemKind.Class),
-        new vscode.CompletionItem('required_provider', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('required_providers', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
       ];
 
@@ -74,7 +74,7 @@ suite('stacks stack', () => {
         new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('providers', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('source', vscode.CompletionItemKind.Property),
-        new vscode.CompletionItem('versions', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('version', vscode.CompletionItemKind.Property),
       ];
 
       // await testCompletion(docUri, new vscode.Position(4, 2), {
