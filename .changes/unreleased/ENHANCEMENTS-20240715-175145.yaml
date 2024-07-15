@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Rename variables to inputs for Stack deployments
-time: 2024-07-15T17:51:45.205093+02:00
-custom:
-    Issue: "1795"
-    Repository: vscode-terraform
