@@ -4,7 +4,6 @@
  */
 
 import { defineConfig } from '@vscode/test-cli';
-<<<<<<< HEAD
 import fs from 'fs';
 import path from 'path';
 
@@ -22,27 +21,14 @@ const configs = testSuiteFolderNames.map(folderName => ({
   workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, "workspace"),
   launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
   files: `${BASE_OUT_PATH}/${folderName}/*.test.js`,
-=======
-
-const config = defineConfig({
-  version: process.env['VSCODE_VERSION'] ?? 'stable',
-  workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? './test/fixtures',
-  launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
-  files: 'out/test/**/*.test.js',
->>>>>>> 62ff678 (feat: add opentofu language server download (#43))
   mocha: {
     ui: 'tdd',
     color: true,
     timeout: 100000,
-<<<<<<< HEAD
-    require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites
+//    require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites, but not needed for opentofu
   },
 }));
 
 const config = defineConfig(configs);
-=======
-  },
-});
->>>>>>> 62ff678 (feat: add opentofu language server download (#43))
 
 export default config;

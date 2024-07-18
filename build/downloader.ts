@@ -118,6 +118,7 @@ async function downloadFile(url: string, installPath: string) {
 
 async function downloadSyntax(info: ExtensionInfo) {
   const release = `v${info.syntaxVersion}`;
+  info.name = 'terraform';
 
   const cwd = path.resolve(__dirname);
   const buildDir = path.basename(cwd);
