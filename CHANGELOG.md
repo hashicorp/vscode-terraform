@@ -6,6 +6,12 @@ ENHANCEMENTS:
 
 * Add initial support for Terraform Stacks files and Deployment files. This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Stacks and Deployment files ([terraform-ls#1745](https://github.com/hashicorp/terraform-ls/issues/1745))
 
+## 2.32.1 (2024-07-22)
+
+BUG FIXES:
+
+* Fix validation error by checking for submodules when fetching schemas from the registry ([terraform-ls#1772](https://github.com/hashicorp/terraform-ls/issues/1772))
+
 ## 2.32.0 (2024-07-15)
 
 ENHANCEMENTS:
