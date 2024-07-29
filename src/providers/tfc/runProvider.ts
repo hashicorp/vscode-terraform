@@ -5,8 +5,8 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import * as semver from 'semver';
 import TelemetryReporter from '@vscode/extension-telemetry';
+import semver from 'semver';
 
 import { TerraformCloudWebUrl, apiClient } from '../../api/terraformCloud';
 import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
@@ -302,7 +302,11 @@ export class RunTreeItem extends vscode.TreeItem {
   public applyAttributes?: ApplyAttributes;
   public applyId?: string;
 
-  constructor(public id: string, public attributes: RunAttributes, public workspace: WorkspaceTreeItem) {
+  constructor(
+    public id: string,
+    public attributes: RunAttributes,
+    public workspace: WorkspaceTreeItem,
+  ) {
     super(attributes.message, vscode.TreeItemCollapsibleState.None);
     this.id = id;
 
@@ -321,7 +325,11 @@ export class RunTreeItem extends vscode.TreeItem {
 export class PlanTreeItem extends vscode.TreeItem {
   public logReadUrl = '';
 
-  constructor(public id: string, public label: string, public attributes: PlanAttributes) {
+  constructor(
+    public id: string,
+    public label: string,
+    public attributes: PlanAttributes,
+  ) {
     super(label);
     this.iconPath = GetPlanApplyStatusIcon(attributes.status);
     if (attributes) {
@@ -336,7 +344,11 @@ export class PlanTreeItem extends vscode.TreeItem {
 
 export class ApplyTreeItem extends vscode.TreeItem {
   public logReadUrl = '';
-  constructor(public id: string, public label: string, public attributes: ApplyAttributes) {
+  constructor(
+    public id: string,
+    public label: string,
+    public attributes: ApplyAttributes,
+  ) {
     super(label);
     this.iconPath = GetPlanApplyStatusIcon(attributes.status);
     if (attributes) {

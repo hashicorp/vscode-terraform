@@ -34,7 +34,11 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
-  constructor(ctx: vscode.ExtensionContext, private client: LanguageClient, private reporter: TelemetryReporter) {
+  constructor(
+    ctx: vscode.ExtensionContext,
+    private client: LanguageClient,
+    private reporter: TelemetryReporter,
+  ) {
     ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
       vscode.window.onDidChangeActiveTextEditor(async () => {

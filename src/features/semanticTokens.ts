@@ -23,7 +23,10 @@ interface ObjectWithId {
 }
 
 export class CustomSemanticTokens implements StaticFeature {
-  constructor(private _client: BaseLanguageClient, private manifest: PartialManifest) {}
+  constructor(
+    private _client: BaseLanguageClient,
+    private manifest: PartialManifest,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}

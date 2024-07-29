@@ -11,7 +11,10 @@ import * as terraform from '../api/terraform/terraform';
 export class TerraformCommands implements vscode.Disposable {
   private commands: vscode.Disposable[];
 
-  constructor(private client: LanguageClient, private reporter: TelemetryReporter) {
+  constructor(
+    private client: LanguageClient,
+    private reporter: TelemetryReporter,
+  ) {
     this.commands = [
       vscode.commands.registerCommand('terraform.init', async () => {
         await terraform.initAskUserCommand(this.client, this.reporter);

@@ -190,7 +190,10 @@ interface ApplyLog {
 }
 
 class AppliedChangesItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private appliedChanges: AppliedChange[], summary?: ChangeSummary) {
+  constructor(
+    private appliedChanges: AppliedChange[],
+    summary?: ChangeSummary,
+  ) {
     let label = 'Applied changes';
     if (summary) {
       const labels: string[] = [];

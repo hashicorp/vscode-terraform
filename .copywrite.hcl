@@ -13,6 +13,7 @@ project {
     ".wdio-vscode-service/**",
     "**/node_modules/**",
     "out/**",
+    "dist/**",
     "src/test/fixtures/**",
     "src/test/integration/*/workspace/**",
   ]

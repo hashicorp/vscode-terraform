@@ -52,7 +52,10 @@ export class OrganizationAPIResource implements APIResource {
   placeholder = 'Choose an organization (type to search)';
   ignoreFocusOut = true;
 
-  constructor(private outputChannel: vscode.OutputChannel, private reporter: TelemetryReporter) {}
+  constructor(
+    private outputChannel: vscode.OutputChannel,
+    private reporter: TelemetryReporter,
+  ) {}
 
   private async createOrganizationItems(search?: string): Promise<OrganizationItem[]> {
     const organizations = await apiClient.listOrganizations({
