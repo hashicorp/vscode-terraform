@@ -214,7 +214,10 @@ interface PlanLog {
 }
 
 class PlannedChangesItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private plannedChanges: Change[], summary?: ChangeSummary) {
+  constructor(
+    private plannedChanges: Change[],
+    summary?: ChangeSummary,
+  ) {
     let label = 'Planned changes';
     if (summary) {
       const labels: string[] = [];
@@ -271,7 +274,10 @@ class PlannedChangeItem extends vscode.TreeItem {
 }
 
 class DriftChangesItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private driftChanges: Change[], summary?: DriftSummary) {
+  constructor(
+    private driftChanges: Change[],
+    summary?: DriftSummary,
+  ) {
     let label = `Drifted resources`;
     if (summary) {
       const details = [];

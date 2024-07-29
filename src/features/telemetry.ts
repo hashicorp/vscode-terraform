@@ -20,7 +20,10 @@ type TelemetryEvent = {
 export class TelemetryFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
-  constructor(private client: BaseLanguageClient, private reporter: TelemetryReporter) {}
+  constructor(
+    private client: BaseLanguageClient,
+    private reporter: TelemetryReporter,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}

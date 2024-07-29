@@ -33,9 +33,11 @@ class ModuleCallItem extends vscode.TreeItem {
     } else {
       this.tooltip = `${this.sourceAddr}@${this.version}`;
     }
+
+    this.iconPath = this.getIcon(this.sourceType);
   }
 
-  iconPath = this.getIcon(this.sourceType);
+  // iconPath = this.getIcon(this.sourceType);
 
   getIcon(type: string | undefined) {
     switch (type) {
@@ -65,7 +67,11 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   private svg = '';
 
-  constructor(ctx: vscode.ExtensionContext, public client: LanguageClient, private reporter: TelemetryReporter) {
+  constructor(
+    ctx: vscode.ExtensionContext,
+    public client: LanguageClient,
+    private reporter: TelemetryReporter,
+  ) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
 
     ctx.subscriptions.push(

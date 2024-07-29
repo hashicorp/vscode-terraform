@@ -50,7 +50,10 @@ class OutputChangeItem extends vscode.TreeItem {
 }
 
 export class DiagnosticsItem extends vscode.TreeItem implements ItemWithChildren {
-  constructor(private diagnostics: Diagnostic[], summary: DiagnosticSummary) {
+  constructor(
+    private diagnostics: Diagnostic[],
+    summary: DiagnosticSummary,
+  ) {
     const labels: string[] = [];
     if (summary.warningCount === 1) {
       labels.push(`1 warning`);

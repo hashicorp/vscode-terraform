@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Replace webpack with esbuild
+time: 2024-07-29T14:03:56.583984-04:00
+custom:
+    Issue: "1807"
+    Repository: vscode-terraform
