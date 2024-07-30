@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.33.2024073012 (2024-07-30)
+
+INTERNAL:
+
+* Add development launch target for extensionHost ([#1805](https://github.com/hashicorp/vscode-terraform/issues/1805))
+* Replace webpack with esbuild ([#1807](https://github.com/hashicorp/vscode-terraform/issues/1807))
+
 ## 2.32.2024070910 (2024-07-09)
 
 ENHANCEMENTS:
