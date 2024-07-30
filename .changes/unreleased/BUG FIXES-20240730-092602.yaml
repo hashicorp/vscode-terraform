@@ -1,6 +1,0 @@
-kind: BUG FIXES
-body: Ensure validation runs after decoding the whole module to avoid stale diagnostics
-time: 2024-07-30T09:26:02.329717-04:00
-custom:
-    Issue: "1777"
-    Repository: terraform-ls
