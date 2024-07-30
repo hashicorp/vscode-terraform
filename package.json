@@ -104,6 +104,34 @@
         }
       },
       {
+        "id": "terraform-test",
+        "aliases": [
+          "Terraform Test"
+        ],
+        "extensions": [
+          ".tftest.hcl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_stacks.svg",
+          "light": "assets/icons/terraform_stacks.svg"
+        }
+      },
+      {
+        "id": "terraform-mock",
+        "aliases": [
+          "Terraform Mock"
+        ],
+        "extensions": [
+          ".tfmock.hcl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_stacks.svg",
+          "light": "assets/icons/terraform_stacks.svg"
+        }
+      },
+      {
         "id": "json",
         "extensions": [
           ".tfstate"
@@ -128,6 +156,16 @@
       },
       {
         "language": "terraform-deploy",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-test",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-mock",
         "scopeName": "source.hcl",
         "path": "./syntaxes/hcl.tmGrammar.json"
       }
