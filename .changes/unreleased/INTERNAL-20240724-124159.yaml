@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Add development launch target for extensionHost
-time: 2024-07-24T12:41:59.998606-04:00
-custom:
-    Issue: "1805"
-    Repository: vscode-terraform
