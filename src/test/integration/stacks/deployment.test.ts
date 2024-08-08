@@ -88,7 +88,7 @@ deployment "test" {
     test('completes audience in identity_token block', async () => {
       // add a new incomplete "account_3" identity_token block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
-        editBuilder.insert(new vscode.Position(14, 0), 'identity_token {\n\n}\n');
+        editBuilder.insert(new vscode.Position(14, 0), 'identity_token "test" {\n\n}\n');
       });
 
       const expected = [new vscode.CompletionItem('audience', vscode.CompletionItemKind.Property)];
