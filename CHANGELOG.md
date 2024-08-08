@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.33.2024080812 (2024-08-08)
+
+ENHANCEMENTS:
+
+* Parse and load Stack and Deploy metadata ([terraform-ls#1761](https://github.com/hashicorp/terraform-ls/issues/1761))
+* Load Stack component sources from metadata ([terraform-ls#1768](https://github.com/hashicorp/terraform-ls/issues/1768))
+* Enable early validation for Terraform Stack files ([terraform-ls#1776](https://github.com/hashicorp/terraform-ls/issues/1776))
+* Merge stack configuration schema with dynamic schema based on used components source and providers ([terraform-ls#1770](https://github.com/hashicorp/terraform-ls/issues/1770))
+* Merge deployment configuration schema with dynamic schema based on available variables ([terraform-ls#1780](https://github.com/hashicorp/terraform-ls/issues/1780))
+* Support Terraform functions in stack files ([terraform-ls#1781](https://github.com/hashicorp/terraform-ls/issues/1781))
+* Add DecodeReferenceOrigins and DecodeReferenceTargets jobs ([terraform-ls#1786](https://github.com/hashicorp/terraform-ls/issues/1786))
+
+BUG FIXES:
+
+* fix panic on blocks with no labels during validation of label name ([terraform-ls#1791](https://github.com/hashicorp/terraform-ls/issues/1791))
+
+INTERNAL:
+
+* Load embedded provider schemas for providers found in stacks files into state ([terraform-ls#1763](https://github.com/hashicorp/terraform-ls/issues/1763))
+* Bump terraform-schema to c2315af ([terraform-ls#1788](https://github.com/hashicorp/terraform-ls/issues/1788))
+
 ## 2.33.2024073012 (2024-07-30)
 
 INTERNAL:
