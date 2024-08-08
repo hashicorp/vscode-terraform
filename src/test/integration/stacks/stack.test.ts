@@ -145,7 +145,7 @@ suite('stacks stack', () => {
 
     test('completes config and for_each blocks within provider', async () => {
       const expected = [
-        new vscode.CompletionItem('config', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('config', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
       ];
 
