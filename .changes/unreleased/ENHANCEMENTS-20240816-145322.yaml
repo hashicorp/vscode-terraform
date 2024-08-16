@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Bump hashicorp/syntax from 0.5.0 to 0.7.0
+time: 2024-08-16T14:53:22.557108-04:00
+custom:
+    Issue: "1820"
+    Repository: vscode-terraform
