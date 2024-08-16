@@ -21,7 +21,7 @@
     "version": "0.34.2"
   },
   "syntax": {
-    "version": "0.5.0"
+    "version": "0.7.0"
   },
   "qna": "https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/46",
   "bugs": {
