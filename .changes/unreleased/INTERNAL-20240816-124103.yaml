@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Bump braces to 3.0.3
+time: 2024-08-16T12:41:03.66767-04:00
+custom:
+    Issue: "1819"
+    Repository: vscode-terraform
