@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Bump axios to 1.7.4
+time: 2024-08-16T12:37:12.325251-04:00
+custom:
+    Issue: "1818"
+    Repository: vscode-terraform
