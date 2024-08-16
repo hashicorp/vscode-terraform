@@ -914,7 +914,7 @@
     "@vscode/extension-telemetry": "^0.4.9",
     "@zodios/core": "^10.9.2",
     "@zodios/plugins": "^10.6.0",
-    "axios": "^1.4.0",
+    "axios": "^1.7.4",
     "semver": "^7.5.4",
     "vscode-languageclient": "^9.0.1",
     "vscode-uri": "^3.0.7",
