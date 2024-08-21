@@ -321,6 +321,11 @@
         "path": "./snippets/terraform.json"
       }
     ],
+    "configurationDefaults": {
+      "[terraform][terraform-vars][terraform-stack][terraform-deploy]": {
+        "editor.defaultFormatter": "hashicorp.terraform"
+      }
+    },
     "configuration": [
       {
         "title": "General",
