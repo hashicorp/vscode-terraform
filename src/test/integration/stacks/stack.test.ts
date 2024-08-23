@@ -28,6 +28,7 @@ suite('stacks stack', () => {
     test('completes blocks available for stacks files', async () => {
       const expected = [
         new vscode.CompletionItem('component', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('output', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('provider', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('required_providers', vscode.CompletionItemKind.Class),
@@ -70,6 +71,7 @@ suite('stacks stack', () => {
       //       });
 
       const expected = [
+        new vscode.CompletionItem('depends_on', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('providers', vscode.CompletionItemKind.Property),
