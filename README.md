@@ -106,14 +106,9 @@ See the [Formatting](#formatting) Configuration section for information on how t
 
 ### Code Snippets
 
-The extension provides several snippets to accelerate adding Terraform code to your configuration files:
+The extension provides context aware snippets to accelerate adding Terraform code to your configuration files.
 
-- `fore` - For Each
-- `module` - Module
-- `output` - Output
-- `provisioner` - Provisioner
-- `vare` - Empty variable
-- `varm` - Map Variable
+Combined with `editor.suggest.preview` and `terraform.experimentalFeatures.prefillRequiredFields`, the extension can suggest completions for all Terraform language constructs.
 
 ### HCP Terraform Integration
 
