@@ -7,15 +7,6 @@ import * as vscode from 'vscode';
 import { assert } from 'chai';
 import { activateExtension, getDocUri, open, testCompletion } from '../../helper';
 
-const snippets = [
-  new vscode.CompletionItem({ label: 'fore', description: 'For Each' }, vscode.CompletionItemKind.Snippet),
-  new vscode.CompletionItem({ label: 'module', description: 'Module' }, vscode.CompletionItemKind.Snippet),
-  new vscode.CompletionItem({ label: 'output', description: 'Output' }, vscode.CompletionItemKind.Snippet),
-  new vscode.CompletionItem({ label: 'provisioner', description: 'Provisioner' }, vscode.CompletionItemKind.Snippet),
-  new vscode.CompletionItem({ label: 'vare', description: 'Empty variable' }, vscode.CompletionItemKind.Snippet),
-  new vscode.CompletionItem({ label: 'varm', description: 'Map variable' }, vscode.CompletionItemKind.Snippet),
-];
-
 suite('completion', () => {
   suite('root document completion', function suite() {
     const docUri = getDocUri('empty.tf');
@@ -49,7 +40,7 @@ suite('completion', () => {
         new vscode.CompletionItem('terraform', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
       ];
-      expected.push(...snippets);
+
       await testCompletion(docUri, new vscode.Position(0, 0), {
         items: expected,
       });
@@ -83,7 +74,6 @@ suite('completion', () => {
         new vscode.CompletionItem('providers', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('version', vscode.CompletionItemKind.Property),
       ];
-      expected.push(...snippets);
 
       await testCompletion(docUri, new vscode.Position(21, 0), {
         items: expected,
@@ -96,10 +86,6 @@ suite('completion', () => {
         new vscode.CompletionItem('"./ai"', vscode.CompletionItemKind.Text),
         new vscode.CompletionItem('"./compute"', vscode.CompletionItemKind.Text),
       ];
-
-      if (vscode.version <= '1.82.3') {
-        expected.push(...snippets);
-      }
 
       // module "compute" {
       //   source = "./compute"
@@ -166,7 +152,7 @@ suite('completion', () => {
         new vscode.CompletionItem('project', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('region', vscode.CompletionItemKind.Property),
       ];
-      expected.push(...snippets);
+
       await testCompletion(docUri, new vscode.Position(1, 0), {
         items: expected,
       });
