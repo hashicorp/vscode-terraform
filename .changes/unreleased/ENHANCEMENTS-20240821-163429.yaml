@@ -1,5 +1,5 @@
 kind: ENHANCEMENTS
-body: Provide a default formatter for Terraform Stacks
+body: Provide default settings for formatting for Terraform files
 time: 2024-08-21T16:34:29.312085-04:00
 custom:
     Issue: "1825"
