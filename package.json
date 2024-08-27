@@ -315,12 +315,6 @@
         }
       }
     },
-    "snippets": [
-      {
-        "language": "terraform",
-        "path": "./snippets/terraform.json"
-      }
-    ],
     "configuration": [
       {
         "title": "General",
