@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Bump terraform-ls from 0.34.2 to 0.34.3
-time: 2024-09-03T15:33:09.134019-04:00
-custom:
-    Issue: "1833"
-    Repository: vscode-terraform

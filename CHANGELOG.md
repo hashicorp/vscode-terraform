@@ -13,6 +13,19 @@ ENHANCEMENTS:
 
 * Add initial support for Terraform Stacks files and Deployment files. This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Stacks and Deployment files ([terraform-ls#1745](https://github.com/hashicorp/terraform-ls/issues/1745))
 
+## 2.32.3 (2024-09-05)
+
+ENHANCEMENTS:
+
+* Bump hashicorp/syntax from 0.5.0 to 0.7.0 ([#1820](https://github.com/hashicorp/vscode-terraform/issues/1820))
+* Support syntax highlighting for .tftest.hcl and .tfmock.hcl files ([#1831](https://github.com/hashicorp/vscode-terraform/issues/1831))
+* Bump terraform-ls from 0.34.2 to 0.34.3 ([#1833](https://github.com/hashicorp/vscode-terraform/issues/1833))
+
+INTERNAL:
+
+* Bump axios to 1.7.4 ([#1818](https://github.com/hashicorp/vscode-terraform/issues/1818))
+* Bump braces to 3.0.3 ([#1819](https://github.com/hashicorp/vscode-terraform/issues/1819))
+
 ## 2.32.2 (2024-07-30)
 
 BUG FIXES:
