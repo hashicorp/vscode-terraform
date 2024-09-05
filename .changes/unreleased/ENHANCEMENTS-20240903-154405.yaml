@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Support syntax highlighting for .tftest.hcl and .tfmock.hcl files
-time: 2024-09-03T15:44:05.999572+02:00
-custom:
-    Issue: "1831"
-    Repository: vscode-terraform
