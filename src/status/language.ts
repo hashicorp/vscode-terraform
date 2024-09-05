@@ -8,6 +8,8 @@ import * as vscode from 'vscode';
 const lsStatus = vscode.languages.createLanguageStatusItem('terraform-ls.status', [
   { language: 'terraform' },
   { language: 'terraform-vars' },
+  { language: 'terraform-stack' },
+  { language: 'terraform-deploy' },
 ]);
 lsStatus.name = 'Terraform LS';
 lsStatus.detail = 'Terraform LS';
