@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Enable language status bar for Stack language
-time: 2024-09-05T14:33:13.601998-04:00
-custom:
-    Issue: "1835"
-    Repository: vscode-terraform
