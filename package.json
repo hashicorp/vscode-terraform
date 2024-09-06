@@ -104,6 +104,19 @@
         }
       },
       {
+        "id": "terraform-version",
+        "aliases": [
+          "Terraform Version"
+        ],
+        "extensions": [
+          ".terraform-version"
+        ],
+        "icon": {
+          "light": "./assets/icons/HashiCorp_Icon_Black_RGB.svg",
+          "dark": "./assets/icons/HashiCorp_Icon_White_RGB.svg"
+        }
+      },
+      {
         "id": "json",
         "extensions": [
           ".tfstate"
