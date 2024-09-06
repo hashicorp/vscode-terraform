@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Add icon for .terraform-version file
+time: 2024-09-06T09:37:03.371934-04:00
+custom:
+    Issue: "1836"
+    Repository: vscode-terraform
