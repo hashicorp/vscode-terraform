@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Remove static snippets
-time: 2024-08-27T15:01:04.207532-04:00
-custom:
-    Issue: "1830"
-    Repository: vscode-terraform
