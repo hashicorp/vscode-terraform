@@ -43,7 +43,7 @@ suite('init', () => {
       await activateExtension();
 
       // run terraform init command to download provider schema
-      await vscode.commands.executeCommand('terraform.initCurrent');
+      await vscode.commands.executeCommand('opentofu.initCurrent');
       // wait for schema to be loaded
       await sleep(5_000);
     });
@@ -101,7 +101,7 @@ suite('init', () => {
       await activateExtension();
 
       // run terraform init command to download provider schema
-      await vscode.commands.executeCommand('terraform.initCurrent');
+      await vscode.commands.executeCommand('opentofu.initCurrent');
       // wait for schema to be loaded
       await sleep(5_000);
     });

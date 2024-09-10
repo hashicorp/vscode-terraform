@@ -1,6 +1,6 @@
 # Development
 
-We are an open source project on GitHub and would enjoy your contributions! Please [open a new issue](https://github.com/hashicorp/terraform-vscode/issues) before working on a PR that requires significant effort. This will allow us to make sure the work is in line with the project's goals.
+We are an open source project on GitHub and would enjoy your contributions! Please [open a new issue](https://github.com/gamunu/terraform-opentofu/issues) before working on a PR that requires significant effort. This will allow us to make sure the work is in line with the project's goals.
 
 ## Building
 
@@ -15,7 +15,7 @@ The extension makes use of the [VSCode Language Server](https://github.com/Micro
 ### Getting the code
 
 ```
-git clone https://github.com/hashicorp/vscode-terraform
+git clone https://github.com/gamunu/vscode-opentofu
 ```
 
 ### Dependencies
@@ -27,7 +27,7 @@ After cloning the repo, run `npm install` to install dependencies. There's an in
 > npm run compile
 ```
 
-> In order to use an independently built or installed version of terraform-ls, you will need to set `terraform.languageServer.path` to the correct executable path.
+> In order to use an independently built or installed version of terraform-ls, you will need to set `opentofu.languageServer.path` to the correct executable path.
 
 ## Running the Extension
 
@@ -65,7 +65,7 @@ Then follow https://code.visualstudio.com/api/extension-guides/web-extensions#te
 
 Automated `unit` and `integration` tests can be written using [mocha](https://mochajs.org) and live inside `./src/test` with file pattern `*.test.ts`.
 
-> It is *required* that `terraform` is available on `$PATH` to run the tests.
+> It is *required* that `tofu` is available on `$PATH` to run the tests.
 
 To run the `unit tests` from the command-line run:
 
@@ -102,7 +102,7 @@ End to end acceptance tests with the extension running against the language serv
 
 Unfortunately automated user input does not appear to be possible (keypresses, cursor clicks) at the moment, but some integration testing can be performed by using the vscode API to open/edit files, and triggering events/commands such as language server requests and verifying the responses.
 
-The `terraform init` command runs automatically when tests are executed.
+The `tofu init` command runs automatically when tests are executed.
 
 ### Web Extension Tests
 

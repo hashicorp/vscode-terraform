@@ -1,3 +1,4 @@
+---
 name: Run tests
 
 on:
@@ -41,7 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         vscode:
-          - '1.86.2'
+          - '1.88.0'
           - 'insiders'
           - 'stable'
         os:
@@ -56,14 +57,18 @@ jobs:
       - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version-file: '.nvmrc'
-          cache: npm
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+      - name: Set up Xvfb (Ubuntu)
+        run: |
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          echo ">>> Started xvfb"
+        if: matrix.os == 'ubuntu-latest'
+      - name: Install OpenTofu
+        uses: opentofu/setup-opentofu@v1
         with:
-          terraform_wrapper: false
-          terraform_version: '~1.7'
-      - name: Terraform version
-        run: terraform version
+          tofu_wrapper: false
+          tofu_version: 1.7.0
+      - name: Tofu version
+        run: tofu version
       - name: Clean Install Dependencies
         run: npm ci
       - name: Run Tests

@@ -14,7 +14,7 @@ export class ServerPath {
   private customBinPath: string | undefined;
 
   constructor(private context: vscode.ExtensionContext) {
-    this.customBinPath = config('terraform').get('languageServer.path');
+    this.customBinPath = config('opentofu').get('languageServer.path');
   }
 
   private installPath(): string {
@@ -39,9 +39,9 @@ export class ServerPath {
     }
 
     if (process.platform === 'win32') {
-      return 'terraform-ls.exe';
+      return 'opentofu-ls.exe';
     }
-    return 'terraform-ls';
+    return 'opentofu-ls';
   }
 
   public async resolvedPathToBinary(): Promise<string> {
@@ -58,7 +58,7 @@ export class ServerPath {
     } catch (err) {
       let extraHint = '';
       if (this.customBinPath) {
-        extraHint = `. Check "terraform.languageServer.path" in your settings.`;
+        extraHint = `. Check "opentofu.languageServer.path" in your settings.`;
       }
       throw new Error(`Unable to launch language server: ${err instanceof Error ? err.message : err}${extraHint}`);
     }

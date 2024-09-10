@@ -4,7 +4,6 @@
  */
 
 import * as vscode from 'vscode';
-import TelemetryReporter from '@vscode/extension-telemetry';
 import { BaseLanguageClient, ClientCapabilities, FeatureState, StaticFeature } from 'vscode-languageclient';
 
 import { ExperimentalClientCapabilities } from './types';
@@ -13,11 +12,7 @@ import * as lsStatus from '../status/language';
 export class LanguageStatusFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
-  constructor(
-    private client: BaseLanguageClient,
-    private reporter: TelemetryReporter,
-    private outputChannel: vscode.OutputChannel,
-  ) {}
+  constructor(private client: BaseLanguageClient, private outputChannel: vscode.OutputChannel) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}
@@ -35,7 +30,6 @@ export class LanguageStatusFeature implements StaticFeature {
   }
 
   public initialize(): void {
-    this.reporter.sendTelemetryEvent('startClient');
     this.outputChannel.appendLine('Started client');
 
     const initializeResult = this.client.initializeResult;

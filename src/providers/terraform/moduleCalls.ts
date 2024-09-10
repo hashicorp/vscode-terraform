@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import TelemetryReporter from '@vscode/extension-telemetry';
 import * as path from 'path';
 import * as terraform from '../../api/terraform/terraform';
 import * as vscode from 'vscode';
@@ -67,16 +66,12 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   private svg = '';
 
-  constructor(
-    ctx: vscode.ExtensionContext,
-    public client: LanguageClient,
-    private reporter: TelemetryReporter,
-  ) {
-    this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
+  constructor(ctx: vscode.ExtensionContext, public client: LanguageClient) {
+    this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'opentofu.svg'));
 
     ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
-      vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
+      vscode.commands.registerCommand('opentofu.modules.refreshList', () => this.refresh()),
+      vscode.commands.registerCommand('opentofu.modules.openDocumentation', (module: ModuleCallItem) => {
         if (module.docsLink) {
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }
@@ -138,7 +133,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
     let response: terraform.ModuleCallsResponse;
     try {
-      response = await terraform.moduleCalls(documentURI.toString(), this.client, this.reporter);
+      response = await terraform.moduleCalls(documentURI.toString(), this.client);
       if (response === null) {
         // no response from terraform-ls
         await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);

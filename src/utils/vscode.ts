@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import TelemetryReporter from '@vscode/extension-telemetry';
 import * as vscode from 'vscode';
 import { InitializeError, ResponseError } from 'vscode-languageclient';
 
@@ -72,26 +71,20 @@ function isInitializeError(error: unknown): error is ResponseError<InitializeErr
   return (error as ResponseError<InitializeError>).data?.retry !== undefined;
 }
 
-export async function handleLanguageClientStartError(
-  error: unknown,
-  ctx: vscode.ExtensionContext,
-  reporter: TelemetryReporter,
-) {
+export async function handleLanguageClientStartError(error: unknown, ctx: vscode.ExtensionContext) {
   let message = 'Unknown Error';
   if (isInitializeError(error)) {
     // handled in initializationFailedHandler
     return;
   } else if (error instanceof Error) {
     message = error.message;
-    reporter.sendTelemetryException(error);
   } else if (typeof error === 'string') {
     message = error;
-    reporter.sendTelemetryException(new Error(error));
   }
 
   if (message === 'INVALID_URI_WSL') {
     // handle in startLanguageServer()
-    if (ctx.globalState.get<boolean>('terraform.disableWSLNotification') === true) {
+    if (ctx.globalState.get<boolean>('opentofu.disableWSLNotification') === true) {
       return;
     }
 
@@ -117,20 +110,15 @@ export async function handleLanguageClientStartError(
 
     switch (choice.title) {
       case 'Suppress':
-        reporter.sendTelemetryEvent('disableWSLNotification');
-        ctx.globalState.update('terraform.disableWSLNotification', true);
+        ctx.globalState.update('opentofu.disableWSLNotification', true);
         break;
       case 'Reopen Folder in WSL':
-        reporter.sendTelemetryEvent('reopenInWSL');
         await vscode.commands.executeCommand('remote-wsl.reopenInWSL');
         break;
       case 'More Info':
-        reporter.sendTelemetryEvent('wslMoreInfo');
         await vscode.commands.executeCommand(
           'vscode.open',
-          vscode.Uri.parse(
-            'https://github.com/hashicorp/vscode-terraform/blob/v2.24.0/README.md#remote-extension-support',
-          ),
+          vscode.Uri.parse('https://github.com/gamunu/vscode-opentofu/blob/main/README.md#remote-extension-support'),
         );
     }
   } else {

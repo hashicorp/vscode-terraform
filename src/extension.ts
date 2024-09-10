@@ -4,7 +4,6 @@
  */
 
 import * as vscode from 'vscode';
-import TelemetryReporter from '@vscode/extension-telemetry';
 import {
   CloseAction,
   DocumentSelector,
@@ -23,7 +22,6 @@ import { ModuleCallsDataProvider } from './providers/terraform/moduleCalls';
 import { ModuleProvidersDataProvider } from './providers/terraform/moduleProviders';
 import { ServerPath } from './utils/serverPath';
 import { config, handleLanguageClientStartError } from './utils/vscode';
-import { TelemetryFeature } from './features/telemetry';
 import { ShowReferencesFeature } from './features/showReferences';
 import { CustomSemanticTokens } from './features/semanticTokens';
 import { ModuleProvidersFeature } from './features/moduleProviders';
@@ -34,10 +32,9 @@ import { getInitializationOptions } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import * as lsStatus from './status/language';
-import { TerraformCloudFeature } from './features/terraformCloud';
 
-const id = 'terraform';
-const brand = `HashiCorp Terraform`;
+const id = 'opentofu';
+const brand = `OpenTofu`;
 const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform' },
   { scheme: 'file', language: 'terraform-vars' },
@@ -45,35 +42,26 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-deploy' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
-const tfcOutputChannel = vscode.window.createOutputChannel('HCP Terraform');
 
-let reporter: TelemetryReporter;
 let client: LanguageClient;
 let initializationError: ResponseError<InitializeError> | undefined = undefined;
 let crashCount = 0;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const manifest = context.extension.packageJSON;
-  reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
-  context.subscriptions.push(reporter);
 
   // always register commands needed to control terraform-ls
   context.subscriptions.push(new TerraformLSCommands());
 
-  context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
-
-  if (config('terraform').get<boolean>('languageServer.enable') === false) {
-    reporter.sendTelemetryEvent('disabledTerraformLS');
+  if (config('opentofu').get<boolean>('languageServer.enable') === false) {
     return;
   }
 
   const lsPath = new ServerPath(context);
-  if (lsPath.hasCustomBinPath()) {
-    reporter.sendTelemetryEvent('usePathToBinary');
-  }
+
   const serverOptions = await getServerOptions(lsPath, outputChannel);
 
-  const initializationOptions = getInitializationOptions();
+  const initializationOptions = await getInitializationOptions();
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: documentSelector,
@@ -86,7 +74,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tfdeploy.hcl'),
       ],
     },
-    diagnosticCollectionName: 'HashiCorpTerraform',
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
     initializationOptions: initializationOptions,
@@ -94,14 +81,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     initializationFailedHandler: (error: ResponseError<InitializeError> | Error | any) => {
       initializationError = error;
 
-      reporter.sendTelemetryException(error);
+      let msg = 'Failure to start opentofu-ls. Please check your configuration settings and reload this window';
 
-      let msg = 'Failure to start terraform-ls. Please check your configuration settings and reload this window';
-
-      const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
+      const serverArgs = config('opentofu').get<string[]>('languageServer.args', []);
       if (serverArgs[0] !== 'serve') {
         msg =
-          'You need at least a "serve" argument in the `terraform.languageServer.args` setting. Please check your configuration settings and reload this window';
+          'You need at least a "serve" argument in the `opentofu.languageServer.args` setting. Please check your configuration settings and reload this window';
       }
 
       outputChannel.appendLine(msg);
@@ -127,12 +112,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
               outputChannel.show();
               break;
             case 'Open Settings':
-              await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:hashicorp.terraform');
+              await vscode.commands.executeCommand('workbench.action.openSettings', '@ext:OpenTofu.tofu');
               break;
             case 'More Info':
               await vscode.commands.executeCommand(
                 'vscode.open',
-                vscode.Uri.parse('https://github.com/hashicorp/vscode-terraform#troubleshooting'),
+                vscode.Uri.parse('https://github.com/gamunu/vscode-opentofu#troubleshooting'),
               );
               break;
           }
@@ -144,7 +129,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       error: (error: Error, message: Message, count: number) => {
         return {
-          message: `Terraform LS connection error: (${count ?? 0})\n${error?.message}\n${message?.jsonrpc}`,
+          message: `OpenTofu LS connection error: (${count ?? 0})\n${error?.message}\n${message?.jsonrpc}`,
           action: ErrorAction.Shutdown,
         };
       },
@@ -175,10 +160,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         // write to log and stop attempting to restart server
         // initializationFailedHandler will handle showing an error to user
         outputChannel.appendLine(
-          'Failure to start terraform-ls. Please check your configuration settings and reload this window',
+          'Failure to start opentofu-ls. Please check your configuration settings and reload this window',
         );
         return {
-          message: 'Failure to start terraform-ls. Please check your configuration settings and reload this window',
+          message: 'Failure to start opentofu-ls. Please check your configuration settings and reload this window',
           action: CloseAction.DoNotRestart,
         };
       },
@@ -197,28 +182,26 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         break;
       case State.Stopped:
         lsStatus.setLanguageServerStopped();
-        reporter.sendTelemetryEvent('stopClient');
         break;
     }
   });
 
   client.registerFeatures([
-    new LanguageStatusFeature(client, reporter, outputChannel),
+    new LanguageStatusFeature(client, outputChannel),
     new CustomSemanticTokens(client, manifest),
-    new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client, reporter)),
-    new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client, reporter)),
-    new TelemetryFeature(client, reporter),
+    new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client)),
+    new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client)),
     new ShowReferencesFeature(client),
-    new TerraformVersionFeature(client, reporter, outputChannel),
+    new TerraformVersionFeature(client, outputChannel),
   ]);
 
   // these need the LS to function, so are only registered if enabled
-  context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter));
+  context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client));
 
   try {
     await client.start();
   } catch (error) {
-    await handleLanguageClientStartError(error, context, reporter);
+    await handleLanguageClientStartError(error, context);
   }
 }
 
@@ -228,12 +211,10 @@ export async function deactivate(): Promise<void> {
   } catch (error) {
     if (error instanceof Error) {
       outputChannel.appendLine(error.message);
-      reporter.sendTelemetryException(error);
       vscode.window.showErrorMessage(error.message);
       lsStatus.setLanguageServerState(error.message, false, vscode.LanguageStatusSeverity.Error);
     } else if (typeof error === 'string') {
       outputChannel.appendLine(error);
-      reporter.sendTelemetryException(new Error(error));
       vscode.window.showErrorMessage(error);
       lsStatus.setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
     }
