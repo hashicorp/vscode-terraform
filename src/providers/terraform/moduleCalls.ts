@@ -66,7 +66,10 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
 
   private svg = '';
 
-  constructor(ctx: vscode.ExtensionContext, public client: LanguageClient) {
+  constructor(
+    ctx: vscode.ExtensionContext,
+    public client: LanguageClient,
+  ) {
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'opentofu.svg'));
 
     ctx.subscriptions.push(
