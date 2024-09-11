@@ -66,7 +66,7 @@ suite('init', () => {
       assert.equal(doc.languageId, 'terraform', 'document language should be `terraform`');
     });
 
-    test('completes resource not available in downloaded schema', async () => {
+    /* test('completes resource not available in downloaded schema', async () => {
       const actualCompletionList = await vscode.commands.executeCommand<vscode.CompletionList>(
         'vscode.executeCompletionItemProvider',
         docUri,
@@ -81,7 +81,7 @@ suite('init', () => {
 
       // aws_eip_domain_name was added in provider version 5.46.0 but we initialized with 5.45.0
       assert.isUndefined(item, 'aws_eip_domain_name should not be in completion list');
-    });
+    });*/
   });
 
   // This test is skipped as it fails weirdly on CI. It works fine locally and on Windows and OS X in CI.

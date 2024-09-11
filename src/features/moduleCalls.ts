@@ -19,7 +19,10 @@ const CLIENT_MODULE_CALLS_CMD_ID = 'client.refreshModuleCalls';
 export class ModuleCallsFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
-  constructor(private client: BaseLanguageClient, private view: ModuleCallsDataProvider) {}
+  constructor(
+    private client: BaseLanguageClient,
+    private view: ModuleCallsDataProvider,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}

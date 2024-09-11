@@ -19,7 +19,10 @@ export class TerraformVersionFeature implements StaticFeature {
 
   private clientTerraformVersionCommandId = 'client.refreshTerraformVersion';
 
-  constructor(private client: LanguageClient, private outputChannel: vscode.OutputChannel) {}
+  constructor(
+    private client: LanguageClient,
+    private outputChannel: vscode.OutputChannel,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}

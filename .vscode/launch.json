@@ -6,7 +6,15 @@
       "type": "extensionHost",
       "request": "launch",
       "args": ["--profile-temp", "--extensionDevelopmentPath=${workspaceFolder}"],
-      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "preLaunchTask": "${defaultBuildTask}"
+    },
+    {
+      "name": "Develop Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}"
     },
     {
@@ -15,7 +23,7 @@
       "debugWebWorkerHost": true,
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentKind=web"],
-      "outFiles": ["${workspaceFolder}/out/web/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/web/**/*.js"],
       "preLaunchTask": "npm: watch"
     }
   ]

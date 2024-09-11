@@ -3,6 +3,7 @@
 .wdio-vscode-service
 language-configuration.json
 node_modules
+dist
 out
 package-lock.json
 snippets

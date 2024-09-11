@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: update opentofu ls 0.2.0
+time: 2024-09-11T12:26:05.5663+05:30
+custom:
+    Issue: "97"
+    Repository: opentofu-ls

@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: npm
@@ -51,10 +51,12 @@ jobs:
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version-file: '.nvmrc'
       - name: Set up Xvfb (Ubuntu)
@@ -66,7 +68,7 @@ jobs:
         uses: opentofu/setup-opentofu@v1
         with:
           tofu_wrapper: false
-          tofu_version: 1.7.0
+          tofu_version: 1.8.0
       - name: Tofu version
         run: tofu version
       - name: Clean Install Dependencies

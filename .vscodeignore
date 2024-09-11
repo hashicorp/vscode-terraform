@@ -24,4 +24,6 @@ docs/
 node_modules/
 ROADMAP.md
 src/
+out/
+esbuild.js
 tsconfig.json

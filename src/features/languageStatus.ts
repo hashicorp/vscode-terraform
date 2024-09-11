@@ -12,7 +12,10 @@ import * as lsStatus from '../status/language';
 export class LanguageStatusFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
-  constructor(private client: BaseLanguageClient, private outputChannel: vscode.OutputChannel) {}
+  constructor(
+    private client: BaseLanguageClient,
+    private outputChannel: vscode.OutputChannel,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}

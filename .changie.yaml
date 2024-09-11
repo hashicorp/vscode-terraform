@@ -9,14 +9,14 @@ versionExt: md
 versionFormat: '## {{.VersionNoPrefix}} ({{.Time.Format "2006-01-02"}})'
 kindFormat: '{{.Kind}}:'
 changeFormat: |-
-  * {{.Body}} ([{{- if not (eq .Custom.Repository "vscode-terraform")}}{{.Custom.Repository}}{{- end}}#{{.Custom.Issue}}](https://github.com/hashicorp/{{.Custom.Repository}}/issues/{{.Custom.Issue}}))
+  * {{.Body}} ([{{- if not (eq .Custom.Repository "vscode-opentofu")}}{{.Custom.Repository}}{{- end}}#{{.Custom.Issue}}](https://github.com/hashicorp/{{.Custom.Repository}}/issues/{{.Custom.Issue}}))
 custom:
   - key: Repository
     label: Repository
     type: enum
     enumOptions:
-      - vscode-terraform
-      - terraform-ls
+      - vscode-opentofu
+      - opentofu-ls
       - terraform-schema
       - hcl-lang
   - key: Issue
