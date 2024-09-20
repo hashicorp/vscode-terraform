@@ -1,6 +1,7 @@
 .vscode-test
 .vscode-test-web
 .wdio-vscode-service
+.changes
 language-configuration.json
 node_modules
 dist
@@ -10,3 +11,5 @@ snippets
 src/test/fixtures
 src/test/integration/*/workspace/**
 syntaxes
+docs
+*.md
