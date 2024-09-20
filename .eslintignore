@@ -1,9 +1,0 @@
-.vscode-test
-.wdio-vscode-service
-**/*.d.ts
-**/*/__mocks__
-node_modules
-dist
-out
-src/test/fixtures
-src/test/integration/*/workspace/**
