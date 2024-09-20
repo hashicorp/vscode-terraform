@@ -208,11 +208,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   client.registerFeatures([
     new LanguageStatusFeature(client, reporter, outputChannel),
     new CustomSemanticTokens(client, manifest),
-    new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client, reporter)),
-    new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client, reporter)),
-    new TelemetryFeature(client, reporter),
+    new ModuleProvidersFeature(context, client, new ModuleProvidersDataProvider(context, client, reporter)),
+    new ModuleCallsFeature(context, client, new ModuleCallsDataProvider(context, client, reporter)),
+    new TelemetryFeature(context, client, reporter),
     new ShowReferencesFeature(client),
-    new TerraformVersionFeature(client, reporter, outputChannel),
+    new TerraformVersionFeature(context, client, reporter, outputChannel),
   ]);
 
   // these need the LS to function, so are only registered if enabled
