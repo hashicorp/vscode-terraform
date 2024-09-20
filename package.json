@@ -949,10 +949,9 @@
     "test": "vscode-test",
     "wdio": "npm run compile && wdio run ./src/test/e2e/wdio.conf.ts",
     "lint": "eslint",
-    "prettier": "prettier \"**/*.+(js|json|ts)\"",
-    "format": "npm run prettier -- --write",
+    "format": "prettier --write .",
     "check-types": "tsc --noEmit",
-    "check-format": "npm run prettier -- --check",
+    "check-format": "prettier --check .",
     "changelog:build": "changie batch auto && changie merge && npm i --package-lock-only"
   },
   "dependencies": {
