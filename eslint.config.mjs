@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import pluginJs from '@eslint/js';
 import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
