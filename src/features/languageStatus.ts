@@ -4,7 +4,6 @@
  */
 
 import * as vscode from 'vscode';
-import TelemetryReporter from '@vscode/extension-telemetry';
 import { BaseLanguageClient, ClientCapabilities, FeatureState, StaticFeature } from 'vscode-languageclient';
 
 import { ExperimentalClientCapabilities } from './types';
@@ -15,7 +14,6 @@ export class LanguageStatusFeature implements StaticFeature {
 
   constructor(
     private client: BaseLanguageClient,
-    private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
   ) {}
 
@@ -35,7 +33,6 @@ export class LanguageStatusFeature implements StaticFeature {
   }
 
   public initialize(): void {
-    this.reporter.sendTelemetryEvent('startClient');
     this.outputChannel.appendLine('Started client');
 
     const initializeResult = this.client.initializeResult;

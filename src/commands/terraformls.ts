@@ -12,7 +12,7 @@ export class TerraformLSCommands implements vscode.Disposable {
   constructor() {
     this.commands = [
       vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
-        if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
+        if (event.affectsConfiguration('opentofu') || event.affectsConfiguration('terraform-ls')) {
           const reloadMsg = 'Reload VSCode window to apply language server changes';
           const selected = await vscode.window.showInformationMessage(reloadMsg, 'Reload');
           if (selected === 'Reload') {
@@ -20,23 +20,23 @@ export class TerraformLSCommands implements vscode.Disposable {
           }
         }
       }),
-      vscode.commands.registerCommand('terraform.enableLanguageServer', async () => {
-        if (config('terraform').get('languageServer.enable') === true) {
+      vscode.commands.registerCommand('opentofu.enableLanguageServer', async () => {
+        if (config('opentofu').get('languageServer.enable') === true) {
           return;
         }
 
-        const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer.enable');
+        const scope: vscode.ConfigurationTarget = getScope('opentofu', 'languageServer.enable');
 
-        await config('terraform').update('languageServer.enable', true, scope);
+        await config('opentofu').update('languageServer.enable', true, scope);
       }),
-      vscode.commands.registerCommand('terraform.disableLanguageServer', async () => {
-        if (config('terraform').get('languageServer.enable') === false) {
+      vscode.commands.registerCommand('opentofu.disableLanguageServer', async () => {
+        if (config('opentofu').get('languageServer.enable') === false) {
           return;
         }
 
-        const scope: vscode.ConfigurationTarget = getScope('terraform', 'languageServer.enable');
+        const scope: vscode.ConfigurationTarget = getScope('opentofu', 'languageServer.enable');
 
-        await config('terraform').update('languageServer.enable', false, scope);
+        await config('opentofu').update('languageServer.enable', false, scope);
       }),
       vscode.commands.registerCommand('terraform.openSettingsJson', async () => {
         // this opens the default settings window (either UI or json)

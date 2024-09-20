@@ -1,0 +1,6 @@
+{
+  "opentofu.languageServer.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  }
+}

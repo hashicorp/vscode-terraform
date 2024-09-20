@@ -19,7 +19,10 @@ const CLIENT_MODULE_CALLS_CMD_ID = 'client.refreshModuleCalls';
 export class ModuleCallsFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
-  constructor(private client: BaseLanguageClient, private view: ModuleCallsDataProvider) {}
+  constructor(
+    private client: BaseLanguageClient,
+    private view: ModuleCallsDataProvider,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}
@@ -38,7 +41,7 @@ export class ModuleCallsFeature implements StaticFeature {
   }
 
   public async initialize(capabilities: ServerCapabilities): Promise<void> {
-    this.disposables.push(vscode.window.registerTreeDataProvider('terraform.modules', this.view));
+    this.disposables.push(vscode.window.registerTreeDataProvider('opentofu.modules', this.view));
 
     if (!capabilities.experimental?.refreshModuleCalls) {
       console.log('Server does not support client.refreshModuleCalls');

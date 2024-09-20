@@ -5,7 +5,7 @@ assignees: []
 body:
   - type: markdown
     attributes:
-      value: We use GitHub issues for tracking bugs and enhancements. For questions, please use [the community forum](https://discuss.hashicorp.com/c/terraform-core/terraform-editor-integrations/) where there are more people ready to help.
+      value: We use GitHub issues for tracking bugs and enhancements. For questions, please use [the github discussions](https://github.com/gamunu/vscode-opentofu/discussions) where there are more people ready to help.
 
   - type: textarea
     id: description
@@ -23,8 +23,8 @@ body:
         Include links to affected or related documentation page(s) or issues.
         Guide to referencing Github issues: https://help.github.com/articles/basic-writing-and-formatting-syntax/#referencing-issues-and-pull-requests
       placeholder: |
-        - https://github.com/hashicorp/vscode-terraform/blob/main/README.md#formatting
-        - https://github.com/hashicorp/vscode-terraform/blob/main/docs/settings-migration.md
+        - https://github.com/gamunu/vscode-opentofu/blob/main/README.md#formatting
+        - https://github.com/gamunu/vscode-opentofu/blob/main/docs/settings-migration.md
         - #123
         - #456
     validations:

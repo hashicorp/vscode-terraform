@@ -15,12 +15,12 @@ export async function getServerOptions(
 ): Promise<ServerOptions> {
   let serverOptions: ServerOptions;
 
-  const port = config('terraform').get<number>('languageServer.tcp.port');
+  const port = config('opentofu').get<number>('languageServer.tcp.port');
   if (port) {
-    const inspect = vscode.workspace.getConfiguration('terraform').inspect('languageServer.path');
+    const inspect = vscode.workspace.getConfiguration('opentofu').inspect('languageServer.path');
     if (inspect !== undefined && (inspect.globalValue || inspect.workspaceFolderValue || inspect.workspaceValue)) {
       vscode.window.showWarningMessage(
-        'You cannot use terraform.languageServer.tcp.port with terraform.languageServer.path. Ignoring terraform.languageServer.path and proceeding to connect via TCP',
+        'You cannot use opentofu.languageServer.tcp.port with opentofu.languageServer.path. Ignoring opentofu.languageServer.path and proceeding to connect via TCP',
       );
     }
 
@@ -41,7 +41,7 @@ export async function getServerOptions(
   }
 
   const cmd = await lsPath.resolvedPathToBinary();
-  const serverArgs = config('terraform').get<string[]>('languageServer.args', []);
+  const serverArgs = config('opentofu').get<string[]>('languageServer.args', []);
   outputChannel.appendLine(`Launching language server: ${cmd} ${serverArgs.join(' ')}`);
   const executable: Executable = {
     command: cmd,

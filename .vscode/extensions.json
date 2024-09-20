@@ -1,9 +1,10 @@
 {
   "recommendations": [
+    "amodio.tsl-problem-matcher",
+    "connor4312.esbuild-problem-matchers",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "redhat.vscode-yaml",
-    "amodio.tsl-problem-matcher",
-    "ms-vscode.extension-test-runner"
+    "ms-vscode.extension-test-runner",
+    "redhat.vscode-yaml"
   ]
 }

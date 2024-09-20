@@ -25,7 +25,7 @@ const configs = testSuiteFolderNames.map(folderName => ({
     ui: 'tdd',
     color: true,
     timeout: 100000,
-    require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites
+//    require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites, but not needed for opentofu
   },
 }));
 

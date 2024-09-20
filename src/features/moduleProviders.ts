@@ -19,7 +19,10 @@ export const CLIENT_MODULE_PROVIDERS_CMD_ID = 'client.refreshModuleProviders';
 export class ModuleProvidersFeature implements StaticFeature {
   private disposables: vscode.Disposable[] = [];
 
-  constructor(private client: BaseLanguageClient, private view: ModuleProvidersDataProvider) {}
+  constructor(
+    private client: BaseLanguageClient,
+    private view: ModuleProvidersDataProvider,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}
@@ -38,7 +41,7 @@ export class ModuleProvidersFeature implements StaticFeature {
   }
 
   public async initialize(capabilities: ServerCapabilities): Promise<void> {
-    this.disposables.push(vscode.window.registerTreeDataProvider('terraform.providers', this.view));
+    this.disposables.push(vscode.window.registerTreeDataProvider('opentofu.providers', this.view));
 
     if (!capabilities.experimental?.refreshModuleProviders) {
       console.log("Server doesn't support client.refreshModuleProviders");
