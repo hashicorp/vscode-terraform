@@ -1,4 +1,4 @@
-name: "Add Copyright Headers"
+name: 'Add Copyright Headers'
 
 on:
   pull_request_target:
