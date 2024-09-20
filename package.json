@@ -942,7 +942,7 @@
     "web": "npm run compile && vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ./src/test/fixtures",
     "web:serve": "npx serve --cors -l 5001",
     "web:tunnel": "npx localtunnel -p 5001",
-    "download:artifacts": "ts-node ./build/downloader.ts",
+    "download:artifacts": "node ./build/downloader.mjs",
     "vscode:prepublish": "npm run compile:prod",
     "package": "vsce package",
     "pretest": "npm run compile:tests && npm run compile && npm run lint",
