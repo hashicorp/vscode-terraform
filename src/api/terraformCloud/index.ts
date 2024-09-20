@@ -24,17 +24,20 @@ export let TerraformCloudHost = 'app.terraform.io';
 export let TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
 export let TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
 
+// eslint-disable-next-line @typescript-eslint/require-await
 const jsonHeader = pluginHeader('Content-Type', async () => 'application/vnd.api+json');
 
 // TODO: Consider passing it as a dependency instead of global access to make testing easier
 const extVersion = vscode.extensions.getExtension('hashicorp.terraform')?.packageJSON.version;
 const userAgentHeader = pluginHeader(
   'User-Agent',
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => `VSCode/${vscode.version} hashicorp.terraform/${extVersion}`,
 );
 
 function pluginLogger(): ZodiosPlugin {
   return {
+    // eslint-disable-next-line @typescript-eslint/require-await
     response: async (_api, _config, response) => {
       console.log(response);
       return response;
@@ -44,6 +47,7 @@ function pluginLogger(): ZodiosPlugin {
 
 function responseHeaderLogger(): ZodiosPlugin {
   return {
+    // eslint-disable-next-line @typescript-eslint/require-await
     response: async (api, config, response) => {
       console.log('Response appname:', response.headers['tfp-appname']);
       console.log('Response api-version:', response.headers['tfp-api-version']);
@@ -89,7 +93,8 @@ export const tokenPluginId = apiClient.use(
       const session = await vscode.authentication.getSession(TerraformCloudAuthenticationProvider.providerID, [], {
         createIfNone: true,
       });
-      return session ? session.accessToken : undefined;
+      // return session ? session.accessToken : undefined;
+      return session.accessToken;
     },
   }),
 );

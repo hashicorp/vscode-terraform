@@ -17,9 +17,8 @@ import { ExperimentalClientCapabilities } from './types';
 const CLIENT_MODULE_CALLS_CMD_ID = 'client.refreshModuleCalls';
 
 export class ModuleCallsFeature implements StaticFeature {
-  private disposables: vscode.Disposable[] = [];
-
   constructor(
+    private context: vscode.ExtensionContext,
     private client: BaseLanguageClient,
     private view: ModuleCallsDataProvider,
   ) {}
@@ -34,30 +33,33 @@ export class ModuleCallsFeature implements StaticFeature {
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities['experimental']) {
-      capabilities['experimental'] = {};
+    if (!capabilities.experimental) {
+      capabilities.experimental = {};
     }
-    capabilities['experimental']['refreshModuleCallsCommandId'] = CLIENT_MODULE_CALLS_CMD_ID;
+    capabilities.experimental.refreshModuleCallsCommandId = CLIENT_MODULE_CALLS_CMD_ID;
   }
 
-  public async initialize(capabilities: ServerCapabilities): Promise<void> {
-    this.disposables.push(vscode.window.registerTreeDataProvider('terraform.modules', this.view));
+  public initialize(capabilities: ServerCapabilities): void {
+    this.context.subscriptions.push(vscode.window.registerTreeDataProvider('terraform.modules', this.view));
 
     if (!capabilities.experimental?.refreshModuleCalls) {
       console.log('Server does not support client.refreshModuleCalls');
-      await vscode.commands.executeCommand('setContext', 'terraform.modules.supported', false);
+      vscode.commands.executeCommand('setContext', 'terraform.modules.supported', false);
       return;
     }
 
-    await vscode.commands.executeCommand('setContext', 'terraform.modules.supported', true);
+    vscode.commands.executeCommand('setContext', 'terraform.modules.supported', true);
 
     const d = this.client.onRequest(CLIENT_MODULE_CALLS_CMD_ID, () => {
-      this.view?.refresh();
+      this.view.refresh();
     });
-    this.disposables.push(d);
+
+    this.context.subscriptions.push(d);
+
+    return;
   }
 
   public dispose(): void {
-    this.disposables.forEach((d: vscode.Disposable) => d.dispose());
+    //
   }
 }

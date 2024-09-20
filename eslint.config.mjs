@@ -24,6 +24,13 @@ export default [
     },
   },
   {
+    files: ['src/api/**/*.ts'],
+    rules: {
+      // We do not want to change HCP API contracts
+      '@typescript-eslint/consistent-indexed-object-style': 'off',
+    },
+  },
+  {
     files: ['**/*.ts'],
     rules: {
       curly: 'warn',
@@ -42,13 +49,6 @@ export default [
         },
       ],
       '@typescript-eslint/class-literal-property-style': ['error', 'getters'],
-    },
-  },
-  {
-    files: ['src/api/**/*.ts'],
-    rules: {
-      // We do not want to change HCP API contracts
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
     },
   },
   {

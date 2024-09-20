@@ -19,7 +19,7 @@ import axios from 'axios';
 import { apiErrorsToString } from '../../api/terraformCloud/errors';
 
 export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+  private readonly didChangeTreeData = new vscode.EventEmitter<undefined | vscode.TreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private projectFilter: string | undefined;
   private pageSize = 50;
@@ -60,11 +60,11 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         const orgURL = `${TerraformCloudWebUrl}/${organization}`;
         vscode.env.openExternal(vscode.Uri.parse(orgURL));
       }),
-      vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', () => {
+      vscode.commands.registerCommand('terraform.cloud.workspaces.filterByProject', async () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-filter');
-        this.filterByProject();
+        await this.filterByProject();
       }),
-      vscode.commands.registerCommand('terraform.cloud.workspaces.loadMore', async () => {
+      vscode.commands.registerCommand('terraform.cloud.workspaces.loadMore', () => {
         this.reporter.sendTelemetryEvent('tfc-workspaces-loadMore');
         this.refresh();
         this.runDataProvider.refresh();
@@ -73,7 +73,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   }
 
   refresh(): void {
-    this.didChangeTreeData.fire();
+    this.didChangeTreeData.fire(undefined);
   }
 
   // This resets the internal cache, e.g. after logout
@@ -115,7 +115,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getChildren(element?: any): vscode.ProviderResult<vscode.TreeItem[]> {
     if (element) {
-      return [element];
+      return [element as vscode.TreeItem];
     }
 
     return this.buildChildren();
@@ -124,7 +124,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   private async buildChildren() {
     try {
       this.cache = [...this.cache, ...(await this.getWorkspaces())];
-    } catch (error) {
+    } catch {
       return [];
     }
 
@@ -137,7 +137,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
   }
 
   private async getWorkspaces(): Promise<vscode.TreeItem[]> {
-    const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+    const organization: string = this.ctx.workspaceState.get('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
     }
@@ -208,10 +208,8 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       const projects = projectResponse.data;
 
       const items: WorkspaceTreeItem[] = [];
-      for (let index = 0; index < workspaces.length; index++) {
-        const workspace = workspaces[index];
-
-        const project = projects.find((p) => p.id === workspace.relationships['project']?.data?.id);
+      for (const workspace of workspaces) {
+        const project = projects.find((p) => p.id === workspace.relationships.project?.data?.id);
         const projectName = project ? project.attributes.name : '';
 
         const lastRunId = workspace.relationships['latest-run']?.data?.id;
@@ -237,13 +235,13 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       let message = `Failed to list workspaces in ${organization}: `;
 
       if (error instanceof ZodiosError) {
-        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        await handleZodiosError(error, message, this.outputChannel, this.reporter);
         return [];
       }
 
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
-          handleAuthError();
+          await handleAuthError();
           return [];
         }
 
@@ -326,7 +324,7 @@ export class WorkspaceTreeItem extends vscode.TreeItem {
     const statusMsg = GetRunStatusMessage(this.lastRun?.status);
     const updatedAt = RelativeTimeFormat(this.attributes['updated-at']);
     const text = `
-## $(${this.iconPath.id}) [${this.attributes.name}](${this.weblink})
+## $(${this.iconPath.id}) [${this.attributes.name}](${this.weblink.toString()})
 
 #### ID: *${this.id}*
 

@@ -60,7 +60,9 @@ export class ServerPath {
       if (this.customBinPath) {
         extraHint = `. Check "terraform.languageServer.path" in your settings.`;
       }
-      throw new Error(`Unable to launch language server: ${err instanceof Error ? err.message : err}${extraHint}`);
+      throw new Error(
+        `Unable to launch language server: ${err instanceof Error ? err.message : (err as string)}${extraHint}`,
+      );
     }
 
     return cmd;
