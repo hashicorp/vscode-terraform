@@ -9,13 +9,12 @@ import { LanguageClient } from 'vscode-languageclient/node';
 import * as terraform from '../api/terraform/terraform';
 
 export class TerraformCommands implements vscode.Disposable {
-  private commands: vscode.Disposable[];
-
   constructor(
     private client: LanguageClient,
     private reporter: TelemetryReporter,
+    private context: vscode.ExtensionContext,
   ) {
-    this.commands = [
+    this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.init', async () => {
         await terraform.initAskUserCommand(this.client, this.reporter);
       }),
@@ -31,10 +30,10 @@ export class TerraformCommands implements vscode.Disposable {
       vscode.commands.registerCommand('terraform.validate', async () => {
         await terraform.command('validate', this.client, this.reporter);
       }),
-    ];
+    );
   }
 
   dispose() {
-    this.commands.forEach((c) => c.dispose());
+    //
   }
 }

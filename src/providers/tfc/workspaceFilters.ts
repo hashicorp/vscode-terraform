@@ -71,12 +71,12 @@ export class ProjectsAPIResource implements APIResource {
       let message = 'Failed to fetch projects';
 
       if (error instanceof ZodiosError) {
-        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        await handleZodiosError(error, message, this.outputChannel, this.reporter);
         return picks;
       }
 
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        handleAuthError();
+        await handleAuthError();
         return picks;
       } else if (isErrorFromAlias(apiClient.api, 'listProjects', error)) {
         message += apiErrorsToString(error.response.data.errors);

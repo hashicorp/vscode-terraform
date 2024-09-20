@@ -31,7 +31,7 @@ class ModuleProviderItem extends vscode.TreeItem {
 }
 
 export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<ModuleProviderItem> {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | ModuleProviderItem>();
+  private readonly didChangeTreeData = new vscode.EventEmitter<ModuleProviderItem | undefined>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
 
   constructor(
@@ -40,8 +40,10 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     private reporter: TelemetryReporter,
   ) {
     ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.providers.refreshList', () => this.refresh()),
-      vscode.window.onDidChangeActiveTextEditor(async () => {
+      vscode.commands.registerCommand('terraform.providers.refreshList', () => {
+        this.refresh();
+      }),
+      vscode.window.onDidChangeActiveTextEditor(() => {
         // most of the time this is called when the user switches tabs or closes the file
         // we already check for state inside the getprovider function, so we can just call refresh here
         this.refresh();
@@ -55,7 +57,7 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
   }
 
   refresh(): void {
-    this.didChangeTreeData.fire();
+    this.didChangeTreeData.fire(undefined);
   }
 
   getTreeItem(element: ModuleProviderItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -91,11 +93,11 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
       return [];
     }
 
-    if (this.client === undefined) {
-      // connection to terraform-ls failed
-      await vscode.commands.executeCommand('setContext', 'terraform.providers.lspConnected', false);
-      return [];
-    }
+    // if (this.client === undefined) {
+    //   // connection to terraform-ls failed
+    //   await vscode.commands.executeCommand('setContext', 'terraform.providers.lspConnected', false);
+    //   return [];
+    // }
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
@@ -103,11 +105,11 @@ export class ModuleProvidersDataProvider implements vscode.TreeDataProvider<Modu
     let response: terraform.ModuleProvidersResponse;
     try {
       response = await terraform.moduleProviders(documentURI.toString(), this.client, this.reporter);
-      if (response === null) {
-        // no response from terraform-ls
-        await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', true);
-        return [];
-      }
+      // if (response === null) {
+      //   // no response from terraform-ls
+      //   await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', true);
+      //   return [];
+      // }
     } catch {
       // error from terraform-ls
       await vscode.commands.executeCommand('setContext', 'terraform.providers.noResponse', true);
