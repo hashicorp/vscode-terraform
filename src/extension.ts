@@ -43,6 +43,8 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-vars' },
   { scheme: 'file', language: 'terraform-stack' },
   { scheme: 'file', language: 'terraform-deploy' },
+  { scheme: 'file', language: 'terraform-test' },
+  { scheme: 'file', language: 'terraform-mock' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
 const tfcOutputChannel = vscode.window.createOutputChannel('HCP Terraform');
@@ -84,6 +86,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tfvars'),
         vscode.workspace.createFileSystemWatcher('**/*.tfstack.hcl'),
         vscode.workspace.createFileSystemWatcher('**/*.tfdeploy.hcl'),
+        vscode.workspace.createFileSystemWatcher('**/*.tftest.hcl'),
+        vscode.workspace.createFileSystemWatcher('**/*.tfmock.hcl'),
       ],
     },
     diagnosticCollectionName: 'HashiCorpTerraform',
