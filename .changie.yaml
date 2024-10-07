@@ -24,16 +24,16 @@ custom:
     type: int
     minInt: 1
 kinds:
-- label: ENHANCEMENTS
-  auto: minor
-- label: BUG FIXES
-  auto: patch
-- label: INTERNAL
-  auto: patch
-- label: NOTES
-  auto: patch
-- label: BREAKING CHANGES
-  auto: minor
+  - label: ENHANCEMENTS
+    auto: minor
+  - label: BUG FIXES
+    auto: patch
+  - label: INTERNAL
+    auto: patch
+  - label: NOTES
+    auto: patch
+  - label: BREAKING CHANGES
+    auto: minor
 newlines:
   afterKind: 1
   beforeKind: 1

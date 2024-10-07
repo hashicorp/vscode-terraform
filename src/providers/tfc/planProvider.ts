@@ -18,7 +18,7 @@ import { PlanTreeItem } from './runProvider';
 import { DiagnosticSummary, DiagnosticsItem, OutputsItem, isItemWithChildren, ItemWithChildren } from './logHelpers';
 
 export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+  private readonly didChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private plan: PlanTreeItem | undefined;
 
@@ -37,14 +37,14 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
 
   refresh(plan?: PlanTreeItem): void {
     this.plan = plan;
-    this.didChangeTreeData.fire();
+    this.didChangeTreeData.fire(undefined);
   }
 
   getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
-  getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
+  getChildren(element?: vscode.TreeItem): vscode.ProviderResult<vscode.TreeItem[]> {
     if (!this.plan) {
       return [];
     }
@@ -52,7 +52,7 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
     if (!element) {
       try {
         return this.getRootChildren(this.plan);
-      } catch (error) {
+      } catch {
         return [];
       }
     }
@@ -66,16 +66,16 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
     const planLog = await this.getPlanFromUrl(plan);
 
     const items: vscode.TreeItem[] = [];
-    if (planLog && planLog.plannedChanges) {
+    if (planLog?.plannedChanges) {
       items.push(new PlannedChangesItem(planLog.plannedChanges, planLog.changeSummary));
     }
-    if (planLog && planLog.driftChanges) {
+    if (planLog?.driftChanges) {
       items.push(new DriftChangesItem(planLog.driftChanges, planLog.driftSummary));
     }
-    if (planLog && planLog.outputs) {
+    if (planLog?.outputs) {
       items.push(new OutputsItem(planLog.outputs));
     }
-    if (planLog && planLog.diagnostics && planLog.diagnosticSummary && planLog.diagnostics.length > 0) {
+    if (planLog?.diagnostics && planLog.diagnosticSummary && planLog.diagnostics.length > 0) {
       items.push(new DiagnosticsItem(planLog.diagnostics, planLog.diagnosticSummary));
     }
     return items;
@@ -161,7 +161,7 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
           }
 
           // TODO: logLine.type=test_*
-        } catch (e) {
+        } catch {
           // skip any non-JSON lines, like Terraform version output
           continue;
         }
@@ -172,13 +172,13 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
       let message = `Failed to obtain plan from ${plan.logReadUrl}: `;
 
       if (error instanceof ZodiosError) {
-        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        await handleZodiosError(error, message, this.outputChannel, this.reporter);
         return;
       }
 
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
-          handleAuthError();
+          await handleAuthError();
           return;
         }
       }
