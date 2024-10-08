@@ -1,6 +1,0 @@
-kind: BUG FIXES
-body: Fixes parsing expressions containing an open curly brace as blocks
-time: 2024-09-24T09:47:40.335136-04:00
-custom:
-    Issue: "149"
-    Repository: syntax
