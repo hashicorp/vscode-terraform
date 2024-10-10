@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Enable language status bar for Test Language
-time: 2024-09-23T17:44:16.422902+02:00
-custom:
-    Issue: "1847"
-    Repository: vscode-terraform
