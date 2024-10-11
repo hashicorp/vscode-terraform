@@ -80,6 +80,74 @@ INTERNAL:
 * Add development launch target for extensionHost ([#1805](https://github.com/hashicorp/vscode-terraform/issues/1805))
 * Replace webpack with esbuild ([#1807](https://github.com/hashicorp/vscode-terraform/issues/1807))
 
+## 2.33.0 (2024-10-14)
+
+NOTES:
+
+This release adds support for Terraform Stack and Deployment files. This provides intelligent completion for Terraform Stacks blocks and attributes in Stack and Deployment files, including suggesting only valid completions for variables in component and deployment blocks. Hover documentation for all Stack and Deploy blocks, with helpful type and usage information. Early Validation has been extended to produce diagnostics along with syntax validation for Stack and Deployment files. Reference support allows code navigation in and between Stack and Deploy files. This also provides formatting support for both Stack and Deploy files.
+
+This release also adds support for Terraform Test and Mock files. This provides syntax highlighting, completion for blocks and attributes, hover documentation and formatting support.
+
+BREAKING CHANGES:
+
+* Remove static snippets ([#1830](https://github.com/hashicorp/vscode-terraform/issues/1830))
+
+ENHANCEMENTS:
+
+* Add initial support for Terraform Stacks files and Deployment files ([#1745](https://github.com/hashicorp/terraform-ls/issues/1745))
+* Bump hashicorp/syntax from 0.5.0 to 0.7.0 ([#1820](https://github.com/hashicorp/vscode-terraform/issues/1820))
+* Document Terraform Stacks support ([#1829](https://github.com/hashicorp/vscode-terraform/issues/1829))
+* Enable language status bar for Stack language ([#1835](https://github.com/hashicorp/vscode-terraform/issues/1835))
+* Add icon for .terraform-version file ([#1836](https://github.com/hashicorp/vscode-terraform/issues/1836))
+* Parse and load Stack and Deploy metadata ([terraform-ls#1761](https://github.com/hashicorp/terraform-ls/issues/1761))
+* Load Stack component sources from metadata ([terraform-ls#1768](https://github.com/hashicorp/terraform-ls/issues/1768))
+* Enable early validation for Terraform Stack files ([terraform-ls#1776](https://github.com/hashicorp/terraform-ls/issues/1776))
+* Merge stack configuration schema with dynamic schema based on used components source and providers ([terraform-ls#1770](https://github.com/hashicorp/terraform-ls/issues/1770))
+* Merge deployment configuration schema with dynamic schema based on available variables ([terraform-ls#1780](https://github.com/hashicorp/terraform-ls/issues/1780))
+* Support Terraform functions in stack files ([terraform-ls#1781](https://github.com/hashicorp/terraform-ls/issues/1781))
+* Add DecodeReferenceOrigins and DecodeReferenceTargets jobs ([terraform-ls#1786](https://github.com/hashicorp/terraform-ls/issues/1786))
+* Enable component references ([terraform-schema#386](https://github.com/hashicorp/terraform-schema/issues/386))
+* Support references for identity tokens and their attributes ([terraform-schema#388](https://github.com/hashicorp/terraform-schema/issues/388))
+* Enable references for variables in deployment inputs (Deploy) ([terraform-schema#389](https://github.com/hashicorp/terraform-schema/issues/389))
+* Enable component references ([terraform-schema#386](https://github.com/hashicorp/terraform-schema/issues/386))
+* Enable ephemeral values for variable ([terraform-schema#387](https://github.com/hashicorp/terraform-schema/issues/387))
+* Enable output references ([terraform-schema#384](https://github.com/hashicorp/terraform-schema/issues/384))
+* Enable provider references ([terraform-schema#385](https://github.com/hashicorp/terraform-schema/issues/385))
+* Add Address to variable block schema for stacks to enable references ([terraform-schema#383](https://github.com/hashicorp/terraform-schema/issues/383))
+* Add deployments store block schema ([terraform-schema#382](https://github.com/hashicorp/terraform-schema/issues/382))
+* Add input block schema and deprecate variable block ([terraform-schema#381](https://github.com/hashicorp/terraform-schema/issues/381))
+* Validate Stack and Deployment files for unreferenced origins ([terraform-ls#1797](https://github.com/hashicorp/terraform-ls/issues/1797))
+* Early decode deployment config to support references to store blocks ([terraform-schema#390](https://github.com/hashicorp/terraform-schema/issues/390))
+* Support a subset of functions in deployment configurations ([terraform-ls#1799](https://github.com/hashicorp/terraform-ls/issues/1799))
+* Support description attribute for orchestration rule block ([terraform-schema#393](https://github.com/hashicorp/terraform-schema/issues/393))
+* Support locals in stack and deploy configs ([terraform-schema#395](https://github.com/hashicorp/terraform-schema/issues/395))
+* Support depends_on attribute in component blocks ([terraform-schema#392](https://github.com/hashicorp/terraform-schema/issues/392))
+* Support provider defined functions in stacks configuration ([#1804](https://github.com/hashicorp/terraform-ls/issues/1804))
+* Support description attribute for orchestration rule block ([terraform-schema#393](https://github.com/hashicorp/terraform-schema/issues/393))
+* Support locals in stack and deploy configs ([terraform-schema#395](https://github.com/hashicorp/terraform-schema/issues/395))
+* Support depends_on attribute in component blocks ([terraform-schema#392](https://github.com/hashicorp/terraform-schema/issues/392))
+* Support context references within orchestrate blocks in deployment configuration ([#1813](https://github.com/hashicorp/terraform-ls/issues/1813))
+* Initial support for Terraform Test and Mock files ([#1812](https://github.com/hashicorp/vscode-terraform/issues/1812))
+* Enable language status bar for Test Language ([#1847](https://github.com/hashicorp/vscode-terraform/issues/1847))
+* Static schema support for Terraform Test and Mock files ([terraform-ls#1782](https://github.com/hashicorp/terraform-ls/issues/1782))
+
+BUG FIXES:
+
+* Update HCP Terraform readme with corrected gifs ([#1839](https://github.com/hashicorp/vscode-terraform/issues/1839))
+* Fixes parsing expressions containing an open curly brace as blocks ([syntax#149](https://github.com/hashicorp/syntax/issues/149))
+* Fix panic on blocks with no labels during validation of label name ([terraform-ls#1791](https://github.com/hashicorp/terraform-ls/issues/1791))
+* Fix type for provider references in component blocks ([terraform-schema#391](https://github.com/hashicorp/terraform-schema/issues/391))
+* Support sensitive attribute for stacks variables ([terraform-schema#401](https://github.com/hashicorp/terraform-schema/issues/401))
+* Allow any type as inputs to components per default ([terraform-schema#400](https://github.com/hashicorp/terraform-schema/issues/400))
+
+INTERNAL:
+
+* Add development launch target for extensionHost ([#1805](https://github.com/hashicorp/vscode-terraform/issues/1805))
+* Replace webpack with esbuild ([#1807](https://github.com/hashicorp/vscode-terraform/issues/1807))
+* Load embedded provider schemas for providers found in stacks files into state ([terraform-ls#1763](https://github.com/hashicorp/terraform-ls/issues/1763))
+* Bump axios to 1.7.4 ([#1818](https://github.com/hashicorp/vscode-terraform/issues/1818))
+* Bump braces to 3.0.3 ([#1819](https://github.com/hashicorp/vscode-terraform/issues/1819))
+
 ## 2.32.2024070910 (2024-07-09)
 
 ENHANCEMENTS:
