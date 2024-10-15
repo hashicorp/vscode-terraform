@@ -20,7 +20,7 @@ changelog:
       labels:
         - dependencies
         - ci
-        - "*"
+        - '*'
   exclude:
     labels:
       - duplicate

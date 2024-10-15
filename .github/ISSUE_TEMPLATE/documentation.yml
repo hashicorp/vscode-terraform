@@ -1,5 +1,5 @@
-name: "Documentation issue or request"
-description: "Report an issue with our docs or Marketplace listing, or suggest additions and improvements to our documentation"
+name: 'Documentation issue or request'
+description: 'Report an issue with our docs or Marketplace listing, or suggest additions and improvements to our documentation'
 labels: [documentation]
 assignees: []
 body:
