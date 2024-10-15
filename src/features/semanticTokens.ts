@@ -38,7 +38,7 @@ export class CustomSemanticTokens implements StaticFeature {
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities): void {
-    if (!capabilities.textDocument || !capabilities.textDocument.semanticTokens) {
+    if (!capabilities.textDocument?.semanticTokens) {
       return;
     }
 

@@ -10,7 +10,6 @@ import { Utils } from 'vscode-uri';
 import { getActiveTextEditor } from './../../utils/vscode';
 import { clientSupportsCommand } from './../../utils/clientHelpers';
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface ModuleCaller {
   uri: string;
 }
@@ -53,7 +52,6 @@ export interface TerraformInfoResponse {
   required_version?: string;
   discovered_version?: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export async function terraformVersion(
   moduleUri: string,
@@ -121,7 +119,9 @@ export async function initAskUserCommand(client: LanguageClient, reporter: Telem
     const moduleUri = selected[0];
     const command = `terraform-ls.terraform.init`;
 
-    return execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    await execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
+    return;
   } catch (error) {
     if (error instanceof Error) {
       vscode.window.showErrorMessage(error.message);
@@ -187,7 +187,7 @@ async function terraformCommand(
     }
 
     const terminal =
-      vscode.window.terminals.find((t) => t.name === terminalName) ||
+      vscode.window.terminals.find((t) => t.name === terminalName) ??
       vscode.window.createTerminal({ name: `Terraform ${selectedModule}`, cwd: moduleURI });
     terminal.sendText(terraformCommand);
     terminal.show();
@@ -198,7 +198,8 @@ async function terraformCommand(
 
   const fullCommand = `terraform-ls.terraform.${command}`;
 
-  return execWorkspaceLSCommand<void>(fullCommand, selectedModule, client, reporter);
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+  await execWorkspaceLSCommand<void>(fullCommand, selectedModule, client, reporter);
 }
 
 async function execWorkspaceLSCommand<T>(
@@ -226,15 +227,12 @@ async function execWorkspaceLSCommand<T>(
     arguments: [`uri=${moduleUri}`],
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   return client.sendRequest<ExecuteCommandParams, T, void>(ExecuteCommandRequest.type, params);
 }
 
 async function getSelectedModule(moduleUri: vscode.Uri, moduleCallers: ModuleCaller[]): Promise<string | undefined> {
   let selectedModule: string;
-  if (moduleCallers === undefined) {
-    return moduleUri.toString();
-  }
-
   if (moduleCallers.length > 1) {
     const selected = await vscode.window.showQuickPick(
       moduleCallers.map((m) => m.uri),

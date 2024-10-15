@@ -17,14 +17,14 @@ import { config } from '../utils/vscode';
 
 import { ExperimentalClientCapabilities } from './types';
 
-type Position = {
+interface Position {
   line: number;
   character: number;
-};
+}
 
-type RefContext = {
+interface RefContext {
   includeDeclaration: boolean;
-};
+}
 
 const CLIENT_CMD_ID = 'client.showReferences';
 const VSCODE_SHOW_REFERENCES = 'editor.action.showReferences';
@@ -45,13 +45,13 @@ export class ShowReferencesFeature implements StaticFeature {
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (this.isEnabled === false) {
+    if (!this.isEnabled) {
       return;
     }
-    if (!capabilities['experimental']) {
-      capabilities['experimental'] = {};
+    if (!capabilities.experimental) {
+      capabilities.experimental = {};
     }
-    capabilities['experimental']['showReferencesCommandId'] = CLIENT_CMD_ID;
+    capabilities.experimental.showReferencesCommandId = CLIENT_CMD_ID;
   }
 
   public initialize(capabilities: ServerCapabilities): void {
@@ -59,13 +59,13 @@ export class ShowReferencesFeature implements StaticFeature {
       return;
     }
 
-    if (this.isEnabled === false) {
+    if (!this.isEnabled) {
       return;
     }
 
     const showRefs = vscode.commands.registerCommand(CLIENT_CMD_ID, async (pos: Position, refCtx: RefContext) => {
       const client = this._client;
-      const doc = vscode.window?.activeTextEditor?.document;
+      const doc = vscode.window.activeTextEditor?.document;
       if (!doc) {
         return;
       }

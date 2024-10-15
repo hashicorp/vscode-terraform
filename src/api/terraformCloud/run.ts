@@ -121,7 +121,7 @@ const includeParams = makeParameters([
           'configuration_version.ingress_attributes',
         ]),
       )
-      .transform((x) => x?.join(','))
+      .transform((x) => x.join(','))
       .optional(),
   },
 ]);

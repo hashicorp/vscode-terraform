@@ -11,16 +11,15 @@ import { ExperimentalClientCapabilities } from './types';
 
 const TELEMETRY_VERSION = 1;
 
-type TelemetryEvent = {
+interface TelemetryEvent {
   v: number;
   name: string;
-  properties: { [key: string]: unknown };
-};
+  properties: Record<string, unknown>;
+}
 
 export class TelemetryFeature implements StaticFeature {
-  private disposables: vscode.Disposable[] = [];
-
   constructor(
+    private context: vscode.ExtensionContext,
     private client: BaseLanguageClient,
     private reporter: TelemetryReporter,
   ) {}
@@ -35,21 +34,21 @@ export class TelemetryFeature implements StaticFeature {
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities['experimental']) {
-      capabilities['experimental'] = {};
+    if (!capabilities.experimental) {
+      capabilities.experimental = {};
     }
-    capabilities['experimental']['telemetryVersion'] = TELEMETRY_VERSION;
+    capabilities.experimental.telemetryVersion = TELEMETRY_VERSION;
   }
 
   public initialize(): void {
-    if (vscode.env.isTelemetryEnabled === false) {
+    if (!vscode.env.isTelemetryEnabled) {
       return;
     }
 
-    this.disposables.push(
+    this.context.subscriptions.push(
       this.client.onTelemetry((event: TelemetryEvent) => {
         if (event.v !== TELEMETRY_VERSION) {
-          console.log(`unsupported telemetry event: ${event}`);
+          console.log(`unsupported telemetry event: ${event.name}`);
           return;
         }
 
@@ -59,6 +58,6 @@ export class TelemetryFeature implements StaticFeature {
   }
 
   public dispose(): void {
-    this.disposables.forEach((d: vscode.Disposable) => d.dispose());
+    //
   }
 }

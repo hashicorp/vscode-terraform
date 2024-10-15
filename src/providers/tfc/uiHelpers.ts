@@ -26,6 +26,7 @@ export class APIQuickPick {
     this.quickPick = vscode.window.createQuickPick();
     this.quickPick.title = resource.title;
     this.quickPick.placeholder = resource.placeholder;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.quickPick.onDidChangeValue(this.onDidChangeValue, this);
     this.quickPick.ignoreFocusOut = resource.ignoreFocusOut ?? false;
   }
@@ -33,6 +34,7 @@ export class APIQuickPick {
   private onDidChangeValue() {
     clearTimeout(this.fetchTimerKey);
     // Only starts fetching after a user stopped typing for 300ms
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.fetchTimerKey = setTimeout(() => this.fetchResource.apply(this), 300);
   }
 
@@ -49,8 +51,12 @@ export class APIQuickPick {
     await this.fetchResource();
 
     const result = await new Promise<vscode.QuickPickItem | undefined>((c) => {
-      this.quickPick.onDidAccept(() => c(this.quickPick.selectedItems[0]));
-      this.quickPick.onDidHide(() => c(undefined));
+      this.quickPick.onDidAccept(() => {
+        c(this.quickPick.selectedItems[0]);
+      });
+      this.quickPick.onDidHide(() => {
+        c(undefined);
+      });
       this.quickPick.show();
     });
 
