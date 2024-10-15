@@ -38,13 +38,14 @@ export class OutputsItem extends vscode.TreeItem implements ItemWithChildren {
 class OutputChangeItem extends vscode.TreeItem {
   constructor(name: string, output: OutputChange) {
     super(name, vscode.TreeItemCollapsibleState.None);
-    this.id = 'output/' + output.action + '/' + name;
     if (output.action) {
+      this.id = 'output/' + output.action + '/' + name;
       this.iconPath = GetChangeActionIcon(output.action);
-    }
-    this.description = output.action;
-    if (output.sensitive) {
-      this.description += ' (sensitive)';
+
+      this.description = output.action;
+      if (output.sensitive) {
+        this.description += ' (sensitive)';
+      }
     }
   }
 }

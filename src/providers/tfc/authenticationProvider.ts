@@ -85,7 +85,7 @@ class TerraformCloudSessionHandler {
       return session;
     } catch (error) {
       if (error instanceof ZodiosError) {
-        handleZodiosError(error, 'Failed to process user details', this.outputChannel, this.reporter);
+        await handleZodiosError(error, 'Failed to process user details', this.outputChannel, this.reporter);
         throw error;
       }
 
@@ -151,9 +151,9 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     this.sessionPromise = this.sessionHandler.get();
 
     this.disposable = vscode.Disposable.from(
-      this.secretStorage.onDidChange((e) => {
+      this.secretStorage.onDidChange(async (e) => {
         if (e.key === this.sessionKey) {
-          this.checkForUpdates();
+          await this.checkForUpdates();
         }
       }),
     );
@@ -166,7 +166,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
 
   // This function is called first when `vscode.authentication.getSessions` is called.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async getSessions(scopes?: string[] | undefined): Promise<readonly vscode.AuthenticationSession[]> {
+  async getSessions(scopes?: string[]): Promise<readonly vscode.AuthenticationSession[]> {
     try {
       let session = await this.sessionPromise;
       if (!session) {
@@ -174,7 +174,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         return [];
       }
 
-      if (session.hostName === '' || session.hostName === undefined) {
+      if (session.hostName === '') {
         // we have a valid session but the hostname is not set
         // this is most likely an old session that needs to be updated
         // if hostname is undefined, we need to set it to the default
@@ -309,16 +309,16 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       for (const key of tfcCredentials.keys()) {
         setupPingClient(key);
         const instance = await pingClient.ping();
-        if (!instance) {
-          continue;
-        }
+        // if (!instance) {
+        //   continue;
+        // }
 
         hostnames.push({
           detail: key,
           label: `${instance.appName} instance`,
         });
       }
-    } catch (error) {
+    } catch {
       // If there is an error, it's likely that the credential file is not present
       // or there is an issue with the file itself
       // In this case, we'll just continue with just the default hostname
@@ -441,7 +441,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
       process.platform === 'win32'
         ? path.join(os.homedir(), 'AppData', 'Roaming', 'terraform.d', 'credentials.tfrc.json')
         : path.join(os.homedir(), '.terraform.d', 'credentials.tfrc.json');
-    if ((await this.pathExists(credFilePath)) === false) {
+    if (!(await this.pathExists(credFilePath))) {
       throw new TerraformCredentialFileError(
         'Terraform credential file not found. Please login using the Terraform CLI and try again.',
       );
@@ -451,7 +451,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     let text: string;
     try {
       text = Buffer.from(content).toString('utf8');
-    } catch (error) {
+    } catch {
       throw new TerraformCredentialFileError(
         'Failed to read configuration file. Please login using the Terraform CLI and try again',
       );
@@ -461,7 +461,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     try {
       const data = JSON.parse(text);
       return new Map<string, TerraformCloudToken>(Object.entries(data.credentials));
-    } catch (error) {
+    } catch {
       throw new TerraformCredentialFileError(
         `Failed to parse configuration file. Please login using the Terraform CLI and try again`,
       );
@@ -486,7 +486,7 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
     try {
       await vscode.workspace.fs.stat(vscode.Uri.file(filePath));
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }

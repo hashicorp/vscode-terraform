@@ -7,17 +7,6 @@ import { makeApi } from '@zodios/core';
 import { z } from 'zod';
 import { errors } from './errors';
 
-const hcpInstance = z.object({
-  appName: z.string().nullish(),
-  apiVersion: z.string().nullish(),
-});
-export type HCPInstance = z.infer<typeof hcpInstance>;
-
-const details = z.object({
-  data: hcpInstance,
-});
-export type HCPInstanceDetails = z.infer<typeof details>;
-
 export const pingEndpoints = makeApi([
   {
     method: 'get',
