@@ -1,5 +1,5 @@
-name: "Bug report"
-description: "Let us know about an unexpected error, a crash, or an incorrect behavior."
+name: 'Bug report'
+description: 'Let us know about an unexpected error, a crash, or an incorrect behavior.'
 labels: [bug]
 assignees: []
 body:
