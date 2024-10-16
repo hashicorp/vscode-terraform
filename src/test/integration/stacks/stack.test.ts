@@ -16,7 +16,7 @@ suite('stacks stack', () => {
       await activateExtension();
     });
 
-    teardown(async () => {
+    this.afterAll(async () => {
       await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 
@@ -50,8 +50,13 @@ suite('stacks stack', () => {
       await activateExtension();
     });
 
-    teardown(async () => {
+    this.afterAll(async () => {
       await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    });
+
+    this.afterEach(async () => {
+      // revert any changes made to the document after each test
+      await vscode.commands.executeCommand('workbench.action.files.revert');
     });
 
     test('language is registered', async () => {
@@ -60,17 +65,6 @@ suite('stacks stack', () => {
     });
 
     test('completes attributes of component block', async () => {
-      //       await vscode.window.activeTextEditor?.edit((editBuilder) => {
-      //         editBuilder.insert(
-      //           new vscode.Position(2, 0),
-      //           `
-      // component "test" {
-
-      // }
-      // `,
-      //         );
-      //       });
-
       const expected = [
         new vscode.CompletionItem('depends_on', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('for_each', vscode.CompletionItemKind.Property),
@@ -80,25 +74,23 @@ suite('stacks stack', () => {
         new vscode.CompletionItem('version', vscode.CompletionItemKind.Property),
       ];
 
-      // await testCompletion(docUri, new vscode.Position(4, 2), {
       await testCompletion(docUri, new vscode.Position(4, 12), {
         items: expected,
       });
     });
 
-    // TODO: not implemented yet
-    test.skip('completes inputs for local component', async () => {
+    test('completes inputs for local component', async () => {
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(
           new vscode.Position(2, 0),
           `
-    component "test" {
-      source = "./lambda"
+component "test" {
+  source = "./lambda"
 
-      inputs = {
+  inputs = {
 
-      }
-    }
+  }
+}
     `,
         );
       });
@@ -110,8 +102,22 @@ suite('stacks stack', () => {
       });
     });
 
-    // TODO: not implemented yet
-    test.skip('completes references to provider blocks', async () => {
+    test('completes providers for local component', async () => {
+      await vscode.window.activeTextEditor?.edit((editBuilder) => {
+        editBuilder.insert(
+          new vscode.Position(2, 0),
+          `
+component "test" {
+  source = "./lambda"
+
+  providers = {
+
+  }
+}
+    `,
+        );
+      });
+
       const expected = [
         new vscode.CompletionItem('archive', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('aws', vscode.CompletionItemKind.Property),
@@ -119,16 +125,34 @@ suite('stacks stack', () => {
         new vscode.CompletionItem('random', vscode.CompletionItemKind.Property),
       ];
 
-      await testCompletion(docUri, new vscode.Position(11, 22), {
+      await testCompletion(docUri, new vscode.Position(7, 4), {
         items: expected,
       });
     });
 
-    // TODO implement this
-    test.skip('completes references to provider block names', async () => {
-      const expected = [new vscode.CompletionItem('this', vscode.CompletionItemKind.Property)];
+    test('completes references to providers', async () => {
+      await vscode.window.activeTextEditor?.edit((editBuilder) => {
+        editBuilder.insert(
+          new vscode.Position(2, 0),
+          `
+component "test" {
+  source = "./lambda"
 
-      await testCompletion(docUri, new vscode.Position(11, 26), {
+  providers = {
+    aws = provider.
+  }
+}
+    `,
+        );
+      });
+
+      const expected = [
+        new vscode.CompletionItem('provider.archive.this', vscode.CompletionItemKind.Variable),
+        new vscode.CompletionItem('provider.aws.this', vscode.CompletionItemKind.Variable),
+        new vscode.CompletionItem('provider.local.this', vscode.CompletionItemKind.Variable),
+        new vscode.CompletionItem('provider.random.this', vscode.CompletionItemKind.Variable),
+      ];
+      await testCompletion(docUri, new vscode.Position(7, 19), {
         items: expected,
       });
     });
@@ -142,7 +166,7 @@ suite('stacks stack', () => {
       await activateExtension();
     });
 
-    teardown(async () => {
+    this.afterAll(async () => {
       await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 
