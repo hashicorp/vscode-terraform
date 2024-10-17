@@ -121,7 +121,6 @@ export async function initAskUserCommand(client: LanguageClient, reporter: Telem
 
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     await execWorkspaceLSCommand<void>(command, moduleUri.toString(), client, reporter);
-    return;
   } catch (error) {
     if (error instanceof Error) {
       vscode.window.showErrorMessage(error.message);

@@ -96,7 +96,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       showCollapseAll: true,
       treeDataProvider: workspaceDataProvider,
     });
-    const organization: string = this.context.workspaceState.get('terraform.cloud.organization', '');
+    const organization = this.context.workspaceState.get<string>('terraform.cloud.organization', '');
     workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
 
     this.context.subscriptions.push(
@@ -153,7 +153,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-new-workspace');
-        const organization: string = this.context.workspaceState.get('terraform.cloud.organization', '');
+        const organization = this.context.workspaceState.get<string>('terraform.cloud.organization', '');
         if (organization === '') {
           return [];
         }
