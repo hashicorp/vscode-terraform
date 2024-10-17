@@ -7,8 +7,10 @@ import * as vscode from 'vscode';
 import { config, getScope } from '../utils/vscode';
 
 export class TerraformLSCommands implements vscode.Disposable {
-  constructor(private context: vscode.ExtensionContext) {
-    this.context.subscriptions.push(
+  private commands: vscode.Disposable[];
+
+  constructor() {
+    this.commands = [
       vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
         if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
           const reloadMsg = 'Reload VSCode window to apply language server changes';
@@ -50,10 +52,10 @@ export class TerraformLSCommands implements vscode.Disposable {
           });
         }
       }),
-    );
+    ];
   }
 
   dispose() {
-    //
+    this.commands.forEach((c) => c.dispose());
   }
 }

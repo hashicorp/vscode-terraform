@@ -104,7 +104,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
   }
 
   private async getRuns(workspace: WorkspaceTreeItem): Promise<vscode.TreeItem[]> {
-    const organization: string = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+    const organization = this.ctx.workspaceState.get<string>('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
     }
