@@ -26,10 +26,10 @@ class ModuleCallItem extends vscode.TreeItem {
       children.length >= 1 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
     );
 
-    this.description = this.version ? `${this.version}` : '';
+    this.description = this.version ? this.version : '';
 
     if (this.version === undefined) {
-      this.tooltip = `${this.sourceAddr}`;
+      this.tooltip = this.sourceAddr;
     } else {
       this.tooltip = `${this.sourceAddr}@${this.version}`;
     }
@@ -59,11 +59,10 @@ class ModuleCallItem extends vscode.TreeItem {
 }
 
 export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCallItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<ModuleCallItem | undefined | null | void> = new vscode.EventEmitter<
-    ModuleCallItem | undefined | null | void
+  private _onDidChangeTreeData: vscode.EventEmitter<ModuleCallItem | undefined | null> = new vscode.EventEmitter<
+    ModuleCallItem | undefined | null
   >();
-  readonly onDidChangeTreeData: vscode.Event<ModuleCallItem | undefined | null | void> =
-    this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: vscode.Event<ModuleCallItem | undefined | null> = this._onDidChangeTreeData.event;
 
   private svg = '';
 
@@ -75,13 +74,15 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     this.svg = ctx.asAbsolutePath(path.join('assets', 'icons', 'terraform.svg'));
 
     ctx.subscriptions.push(
-      vscode.commands.registerCommand('terraform.modules.refreshList', () => this.refresh()),
+      vscode.commands.registerCommand('terraform.modules.refreshList', () => {
+        this.refresh();
+      }),
       vscode.commands.registerCommand('terraform.modules.openDocumentation', (module: ModuleCallItem) => {
         if (module.docsLink) {
           vscode.env.openExternal(vscode.Uri.parse(module.docsLink));
         }
       }),
-      vscode.window.onDidChangeActiveTextEditor(async () => {
+      vscode.window.onDidChangeActiveTextEditor(() => {
         // most of the time this is called when the user switches tabs or closes the file
         // we already check for state inside the getModule function, so we can just call refresh here
         this.refresh();
@@ -90,7 +91,7 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
   }
 
   refresh(): void {
-    this._onDidChangeTreeData.fire();
+    this._onDidChangeTreeData.fire(undefined);
   }
 
   getTreeItem(element: ModuleCallItem): ModuleCallItem | Thenable<ModuleCallItem> {
@@ -127,11 +128,11 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
       return [];
     }
 
-    if (this.client === undefined) {
-      // connection to terraform-ls failed
-      await vscode.commands.executeCommand('setContext', 'terraform.modules.lspConnected', false);
-      return [];
-    }
+    // if (this.client === undefined) {
+    //   // connection to terraform-ls failed
+    //   await vscode.commands.executeCommand('setContext', 'terraform.modules.lspConnected', false);
+    //   return [];
+    // }
 
     const editor = activeEditor.document.uri;
     const documentURI = Utils.dirname(editor);
@@ -139,11 +140,11 @@ export class ModuleCallsDataProvider implements vscode.TreeDataProvider<ModuleCa
     let response: terraform.ModuleCallsResponse;
     try {
       response = await terraform.moduleCalls(documentURI.toString(), this.client, this.reporter);
-      if (response === null) {
-        // no response from terraform-ls
-        await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);
-        return [];
-      }
+      // if (response === null) {
+      //   // no response from terraform-ls
+      //   await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);
+      //   return [];
+      // }
     } catch {
       // error from terraform-ls
       await vscode.commands.executeCommand('setContext', 'terraform.modules.noResponse', true);

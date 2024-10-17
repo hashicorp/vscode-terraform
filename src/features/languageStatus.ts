@@ -11,8 +11,6 @@ import { ExperimentalClientCapabilities } from './types';
 import * as lsStatus from '../status/language';
 
 export class LanguageStatusFeature implements StaticFeature {
-  private disposables: vscode.Disposable[] = [];
-
   constructor(
     private client: BaseLanguageClient,
     private reporter: TelemetryReporter,
@@ -29,8 +27,8 @@ export class LanguageStatusFeature implements StaticFeature {
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities['experimental']) {
-      capabilities['experimental'] = {};
+    if (!capabilities.experimental) {
+      capabilities.experimental = {};
     }
   }
 
@@ -44,9 +42,5 @@ export class LanguageStatusFeature implements StaticFeature {
     }
 
     lsStatus.setVersion(initializeResult.serverInfo?.version ?? '');
-  }
-
-  public dispose(): void {
-    this.disposables.forEach((d: vscode.Disposable) => d.dispose());
   }
 }

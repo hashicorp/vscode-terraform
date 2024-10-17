@@ -1,5 +1,5 @@
-name: "Performance issue report"
-description: "Let us know about issues with performance, such as slow speed or abnormally high CPU or memory usage."
+name: 'Performance issue report'
+description: 'Let us know about issues with performance, such as slow speed or abnormally high CPU or memory usage.'
 labels: [performance]
 assignees: []
 body:

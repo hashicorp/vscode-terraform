@@ -3,14 +3,18 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-/* eslint-disable no-undef */
-const esbuild = require('esbuild');
-const glob = require('glob');
-const path = require('path');
-const polyfill = require('@esbuild-plugins/node-globals-polyfill');
+import { context } from 'esbuild';
+import { glob } from 'glob';
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
+import path from 'node:path';
+import process from 'node:process';
+import console from 'node:console';
+import { fileURLToPath } from 'node:url';
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * @type {import('esbuild').Plugin}
@@ -89,7 +93,7 @@ async function main() {
       global: 'globalThis',
     },
     plugins: [
-      polyfill.NodeGlobalsPolyfillPlugin({
+      NodeGlobalsPolyfillPlugin({
         process: true,
         buffer: true,
       }),
@@ -99,7 +103,7 @@ async function main() {
     ...defaults,
   };
 
-  const contexts = [await esbuild.context(desktop), await esbuild.context(web)];
+  const contexts = [await context(desktop), await context(web)];
 
   try {
     const promises = [];
