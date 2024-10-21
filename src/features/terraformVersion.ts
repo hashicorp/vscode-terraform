@@ -16,11 +16,10 @@ import * as versionStatus from '../status/installedVersion';
 import * as requiredVersionStatus from '../status/requiredVersion';
 
 export class TerraformVersionFeature implements StaticFeature {
-  private disposables: vscode.Disposable[] = [];
-
   private clientTerraformVersionCommandId = 'client.refreshTerraformVersion';
 
   constructor(
+    private context: vscode.ExtensionContext,
     private client: LanguageClient,
     private reporter: TelemetryReporter,
     private outputChannel: vscode.OutputChannel,
@@ -40,7 +39,7 @@ export class TerraformVersionFeature implements StaticFeature {
     capabilities.experimental.refreshTerraformVersionCommandId = this.clientTerraformVersionCommandId;
   }
 
-  public async initialize(capabilities: ServerCapabilities): Promise<void> {
+  public initialize(capabilities: ServerCapabilities): void {
     if (!capabilities.experimental?.refreshTerraformVersion) {
       this.outputChannel.appendLine("Server doesn't support client.refreshTerraformVersion");
       return;
@@ -61,8 +60,8 @@ export class TerraformVersionFeature implements StaticFeature {
         lsStatus.setLanguageServerBusy();
 
         const response = await terraform.terraformVersion(moduleDir.toString(), this.client, this.reporter);
-        versionStatus.setVersion(response.discovered_version || 'unknown');
-        requiredVersionStatus.setVersion(response.required_version || 'any');
+        versionStatus.setVersion(response.discovered_version ?? 'unknown');
+        requiredVersionStatus.setVersion(response.required_version ?? 'any');
 
         lsStatus.setLanguageServerRunning();
         versionStatus.setReady();
@@ -90,13 +89,10 @@ export class TerraformVersionFeature implements StaticFeature {
       }
     });
 
-    this.disposables.push(handler);
+    this.context.subscriptions.push(handler);
   }
 
   public dispose(): void {
-    this.disposables.forEach((d: vscode.Disposable, index, things) => {
-      d.dispose();
-      things.splice(index, 1);
-    });
+    //
   }
 }

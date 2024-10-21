@@ -23,7 +23,7 @@ import { PlanTreeDataProvider } from './planProvider';
 import { ApplyTreeDataProvider } from './applyProvider';
 
 export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | TFCRunTreeItem>();
+  private readonly didChangeTreeData = new vscode.EventEmitter<undefined | TFCRunTreeItem>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private activeWorkspace: WorkspaceTreeItem | undefined;
 
@@ -36,7 +36,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
   ) {
     this.ctx.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.run.plan.downloadLog', async (run: PlanTreeItem) => {
-        this.downloadPlanLog(run);
+        await this.downloadPlanLog(run);
       }),
       vscode.commands.registerCommand('terraform.cloud.run.apply.downloadLog', async (run: ApplyTreeItem) =>
         this.downloadApplyLog(run),
@@ -72,14 +72,14 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
 
   refresh(workspaceItem?: WorkspaceTreeItem): void {
     this.activeWorkspace = workspaceItem;
-    this.didChangeTreeData.fire();
+    this.didChangeTreeData.fire(undefined);
   }
 
   getTreeItem(element: TFCRunTreeItem): vscode.TreeItem | Thenable<TFCRunTreeItem> {
     return element;
   }
 
-  getChildren(element?: TFCRunTreeItem | undefined): vscode.ProviderResult<TFCRunTreeItem[]> {
+  getChildren(element?: TFCRunTreeItem): vscode.ProviderResult<TFCRunTreeItem[]> {
     if (!this.activeWorkspace || !(this.activeWorkspace instanceof WorkspaceTreeItem)) {
       return [];
     }
@@ -91,7 +91,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
 
     try {
       return this.getRuns(this.activeWorkspace);
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -104,7 +104,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
   }
 
   private async getRuns(workspace: WorkspaceTreeItem): Promise<vscode.TreeItem[]> {
-    const organization = this.ctx.workspaceState.get('terraform.cloud.organization', '');
+    const organization = this.ctx.workspaceState.get<string>('terraform.cloud.organization', '');
     if (organization === '') {
       return [];
     }
@@ -144,8 +144,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
       }
 
       const items: RunTreeItem[] = [];
-      for (let index = 0; index < runs.data.length; index++) {
-        const run = runs.data[index];
+      for (const run of runs.data) {
         const runItem = new RunTreeItem(run.id, run.attributes, this.activeWorkspace);
 
         runItem.contextValue = 'isRun';
@@ -168,13 +167,13 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
       let message = `Failed to list runs in ${this.activeWorkspace.attributes.name} (${workspace.id}): `;
 
       if (error instanceof ZodiosError) {
-        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        await handleZodiosError(error, message, this.outputChannel, this.reporter);
         return [];
       }
 
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
-          handleAuthError();
+          await handleAuthError();
           return [];
         }
 
@@ -213,7 +212,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
     const root = element as RunTreeItem;
     if (root.planId) {
       const plan = await apiClient.getPlan({ params: { plan_id: root.planId } });
-      if (plan) {
+      if (plan.data.id) {
         const status = plan.data.attributes.status;
         const label = status === 'unreachable' ? 'Plan will not run' : `Plan ${status}`;
         const item = new PlanTreeItem(root.planId, label, plan.data.attributes);
@@ -232,7 +231,7 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
 
     if (root.applyId) {
       const apply = await apiClient.getApply({ params: { apply_id: root.applyId } });
-      if (apply) {
+      if (apply.data.id) {
         const status = apply.data.attributes.status;
         const label = status === 'unreachable' ? 'Apply will not run' : `Apply ${status}`;
         const item = new ApplyTreeItem(root.applyId, label, apply.data.attributes);
@@ -312,7 +311,7 @@ export class RunTreeItem extends vscode.TreeItem {
 
     this.workspace = workspace;
     this.iconPath = GetRunStatusIcon(attributes.status);
-    this.description = `${attributes['trigger-reason']} ${attributes['created-at']}`;
+    this.description = `${attributes['trigger-reason']} ${attributes['created-at'].toDateString()}`;
   }
 
   public get websiteUri(): vscode.Uri {
@@ -332,9 +331,7 @@ export class PlanTreeItem extends vscode.TreeItem {
   ) {
     super(label);
     this.iconPath = GetPlanApplyStatusIcon(attributes.status);
-    if (attributes) {
-      this.logReadUrl = attributes['log-read-url'] ?? '';
-    }
+    this.logReadUrl = attributes['log-read-url'];
   }
 
   public get documentUri(): vscode.Uri {
@@ -351,9 +348,7 @@ export class ApplyTreeItem extends vscode.TreeItem {
   ) {
     super(label);
     this.iconPath = GetPlanApplyStatusIcon(attributes.status);
-    if (attributes) {
-      this.logReadUrl = attributes['log-read-url'] ?? '';
-    }
+    this.logReadUrl = attributes['log-read-url'];
   }
 
   public get documentUri(): vscode.Uri {
@@ -415,7 +410,7 @@ _____
 | **Run ID**   | \`${item.id}\` |
 | **Status** | $(${icon.id}) ${msg} |
 `);
-  if (ingress && configurationVersion && configurationVersion.data.attributes.source) {
+  if (ingress && configurationVersion?.data.attributes.source) {
     // Blind shortening like this may not be appropriate
     // due to hash collisions but we just mimic what TFC does here
     // which is fairly safe since it's just UI/text, not URL.

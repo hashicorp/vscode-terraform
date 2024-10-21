@@ -1,4 +1,4 @@
-name: "Stale issues and pull requests"
+name: 'Stale issues and pull requests'
 
 permissions:
   issues: write
@@ -6,38 +6,38 @@ permissions:
 
 on:
   schedule:
-  - cron: "10 3 * * *"
+    - cron: '10 3 * * *'
 
 jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e # v9.0.0
-      with:
-        only-labels: 'waiting-response'
+      - uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e # v9.0.0
+        with:
+          only-labels: 'waiting-response'
 
-        days-before-stale: 30
-        stale-issue-label: 'stale'
-        stale-issue-message: |
-          Marking this issue as stale due to inactivity over the last 30 days. This helps our maintainers find and focus on the active issues. If this issue receives no comments in the next **30 days** it will automatically be closed. Maintainers can also remove the stale label.
+          days-before-stale: 30
+          stale-issue-label: 'stale'
+          stale-issue-message: |
+            Marking this issue as stale due to inactivity over the last 30 days. This helps our maintainers find and focus on the active issues. If this issue receives no comments in the next **30 days** it will automatically be closed. Maintainers can also remove the stale label.
 
-          Thank you for understanding.
-        stale-pr-label: 'stale'
-        stale-pr-message: |
-          Marking this pull request as stale due to inactivity over the last 30 days. This helps our maintainers find and focus on the active pull requests. If this pull request receives no comments in the next **30 days** it will automatically be closed. Maintainers can also remove the stale label.
+            Thank you for understanding.
+          stale-pr-label: 'stale'
+          stale-pr-message: |
+            Marking this pull request as stale due to inactivity over the last 30 days. This helps our maintainers find and focus on the active pull requests. If this pull request receives no comments in the next **30 days** it will automatically be closed. Maintainers can also remove the stale label.
 
-          Thank you for understanding.
+            Thank you for understanding.
 
-        days-before-close: 30
-        close-issue-message: |
-          Closing this issue due to its staleness.
+          days-before-close: 30
+          close-issue-message: |
+            Closing this issue due to its staleness.
 
-          If the issue was automatically closed and you feel it should be reopened, we encourage creating a new one linking back to this one for added context.
+            If the issue was automatically closed and you feel it should be reopened, we encourage creating a new one linking back to this one for added context.
 
-          Thank you!
-        close-pr-message: |
-          Closing this pull request due to its staleness.
+            Thank you!
+          close-pr-message: |
+            Closing this pull request due to its staleness.
 
-          If the pull request was automatically closed and you feel it should be reopened, we encourage creating a new one linking back to this one for added context.
+            If the pull request was automatically closed and you feel it should be reopened, we encourage creating a new one linking back to this one for added context.
 
-          Thank you!
+            Thank you!

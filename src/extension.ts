@@ -51,7 +51,7 @@ const tfcOutputChannel = vscode.window.createOutputChannel('HCP Terraform');
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
-let initializationError: ResponseError<InitializeError> | undefined = undefined;
+let initializationError: ResponseError<InitializeError> | Error | undefined = undefined;
 let crashCount = 0;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
@@ -60,7 +60,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(reporter);
 
   // always register commands needed to control terraform-ls
-  context.subscriptions.push(new TerraformLSCommands());
+  context.subscriptions.push(new TerraformLSCommands(context));
 
   context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
 
@@ -94,8 +94,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     outputChannel: outputChannel,
     revealOutputChannelOn: RevealOutputChannelOn.Never,
     initializationOptions: initializationOptions,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    initializationFailedHandler: (error: ResponseError<InitializeError> | Error | any) => {
+    initializationFailedHandler: (error: ResponseError<InitializeError> | Error) => {
       initializationError = error;
 
       reporter.sendTelemetryException(error);
@@ -145,10 +144,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       return false;
     },
     errorHandler: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       error: (error: Error, message: Message, count: number) => {
         return {
-          message: `Terraform LS connection error: (${count ?? 0})\n${error?.message}\n${message?.jsonrpc}`,
+          message: `Terraform LS connection error: (${count})\n${error.message}\n${message.jsonrpc}`,
           action: ErrorAction.Shutdown,
         };
       },
@@ -209,15 +207,15 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   client.registerFeatures([
     new LanguageStatusFeature(client, reporter, outputChannel),
     new CustomSemanticTokens(client, manifest),
-    new ModuleProvidersFeature(client, new ModuleProvidersDataProvider(context, client, reporter)),
-    new ModuleCallsFeature(client, new ModuleCallsDataProvider(context, client, reporter)),
-    new TelemetryFeature(client, reporter),
+    new ModuleProvidersFeature(context, client, new ModuleProvidersDataProvider(context, client, reporter)),
+    new ModuleCallsFeature(context, client, new ModuleCallsDataProvider(context, client, reporter)),
+    new TelemetryFeature(context, client, reporter),
     new ShowReferencesFeature(client),
-    new TerraformVersionFeature(client, reporter, outputChannel),
+    new TerraformVersionFeature(context, client, reporter, outputChannel),
   ]);
 
   // these need the LS to function, so are only registered if enabled
-  context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter));
+  context.subscriptions.push(new GenerateBugReportCommand(context), new TerraformCommands(client, reporter, context));
 
   try {
     await client.start();
@@ -228,7 +226,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
 export async function deactivate(): Promise<void> {
   try {
-    await client?.stop();
+    await client.stop();
   } catch (error) {
     if (error instanceof Error) {
       outputChannel.appendLine(error.message);

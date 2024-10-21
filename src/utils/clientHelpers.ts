@@ -24,6 +24,7 @@ export async function getServerOptions(
       );
     }
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     serverOptions = async () => {
       const socket = new net.Socket();
       socket.connect({
