@@ -14,8 +14,8 @@
   ],
   "engines": {
     "npm": "~10.X",
-    "node": "~18.X",
-    "vscode": "^1.86.2"
+    "node": "~20.X",
+    "vscode": "^1.92.2"
   },
   "langServer": {
     "version": "0.35.0"
@@ -973,16 +973,16 @@
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.x",
+    "@types/node": "^20.x",
     "@types/semver": "^7.5.8",
-    "@types/vscode": "~1.86",
+    "@types/vscode": "~1.92",
     "@types/which": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.3.9",
     "@vscode/test-web": "^0.0.56",
-    "@vscode/vsce": "^2.19.0",
+    "@vscode/vsce": "^3.2.0",
     "@wdio/cli": "^8.38.1",
     "@wdio/local-runner": "^8.38.0",
     "@wdio/mocha-framework": "^8.38.0",

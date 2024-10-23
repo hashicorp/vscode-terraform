@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Bump nodejs from 18 to 20
+time: 2024-10-23T11:20:37.725009-04:00
+custom:
+    Issue: "1867"
+    Repository: vscode-terraform
