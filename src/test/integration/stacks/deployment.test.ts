@@ -33,21 +33,36 @@ suite('stacks deployments', () => {
     test('completes inputs attribute in deployment block', async () => {
       // add a new incomplete "test" deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
-        editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\n\n}\n');
+        editBuilder.insert(
+          new vscode.Position(14, 0),
+          `
+deployment "test" {
+
+}
+`,
+        );
       });
 
       const expected = [new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property)];
 
-      await testCompletion(docUri, new vscode.Position(15, 2), {
+      await testCompletion(docUri, new vscode.Position(16, 2), {
         items: expected,
       });
     });
 
-    // TODO: not implemented yet
-    test.skip('completes available inputs in deployment block', async () => {
+    test('completes available inputs in deployment block', async () => {
       // add a new incomplete "test" deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
-        editBuilder.insert(new vscode.Position(14, 0), 'deployment "test" {\ninputs = {\n\n}\n}\n');
+        editBuilder.insert(
+          new vscode.Position(14, 0),
+          `
+deployment "test" {
+  inputs = {
+
+  }
+}
+`,
+        );
       });
 
       const expected = [
@@ -62,8 +77,7 @@ suite('stacks deployments', () => {
       });
     });
 
-    // TODO: not implemented yet
-    test.skip('completes attributes of identity_token block', async () => {
+    test('completes attributes of identity_token block', async () => {
       // add a new incomplete deployment block to use for completions
       await vscode.window.activeTextEditor?.edit((editBuilder) => {
         editBuilder.insert(
@@ -78,7 +92,11 @@ deployment "test" {
         );
       });
 
-      const expected = [new vscode.CompletionItem('jwt_filename', vscode.CompletionItemKind.Property)];
+      const expected = [
+        new vscode.CompletionItem('identity_token.aws.audience', vscode.CompletionItemKind.Variable),
+        new vscode.CompletionItem('identity_token.aws.jwt', vscode.CompletionItemKind.Variable),
+        new vscode.CompletionItem('identity_token.aws.jwt_filename', vscode.CompletionItemKind.Variable),
+      ];
 
       await testCompletion(docUri, new vscode.Position(17, 45), {
         items: expected,
@@ -128,47 +146,37 @@ deployment "test" {
         });
       });
 
-      // TODO: not implemented yet
-      test.skip('completes context root level', async () => {
+      test('completes context', async () => {
+        const generateSubChanges = (label: string) => [
+          new vscode.CompletionItem(label, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.add`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.change`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.defer`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.forget`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.import`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.move`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.remove`, vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem(`${label}.total`, vscode.CompletionItemKind.Variable),
+        ];
+
         const expected = [
-          new vscode.CompletionItem('errors', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('operation', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('plan', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('warnings', vscode.CompletionItemKind.Property),
+          new vscode.CompletionItem('context.errors', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.operation', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.plan', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.plan.applyable', vscode.CompletionItemKind.Variable),
+          ...generateSubChanges('context.plan.changes'),
+          ...generateSubChanges('context.plan.component_changes["api_gateway"]'),
+          ...generateSubChanges('context.plan.component_changes["foo"]'),
+          ...generateSubChanges('context.plan.component_changes["lambda"]'),
+          ...generateSubChanges('context.plan.component_changes["s3"]'),
+          new vscode.CompletionItem('context.plan.deployment', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.plan.mode', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.plan.replans', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.success', vscode.CompletionItemKind.Variable),
+          new vscode.CompletionItem('context.warnings', vscode.CompletionItemKind.Variable),
         ];
 
         await testCompletion(docUri, new vscode.Position(17, 26), {
-          items: expected,
-        });
-      });
-
-      // TODO: not implemented yet
-      test.skip('completes context.plan level', async () => {
-        const expected = [
-          new vscode.CompletionItem('applyable', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('changes', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('component_changes', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('deployment', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('mode', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('replans', vscode.CompletionItemKind.Property),
-        ];
-
-        await testCompletion(docUri, new vscode.Position(17, 31), {
-          items: expected,
-        });
-      });
-
-      // TODO: not implemented yet
-      test.skip('completes context.plan.component_changes item level', async () => {
-        const expected = [
-          new vscode.CompletionItem('add', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('change', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('import', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('remove', vscode.CompletionItemKind.Property),
-          new vscode.CompletionItem('total', vscode.CompletionItemKind.Property),
-        ];
-
-        await testCompletion(docUri, new vscode.Position(17, 74), {
           items: expected,
         });
       });
