@@ -40,12 +40,12 @@ export class TerraformCloudFeature implements vscode.Disposable {
     this.statusBar = new OrganizationStatusBar(context);
 
     authProvider.onDidChangeSessions(async (event) => {
-      if (event && event.added && event.added.length > 0) {
+      if (event.added && event.added.length > 0) {
         await vscode.commands.executeCommand('terraform.cloud.organization.picker');
-        this.statusBar.show();
+        await this.statusBar.show();
       }
-      if (event && event.removed && event.removed.length > 0) {
-        this.statusBar.reset();
+      if (event.removed && event.removed.length > 0) {
+        await this.statusBar.reset();
       }
     });
 
@@ -96,7 +96,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
       showCollapseAll: true,
       treeDataProvider: workspaceDataProvider,
     });
-    const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+    const organization = this.context.workspaceState.get<string>('terraform.cloud.organization', '');
     workspaceView.title = organization !== '' ? `Workspaces - (${organization})` : 'Workspaces';
 
     this.context.subscriptions.push(
@@ -141,7 +141,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
     workspaceView.onDidChangeVisibility(async (event) => {
       if (event.visible) {
         // the view is visible so show the status bar
-        this.statusBar.show();
+        await this.statusBar.show();
         await vscode.commands.executeCommand('setContext', 'terraform.cloud.views.visible', true);
       } else {
         // hide statusbar because user isn't looking at our views
@@ -153,7 +153,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.cloud.workspaces.picker', async () => {
         this.reporter.sendTelemetryEvent('tfc-new-workspace');
-        const organization = this.context.workspaceState.get('terraform.cloud.organization', '');
+        const organization = this.context.workspaceState.get<string>('terraform.cloud.organization', '');
         if (organization === '') {
           return [];
         }
@@ -167,7 +167,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
         const organizationQuickPick = new APIQuickPick(organizationAPIResource);
         let choice: vscode.QuickPickItem | undefined;
 
-        // eslint-disable-next-line no-constant-condition
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while (true) {
           choice = await organizationQuickPick.pick(false);
 
@@ -178,7 +178,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
             this.reporter.sendTelemetryEvent('tfc-pick-organization-create');
 
             // open the browser an re-run the loop
-            choice.open();
+            await choice.open();
             continue;
           } else if (choice instanceof RefreshOrganizationItem) {
             this.reporter.sendTelemetryEvent('tfc-pick-organization-refresh');
@@ -191,7 +191,7 @@ export class TerraformCloudFeature implements vscode.Disposable {
 
         // user chose an organization so update the statusbar and make sure its visible
         organizationQuickPick.hide();
-        this.statusBar.show(choice.label);
+        await this.statusBar.show(choice.label);
         workspaceView.title = `Workspace - (${choice.label})`;
 
         // project filter should be cleared on org change

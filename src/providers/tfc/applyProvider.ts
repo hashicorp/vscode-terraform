@@ -18,7 +18,7 @@ import { ApplyTreeItem } from './runProvider';
 import { OutputsItem, DiagnosticsItem, DiagnosticSummary, ItemWithChildren, isItemWithChildren } from './logHelpers';
 
 export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>, vscode.Disposable {
-  private readonly didChangeTreeData = new vscode.EventEmitter<void | vscode.TreeItem>();
+  private readonly didChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined>();
   public readonly onDidChangeTreeData = this.didChangeTreeData.event;
   private apply: ApplyTreeItem | undefined;
 
@@ -37,14 +37,14 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
 
   refresh(apply?: ApplyTreeItem): void {
     this.apply = apply;
-    this.didChangeTreeData.fire();
+    this.didChangeTreeData.fire(undefined);
   }
 
   getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
-  getChildren(element?: vscode.TreeItem | undefined): vscode.ProviderResult<vscode.TreeItem[]> {
+  getChildren(element?: vscode.TreeItem): vscode.ProviderResult<vscode.TreeItem[]> {
     if (!this.apply) {
       return [];
     }
@@ -52,7 +52,7 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
     if (!element) {
       try {
         return this.getRootChildren(this.apply);
-      } catch (error) {
+      } catch {
         return [];
       }
     }
@@ -66,13 +66,13 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
     const applyLog = await this.getApplyFromUrl(apply);
 
     const items: vscode.TreeItem[] = [];
-    if (applyLog && applyLog.appliedChanges) {
+    if (applyLog?.appliedChanges) {
       items.push(new AppliedChangesItem(applyLog.appliedChanges, applyLog.changeSummary));
     }
-    if (applyLog && applyLog.outputs && Object.keys(applyLog.outputs).length > 0) {
+    if (applyLog?.outputs && Object.keys(applyLog.outputs).length > 0) {
       items.push(new OutputsItem(applyLog.outputs));
     }
-    if (applyLog && applyLog.diagnostics && applyLog.diagnosticSummary && applyLog.diagnostics.length > 0) {
+    if (applyLog?.diagnostics && applyLog.diagnosticSummary && applyLog.diagnostics.length > 0) {
       items.push(new DiagnosticsItem(applyLog.diagnostics, applyLog.diagnosticSummary));
     }
     return items;
@@ -139,7 +139,7 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
           }
 
           // TODO: logLine.type=test_*
-        } catch (e) {
+        } catch {
           // skip any non-JSON lines, like Terraform version output
           continue;
         }
@@ -150,13 +150,13 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
       let message = `Failed to obtain apply log from ${apply.logReadUrl}: `;
 
       if (error instanceof ZodiosError) {
-        handleZodiosError(error, message, this.outputChannel, this.reporter);
+        await handleZodiosError(error, message, this.outputChannel, this.reporter);
         return;
       }
 
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
-          handleAuthError();
+          await handleAuthError();
           return;
         }
       }

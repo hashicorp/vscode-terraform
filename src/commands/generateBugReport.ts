@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import child_process = require('child_process');
+import * as child_process from 'child_process';
 import * as os from 'os';
 import * as vscode from 'vscode';
 
@@ -30,7 +30,7 @@ export class GenerateBugReportCommand implements vscode.Disposable {
         });
 
         const extensions = this.getExtensions();
-        const body = await this.generateBody(extensions, problemText);
+        const body = this.generateBody(extensions, problemText);
         const encodedBody = encodeURIComponent(body);
         const fullUrl = `https://github.com/hashicorp/vscode-terraform/issues/new?body=${encodedBody}`;
         vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(fullUrl));
@@ -42,7 +42,7 @@ export class GenerateBugReportCommand implements vscode.Disposable {
     // throw new Error('Method not implemented.');
   }
 
-  async generateBody(extensions: VSCodeExtension[], problemText?: string): Promise<string> {
+  generateBody(extensions: VSCodeExtension[], problemText?: string): string {
     if (!problemText) {
       problemText = `Steps To Reproduce
 =====
@@ -97,7 +97,7 @@ Environment Information
 Terraform Information
 -----
 
-${this.generateRuntimeMarkdown(await this.getRuntimeInfo())}
+${this.generateRuntimeMarkdown(this.getRuntimeInfo())}
 
 Visual Studio Code
 -----
@@ -154,9 +154,11 @@ Outdated:\t${info.outdated}
     const extensions = vscode.extensions.all
       .filter((element) => element.packageJSON.isBuiltin === false)
       .sort((leftside, rightside): number => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (leftside.packageJSON.name.toLowerCase() < rightside.packageJSON.name.toLowerCase()) {
           return -1;
         }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (leftside.packageJSON.name.toLowerCase() > rightside.packageJSON.name.toLowerCase()) {
           return 1;
         }
@@ -172,7 +174,7 @@ Outdated:\t${info.outdated}
     return extensions;
   }
 
-  async getRuntimeInfo(): Promise<TerraformInfo> {
+  getRuntimeInfo(): TerraformInfo {
     const terraformExe = 'terraform';
     const spawn = child_process.spawnSync;
 

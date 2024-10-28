@@ -2,8 +2,7 @@
 .changie.yaml
 .copywrite.hcl
 .editorconfig
-.eslintignore
-.eslintrc.json
+.eslint.config.mjs
 .gitattributes
 .github
 .gitignore

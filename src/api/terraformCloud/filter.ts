@@ -22,7 +22,7 @@ export const workspaceIncludeParams = makeParameters([
     description: 'Includes related resources for workspaces when specified',
     schema: z
       .array(z.enum(['current_run']))
-      .transform((x) => x?.join(','))
+      .transform((x) => x.join(','))
       .optional(),
   },
 ]);

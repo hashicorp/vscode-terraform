@@ -3,17 +3,24 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 import * as releases from '@hashicorp/js-releases';
 import axios from 'axios';
+import { Buffer } from 'buffer';
+import * as fs from 'fs';
+import console from 'node:console';
+import path from 'node:path';
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
-async function fileFromUrl(url: string): Promise<Buffer> {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function fileFromUrl(url) {
   const response = await axios.get(url, { responseType: 'arraybuffer' });
   return Buffer.from(response.data, 'binary');
 }
 
-function getPlatform(platform: string) {
+function getPlatform(platform) {
   if (platform === 'win32') {
     return 'windows';
   }
@@ -23,7 +30,7 @@ function getPlatform(platform: string) {
   return platform;
 }
 
-function getArch(arch: string) {
+function getArch(arch) {
   // platform | terraform-ls  | extension platform | vs code editor
   //    --    |           --  |         --         | --
   // macOS    | darwin_amd64  | darwin_x64         | ✅
@@ -42,17 +49,11 @@ function getArch(arch: string) {
   return arch;
 }
 
-interface ExtensionInfo {
-  name: string;
-  extensionVersion: string;
-  languageServerVersion: string;
-  preview: false;
-  syntaxVersion: string;
-}
-
-function getExtensionInfo(): ExtensionInfo {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const pjson = require('../package.json');
+function getExtensionInfo() {
+  const cwd = path.resolve(__dirname);
+  const buildDir = path.basename(cwd);
+  const repoDir = cwd.replace(buildDir, '');
+  const pjson = JSON.parse(fs.readFileSync(path.join(repoDir, 'package.json')));
   return {
     name: pjson.name,
     extensionVersion: pjson.version,
@@ -62,7 +63,7 @@ function getExtensionInfo(): ExtensionInfo {
   };
 }
 
-async function downloadLanguageServer(platform: string, architecture: string, extInfo: ExtensionInfo) {
+async function downloadLanguageServer(platform, architecture, extInfo) {
   const cwd = path.resolve(__dirname);
 
   const buildDir = path.basename(cwd);
@@ -108,7 +109,7 @@ async function downloadLanguageServer(platform: string, architecture: string, ex
   });
 }
 
-async function downloadFile(url: string, installPath: string) {
+async function downloadFile(url, installPath) {
   if (process.env.downloader_log === 'true') {
     console.log(`Downloading: ${url}`);
   }
@@ -120,7 +121,7 @@ async function downloadFile(url: string, installPath: string) {
   }
 }
 
-async function downloadSyntax(info: ExtensionInfo) {
+async function downloadSyntax(info) {
   const release = `v${info.syntaxVersion}`;
 
   const cwd = path.resolve(__dirname);
@@ -148,7 +149,7 @@ async function downloadSyntax(info: ExtensionInfo) {
   await downloadFile(url, path.join(installPath, hclSyntaxFile));
 }
 
-async function run(platform: string, architecture: string) {
+async function run(platform, architecture) {
   const extInfo = getExtensionInfo();
   if (process.env.downloader_log === 'true') {
     console.log(extInfo);
@@ -175,7 +176,7 @@ if (lsTarget !== undefined) {
   const tgt = lsTarget.split('_');
   os = tgt[0];
 
-  arch = tgt[1] as NodeJS.Architecture;
+  arch = tgt[1];
 }
 
 run(os, arch);
