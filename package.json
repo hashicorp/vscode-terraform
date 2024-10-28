@@ -928,7 +928,7 @@
     ]
   },
   "scripts": {
-    "prepare": "npm run download:artifacts && cd src/test/e2e && npm install",
+    "prepare": "npm run download:artifacts",
     "compile": "npm run check-types && npm run lint && node esbuild.mjs",
     "compile:prod": "npm run check-types && npm run lint && node esbuild.mjs --production",
     "compile:tests": "tsc -p .",
@@ -947,7 +947,7 @@
     "package": "vsce package",
     "pretest": "npm run compile:tests && npm run compile && npm run lint",
     "test": "vscode-test",
-    "wdio": "npm run compile && wdio run ./src/test/e2e/wdio.conf.ts",
+    "test:ui": "npm run compile:tests && node .vscode-uitest.mjs",
     "lint": "eslint",
     "format": "prettier --write .",
     "check-types": "tsc --noEmit",
@@ -982,10 +982,6 @@
     "@vscode/test-electron": "^2.3.9",
     "@vscode/test-web": "^0.0.56",
     "@vscode/vsce": "^3.2.0",
-    "@wdio/cli": "^8.38.1",
-    "@wdio/local-runner": "^8.38.0",
-    "@wdio/mocha-framework": "^8.38.0",
-    "@wdio/spec-reporter": "^8.38.0",
     "assert": "^2.0.0",
     "chai": "^4.3.7",
     "esbuild": "^0.23.0",
@@ -998,7 +994,6 @@
     "process": "^0.11.10",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.9.0",
-    "wdio-vscode-service": "^6.0.3",
-    "wdio-wait-for": "^3.0.11"
+    "vscode-extension-tester": "^8.8.0"
   }
 }

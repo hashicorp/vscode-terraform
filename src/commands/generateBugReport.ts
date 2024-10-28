@@ -154,11 +154,9 @@ Outdated:\t${info.outdated}
     const extensions = vscode.extensions.all
       .filter((element) => element.packageJSON.isBuiltin === false)
       .sort((leftside, rightside): number => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (leftside.packageJSON.name.toLowerCase() < rightside.packageJSON.name.toLowerCase()) {
           return -1;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (leftside.packageJSON.name.toLowerCase() > rightside.packageJSON.name.toLowerCase()) {
           return 1;
         }

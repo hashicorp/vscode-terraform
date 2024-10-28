@@ -2,6 +2,8 @@
 .vscode-test
 .vscode-test-web
 .wdio-vscode-service
+.test-storage
+.test-extensions
 language-configuration.json
 node_modules
 dist

@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Port UI tests to vscode-extension-tester and remove wdio
+time: 2024-11-05T11:18:25.988501-05:00
+custom:
+    Issue: "1873"
+    Repository: vscode-terraform

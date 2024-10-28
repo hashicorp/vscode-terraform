@@ -2,7 +2,8 @@
 .terraform
 .vscode-test
 .vscode-test-web
-.wdio-vscode-service
+.test-storage
+.test-extensions
 *.vsix
 bin
 node_modules

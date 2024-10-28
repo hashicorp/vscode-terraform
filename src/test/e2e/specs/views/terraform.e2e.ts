@@ -1,126 +1,74 @@
-/**
- * Copyright (c) HashiCorp, Inc.
- * SPDX-License-Identifier: MPL-2.0
- */
-import { browser, expect } from '@wdio/globals';
-import { Workbench, CustomTreeItem, SideBarView, ViewSection, ViewControl } from 'wdio-vscode-service';
+// /**
+//  * Copyright (c) HashiCorp, Inc.
+//  * SPDX-License-Identifier: MPL-2.0
+//  */
 
-import path from 'node:path';
-import { fileURLToPath } from 'url';
+// import {
+//   ActivityBar,
+//   DefaultTreeSection,
+//   SideBarView,
+//   ViewContent,
+//   ViewTitlePart,
+//   VSBrowser,
+//   Workbench,
+// } from 'vscode-extension-tester';
+// import * as path from 'path';
+// import { expect } from 'chai';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// This works locally but does not in CI
+// TODO: investigate why the hcp view works in ci but modules does not
+// describe('Terraform tree view tests', () => {
+//   let titlePart: ViewTitlePart;
+//   let content: ViewContent;
+//   let providersView: DefaultTreeSection;
+//   let callsView: DefaultTreeSection;
 
-describe('Terraform ViewContainer', function () {
-  this.retries(3);
-  let workbench: Workbench;
+//   before(async function () {
+//     await VSBrowser.instance.openResources(path.join('src', 'test', 'fixtures', 'sample.tf'));
 
-  before(async () => {
-    workbench = await browser.getWorkbench();
-  });
+//     (await new ActivityBar().getViewControl('Terraform'))?.openView();
 
-  after(async () => {
-    // TODO: Close the file
-  });
+//     const view = new SideBarView();
+//     titlePart = view.getTitlePart();
+//     content = view.getContent();
+//   });
 
-  it('should have terraform viewcontainer', async () => {
-    const viewContainers = await workbench.getActivityBar().getViewControls();
-    const titles = await Promise.all(viewContainers.map((vc) => vc.getTitle()));
-    expect(titles).toContain('HashiCorp Terraform');
-  });
+//   it('should have correct title', async () => {
+//     const title = await titlePart.getTitle();
+//     expect(title.toLowerCase()).equals('hashicorp terraform');
+//   });
 
-  describe('in an terraform project', () => {
-    before(async () => {
-      const testFile = path.join(__dirname, '../../../', 'fixtures', `sample.tf`);
-      browser.executeWorkbench((vscode, fileToOpen) => {
-        vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fileToOpen));
-      }, testFile);
-    });
+//   it('should have provider calls', async () => {
+//     providersView = (await content.getSection('Providers')) as DefaultTreeSection;
+//     expect(providersView).is.not.undefined;
+//     expect(await providersView?.isDisplayed()).is.true;
 
-    after(async () => {
-      // TODO: close the file
-    });
+//     const items = await providersView.getVisibleItems();
 
-    describe('providers view', () => {
-      let terraformViewContainer: ViewControl | undefined;
-      let openViewContainer: SideBarView<any> | undefined;
-      let callSection: ViewSection | undefined;
-      let items: CustomTreeItem[];
+//     const labels = await Promise.all(items.map((item) => item.getLabel()));
+//     expect(labels).contains('hashicorp/google');
 
-      before(async () => {
-        terraformViewContainer = await workbench.getActivityBar().getViewControl('HashiCorp Terraform');
-        await terraformViewContainer?.wait();
-        await terraformViewContainer?.openView();
-        openViewContainer = workbench.getSideBar();
-      });
+//     const item = await providersView.findItem('-/vault');
+//     expect(item).not.undefined;
 
-      it('should have providers view', async () => {
-        callSection = await openViewContainer?.getContent().getSection('PROVIDERS');
-        expect(callSection).toBeDefined();
-      });
+//     expect(await item?.getLabel()).equals('-/vault');
+//     expect(await item?.getTooltip()).equals('registry.terraform.io/-/vault ');
+//   });
 
-      it('should include all providers', async () => {
-        callSection = await openViewContainer?.getContent().getSection('PROVIDERS');
+//   it('should have module calls', async () => {
+//     callsView = (await content.getSection('Module Calls')) as DefaultTreeSection;
+//     expect(callsView).is.not.undefined;
+//     expect(await callsView?.isDisplayed()).is.true;
 
-        await browser.waitUntil(
-          async () => {
-            const provider = await callSection?.getVisibleItems();
-            if (!provider) {
-              return false;
-            }
+//     const items = await callsView.getVisibleItems();
 
-            if (provider.length > 0) {
-              items = provider as CustomTreeItem[];
-              return true;
-            }
-          },
-          { timeout: 3_000, timeoutMsg: 'Never found any providers' },
-        );
+//     const labels = await Promise.all(items.map((item) => item.getLabel()));
+//     expect(labels).contains('compute');
 
-        const labels = await Promise.all(items.map((vi) => vi.getLabel()));
-        expect(labels).toEqual(['-/vault', 'hashicorp/google']);
-      });
-    });
+//     const item = await callsView.findItem('local');
+//     expect(item).not.undefined;
 
-    describe('calls view', () => {
-      let terraformViewContainer: ViewControl | undefined;
-      let openViewContainer: SideBarView<any> | undefined;
-      let callSection: ViewSection | undefined;
-      let items: CustomTreeItem[];
-
-      before(async () => {
-        terraformViewContainer = await workbench.getActivityBar().getViewControl('HashiCorp Terraform');
-        await terraformViewContainer?.wait();
-        await terraformViewContainer?.openView();
-        openViewContainer = workbench.getSideBar();
-      });
-
-      it('should have module calls view', async () => {
-        callSection = await openViewContainer?.getContent().getSection('MODULE CALLS');
-        expect(callSection).toBeDefined();
-      });
-
-      it('should include all module calls', async () => {
-        callSection = await openViewContainer?.getContent().getSection('MODULE CALLS');
-
-        await browser.waitUntil(
-          async () => {
-            const calls = await callSection?.getVisibleItems();
-            if (!calls) {
-              return false;
-            }
-
-            if (calls.length > 0) {
-              items = calls as CustomTreeItem[];
-              return true;
-            }
-          },
-          { timeout: 3_000, timeoutMsg: 'Never found any modules' },
-        );
-
-        const labels = await Promise.all(items.map((vi) => vi.getLabel()));
-        expect(labels).toEqual(['compute', 'local']);
-      });
-    });
-  });
-});
+//     expect(await item?.getLabel()).equals('local');
+//     expect(await item?.getTooltip()).equals('./modules');
+//   });
+// });

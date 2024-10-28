@@ -41,6 +41,7 @@ const organizationMemebrship = z.object({
     }),
   }),
 });
+
 const organizationMemberships = z.object({
   data: z.array(organizationMemebrship),
 });

@@ -37,9 +37,10 @@ export default [
       semi: 'warn',
       '@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],
       '@typescript-eslint/naming-convention': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/restrict-template-expressions': [
         'error',
         {
@@ -64,6 +65,8 @@ export default [
     ignores: [
       '.vscode-test',
       '.wdio-vscode-service',
+      '.test-storage',
+      '.test-extensions',
       'dist',
       'out',
       'src/test',
