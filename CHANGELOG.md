@@ -23,9 +23,6 @@ INTERNAL:
 * Enable integration tests for Stacks feature ([#1864](https://github.com/hashicorp/vscode-terraform/issues/1864))
 * Bump nodejs from 18 to 20 ([#1867](https://github.com/hashicorp/vscode-terraform/issues/1867))
 * Remove webpack extension recommendation ([#1880](https://github.com/hashicorp/vscode-terraform/issues/1880))
-* Bump Go version to `1.23.2` ([#1849](https://github.com/hashicorp/terraform-ls/issues/1849))
-* Add a provider schema explainer doc ([#1853](https://github.com/hashicorp/terraform-ls/issues/1853))
-* Update terraform-json dep to v0.23.0 ([#1855](https://github.com/hashicorp/terraform-ls/issues/1855))
 
 ## 2.34.2024101517 (2024-10-15)
 
