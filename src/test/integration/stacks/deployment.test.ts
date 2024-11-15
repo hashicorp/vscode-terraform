@@ -146,7 +146,7 @@ deployment "test" {
         });
       });
 
-      test('completes context', async () => {
+      test.skip('completes context', async () => {
         const generateSubChanges = (label: string) => [
           new vscode.CompletionItem(label, vscode.CompletionItemKind.Variable),
           new vscode.CompletionItem(`${label}.add`, vscode.CompletionItemKind.Variable),

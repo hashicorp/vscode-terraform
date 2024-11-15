@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Remove webpack extension recommendation
-time: 2024-11-15T11:58:11.543329-05:00
-custom:
-    Issue: "1880"
-    Repository: vscode-terraform

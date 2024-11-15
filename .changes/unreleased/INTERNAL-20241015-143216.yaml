@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Upgrade eslint to v9
-time: 2024-10-15T14:32:16.914035-04:00
-custom:
-    Issue: "1863"
-    Repository: vscode-terraform
