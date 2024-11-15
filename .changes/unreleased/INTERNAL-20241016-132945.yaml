@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Enable integration tests for Stacks feature
-time: 2024-10-16T13:29:45.578502+02:00
-custom:
-    Issue: "1864"
-    Repository: vscode-terraform

@@ -1,6 +1,0 @@
-kind: BUG FIXES
-body: Add `removed` block to Stack tests
-time: 2024-10-15T15:33:42.052847+02:00
-custom:
-    Issue: "1861"
-    Repository: vscode-terraform

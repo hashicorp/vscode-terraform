@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Ensure date ordering for changie entries
-time: 2024-10-11T09:55:53.169097-04:00
-custom:
-    Issue: "1860"
-    Repository: vscode-terraform

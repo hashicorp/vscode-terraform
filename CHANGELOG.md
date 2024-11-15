@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.34.0 (2024-11-15)
+
+ENHANCEMENTS:
+
+* Add `category` to Stacks Deployment store blocks  ([terraform-ls#1852](https://github.com/hashicorp/terraform-ls/issues/1852))
+* Support terraform.applying built-in reference starting at TF 1.10 ([terraform-ls#1854](https://github.com/hashicorp/terraform-ls/issues/1854))
+* Raise HCL Diagnostics during early validation ([terraform-ls#1850](https://github.com/hashicorp/terraform-ls/issues/1850))
+* backend/s3: Reflect use_lockfile (v1.10) ([terraform-schema#419](https://github.com/hashicorp/terraform-schema/issues/419))
+* backend/s3: Remove deprecated assume role attributes (v1.10) ([terraform-schema#420](https://github.com/hashicorp/terraform-schema/issues/420))
+
+BUG FIXES:
+
+* Improve performance by avoiding copying constraints for attribute schemas ([hcl-lang#426](https://github.com/hashicorp/hcl-lang/issues/426))
+* Use a provider's stable version when bundling schemas ([terraform-ls#1860](https://github.com/hashicorp/terraform-ls/issues/1860))
+* Add `removed` block to Stack tests ([#1861](https://github.com/hashicorp/vscode-terraform/issues/1861))
+
+INTERNAL:
+
+* Ensure date ordering for changie entries ([#1860](https://github.com/hashicorp/vscode-terraform/issues/1860))
+* Upgrade eslint to v9 ([#1863](https://github.com/hashicorp/vscode-terraform/issues/1863))
+* Enable integration tests for Stacks feature ([#1864](https://github.com/hashicorp/vscode-terraform/issues/1864))
+* Bump nodejs from 18 to 20 ([#1867](https://github.com/hashicorp/vscode-terraform/issues/1867))
+* Remove webpack extension recommendation ([#1880](https://github.com/hashicorp/vscode-terraform/issues/1880))
+* Bump Go version to `1.23.2` ([#1849](https://github.com/hashicorp/terraform-ls/issues/1849))
+* Add a provider schema explainer doc ([#1853](https://github.com/hashicorp/terraform-ls/issues/1853))
+* Update terraform-json dep to v0.23.0 ([#1855](https://github.com/hashicorp/terraform-ls/issues/1855))
+
 ## 2.34.2024101517 (2024-10-15)
 
 NOTES:
