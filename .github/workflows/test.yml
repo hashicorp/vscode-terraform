@@ -87,4 +87,4 @@ jobs:
         run: npm ci
       - name: format
         # Coverage summary printed to console and in coverage/coverage-summary.json
-        run: npm run test:coverage
+        run: xvfb-run -a npm run test:coverage
