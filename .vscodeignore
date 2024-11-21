@@ -16,6 +16,8 @@
 .vscode-test.mjs
 .vscodeignore
 .wdio-vscode-service
+.coverage
+coverage
 **/__mocks__
 build/
 DEVELOPMENT.md
