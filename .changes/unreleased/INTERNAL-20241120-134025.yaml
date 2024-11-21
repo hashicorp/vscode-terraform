@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: 'Add Heimdall metadata'
+time: 2024-11-20T13:40:25.407536-05:00
+custom:
+    Issue: "1883"
+    Repository: vscode-terraform
