@@ -27,9 +27,28 @@ const configs = testSuiteFolderNames.map((folderName) => ({
     color: true,
     timeout: 100000,
     require: ['./out/test/mockSetup.js'], // mocks are shared for all test suites
+    // reporter: path.join(__dirname, '.mocha-reporter.js'),
+    reporter: 'json', // "lcov" also generates HTML
+    reporterOptions: {
+      jsonReporterOptions: {
+        output: '.integration-tests.json',
+      },
+    },
   },
 }));
 
-const config = defineConfig(configs);
+const config = defineConfig({
+  tests: configs,
+  coverage: {
+    includeAll: true,
+    exclude: [`./out`],
+    reporter: 'json', // "lcov" also generates HTML
+    reporterOptions: {
+      jsonReporterOptions: {
+        output: '.integration-tests.json',
+      },
+    },
+  },
+});
 
 export default config;
