@@ -51,19 +51,21 @@ jobs:
       - run: npm ci
       - name: coverage
         run: xvfb-run -a npm test -- --coverage
-      - name: Print coverage to PR
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          COVERAGE=$(jq . < coverage/coverage-summary.json)
-          gh pr comment ${{ github.event.pull_request.number }} --body "$COVERAGE"
+      # - name: Print coverage to PR
+      #   if: github.event_name == 'pull_request'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     COVERAGE=$(jq . < coverage/coverage-summary.json)
+      #     gh pr comment ${{ github.event.pull_request.number }} --body "$COVERAGE"
       - name: Upload coverage to PR
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-summary
-          path: coverage/coverage-summary.json
+          path: |
+            coverage/coverage-summary.json
+            coverage/index.html
 
   test:
     strategy:

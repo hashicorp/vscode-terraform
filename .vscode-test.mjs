@@ -46,7 +46,7 @@ const config = defineConfig({
   coverage: {
     includeAll: true,
     exclude: ['**/src/test', '**/dist', '**/*.test.[tj]s', '**/*.ts'],
-    reporter: ['text-summary', 'json-summary'],
+    reporter: ['text-summary', 'html', 'json-summary'],
   },
 });
 
