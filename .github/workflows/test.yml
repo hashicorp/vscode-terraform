@@ -36,6 +36,30 @@ jobs:
       - name: format
         run: npm run check-format
 
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - run: npm ci
+      - name: coverage
+        run: xvfb-run -a npm test -- --coverage
+      - name: Upload coverage to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: coverage/coverage-summary.json
+      - name: Print coverage to PR
+        if: github.event_name == 'pull_request'
+        run: |
+          COVERAGE=$(jq . < coverage/coverage-summary.json)
+          gh pr comment ${{ github.event.pull_request.number }} --body "$COVERAGE"
+
   test:
     strategy:
       fail-fast: false
@@ -72,14 +96,3 @@ jobs:
       - name: Run Tests
         run: npm test
         if: runner.os != 'Linux'
-      - name: Upload coverage to PR
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-summary
-          path: coverage/coverage-summary.json
-      - name: Print coverage to PR
-        if: github.event_name == 'pull_request'
-        run: |
-          COVERAGE=$(jq . < coverage/coverage-summary.json)
-          gh pr comment ${{ github.event.pull_request.number }} --body "$COVERAGE"
