@@ -18,9 +18,19 @@ const testSuiteFolderNames = fs
   .map((entry) => entry.name);
 
 const configs = testSuiteFolderNames.map((folderName) => ({
+  label: `Integration Tests - ${folderName}`,
   version: process.env['VSCODE_VERSION'] ?? 'stable',
   workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, 'workspace'),
-  launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
+  launchArgs: [
+    path.join(BASE_SRC_PATH, folderName, 'workspace'),
+    '--profile-temp',
+    '--sync=off',
+    '--disable-extensions',
+    '--disable-updates',
+    '--disable-crash-reporter',
+    '--disable-workspace-trust',
+    '--disable-telemetry',
+  ],
   files: `${BASE_OUT_PATH}/${folderName}/*.test.js`,
   mocha: {
     ui: 'tdd',
