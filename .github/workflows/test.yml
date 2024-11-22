@@ -1,5 +1,8 @@
 name: Run tests
 
+permissions:
+  pull-requests: write
+
 on:
   push:
     branches:
@@ -50,6 +53,8 @@ jobs:
         run: xvfb-run -a npm test -- --coverage
       - name: Print coverage to PR
         if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           COVERAGE=$(jq . < coverage/coverage-summary.json)
           gh pr comment ${{ github.event.pull_request.number }} --body "$COVERAGE"
