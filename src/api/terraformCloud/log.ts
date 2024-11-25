@@ -44,6 +44,10 @@ export type MessageType =
   | 'provision_errored'
   | 'refresh_start'
   | 'refresh_complete'
+  // Ephemeral progress
+  | 'ephemeral_op_start'
+  | 'ephemeral_op_complete'
+  | 'ephemeral_op_errored'
   // Test Results
   | 'test_abstract'
   | 'test_file'
