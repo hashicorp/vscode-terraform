@@ -6,6 +6,7 @@
 .gitattributes
 .github
 .gitignore
+META.d
 .npmrc
 .nvmrc
 .prettierignore
@@ -24,5 +25,6 @@ node_modules/
 ROADMAP.md
 src/
 out/
-esbuild.js
+esbuild.mjs
+eslint.config.mjs
 tsconfig.json
