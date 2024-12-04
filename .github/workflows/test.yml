@@ -50,6 +50,8 @@ jobs:
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
+    env:
+      VSCODE_VERSION: ${{ matrix.vscode }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -71,4 +73,10 @@ jobs:
         if: runner.os == 'Linux'
       - name: Run Tests
         run: npm test
+        if: runner.os != 'Linux'
+      - name: Run UI Tests
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run test:ui
+        if: runner.os == 'Linux'
+      - name: Run UI Tests
+        run: npm run test:ui
         if: runner.os != 'Linux'

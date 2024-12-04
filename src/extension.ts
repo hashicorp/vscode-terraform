@@ -35,6 +35,7 @@ import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
 import * as lsStatus from './status/language';
 import { TerraformCloudFeature } from './features/terraformCloud';
+import { setupMockServer, stopMockServer } from './test/e2e/specs/mocks/server';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -55,6 +56,10 @@ let initializationError: ResponseError<InitializeError> | Error | undefined = un
 let crashCount = 0;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
+  if (process.env.HASHI_CODE_TEST === 'true') {
+    setupMockServer();
+  }
+
   const manifest = context.extension.packageJSON;
   reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
   context.subscriptions.push(reporter);
@@ -239,5 +244,9 @@ export async function deactivate(): Promise<void> {
       vscode.window.showErrorMessage(error);
       lsStatus.setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
     }
+  }
+
+  if (process.env.HASHI_CODE_TEST === 'true') {
+    stopMockServer();
   }
 }

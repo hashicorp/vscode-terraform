@@ -50,14 +50,14 @@ export class APIQuickPick {
   async pick(autoHide = true) {
     await this.fetchResource();
 
-    const result = await new Promise<vscode.QuickPickItem | undefined>((c) => {
+    const result = await new Promise<vscode.QuickPickItem | undefined>((resolve) => {
       this.quickPick.onDidAccept(() => {
-        c(this.quickPick.selectedItems[0]);
+        resolve(this.quickPick.selectedItems[0]);
       });
+
       this.quickPick.onDidHide(() => {
-        c(undefined);
+        resolve(undefined);
       });
-      this.quickPick.show();
     });
 
     if (autoHide) {
@@ -69,6 +69,10 @@ export class APIQuickPick {
 
   hide() {
     this.quickPick.hide();
+  }
+
+  dispose() {
+    this.quickPick.dispose();
   }
 }
 

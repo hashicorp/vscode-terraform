@@ -1,3 +1,4 @@
+.mocharc.js
 .changes
 .changie.yaml
 .copywrite.hcl
@@ -17,6 +18,8 @@ META.d
 .vscode-test.mjs
 .vscodeignore
 .wdio-vscode-service
+.test-storage
+.test-extensions
 **/__mocks__
 build/
 DEVELOPMENT.md
@@ -28,3 +31,6 @@ out/
 esbuild.mjs
 eslint.config.mjs
 tsconfig.json
+esbuild.mjs
+eslint.config.mjs
+uitest.mjs
