@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Broaden npm version to allow dependabot to run
+time: 2024-12-04T10:58:34.365289-05:00
+custom:
+    Issue: "1888"
+    Repository: vscode-terraform
