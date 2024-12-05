@@ -929,7 +929,7 @@
   },
   "scripts": {
     "prepare": "npm run download:artifacts",
-    "compile": "npm run check-types && npm run lint && node esbuild.mjs",
+    "compile": "node esbuild.mjs",
     "compile:prod": "npm run check-types && npm run lint && node esbuild.mjs --production",
     "compile:tests": "tsc -p .",
     "watch": "npm-run-all -p watch:esbuild watch:tsc",
@@ -945,7 +945,7 @@
     "download:artifacts": "node ./build/downloader.mjs",
     "vscode:prepublish": "npm run compile:prod",
     "package": "vsce package",
-    "pretest": "npm run compile:tests && npm run compile && npm run lint",
+    "pretest": "npm run compile:tests && npm run compile",
     "test": "vscode-test --coverage",
     "test:ui": "npm run compile:tests && node .vscode-uitest.mjs",
     "lint": "eslint",
