@@ -23,6 +23,7 @@ export let TerraformCloudHost = 'app.terraform.io';
 
 export let TerraformCloudAPIUrl = `https://${TerraformCloudHost}/api/v2`;
 export let TerraformCloudWebUrl = `https://${TerraformCloudHost}/app`;
+export const TerraformCloudUrl = `https://${TerraformCloudHost}`;
 
 // eslint-disable-next-line @typescript-eslint/require-await
 const jsonHeader = pluginHeader('Content-Type', async () => 'application/vnd.api+json');

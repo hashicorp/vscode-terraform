@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
 
 import { RunTreeDataProvider } from './runProvider';
-import { apiClient, TerraformCloudWebUrl } from '../../api/terraformCloud';
+import { apiClient, TerraformCloudUrl, TerraformCloudWebUrl } from '../../api/terraformCloud';
 import { TerraformCloudAuthenticationProvider } from './authenticationProvider';
 import { ProjectsAPIResource, ResetProjectItem } from './workspaceFilters';
 import { GetRunStatusIcon, GetRunStatusMessage, RelativeTimeFormat } from './helpers';
@@ -216,7 +216,7 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         const lastestRun = workspaceResponse.included
           ? workspaceResponse.included.find((run) => run.id === lastRunId)
           : undefined;
-        const link = vscode.Uri.joinPath(vscode.Uri.parse(TerraformCloudWebUrl), workspace.links['self-html']);
+        const link = vscode.Uri.joinPath(vscode.Uri.parse(TerraformCloudUrl), workspace.links['self-html']);
 
         items.push(
           new WorkspaceTreeItem(
