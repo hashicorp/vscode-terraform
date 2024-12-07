@@ -31,10 +31,12 @@ jobs:
           cache: npm
       - name: npm install
         run: npm ci
-      - name: lint
-        run: npm run lint
+      - name: check types
+        run: npm run check-types
       - name: format
         run: npm run check-format
+      - name: lint
+        run: npm run lint
 
   test:
     strategy:
