@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Store screenshots for failing UI tests
+time: 2024-12-09T12:33:58.676197+01:00
+custom:
+    Issue: "1906"
+    Repository: vscode-terraform
