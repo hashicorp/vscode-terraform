@@ -187,7 +187,10 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
         if (isErrorFromAlias(apiClient.api, 'listRuns', error)) {
           message += apiErrorsToString(error.response.data.errors);
           vscode.window.showErrorMessage(message);
-          this.reporter.sendTelemetryException(error);
+          this.reporter.sendTelemetryErrorEvent('runProviderError', {
+            message: message,
+            stack: error.stack,
+          });
           return [];
         }
       }
@@ -195,7 +198,10 @@ export class RunTreeDataProvider implements vscode.TreeDataProvider<TFCRunTreeIt
       if (error instanceof Error) {
         message += error.message;
         vscode.window.showErrorMessage(message);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('runProviderError', {
+          message: message,
+          stack: error.stack,
+        });
         return [];
       }
 

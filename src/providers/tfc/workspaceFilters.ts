@@ -80,10 +80,16 @@ export class ProjectsAPIResource implements APIResource {
         return picks;
       } else if (isErrorFromAlias(apiClient.api, 'listProjects', error)) {
         message += apiErrorsToString(error.response.data.errors);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('projectWorkspaceFetchError', {
+          message: message,
+          stack: error.stack,
+        });
       } else if (error instanceof Error) {
         message += error.message;
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('projectWorkspaceFetchError', {
+          message: message,
+          stack: error.stack,
+        });
       } else if (typeof error === 'string') {
         message += error;
       }
