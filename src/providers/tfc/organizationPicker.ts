@@ -100,10 +100,16 @@ export class OrganizationAPIResource implements APIResource {
         return picks;
       } else if (isErrorFromAlias(apiClient.api, 'listOrganizations', error)) {
         message += apiErrorsToString(error.response.data.errors);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('orgranizationFetchError', {
+          message: message,
+          stack: error.stack,
+        });
       } else if (error instanceof Error) {
         message += error.message;
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('orgranizationFetchError', {
+          message: message,
+          stack: error.stack,
+        });
       } else if (typeof error === 'string') {
         message += error;
       }

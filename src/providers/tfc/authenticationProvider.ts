@@ -93,10 +93,16 @@ class TerraformCloudSessionHandler {
         if ((error.response.status as number) === 401) {
           throw new InvalidToken();
         }
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('storeSession', {
+          message: error.message,
+          stack: error.stack,
+        });
         throw new Error(`Failed to login: ${apiErrorsToString(error.response.data.errors)}`);
       } else if (error instanceof Error) {
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('storeSession', {
+          message: error.message,
+          stack: error.stack,
+        });
       }
 
       throw error;
@@ -243,11 +249,16 @@ export class TerraformCloudAuthenticationProvider implements vscode.Authenticati
         return this.createSession(_scopes);
       } else if (error instanceof Error) {
         vscode.window.showErrorMessage(error.message);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('invalidHCPToken', {
+          message: error.message,
+          stack: error.stack,
+        });
         this.logger.error(error.message);
       } else if (typeof error === 'string') {
         vscode.window.showErrorMessage(error);
-        this.reporter.sendTelemetryException(new Error(error));
+        this.reporter.sendTelemetryErrorEvent('invalidHCPToken', {
+          message: error,
+        });
         this.logger.error(error);
       }
 
