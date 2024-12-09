@@ -6,6 +6,9 @@ updates:
     schedule:
       interval: 'daily'
     labels: ['dependencies']
+    groups:
+      development-dependencies:
+        dependency-type: "development"
     ignore:
       - dependency-name: '@types/*'
         update-types: ['version-update:semver-minor', 'version-update:semver-patch']
