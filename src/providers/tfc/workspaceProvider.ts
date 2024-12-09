@@ -258,7 +258,10 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
         ) {
           message += apiErrorsToString(error.response.data.errors);
           vscode.window.showErrorMessage(message);
-          this.reporter.sendTelemetryException(error);
+          this.reporter.sendTelemetryErrorEvent('workspaceProviderError', {
+            message: message,
+            stack: error.stack,
+          });
           return [];
         }
       }
@@ -266,7 +269,10 @@ export class WorkspaceTreeDataProvider implements vscode.TreeDataProvider<vscode
       if (error instanceof Error) {
         message += error.message;
         vscode.window.showErrorMessage(message);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('workspaceProviderError', {
+          message: message,
+          stack: error.stack,
+        });
         return [];
       }
 
