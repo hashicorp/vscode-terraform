@@ -6,6 +6,7 @@
 .test-extensions
 *.vsix
 bin
+coverage
 node_modules
 npm-debug.log
 dist
