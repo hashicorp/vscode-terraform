@@ -164,7 +164,10 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
       if (error instanceof Error) {
         message += error.message;
         vscode.window.showErrorMessage(message);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('applyLogError', {
+          message: message,
+          stack: error.stack,
+        });
         return;
       }
 

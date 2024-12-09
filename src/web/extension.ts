@@ -12,7 +12,7 @@ let reporter: TelemetryReporter;
 
 export function activate(context: vscode.ExtensionContext) {
   const manifest = context.extension.packageJSON;
-  reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
+  reporter = new TelemetryReporter(manifest.appInsightsKey);
   context.subscriptions.push(reporter);
   context.subscriptions.push(outputChannel);
 

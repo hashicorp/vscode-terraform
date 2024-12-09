@@ -82,7 +82,10 @@ export async function handleZodiosError(
   outputChannel: vscode.OutputChannel,
   reporter: TelemetryReporter,
 ) {
-  reporter.sendTelemetryException(error);
+  reporter.sendTelemetryErrorEvent('zodiosError', {
+    message: error.message,
+    stack: error.stack,
+  });
   outputChannel.append(JSON.stringify({ cause: error.cause }, undefined, 2));
   const chosenItem = await vscode.window.showErrorMessage(
     `${msgPrefix} Response validation failed. Please report this as a bug.`,
