@@ -61,7 +61,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   const manifest = context.extension.packageJSON;
-  reporter = new TelemetryReporter(context.extension.id, manifest.version, manifest.appInsightsKey);
+  reporter = new TelemetryReporter(manifest.appInsightsKey);
   context.subscriptions.push(reporter);
 
   // always register commands needed to control terraform-ls
@@ -102,7 +102,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     initializationFailedHandler: (error: ResponseError<InitializeError> | Error) => {
       initializationError = error;
 
-      reporter.sendTelemetryException(error);
+      reporter.sendTelemetryErrorEvent('initializationError', {
+        message: error.message,
+        stack: error.stack,
+        code: error instanceof ResponseError ? error.code.toString() : undefined,
+      });
 
       let msg = 'Failure to start terraform-ls. Please check your configuration settings and reload this window';
 
@@ -235,12 +239,17 @@ export async function deactivate(): Promise<void> {
   } catch (error) {
     if (error instanceof Error) {
       outputChannel.appendLine(error.message);
-      reporter.sendTelemetryException(error);
+      reporter.sendTelemetryErrorEvent('deactivate', {
+        message: error.message,
+        stack: error.stack,
+      });
       vscode.window.showErrorMessage(error.message);
       lsStatus.setLanguageServerState(error.message, false, vscode.LanguageStatusSeverity.Error);
     } else if (typeof error === 'string') {
       outputChannel.appendLine(error);
-      reporter.sendTelemetryException(new Error(error));
+      reporter.sendTelemetryErrorEvent('deactivate', {
+        message: error,
+      });
       vscode.window.showErrorMessage(error);
       lsStatus.setLanguageServerState(error, false, vscode.LanguageStatusSeverity.Error);
     }

@@ -186,7 +186,10 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
       if (error instanceof Error) {
         message += error.message;
         vscode.window.showErrorMessage(message);
-        this.reporter.sendTelemetryException(error);
+        this.reporter.sendTelemetryErrorEvent('planLogError', {
+          message: message,
+          stack: error.stack,
+        });
         return;
       }
 
