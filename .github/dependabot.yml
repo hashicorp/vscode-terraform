@@ -1,11 +1,14 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    versioning-strategy: lockfile-only
+    versioning-strategy: increase-if-necessary
     directory: '/'
     schedule:
       interval: 'daily'
     labels: ['dependencies']
+    groups:
+      development-dependencies:
+        dependency-type: 'development'
     ignore:
       - dependency-name: '@types/*'
         update-types: ['version-update:semver-minor', 'version-update:semver-patch']
