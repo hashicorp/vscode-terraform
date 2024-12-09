@@ -83,3 +83,10 @@ jobs:
       - name: Run UI Tests
         run: npm run test:ui
         if: runner.os != 'Linux'
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-screenshots-${{ matrix.os }}-${{ matrix.vscode }}
+          path: .test-storage/screenshots
+          retention-days: 1
