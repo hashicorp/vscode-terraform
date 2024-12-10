@@ -1,6 +1,0 @@
-kind: BUG FIXES
-body: Fix new issue link in README
-time: 2024-12-04T12:23:12.701396-05:00
-custom:
-    Issue: "1890"
-    Repository: vscode-terraform

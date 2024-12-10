@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Adapt CI config for Ubuntu 24.04.1
-time: 2024-12-09T12:37:18.241839+01:00
-custom:
-    Issue: "1907"
-    Repository: vscode-terraform

@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Reflect lifecycle phases of ephemeral resources in HCP Terraform log messages
-time: 2024-11-18T10:57:24.466391-05:00
-custom:
-    Issue: "1882"
-    Repository: vscode-terraform
