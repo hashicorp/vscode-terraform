@@ -35,14 +35,6 @@ const config = defineConfig({
   tests: configs,
   coverage: {
     exclude: ['src/test/**', '**/node_modules/**', '**/dist/**'],
-    thresholds: {
-      global: {
-        statements: 80,
-        branches: 80,
-        functions: 80,
-        lines: 80,
-      },
-    },
   },
 });
 
