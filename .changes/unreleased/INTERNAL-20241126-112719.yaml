@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Add build files to .vscodeignore
-time: 2024-11-26T11:27:19.846522-05:00
-custom:
-    Issue: "1885"
-    Repository: vscode-terraform

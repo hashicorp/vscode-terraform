@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Configure dependabot to update package.json and group dependency updates
-time: 2024-12-09T10:09:36.876848-05:00
-custom:
-    Issue: "1908"
-    Repository: vscode-terraform

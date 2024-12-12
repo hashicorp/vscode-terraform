@@ -1,5 +1,29 @@
 # Changelog
 
+## 2.34.1 (2024-12-12)
+
+ENHANCEMENTS:
+
+* Reflect lifecycle phases of ephemeral resources in HCP Terraform log messages ([#1882](https://github.com/hashicorp/vscode-terraform/issues/1882))
+* Stacks: parse terraform-sources.json to support remote component sources ([terraform-ls#1836](https://github.com/hashicorp/terraform-ls/issues/1836))
+
+BUG FIXES:
+
+* Fix HCP workspace link ([#1889](https://github.com/hashicorp/vscode-terraform/issues/1889))
+* Fix new issue link in README ([#1890](https://github.com/hashicorp/vscode-terraform/issues/1890))
+* Fix incorrect validation for heterogeneous list ([terraform-ls#1884](https://github.com/hashicorp/terraform-ls/issues/1884))
+* Fix incorrect validation of references by correctly detecting tuple and object expressions created from for-expressions ([terraform-ls#1890](https://github.com/hashicorp/terraform-ls/issues/1890))
+
+INTERNAL:
+
+* Port UI tests to vscode-extension-tester and remove wdio ([#1873](https://github.com/hashicorp/vscode-terraform/issues/1873))
+* Add Heimdall metadata ([#1883](https://github.com/hashicorp/vscode-terraform/issues/1883))
+* Add build files to .vscodeignore ([#1885](https://github.com/hashicorp/vscode-terraform/issues/1885))
+* Broaden npm version to allow dependabot to run ([#1888](https://github.com/hashicorp/vscode-terraform/issues/1888))
+* Store screenshots for failing UI tests ([#1906](https://github.com/hashicorp/vscode-terraform/issues/1906))
+* Adapt CI config for Ubuntu 24.04.1 ([#1907](https://github.com/hashicorp/vscode-terraform/issues/1907))
+* Configure dependabot to update package.json and group dependency updates ([#1908](https://github.com/hashicorp/vscode-terraform/issues/1908))
+
 ## 2.34.0 (2024-11-15)
 
 ENHANCEMENTS:

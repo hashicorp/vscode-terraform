@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "HashiCorp Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
-  "version": "2.34.0",
+  "version": "2.34.1",
   "publisher": "hashicorp",
   "appInsightsKey": "885372d2-6f3c-499f-9d25-b8b219983a52",
   "license": "MPL-2.0",
@@ -18,7 +18,7 @@
     "vscode": "^1.92.2"
   },
   "langServer": {
-    "version": "0.36.0"
+    "version": "0.36.2"
   },
   "syntax": {
     "version": "0.7.1"
