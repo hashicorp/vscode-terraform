@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.2024121211 (2024-12-12)
+
+NOTES
+
+This brings the prerelease channel to the same version as stable
+
 ## 2.34.1 (2024-12-12)
 
 ENHANCEMENTS:
