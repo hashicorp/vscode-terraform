@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Fix flaky ui tests by increasing sleep time
+time: 2024-12-16T10:42:06.856418-05:00
+custom:
+    Issue: "1925"
+    Repository: vscode-terraform
