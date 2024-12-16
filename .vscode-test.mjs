@@ -18,6 +18,7 @@ const testSuiteFolderNames = fs
   .map((entry) => entry.name);
 
 const configs = testSuiteFolderNames.map((folderName) => ({
+  label: `Integration Tests - ${folderName}`,
   version: process.env['VSCODE_VERSION'] ?? 'stable',
   workspaceFolder: process.env['VSCODE_WORKSPACE_FOLDER'] ?? path.join(BASE_SRC_PATH, folderName, 'workspace'),
   launchArgs: ['--disable-extensions', '--disable-workspace-trust'],
@@ -30,6 +31,11 @@ const configs = testSuiteFolderNames.map((folderName) => ({
   },
 }));
 
-const config = defineConfig(configs);
+const config = defineConfig({
+  tests: configs,
+  coverage: {
+    exclude: ['src/test/**', '**/node_modules/**', '**/dist/**'],
+  },
+});
 
 export default config;
