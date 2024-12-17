@@ -108,7 +108,7 @@ describe('HCP tree view tests', () => {
     expect(await runTree?.isDisplayed()).is.true;
 
     // wait for the run to load otherwise the test will fail
-    await VSBrowser.instance.driver.sleep(100);
+    await VSBrowser.instance.driver.sleep(500);
 
     const runItem = await runTree.findItem('Run 1');
     expect(runItem).not.undefined;
