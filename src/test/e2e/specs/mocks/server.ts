@@ -5,9 +5,10 @@
 
 import * as vscode from 'vscode';
 import { ZodiosPathsByMethod, ZodiosResponseByPath } from '@zodios/core/lib/zodios.types';
+import { pluginFetch } from '@zodios/plugins';
 import { ResponseResolver, http } from 'msw';
 import { setupServer, SetupServerApi } from 'msw/node';
-import { apiClient, TerraformCloudAPIUrl } from '../../../../api/terraformCloud';
+import { apiClient, earlyApiClient, pingClient, TerraformCloudAPIUrl } from '../../../../api/terraformCloud';
 import { handlers } from './handlers';
 
 type Api = typeof apiClient.api;
@@ -25,6 +26,10 @@ export let debugChannel: vscode.OutputChannel;
 
 export function setupMockServer() {
   debugChannel = vscode.window.createOutputChannel('MSW Debug Channel');
+
+  earlyApiClient.use(pluginFetch({}));
+  pingClient.use(pluginFetch({}));
+  apiClient.use(pluginFetch({}));
 
   server = setupServer(...handlers);
 
