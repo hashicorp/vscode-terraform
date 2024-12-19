@@ -52,7 +52,11 @@ export class TelemetryFeature implements StaticFeature {
           return;
         }
 
-        this.reporter.sendRawTelemetryEvent(event.name, event.properties);
+        const thing: Record<string, string> = {};
+        for (const [key, value] of Object.entries(event.properties)) {
+          thing[key] = String(value);
+        }
+        this.reporter.sendRawTelemetryEvent(event.name, thing);
       }),
     );
   }
