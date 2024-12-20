@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Enable code coverage reporting
-time: 2024-12-05T16:31:30.723429-05:00
-custom:
-    Issue: "1901"
-    Repository: vscode-terraform
