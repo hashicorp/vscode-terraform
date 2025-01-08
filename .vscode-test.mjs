@@ -1,7 +1,11 @@
 /**
+ * Copyright (c) The OpenTofu Authors
+ * SPDX-License-Identifier: MPL-2.0
  * Copyright (c) HashiCorp, Inc.
  * SPDX-License-Identifier: MPL-2.0
  */
+
+
 
 import { defineConfig } from '@vscode/test-cli';
 import fs from 'fs';
