@@ -1,10 +1,17 @@
 # Changelog
 
+## 2.34.2025012311 (2025-01-23)
+
+NOTES:
+
+This is a release to bring the prerelease channel to parity with stable.
+
 ## 2.34.3 (2025-01-22)
 
 ENHANCEMENTS:
 
 * Report usage of write-only attributes for public providers ([terraform-ls#1926](https://github.com/hashicorp/terraform-ls/issues/1926))
+* Support ephemeral write only attributes ([hcl-lang#440](https://github.com/hashicorp/hcl-lang/pull/440))
 
 ## 2.34.2 (2024-12-19)
 
