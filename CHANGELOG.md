@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.3 (2025-01-22)
+
+ENHANCEMENTS:
+
+* Report usage of write-only attributes for public providers ([terraform-ls#1926](https://github.com/hashicorp/terraform-ls/issues/1926))
+
 ## 2.34.2 (2024-12-19)
 
 BUG FIXES:
