@@ -26,7 +26,7 @@ class ModuleCallItem extends vscode.TreeItem {
       children.length >= 1 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
     );
 
-    this.description = this.version ? this.version : '';
+    this.description = this.version ?? '';
 
     if (this.version === undefined) {
       this.tooltip = this.sourceAddr;
