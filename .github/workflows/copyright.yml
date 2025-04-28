@@ -1,0 +1,13 @@
+# Checks if files were committed with the right copyright headers
+#
+# Skip PRs labeled with 'dependencies'
+
+on:
+  pull_request:
+      - name: "Copyright headers"
+        run: |
+          go run github.com/hashicorp/copywrite headers --plan
+          if [[ $? != 0 ]]; then
+            echo >&2 "ERROR: some files are missing required copyright headers. Take a look at the .copywrite.hcl file."
+            exit 1
+          fi
