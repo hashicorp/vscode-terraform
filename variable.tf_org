@@ -1,0 +1,52 @@
+variable "aws_region" {
+  description = "AWS region where resources will be created"
+  type        = string
+  default     = "ap-southeast-1"
+}
+variable "public_az" {
+  description = "Availability Zone for the public subnet"
+  type        = string
+  default     = "ap-southeast-1a"  # Dynamically pick an AZ
+}
+variable "private_az" {
+  description = "Availability Zone for the public subnet"
+  type        = string
+  default     = "ap-southeast-1a"  # Dynamically pick an AZ
+}
+variable "vpc_name" {
+  description = "Name tag for the VPC"
+  type        = string
+  default     = "MW-vpc"
+}
+
+# 10.0.0.0/28 10.0.0.0 - 10.0.0.15 IPs in Range 16
+# 10.0.0.1/29 10.0.0.0 - 10.0.0.7  IPs in Range 8
+# 10.0.0.8/29 10.0.0.8 - 10.0.0.15 IPs in Range 8
+
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
+  default     = "10.0.0.0/25"
+}
+
+variable "public_subnet_cidrs" {
+  description = "List of CIDR blocks for public subnets"
+  default     = "10.0.0.0/28"
+}
+variable "private_subnet_cidrs" {
+  description = "List of CIDR blocks for private subnets"
+  default     = "10.0.0.32/28"
+}
+variable "ami_id" {
+  description = "ami-01938df366ac2d954"
+  type        = string
+}
+variable "instance_type" {
+  description = "EC2 instance type"
+  type        = string
+  default     = "t2.micro"
+}
+variable "instance_name" {
+  description = "Tag name for the EC2 instance"
+  type        = string
+  default     = "Public_WEBServer_EC2Instance"
+}
