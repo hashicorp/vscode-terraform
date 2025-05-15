@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: update @vscode/test-web to fix koa security vulnerability issue
+time: 2025-05-15T14:51:53.71392+05:30
+custom:
+    Issue: "2008"
+    Repository: vscode-terraform
