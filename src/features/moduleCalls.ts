@@ -27,15 +27,11 @@ export class ModuleCallsFeature implements StaticFeature {
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities.experimental) {
-      capabilities.experimental = {};
-    }
+    capabilities.experimental ??= {};
     capabilities.experimental.refreshModuleCallsCommandId = CLIENT_MODULE_CALLS_CMD_ID;
   }
 

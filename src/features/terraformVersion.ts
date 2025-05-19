@@ -29,13 +29,11 @@ export class TerraformVersionFeature implements StaticFeature {
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    capabilities.experimental = capabilities.experimental || {};
+    capabilities.experimental ??= {};
     capabilities.experimental.refreshTerraformVersionCommandId = this.clientTerraformVersionCommandId;
   }
 

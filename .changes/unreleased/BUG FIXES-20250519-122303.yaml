@@ -1,0 +1,6 @@
+kind: BUG FIXES
+body: Fix for es lint error - nullish coalescing operator
+time: 2025-05-19T12:23:03.527053+05:30
+custom:
+    Issue: "2011"
+    Repository: vscode-terraform

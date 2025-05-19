@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import * as vscode from 'vscode';
 import TelemetryReporter from '@vscode/extension-telemetry';
+import * as vscode from 'vscode';
 import { BaseLanguageClient, ClientCapabilities, FeatureState, StaticFeature } from 'vscode-languageclient';
 
 import { ExperimentalClientCapabilities } from './types';
@@ -28,15 +28,11 @@ export class TelemetryFeature implements StaticFeature {
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities.experimental) {
-      capabilities.experimental = {};
-    }
+    capabilities.experimental ??= {};
     capabilities.experimental.telemetryVersion = TELEMETRY_VERSION;
   }
 

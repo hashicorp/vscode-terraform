@@ -27,15 +27,11 @@ export class ModuleProvidersFeature implements StaticFeature {
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities.experimental) {
-      capabilities.experimental = {};
-    }
+    capabilities.experimental ??= {};
     capabilities.experimental.refreshModuleProvidersCommandId = CLIENT_MODULE_PROVIDERS_CMD_ID;
   }
 
