@@ -72,6 +72,9 @@ describe('HCP tree view tests', () => {
     await input.setText('fdsfdsdssfgdgdgdfgdsfagdfagdfrergebvbvtrhge');
     await input.confirm();
 
+    // wait 1 second for the login to complete
+    await VSBrowser.instance.driver.sleep(1000);
+
     await input.selectQuickPick('Org 1');
 
     // Enable if you want to see the output channels
