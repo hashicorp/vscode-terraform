@@ -43,8 +43,7 @@ export class GenerateBugReportCommand implements vscode.Disposable {
   }
 
   generateBody(extensions: VSCodeExtension[], problemText?: string): string {
-    if (!problemText) {
-      problemText = `Steps To Reproduce
+    problemText ??= `Steps To Reproduce
 =====
 
 Steps to reproduce the behavior:
@@ -85,7 +84,7 @@ Note whether you use any tools for managing Terraform version/execution (e.g. 't
 any credentials helpers, or whether you have any other Terraform extensions installed.
 -->
 `;
-    }
+
     const body = `Issue Description
 =====
 
@@ -163,11 +162,7 @@ Outdated:\t${info.outdated}
         return 0;
       })
       .map((ext) => {
-        return {
-          name: ext.packageJSON.name,
-          publisher: ext.packageJSON.publisher,
-          version: ext.packageJSON.version,
-        };
+        return { name: ext.packageJSON.name, publisher: ext.packageJSON.publisher, version: ext.packageJSON.version };
       });
     return extensions;
   }
@@ -183,11 +178,7 @@ Outdated:\t${info.outdated}
         const response = resultJson.stdout.toString();
         const j = JSON.parse(response);
 
-        return {
-          version: j.terraform_version,
-          platform: j.platform,
-          outdated: j.terraform_outdated,
-        };
+        return { version: j.terraform_version, platform: j.platform, outdated: j.terraform_outdated };
       } catch {
         // fall through
       }
@@ -204,20 +195,12 @@ Outdated:\t${info.outdated}
         const version = matches && matches.length > 1 ? matches[1] : 'Not found';
         const platform = response.split('\n')[1].replace('on ', '');
 
-        return {
-          version: version,
-          platform: platform,
-          outdated: true,
-        };
+        return { version: version, platform: platform, outdated: true };
       } catch {
         // fall through
       }
     }
 
-    return {
-      version: 'Not found',
-      platform: 'Not found',
-      outdated: false,
-    };
+    return { version: 'Not found', platform: 'Not found', outdated: false };
   }
 }

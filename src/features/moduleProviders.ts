@@ -7,7 +7,9 @@ import * as vscode from 'vscode';
 import {
   BaseLanguageClient,
   ClientCapabilities,
+  DocumentSelector,
   FeatureState,
+  InitializeParams,
   ServerCapabilities,
   StaticFeature,
 } from 'vscode-languageclient';
@@ -22,20 +24,20 @@ export class ModuleProvidersFeature implements StaticFeature {
     private client: BaseLanguageClient,
     private view: ModuleProvidersDataProvider,
   ) {}
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+  preInitialize?:
+    | ((capabilities: ServerCapabilities, documentSelector: DocumentSelector | undefined) => void)
+    | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
-    if (!capabilities.experimental) {
-      capabilities.experimental = {};
-    }
+    capabilities.experimental ??= {};
     capabilities.experimental.refreshModuleProvidersCommandId = CLIENT_MODULE_PROVIDERS_CMD_ID;
   }
 
@@ -47,8 +49,6 @@ export class ModuleProvidersFeature implements StaticFeature {
       vscode.commands.executeCommand('setContext', 'terraform.providers.supported', false);
       return;
     }
-
-    vscode.commands.executeCommand('setContext', 'terraform.providers.supported', true);
 
     const d = this.client.onRequest(CLIENT_MODULE_PROVIDERS_CMD_ID, () => {
       this.view.refresh();

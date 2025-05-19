@@ -7,7 +7,9 @@ import * as vscode from 'vscode';
 import {
   BaseLanguageClient,
   ClientCapabilities,
+  DocumentSelector,
   FeatureState,
+  InitializeParams,
   ReferenceContext,
   ReferencesRequest,
   ServerCapabilities,
@@ -34,32 +36,29 @@ export class ShowReferencesFeature implements StaticFeature {
   private isEnabled = config('terraform').get<boolean>('codelens.referenceCount', false);
 
   constructor(private _client: BaseLanguageClient) {}
+  fillInitializeParams?: ((params: InitializeParams) => void) | undefined;
+  preInitialize?:
+    | ((capabilities: ServerCapabilities, documentSelector: DocumentSelector | undefined) => void)
+    | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!this.isEnabled) {
       return;
     }
-    if (!capabilities.experimental) {
-      capabilities.experimental = {};
-    }
+
+    capabilities.experimental ??= {};
     capabilities.experimental.showReferencesCommandId = CLIENT_CMD_ID;
   }
 
   public initialize(capabilities: ServerCapabilities): void {
     if (!capabilities.experimental?.referenceCountCodeLens) {
-      return;
-    }
-
-    if (!this.isEnabled) {
       return;
     }
 

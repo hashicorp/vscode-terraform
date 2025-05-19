@@ -88,14 +88,8 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
     }
 
     try {
-      const result = await axios.get(apply.logReadUrl, {
-        headers: { Accept: 'text/plain' },
-        responseType: 'stream',
-      });
-      const lineStream = readline.createInterface({
-        input: result.data,
-        output: new Writable(),
-      });
+      const result = await axios.get(apply.logReadUrl, { headers: { Accept: 'text/plain' }, responseType: 'stream' });
+      const lineStream = readline.createInterface({ input: result.data, output: new Writable() });
 
       const applyLog: ApplyLog = {};
 
@@ -104,37 +98,8 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
           const logLine: LogLine = JSON.parse(line);
 
           if (logLine.type === 'apply_complete' && logLine.hook) {
-            if (!applyLog.appliedChanges) {
-              applyLog.appliedChanges = [];
-            }
+            applyLog.appliedChanges ??= [];
             applyLog.appliedChanges.push(logLine.hook);
-            continue;
-          }
-          if (logLine.type === 'change_summary' && logLine.changes) {
-            applyLog.changeSummary = logLine.changes;
-            continue;
-          }
-          if (logLine.type === 'outputs' && logLine.outputs) {
-            applyLog.outputs = logLine.outputs;
-            continue;
-          }
-          if (logLine.type === 'diagnostic' && logLine.diagnostic) {
-            if (!applyLog.diagnostics) {
-              applyLog.diagnostics = [];
-            }
-            if (!applyLog.diagnosticSummary) {
-              applyLog.diagnosticSummary = {
-                errorCount: 0,
-                warningCount: 0,
-              };
-            }
-            applyLog.diagnostics.push(logLine.diagnostic);
-            if (logLine.diagnostic.severity === 'warning') {
-              applyLog.diagnosticSummary.warningCount += 1;
-            }
-            if (logLine.diagnostic.severity === 'error') {
-              applyLog.diagnosticSummary.errorCount += 1;
-            }
             continue;
           }
 
@@ -164,10 +129,7 @@ export class ApplyTreeDataProvider implements vscode.TreeDataProvider<vscode.Tre
       if (error instanceof Error) {
         message += error.message;
         vscode.window.showErrorMessage(message);
-        this.reporter.sendTelemetryErrorEvent('applyLogError', {
-          message: message,
-          stack: error.stack,
-        });
+        this.reporter.sendTelemetryErrorEvent('applyLogError', { message: message, stack: error.stack });
         return;
       }
 
