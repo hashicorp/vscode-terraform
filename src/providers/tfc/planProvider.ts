@@ -91,14 +91,8 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
     }
 
     try {
-      const result = await axios.get(plan.logReadUrl, {
-        headers: { Accept: 'text/plain' },
-        responseType: 'stream',
-      });
-      const lineStream = readline.createInterface({
-        input: result.data,
-        output: new Writable(),
-      });
+      const result = await axios.get(plan.logReadUrl, { headers: { Accept: 'text/plain' }, responseType: 'stream' });
+      const lineStream = readline.createInterface({ input: result.data, output: new Writable() });
 
       const planLog: PlanLog = {};
 
@@ -107,22 +101,14 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
           const logLine: LogLine = JSON.parse(line);
 
           if (logLine.type === 'planned_change' && logLine.change) {
-            if (!planLog.plannedChanges) {
-              planLog.plannedChanges = [];
-            }
+            planLog.plannedChanges ??= [];
             planLog.plannedChanges.push(logLine.change);
             continue;
           }
           if (logLine.type === 'resource_drift' && logLine.change) {
-            if (!planLog.driftChanges) {
-              planLog.driftChanges = [];
-            }
-            if (!planLog.driftSummary) {
-              planLog.driftSummary = {
-                changed: 0,
-                deleted: 0,
-              };
-            }
+            planLog.driftChanges ??= [];
+            planLog.driftSummary ??= { changed: 0, deleted: 0 };
+
             planLog.driftChanges.push(logLine.change);
             if (logLine.change.action === 'update') {
               planLog.driftSummary.changed += 1;
@@ -141,15 +127,8 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
             continue;
           }
           if (logLine.type === 'diagnostic' && logLine.diagnostic) {
-            if (!planLog.diagnostics) {
-              planLog.diagnostics = [];
-            }
-            if (!planLog.diagnosticSummary) {
-              planLog.diagnosticSummary = {
-                errorCount: 0,
-                warningCount: 0,
-              };
-            }
+            planLog.diagnostics ??= [];
+            planLog.diagnosticSummary ??= { errorCount: 0, warningCount: 0 };
             planLog.diagnostics.push(logLine.diagnostic);
             if (logLine.diagnostic.severity === 'warning') {
               planLog.diagnosticSummary.warningCount += 1;
@@ -186,10 +165,7 @@ export class PlanTreeDataProvider implements vscode.TreeDataProvider<vscode.Tree
       if (error instanceof Error) {
         message += error.message;
         vscode.window.showErrorMessage(message);
-        this.reporter.sendTelemetryErrorEvent('planLogError', {
-          message: message,
-          stack: error.stack,
-        });
+        this.reporter.sendTelemetryErrorEvent('planLogError', { message: message, stack: error.stack });
         return;
       }
 

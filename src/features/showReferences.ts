@@ -39,18 +39,15 @@ export class ShowReferencesFeature implements StaticFeature {
   clear(): void {}
 
   getState(): FeatureState {
-    return {
-      kind: 'static',
-    };
+    return { kind: 'static' };
   }
 
   public fillClientCapabilities(capabilities: ClientCapabilities & ExperimentalClientCapabilities): void {
     if (!this.isEnabled) {
       return;
     }
-    if (!capabilities.experimental) {
-      capabilities.experimental = {};
-    }
+
+    capabilities.experimental ??= {};
     capabilities.experimental.showReferencesCommandId = CLIENT_CMD_ID;
   }
 
