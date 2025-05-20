@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.34.4 (2025-05-20)
+
+BUG FIXES:
+
+* Fix for es lint error - nullish coalescing operator ([#2011](https://github.com/hashicorp/vscode-terraform/issues/2011))
+
+INTERNAL:
+
+* bump vscode-extension-tester from 8.8.0 to 8.14.1 ([#2010](https://github.com/hashicorp/vscode-terraform/issues/2010))
+
 ## 2.34.2025012311 (2025-01-23)
 
 NOTES:
