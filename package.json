@@ -81,7 +81,8 @@
           "Terraform Stack"
         ],
         "extensions": [
-          ".tfstack.hcl"
+          ".tfstack.hcl",
+          ".tfcomponent.hcl"
         ],
         "configuration": "./language-configuration.json",
         "icon": {
