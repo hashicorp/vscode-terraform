@@ -978,7 +978,7 @@
     "@types/semver": "^7.5.8",
     "@types/vscode": "~1.92",
     "@types/which": "^3.0.0",
-    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.3.9",
     "@vscode/test-web": "^0.0.69",
     "@vscode/vsce": "^3.2.0",
