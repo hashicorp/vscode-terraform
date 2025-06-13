@@ -1,0 +1,3 @@
+{
+  "editor.wordBasedSuggestions": "off" // required so that completions don't fall back to completing words if there are no results
+}

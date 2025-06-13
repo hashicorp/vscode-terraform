@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: 'Support new Terraform Stacks tfcomponent.hcl extension'
+time: 2025-06-02T10:56:37.453369+05:30
+custom:
+    Issue: "2034"
+    Repository: vscode-terraform
