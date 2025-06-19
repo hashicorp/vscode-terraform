@@ -7,9 +7,9 @@ import * as vscode from 'vscode';
 import { assert } from 'chai';
 import { activateExtension, getDocUri, open, testCompletion } from '../../helper';
 
-suite('stacks stack', () => {
+suite('stacks stack - legacy extension', () => {
   suite('root', function suite() {
-    const docUri = getDocUri('variables.tfcomponent.hcl');
+    const docUri = getDocUri('variables.tfstack.hcl');
 
     this.beforeAll(async () => {
       await open(docUri);
@@ -43,7 +43,7 @@ suite('stacks stack', () => {
   });
 
   suite('components', function suite() {
-    const docUri = getDocUri('components.tfcomponent.hcl');
+    const docUri = getDocUri('components.tfstack.hcl');
 
     this.beforeAll(async () => {
       await open(docUri);
@@ -159,7 +159,7 @@ component "test" {
   });
 
   suite('providers', function suite() {
-    const docUri = getDocUri('providers.tfcomponent.hcl');
+    const docUri = getDocUri('providers.tfstack.hcl');
 
     this.beforeAll(async () => {
       await open(docUri);
