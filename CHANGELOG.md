@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.5 (2025-06-20)
+
+ENHANCEMENTS:
+
+* Support new Terraform Stacks tfcomponent.hcl extension ([#2034](https://github.com/hashicorp/vscode-terraform/issues/2034))
+
 ## 2.34.4 (2025-05-20)
 
 BUG FIXES:
