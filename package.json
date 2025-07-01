@@ -145,6 +145,20 @@
           "light": "assets/icons/terraform_stacks.svg"
         }
       },
+       {
+        "id": "terraform-search",
+        "aliases": [
+          "Terraform Search"
+        ],
+        "extensions": [
+          ".tfquery.hcl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_search.svg",
+          "light": "assets/icons/terraform_search.svg"
+        }
+      },
       {
         "id": "json",
         "extensions": [
@@ -180,6 +194,11 @@
       },
       {
         "language": "terraform-mock",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-search",
         "scopeName": "source.hcl",
         "path": "./syntaxes/hcl.tmGrammar.json"
       }
