@@ -145,7 +145,7 @@
           "light": "assets/icons/terraform_stacks.svg"
         }
       },
-       {
+      {
         "id": "terraform-search",
         "aliases": [
           "Terraform Search"
