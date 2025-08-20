@@ -86,8 +86,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -100,8 +100,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -127,8 +127,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -141,8 +141,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -155,8 +155,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_search.svg",
-          "light": "assets/icons/terraform_search.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
