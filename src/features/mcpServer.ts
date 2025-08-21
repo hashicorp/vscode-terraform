@@ -38,6 +38,7 @@ export class McpServerFeature {
       if (provider) {
         this.context.subscriptions.push(provider);
         this.disposables.push(provider);
+        this.showMcpServerInfoMessage();
       }
     } catch (error) {
       console.error('Failed to register MCP server definition provider:', error);
@@ -141,6 +142,20 @@ export class McpServerFeature {
         });
       return false;
     }
+  }
+
+  private showMcpServerInfoMessage(): void {
+    const message = 'Terraform MCP Server is now available for GitHub Copilot integration.';
+    const startAction = 'Start MCP Server';
+    const learnMoreAction = 'Learn More';
+
+    void vscode.window.showInformationMessage(message, startAction, learnMoreAction).then((selection) => {
+      if (selection === startAction) {
+        void vscode.commands.executeCommand('workbench.action.quickOpen', '>MCP: List Servers');
+      } else if (selection === learnMoreAction) {
+        void vscode.env.openExternal(vscode.Uri.parse('https://github.com/hashicorp/terraform-mcp-server'));
+      }
+    });
   }
 
   public dispose(): void {
