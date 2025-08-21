@@ -4,6 +4,7 @@
  */
 
 import TelemetryReporter from '@vscode/extension-telemetry';
+import which from 'which';
 import * as vscode from 'vscode';
 
 interface McpServerDefinition {
@@ -61,8 +62,13 @@ export class McpServerFeature {
     }
   }
 
-  private provideMcpServerDefinitions(): McpServerDefinition[] {
+  private async provideMcpServerDefinitions(): Promise<McpServerDefinition[]> {
     try {
+      const dockerAvailable = await this.dockerValidations();
+      if (!dockerAvailable) {
+        return [];
+      }
+
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
         command: 'docker',
@@ -74,6 +80,26 @@ export class McpServerFeature {
     } catch (error) {
       console.error('Error providing MCP server definitions:', error);
       return [];
+    }
+  }
+  private async dockerValidations(): Promise<boolean> {
+    try {
+      if (!(await this.checkDockerAvailability())) {
+        return false;
+      }
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async checkDockerAvailability(): Promise<boolean> {
+    try {
+      await which('docker');
+      return true;
+    } catch {
+      return false;
     }
   }
 
