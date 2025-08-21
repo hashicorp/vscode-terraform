@@ -108,6 +108,16 @@ export class McpServerFeature {
       await which('docker');
       return true;
     } catch {
+      void vscode.window
+        .showWarningMessage(
+          'Docker is required to run the Terraform MCP Server. Please install Docker to use this feature.',
+          'Learn More',
+        )
+        .then((selection) => {
+          if (selection === 'Learn More') {
+            void vscode.env.openExternal(vscode.Uri.parse('https://docs.docker.com/get-docker/'));
+          }
+        });
       return false;
     }
   }
