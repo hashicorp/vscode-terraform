@@ -4,8 +4,12 @@
  */
 
 import TelemetryReporter from '@vscode/extension-telemetry';
-import which from 'which';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import * as vscode from 'vscode';
+import which from 'which';
+
+const execAsync = promisify(exec);
 
 interface McpServerDefinition {
   label: string;
@@ -88,8 +92,13 @@ export class McpServerFeature {
         return false;
       }
 
+      if (!(await this.checkDockerRunning())) {
+        return false;
+      }
+
       return true;
-    } catch {
+    } catch (error) {
+      console.log(error);
       return false;
     }
   }
@@ -99,6 +108,16 @@ export class McpServerFeature {
       await which('docker');
       return true;
     } catch {
+      return false;
+    }
+  }
+
+  private async checkDockerRunning(): Promise<boolean> {
+    try {
+      await execAsync('docker info', { timeout: 5000 });
+      return true;
+    } catch (error) {
+      console.log('Docker daemon check failed:', error);
       return false;
     }
   }
