@@ -19,6 +19,8 @@ interface McpServerDefinition {
 }
 
 export class McpServerFeature {
+  private disposables: vscode.Disposable[] = [];
+
   constructor(
     private context: vscode.ExtensionContext,
     private reporter: TelemetryReporter,
@@ -37,6 +39,7 @@ export class McpServerFeature {
       const provider = this.registerMcpServerProvider();
       if (provider) {
         this.context.subscriptions.push(provider);
+        this.disposables.push(provider);
       }
     } catch (error) {
       console.error('Failed to register MCP server definition provider:', error);
@@ -143,6 +146,9 @@ export class McpServerFeature {
   }
 
   public dispose(): void {
-    // TODO
+    this.disposables.forEach((d) => {
+      d.dispose();
+    });
+    this.disposables = [];
   }
 }
