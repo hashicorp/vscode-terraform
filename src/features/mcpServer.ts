@@ -128,6 +128,16 @@ export class McpServerFeature {
       return true;
     } catch (error) {
       console.log('Docker daemon check failed:', error);
+      void vscode.window
+        .showWarningMessage(
+          'Docker is installed but not running. Please start Docker to use the Terraform MCP Server.',
+          'Learn More',
+        )
+        .then((selection) => {
+          if (selection === 'Learn More') {
+            void vscode.env.openExternal(vscode.Uri.parse('https://docs.docker.com/get-started/'));
+          }
+        });
       return false;
     }
   }
