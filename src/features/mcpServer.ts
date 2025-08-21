@@ -23,6 +23,11 @@ export class McpServerFeature {
 
   public activate(): void {
     try {
+      // Check if the MCP API is available in this version of VS Code
+      if (!this.isMcpApiAvailable()) {
+        return;
+      }
+
       // Register the MCP server definition provider using dynamic API access
       const provider = this.registerMcpServerProvider();
       if (provider) {
