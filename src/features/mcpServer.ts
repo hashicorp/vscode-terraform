@@ -59,7 +59,7 @@ export class McpServerFeature {
   private provideMcpServerDefinitions(): McpServerDefinition[] {
     try {
       const server: McpServerDefinition = {
-        label: 'zzHashiCorp Terraform MCP Server',
+        label: 'HashiCorp Terraform MCP Server',
         command: 'docker',
         args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server'],
         env: {},
