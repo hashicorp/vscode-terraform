@@ -20,6 +20,7 @@ interface McpServerDefinition {
 
 export class McpServerFeature {
   private disposables: vscode.Disposable[] = [];
+  private infoMessageShown = false;
 
   constructor(
     private context: vscode.ExtensionContext,
@@ -38,7 +39,6 @@ export class McpServerFeature {
       if (provider) {
         this.context.subscriptions.push(provider);
         this.disposables.push(provider);
-        this.showMcpServerInfoMessage();
       }
     } catch (error) {
       console.error('Failed to register MCP server definition provider:', error);
@@ -81,6 +81,8 @@ export class McpServerFeature {
         args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server'],
         env: {},
       };
+
+      this.showMcpServerInfoMessage();
 
       return [server];
     } catch (error) {
