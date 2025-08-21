@@ -36,6 +36,7 @@ import { TerraformCommands } from './commands/terraform';
 import * as lsStatus from './status/language';
 import { TerraformCloudFeature } from './features/terraformCloud';
 import { setupMockServer, stopMockServer } from './test/e2e/specs/mocks/server';
+import { McpServerFeature } from './features/mcpServer';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -69,6 +70,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(new TerraformLSCommands(context));
 
   context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
+
+  // Register MCP server feature
+  context.subscriptions.push(new McpServerFeature(context, reporter));
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
