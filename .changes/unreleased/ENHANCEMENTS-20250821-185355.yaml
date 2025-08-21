@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Terraform MCP Server deployment using Hashicorp VS Code extension
+time: 2025-08-21T18:53:55.326683+05:30
+custom:
+    Issue: "2086"
+    Repository: vscode-terraform
