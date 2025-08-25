@@ -22,8 +22,19 @@ export class McpServerFeature {
   constructor(
     private context: vscode.ExtensionContext,
     private reporter: TelemetryReporter,
+    private outputChannel: vscode.OutputChannel,
   ) {
     this.activate();
+  }
+
+  /**
+   * Helper method to format and log error information
+   */
+  private logError(message: string, error: unknown): void {
+    this.outputChannel.appendLine(`${message}: ${String(error)}`);
+    if (error instanceof Error && error.stack) {
+      this.outputChannel.appendLine(`Stack trace: ${error.stack}`);
+    }
   }
 
   public activate(): void {
@@ -37,7 +48,7 @@ export class McpServerFeature {
         this.context.subscriptions.push(provider);
       }
     } catch (error) {
-      console.error('Failed to register MCP server definition provider:', error);
+      this.logError('Failed to register MCP server definition provider', error);
       // Don't throw - let the extension continue to work without MCP server
     }
   }
@@ -59,7 +70,7 @@ export class McpServerFeature {
         },
       });
     } catch (error) {
-      console.error('Error registering MCP server provider:', error);
+      this.logError('Error registering MCP server provider', error);
       return undefined;
     }
   }
@@ -82,7 +93,7 @@ export class McpServerFeature {
 
       return [server];
     } catch (error) {
-      console.error('Error providing MCP server definitions:', error);
+      this.logError('Error providing MCP server definitions', error);
       return [];
     }
   }
@@ -98,7 +109,7 @@ export class McpServerFeature {
 
       return true;
     } catch (error) {
-      console.log(error);
+      this.logError('Docker validation error', error);
       return false;
     }
   }
@@ -127,7 +138,7 @@ export class McpServerFeature {
       await execAsync('docker info', { timeout: 5000 });
       return true;
     } catch (error) {
-      console.log('Docker daemon check failed:', error);
+      this.logError('Docker daemon check failed', error);
       void vscode.window
         .showWarningMessage(
           'Docker is installed but not running. Please start Docker to use the Terraform MCP Server.',
