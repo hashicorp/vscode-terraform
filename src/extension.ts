@@ -72,7 +72,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
 
   // Register MCP server feature
-  context.subscriptions.push(new McpServerFeature(context, reporter));
+  context.subscriptions.push(new McpServerFeature(context, reporter, outputChannel));
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
     reporter.sendTelemetryEvent('disabledTerraformLS');
