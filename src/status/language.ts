@@ -12,6 +12,7 @@ const lsStatus = vscode.languages.createLanguageStatusItem('terraform-ls.status'
   { language: 'terraform-deploy' },
   { language: 'terraform-test' },
   { language: 'terraform-mock' },
+  { language: 'terraform-search' },
 ]);
 lsStatus.name = 'Terraform LS';
 lsStatus.detail = 'Terraform LS';

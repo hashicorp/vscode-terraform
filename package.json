@@ -18,7 +18,7 @@
     "vscode": "^1.92.2"
   },
   "langServer": {
-    "version": "0.36.5"
+    "version": "0.37.0"
   },
   "syntax": {
     "version": "0.7.1"
@@ -86,8 +86,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -100,8 +100,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -127,8 +127,8 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -141,8 +141,22 @@
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "dark": "assets/icons/terraform_stacks.svg",
-          "light": "assets/icons/terraform_stacks.svg"
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
+        }
+      },
+      {
+        "id": "terraform-search",
+        "aliases": [
+          "Terraform Search"
+        ],
+        "extensions": [
+          ".tfquery.hcl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
         }
       },
       {
@@ -180,6 +194,11 @@
       },
       {
         "language": "terraform-mock",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-search",
         "scopeName": "source.hcl",
         "path": "./syntaxes/hcl.tmGrammar.json"
       }
