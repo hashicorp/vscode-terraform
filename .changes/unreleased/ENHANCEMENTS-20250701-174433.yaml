@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Add support for Terraform Search files (.tfquery.hcl). This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Search files.
-time: 2025-07-01T17:44:33.274267+05:30
-custom:
-    Issue: "2062"
-    Repository: vscode-terraform
