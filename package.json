@@ -964,7 +964,7 @@
     "vscode-languageclient": "^9.0.1",
     "vscode-uri": "^3.0.7",
     "which": "^5.0.0",
-    "zod": "^3.21.4"
+    "zod": "^4.1.4"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
