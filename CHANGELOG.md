@@ -1,11 +1,5 @@
 # Changelog
 
-## 2.35.2025082803 (2025-08-28)
-
-INTERNAL:
-
-* This is a release to bring the prerelease channel to parity with stable. ([#2095](https://github.com/hashicorp/vscode-terraform/issues/2095))
-
 ## 2.35.0 (2025-08-28)
 
 ENHANCEMENTS:
