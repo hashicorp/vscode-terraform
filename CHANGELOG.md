@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.36.0 (2025-09-05)
+
+ENHANCEMENTS:
+
+* Terraform MCP Server deployment using Hashicorp VS Code extension ([#2086](https://github.com/hashicorp/vscode-terraform/issues/2086))
+
+
 ## 2.35.0 (2025-08-28)
 
 ENHANCEMENTS:
