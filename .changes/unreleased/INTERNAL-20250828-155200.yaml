@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: This is a release to bring the prerelease channel to parity with stable.
-time: 2025-08-28T15:52:00.06981+05:30
-custom:
-    Issue: "2095"
-    Repository: vscode-terraform
