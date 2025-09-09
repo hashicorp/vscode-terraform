@@ -39,6 +39,10 @@ export class McpServerFeature {
 
   public activate(): void {
     try {
+      if (!this.isMcpApiAvailable()) {
+        return;
+      }
+
       const provider = this.registerMcpServerProvider();
       if (provider) {
         this.context.subscriptions.push(provider);
@@ -90,7 +94,7 @@ export class McpServerFeature {
   // Just provide the available MCP server definitions
   private provideMcpServerDefinitions(): McpServerDefinition[] {
     try {
-      if (!this.isMcpApiAvailable() || !this.isMcpServerEnabled()) {
+      if (!this.isMcpServerEnabled()) {
         return [];
       }
 
