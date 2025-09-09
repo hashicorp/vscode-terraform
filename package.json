@@ -541,7 +541,7 @@
         "command": "terraform.disableLanguageServer",
         "title": "HashiCorp Terraform: Disable Language Server"
       },
-        {
+      {
         "command": "terraform.enableMcpServer",
         "title": "HashiCorp Terraform: Enable MCP Server"
       },
@@ -661,7 +661,7 @@
           "command": "terraform.disableLanguageServer",
           "when": "config.terraform.languageServer.enable == true"
         },
-         {
+        {
           "command": "terraform.enableMcpServer",
           "when": "config.terraform.mcp.server.enabled == false"
         },
