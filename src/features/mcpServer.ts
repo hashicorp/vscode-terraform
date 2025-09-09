@@ -7,6 +7,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as vscode from 'vscode';
+import { config } from '../utils/vscode';
 
 const execAsync = promisify(exec);
 
@@ -38,10 +39,6 @@ export class McpServerFeature {
 
   public activate(): void {
     try {
-      if (!this.isMcpApiAvailable()) {
-        return;
-      }
-
       const provider = this.registerMcpServerProvider();
       if (provider) {
         this.context.subscriptions.push(provider);
@@ -55,7 +52,19 @@ export class McpServerFeature {
   private isMcpApiAvailable(): boolean {
     // Check if VS Code has the MCP API available
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return typeof (vscode as any).lm?.registerMcpServerDefinitionProvider === 'function';
+    const available = typeof (vscode as any).lm?.registerMcpServerDefinitionProvider === 'function';
+    if (!available) {
+      this.outputChannel.appendLine(`Terraform MCP API is not available in current VS Code version ${vscode.version}`);
+    }
+    return available;
+  }
+
+  private isMcpServerEnabled(): boolean {
+    const isEnabled = config('terraform').get<boolean>('mcp.server.enabled') === true;
+    if (!isEnabled) {
+      this.outputChannel.appendLine('HashiCorp Terraform MCP Server integration is disabled by configuration');
+    }
+    return isEnabled;
   }
 
   private registerMcpServerProvider(): vscode.Disposable | undefined {
@@ -81,6 +90,10 @@ export class McpServerFeature {
   // Just provide the available MCP server definitions
   private provideMcpServerDefinitions(): McpServerDefinition[] {
     try {
+      if (!this.isMcpApiAvailable() || !this.isMcpServerEnabled()) {
+        return [];
+      }
+
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
         command: 'docker',

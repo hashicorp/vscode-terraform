@@ -499,6 +499,13 @@
             "scope": "machine",
             "type": "string",
             "markdownDescription": "Path to a file (`TF_LOG_PATH`) for Terraform executions to be logged used by the the Terraform Language Server. Support for variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varName}}`"
+          },
+          "terraform.mcp.server.enabled": {
+            "order": 3,
+            "scope": "window",
+            "type": "boolean",
+            "default": true,
+            "description": "Enable HashiCorp Terraform MCP Server integration"
           }
         }
       },
@@ -533,6 +540,14 @@
       {
         "command": "terraform.disableLanguageServer",
         "title": "HashiCorp Terraform: Disable Language Server"
+      },
+        {
+        "command": "terraform.enableMcpServer",
+        "title": "HashiCorp Terraform: Enable MCP Server"
+      },
+      {
+        "command": "terraform.disableMcpServer",
+        "title": "HashiCorp Terraform: Disable MCP Server"
       },
       {
         "command": "terraform.init",
@@ -645,6 +660,14 @@
         {
           "command": "terraform.disableLanguageServer",
           "when": "config.terraform.languageServer.enable == true"
+        },
+         {
+          "command": "terraform.enableMcpServer",
+          "when": "config.terraform.mcp.server.enabled == false"
+        },
+        {
+          "command": "terraform.disableMcpServer",
+          "when": "config.terraform.mcp.server.enabled == true"
         },
         {
           "command": "terraform.init",

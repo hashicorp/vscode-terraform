@@ -11,7 +11,7 @@ export class TerraformLSCommands implements vscode.Disposable {
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async (event: vscode.ConfigurationChangeEvent) => {
         if (event.affectsConfiguration('terraform') || event.affectsConfiguration('terraform-ls')) {
-          const reloadMsg = 'Reload VSCode window to apply language server changes';
+          const reloadMsg = 'Reload VSCode window to apply configuration changes';
           const selected = await vscode.window.showInformationMessage(reloadMsg, 'Reload');
           if (selected === 'Reload') {
             vscode.commands.executeCommand('workbench.action.reloadWindow');
