@@ -98,18 +98,14 @@ export class McpServerFeature {
   // All user interactions should happen here
   // Should return resolved server definition if server should be started
   private async resolveMcpServerDefinition(definition: McpServerDefinition): Promise<McpServerDefinition> {
-    try {
-      const dockerAvailable = await this.dockerValidations();
-      if (!dockerAvailable) {
-        throw new Error('Docker is required but not available or running');
-      }
-
-      return definition;
-    } catch (error) {
-      this.logError('Error resolving MCP server definition', error);
-      throw error;
+    const dockerAvailable = await this.dockerValidations();
+    if (!dockerAvailable) {
+      throw new Error('Docker is required but not available or running');
     }
+
+    return definition;
   }
+
   private async dockerValidations(): Promise<boolean> {
     try {
       if (!(await this.checkDockerRunning())) {
