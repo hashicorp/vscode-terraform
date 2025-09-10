@@ -174,7 +174,7 @@ List Terraform providers used in the current open document in the Explorer Pane,
 
 ### Terraform MCP Server Integration
 
-The extension integrates with the [Terraform MCP Server](https://github.com/hashicorp/terraform-mcp-server), which provides advanced AI assistance capabilities for Terraform development through the Model Context Protocol (MCP). For a complete list of features and capabilities, please refer to the [official](https://github.com/hashicorp/terraform-mcp-server) Terraform MCP Server documentation.
+The extension registers the [Terraform MCP Server](https://github.com/hashicorp/terraform-mcp-server), which provides advanced AI assistance capabilities for Terraform development through the Model Context Protocol (MCP). For a complete list of features and capabilities, please refer to the [official](https://github.com/hashicorp/terraform-mcp-server) Terraform MCP Server documentation.
 
 The MCP server integration is enabled by default, requiring only Docker to be installed and running on your system. The extension automatically manages the server lifecycle, starting it when needed for AI interactions.
 
