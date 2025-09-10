@@ -500,7 +500,7 @@
             "type": "string",
             "markdownDescription": "Path to a file (`TF_LOG_PATH`) for Terraform executions to be logged used by the the Terraform Language Server. Support for variables (e.g. timestamp, pid, ppid) via Go template syntax `{{varName}}`"
           },
-          "terraform.mcp.server.enabled": {
+          "terraform.mcp.server.enable": {
             "order": 3,
             "scope": "window",
             "type": "boolean",
@@ -663,11 +663,11 @@
         },
         {
           "command": "terraform.enableMcpServer",
-          "when": "config.terraform.mcp.server.enabled == false"
+          "when": "config.terraform.mcp.server.enable == false"
         },
         {
           "command": "terraform.disableMcpServer",
-          "when": "config.terraform.mcp.server.enabled == true"
+          "when": "config.terraform.mcp.server.enable == true"
         },
         {
           "command": "terraform.init",

@@ -10,20 +10,20 @@ export class McpServerCommands implements vscode.Disposable {
   constructor(private context: vscode.ExtensionContext) {
     this.context.subscriptions.push(
       vscode.commands.registerCommand('terraform.enableMcpServer', async () => {
-        if (config('terraform').get('mcp.server.enabled') === true) {
+        if (config('terraform').get<boolean>('mcp.server.enable') === true) {
           return;
         }
 
-        const scope: vscode.ConfigurationTarget = getScope('terraform', 'mcp.server.enabled');
-        await config('terraform').update('mcp.server.enabled', true, scope);
+        const scope: vscode.ConfigurationTarget = getScope('terraform', 'mcp.server.enable');
+        await config('terraform').update('mcp.server.enable', true, scope);
       }),
       vscode.commands.registerCommand('terraform.disableMcpServer', async () => {
-        if (config('terraform').get('mcp.server.enabled') === false) {
+        if (config('terraform').get<boolean>('mcp.server.enable') === false) {
           return;
         }
 
-        const scope: vscode.ConfigurationTarget = getScope('terraform', 'mcp.server.enabled');
-        await config('terraform').update('mcp.server.enabled', false, scope);
+        const scope: vscode.ConfigurationTarget = getScope('terraform', 'mcp.server.enable');
+        await config('terraform').update('mcp.server.enable', false, scope);
       }),
     );
   }

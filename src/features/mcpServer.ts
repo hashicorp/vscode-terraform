@@ -64,7 +64,7 @@ export class McpServerFeature {
   }
 
   private isMcpServerEnabled(): boolean {
-    const isEnabled = config('terraform').get<boolean>('mcp.server.enabled') === true;
+    const isEnabled = config('terraform').get<boolean>('mcp.server.enable') === true;
     if (!isEnabled) {
       this.outputChannel.appendLine('HashiCorp Terraform MCP Server integration is disabled by configuration');
     }
