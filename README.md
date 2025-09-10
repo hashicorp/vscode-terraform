@@ -182,7 +182,7 @@ The MCP server integration is enabled by default, requiring only Docker to be in
 
 You can enable or disable this feature via:
 - The Command Palette: `HashiCorp Terraform: Enable MCP Server` or `HashiCorp Terraform: Disable MCP Server`
-- Settings: `terraform.mcp.server.enabled`
+- Settings: `terraform.mcp.server.enable`
 
 When enabled, the MCP server runs as a Docker container (`hashicorp/terraform-mcp-server`), providing your AI assistant with contextual knowledge about Terraform providers, modules, and best practices.
 
