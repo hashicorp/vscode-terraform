@@ -1,5 +1,5 @@
 kind: ENHANCEMENTS
-body: Configuration option `terraform.mcp.server.enabled` to enable or disable HashiCorp Terraform MCP Server integration
+body: Configuration option `terraform.mcp.server.enable` to enable or disable HashiCorp Terraform MCP Server integration
 time: 2025-09-09T16:33:30.998854+05:30
 custom:
     Issue: "2106"
