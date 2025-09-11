@@ -1,0 +1,6 @@
+kind: NOTES
+body: Added documentation for Terraform MCP Server integration
+time: 2025-09-09T17:44:04.774529+05:30
+custom:
+    Issue: "2107"
+    Repository: vscode-terraform
