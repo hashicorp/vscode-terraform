@@ -7,6 +7,7 @@ import TelemetryReporter from '@vscode/extension-telemetry';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as vscode from 'vscode';
+import { config } from '../utils/vscode';
 
 const execAsync = promisify(exec);
 
@@ -55,7 +56,19 @@ export class McpServerFeature {
   private isMcpApiAvailable(): boolean {
     // Check if VS Code has the MCP API available
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return typeof (vscode as any).lm?.registerMcpServerDefinitionProvider === 'function';
+    const available = typeof (vscode as any).lm?.registerMcpServerDefinitionProvider === 'function';
+    if (!available) {
+      this.outputChannel.appendLine(`Terraform MCP API is not available in current VS Code version ${vscode.version}`);
+    }
+    return available;
+  }
+
+  private isMcpServerEnabled(): boolean {
+    const isEnabled = config('terraform').get<boolean>('mcp.server.enable') === true;
+    if (!isEnabled) {
+      this.outputChannel.appendLine('HashiCorp Terraform MCP Server integration is disabled by configuration');
+    }
+    return isEnabled;
   }
 
   private registerMcpServerProvider(): vscode.Disposable | undefined {
@@ -81,6 +94,10 @@ export class McpServerFeature {
   // Just provide the available MCP server definitions
   private provideMcpServerDefinitions(): McpServerDefinition[] {
     try {
+      if (!this.isMcpServerEnabled()) {
+        return [];
+      }
+
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
         command: 'docker',
@@ -98,6 +115,11 @@ export class McpServerFeature {
   // All user interactions should happen here
   // Should return resolved server definition if server should be started
   private async resolveMcpServerDefinition(definition: McpServerDefinition): Promise<McpServerDefinition> {
+    if (definition.label !== 'HashiCorp Terraform MCP Server') {
+      // Not our definition, return as is
+      return definition;
+    }
+
     const dockerAvailable = await this.dockerValidations();
     if (!dockerAvailable) {
       throw new Error('Docker is required but not available or running');

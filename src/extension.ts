@@ -33,6 +33,7 @@ import { LanguageStatusFeature } from './features/languageStatus';
 import { getInitializationOptions } from './settings';
 import { TerraformLSCommands } from './commands/terraformls';
 import { TerraformCommands } from './commands/terraform';
+import { McpServerCommands } from './commands/mcpServer';
 import * as lsStatus from './status/language';
 import { TerraformCloudFeature } from './features/terraformCloud';
 import { setupMockServer, stopMockServer } from './test/e2e/specs/mocks/server';
@@ -71,7 +72,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   context.subscriptions.push(new TerraformCloudFeature(context, reporter, tfcOutputChannel));
 
-  // Register MCP server feature
+  // Register MCP server commands and feature
+  context.subscriptions.push(new McpServerCommands(context));
   context.subscriptions.push(new McpServerFeature(context, reporter, outputChannel));
 
   if (config('terraform').get<boolean>('languageServer.enable') === false) {
