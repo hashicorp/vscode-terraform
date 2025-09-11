@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.36.2 (2025-09-11)
+
+ENHANCEMENTS:
+
+* Configuration option `terraform.mcp.server.enable` to enable or disable HashiCorp Terraform MCP Server integration ([#2106](https://github.com/hashicorp/vscode-terraform/issues/2106))
+
+NOTES:
+
+* Added documentation for Terraform MCP Server integration ([#2107](https://github.com/hashicorp/vscode-terraform/issues/2107))
+
 ## 2.36.1 (2025-09-09)
 
 ENHANCEMENTS:
