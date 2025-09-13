@@ -504,7 +504,7 @@
             "order": 3,
             "scope": "window",
             "type": "boolean",
-            "default": true,
+            "default": false,
             "description": "Enable HashiCorp Terraform MCP Server integration"
           }
         }
