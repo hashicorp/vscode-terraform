@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.36.3 (2025-09-17)
+
+ENHANCEMENTS:
+
+* Changed default value for terraform.mcp.server.enable from true to false. ([#2113](https://github.com/hashicorp/vscode-terraform/issues/2113))
+
 ## 2.36.2 (2025-09-11)
 
 ENHANCEMENTS:
