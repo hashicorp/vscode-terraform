@@ -125,6 +125,7 @@ export class McpServerFeature {
       throw new Error('Docker is required but not available or running');
     }
 
+    this.reporter.sendTelemetryEvent('terraform-mcp-server-start');
     return definition;
   }
 
