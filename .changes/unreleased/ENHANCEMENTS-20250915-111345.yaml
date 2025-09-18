@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Added telemetry event start mcp server
-time: 2025-09-15T11:13:45.094881+05:30
-custom:
-    Issue: "2116"
-    Repository: vscode-terraform
