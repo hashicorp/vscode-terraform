@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.36.4 (2025-09-18)
+
+ENHANCEMENTS:
+
+* Added telemetry event start mcp server ([#2116](https://github.com/hashicorp/vscode-terraform/issues/2116))
+
+NOTES:
+
+* Updated documentation regarding default MCP server state. ([#2121](https://github.com/hashicorp/vscode-terraform/issues/2121))
+
 ## 2.36.3 (2025-09-17)
 
 ENHANCEMENTS:
