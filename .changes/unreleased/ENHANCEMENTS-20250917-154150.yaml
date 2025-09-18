@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Updated documentation regarding default MCP server state.
+time: 2025-09-17T15:41:50.306114127Z
+custom:
+    Issue: "2121"
+    Repository: vscode-terraform

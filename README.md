@@ -176,15 +176,17 @@ List Terraform providers used in the current open document in the Explorer Pane,
 
 The extension registers the [Terraform MCP Server](https://github.com/hashicorp/terraform-mcp-server), which provides advanced AI assistance capabilities for Terraform development through the Model Context Protocol (MCP). For a complete list of features and capabilities, please refer to the [official](https://github.com/hashicorp/terraform-mcp-server) Terraform MCP Server documentation.
 
-The MCP server integration is enabled by default, requiring only Docker to be installed and running on your system. The extension automatically manages the server lifecycle, starting it when needed for AI interactions.
-
-![](/docs/hashicorp-terraform-mcp-server.gif)
+The MCP server integration is disabled by default.
 
 You can enable or disable this feature via:
 - The Command Palette: `HashiCorp Terraform: Enable MCP Server` or `HashiCorp Terraform: Disable MCP Server`
 - Settings: `terraform.mcp.server.enable`
 
-When enabled, the MCP server runs as a Docker container (`hashicorp/terraform-mcp-server`), providing your AI assistant with contextual knowledge about Terraform providers, modules, and best practices.
+Note that enabling this feature requires Docker to be installed and running on your system.
+
+When enabled, the MCP server runs as a Docker container (`hashicorp/terraform-mcp-server`), providing your AI assistant with contextual knowledge about Terraform providers, modules, and best practices. The extension automatically manages the server lifecycle, starting it when needed for AI interactions.
+
+![](/docs/hashicorp-terraform-mcp-server.gif)
 
 ### Terraform Commands
 
