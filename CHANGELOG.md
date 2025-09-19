@@ -8,7 +8,7 @@ This release adds initial support for the Terraform Actions feature. This provid
 
 ENHANCEMENTS:
 
-* Added Support for Terraform Action Static Schema ([#2122](https://github.com/hashicorp/vscode-terraform/issues/2122))
+* Added Support for Terraform Action Static Schema ([#2123](https://github.com/hashicorp/vscode-terraform/issues/2123))
 
 ## 2.36.4 (2025-09-18)
 
