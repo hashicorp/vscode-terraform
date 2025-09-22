@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.37.2025092217 (2024-09-22)
+
+NOTES:
+
+This is a release to bring the prerelease channel to parity with stable.
+
 ## 2.37.1 (2025-09-22)
 
 INTERNAL:
