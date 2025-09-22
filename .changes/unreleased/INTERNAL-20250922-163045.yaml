@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Bump development-dependencies
-time: 2025-09-22T16:30:45.17481+05:30
-custom:
-    Issue: "2089"
-    Repository: vscode-terraform

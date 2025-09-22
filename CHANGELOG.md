@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.37.1 (2025-09-22)
+
+INTERNAL:
+
+* Bump development-dependencies ([#2089](https://github.com/hashicorp/vscode-terraform/issues/2089))
+
 ## 2.37.0 (2025-09-19)
 
 NOTES:
