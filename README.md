@@ -175,19 +175,6 @@ List Terraform providers used in the current open document in the Explorer Pane,
 
 ![](docs/module_providers.png)
 
-### Terraform Search
-
-The extension provides support for Terraform Search files (.tfquery.hcl), offering a rich editing experience for creating and maintaining Terraform Search queries. Terraform Search allows you to query your infrastructure as code to find resources, data, and other elements across your Terraform configurations.
-
-Key features for Terraform Search files include:
-- Syntax highlighting for .tfquery.hcl files
-- Code completion for Terraform Search blocks and attributes
-- Hover information for Terraform Search constructs
-- Diagnostics and validation for Terraform Search queries
-- Formatting support for Terraform Search files
-
-This provides a seamless experience when working with Terraform Search queries alongside your standard Terraform configurations.
-
 ### Terraform MCP Server Integration
 
 The extension registers the [Terraform MCP Server](https://github.com/hashicorp/terraform-mcp-server), which provides advanced AI assistance capabilities for Terraform development through the Model Context Protocol (MCP). For a complete list of features and capabilities, please refer to the [official](https://github.com/hashicorp/terraform-mcp-server) Terraform MCP Server documentation.
@@ -234,8 +221,6 @@ The extension should work anywhere VS Code itself and Terraform 0.12 or higher i
 Intellisense, error checking and other language features are supported for Terraform v0.12 and greater.
 
 Syntax highlighting targets Terraform v1.0 and greater. Highlighting 0.12-0.15 configuration is done on a best effort basis.
-
-Terraform Search file support (.tfquery.hcl) requires the latest version of the extension and is designed to work with Terraform's search functionality.
 
 ## Usage
 
