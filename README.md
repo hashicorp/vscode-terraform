@@ -1,6 +1,6 @@
 # Terraform Extension for Visual Studio Code
 
-The HashiCorp [Terraform Extension for Visual Studio Code (VS Code)](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [Terraform](https://www.terraform.io) and Terraform Stacks files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
+The HashiCorp [Terraform Extension for Visual Studio Code (VS Code)](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) with the [Terraform Language Server](https://github.com/hashicorp/terraform-ls) adds editing features for [Terraform](https://www.terraform.io), Terraform Stacks and Terraform Search files such as syntax highlighting, IntelliSense, code navigation, code formatting, module explorer and much more!
 
 ## Quick Start
 
@@ -10,7 +10,7 @@ Get started writing Terraform configurations with VS Code in three steps:
 
 - **Step 2:** Install the [Terraform Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform).
 
-- **Step 3:** To activate the extension, open any folder or VS Code workspace containing Terraform or Terraform Stacks files. Once activated, the Terraform language indicator will appear in the bottom right corner of the window.
+- **Step 3:** To activate the extension, open any folder or VS Code workspace containing Terraform, Terraform Stacks or Terraform Search files. Once activated, the Terraform language indicator will appear in the bottom right corner of the window.
 
 New to Terraform? Read the [Terraform Learning guides](https://learn.hashicorp.com/terraform)
 
@@ -20,11 +20,11 @@ Read the [Troubleshooting Guide](#troubleshooting) for answers to common questio
 
 ## Features
 
-This extension provides both Terraform and Terraform Stacks language features. For most features Terraform Stacks support is implied, specific functionality is called out where approprite.
+This extension provides Terraform, Terraform Stacks and Terraform Search language features. For most features Terraform Stacks and Terraform Search support is implied, specific functionality is called out where approprite.
 
 - [IntelliSense](#intellisense-and-autocomplete) Edit your code with auto-completion of providers, resource names, data sources, attributes, components and more
 - [Syntax validation](#syntax-validation) Provides inline diagnostics for invalid configurations as you type
-- [Syntax highlighting](#syntax-highlighting) Highlighting syntax for Terraform 0.12 to 1.X and Terraform Stacks
+- [Syntax highlighting](#syntax-highlighting) Highlighting syntax for Terraform 0.12 to 1.X, Terraform Stacks and Terraform Search
 - [Code Navigation](#code-navigation) Navigate through your codebase with Go to Definition and Symbol support
 - [Code Formatting](#code-formatting) Format your code with `terraform fmt` automatically
 - [Code Snippets](#code-snippets) Shortcuts for common snippets like `for_each` and `variable`
@@ -34,7 +34,7 @@ This extension provides both Terraform and Terraform Stacks language features. F
 
 ### IntelliSense and Autocomplete
 
-The Terraform Extension for VS Code provides IntelliSense support for Terraform and for Terraform Stacks.
+The Terraform Extension for VS Code provides IntelliSense support for Terraform, Terraform Stacks and Terraform Search.
 
 IntelliSense is a general term for a variety of code editing features including: code completion, parameter info, quick info, and member lists. IntelliSense features are sometimes called by other names such as autocomplete, code completion, and code hinting.
 
@@ -42,7 +42,9 @@ For Terraform constructs like resource and data, labels, blocks and attributes a
 
 For Terraform Stacks constructs like component and resource, blocks and attributes are auto completed both at the root of the document and inside other blocks. This also works for Terraform Stack components that are installed in the workspace, attributes and other constructs are autocompleted.
 
-This means that you can benefit from auto-completion, parameter info, quick info, and member lists when working with both Terraform and Terraform Stacks files. Whether you're defining stacks, resources, or variables, the extension will provide context-specific completions to help you write your code more efficiently.
+For Terraform Search files, the extension provides auto-completion for search specific blocks and attributes, helping you build effective queries to find resources and configurations across your Terraform codebase.
+
+This means that you can benefit from auto-completion, parameter info, quick info, and member lists when working with Terraform, Terraform Stacks, and Terraform Search files. Whether you're defining stacks, resources, variables, or search queries, the extension will provide context-specific completions to help you write your code more efficiently.
 
 > **Note:** If there are syntax errors present in the document upon opening, intellisense may not provide all completions. Please fix the errors and reload the document and intellisense will return. See [hcl-lang#57](https://github.com/hashicorp/hcl-lang/issues/57) for more information.
 
@@ -64,13 +66,13 @@ Completing the snippet allows you to tab complete through each attribute and blo
 
 ### Syntax Validation
 
-Terraform and Terraform Stacks configuration files are validated when opened and on change, and invalid code is marked with diagnostics.
+Terraform, Terraform Stacks and Terraform Search configuration files are validated when opened and on change, and invalid code is marked with diagnostics.
 
 HCL syntax is checked for e.g. missing control characters like `}`, `"` or others in the wrong place.
 
 ![](docs/validation-rule-hcl.png)
 
-Enhanced validation of selected Terraform language constructs in both `*.tf` and `*.tfvars` files based on detected Terraform version and provider versions is also provided. This also works for Terraform Stacks language constructs in `*.tfcomponent.hcl`, `*.tfstack.hcl` and `*.tfdeploy.hcl` files.
+Enhanced validation of selected Terraform language constructs in both `*.tf` and `*.tfvars` files based on detected Terraform version and provider versions is also provided. This validation also extends to language constructs for Terraform Search (`*.tfquery.hcl`) and Terraform Stacks (`*.tfcomponent.hcl`, `*.tfstack.hcl`, and `*.tfdeploy.hcl`).
 
 This can highlight deprecations, missing required attributes or blocks, references to undeclared variables and more, [as documented](https://github.com/hashicorp/terraform-ls/blob/main/docs/validation.md#enhanced-validation).
 
@@ -96,13 +98,15 @@ Terraform syntax highlighting recognizes language constructs from Terraform vers
 
 Terraform Stacks syntax highlighting recognizes language constructs from Terraform version 1.9 to 1.X.
 
+Terraform Search syntax highlighting recognizes language constructs from Terraform version 1.14 to 1.X.
+
 ![](docs/syntax.png)
 
 Some language constructs will highlight differently for older versions of Terraform that are incompatible with newer ways of expressing Terraform code. In these cases we lean toward ensuring the latest version of Terraform displays correctly and do our best with older versions.
 
 ### Code Navigation
 
-While editing, you can right-click different identifiers in Terraform and Terraform Stacks files to take advantage of several convenient commands:
+While editing, you can right-click different identifiers in Terraform, Terraform Stacks and Terraform Search files to take advantage of several convenient commands:
 
 - `Go to Definition` (`F12`) navigates to the code that defines the construct where your cursor is. This command is helpful when you're working with Terraform modules and variables defined in other files than the currently opened document.
 - `Peek Definition` (`Alt+F12`) displays the relevant code snippet for the construct where your cursor is directly in the current editor instead of navigating to another file.
@@ -113,7 +117,7 @@ While editing, you can right-click different identifiers in Terraform and Terraf
 
 This extension utilizes [`terraform fmt`](https://www.terraform.io/cli/commands/fmt) to rewrite an open document to a canonical format and style. This command applies a subset of the [Terraform language style conventions](https://www.terraform.io/language/syntax/style), along with other minor adjustments for readability.
 
-This works for both Terraform and Terraform Stacks files.
+This works for Terraform, Terraform Stacks and Terraform Search files.
 
 See the [Formatting](#formatting) Configuration section for information on how to configure this feature.
 
@@ -171,6 +175,18 @@ List Terraform providers used in the current open document in the Explorer Pane,
 
 ![](docs/module_providers.png)
 
+### Terraform Search
+
+The extension provides support for Terraform Search files (.tfquery.hcl), offering a rich editing experience for creating and maintaining Terraform Search queries. Terraform Search allows you to query your infrastructure as code to find resources, data, and other elements across your Terraform configurations.
+
+Key features for Terraform Search files include:
+- Syntax highlighting for .tfquery.hcl files
+- Code completion for Terraform Search blocks and attributes
+- Hover information for Terraform Search constructs
+- Diagnostics and validation for Terraform Search queries
+- Formatting support for Terraform Search files
+
+This provides a seamless experience when working with Terraform Search queries alongside your standard Terraform configurations.
 
 ### Terraform MCP Server Integration
 
@@ -218,6 +234,8 @@ The extension should work anywhere VS Code itself and Terraform 0.12 or higher i
 Intellisense, error checking and other language features are supported for Terraform v0.12 and greater.
 
 Syntax highlighting targets Terraform v1.0 and greater. Highlighting 0.12-0.15 configuration is done on a best effort basis.
+
+Terraform Search file support (.tfquery.hcl) requires the latest version of the extension and is designed to work with Terraform's search functionality.
 
 ## Usage
 
