@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.37.2 (2025-09-24)
+
+NOTES:
+
+* Added documentation for Terraform Search ([#2131](https://github.com/hashicorp/vscode-terraform/issues/2131))
+
 ## 2.37.2025092217 (2024-09-22)
 
 NOTES:
