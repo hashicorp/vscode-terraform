@@ -1,6 +1,0 @@
-kind: NOTES
-body: Added documentation for Terraform Search
-time: 2025-09-24T11:34:26.843096+05:30
-custom:
-    Issue: "2131"
-    Repository: vscode-terraform
