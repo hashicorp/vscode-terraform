@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Improved code completion and validation for Terraform action block through dynamic schema support
-time: 2025-10-07T11:26:02.759488+05:30
-custom:
-    Issue: "2138"
-    Repository: vscode-terraform

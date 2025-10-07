@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.37.3 (2025-10-07)
+
+ENHANCEMENTS:
+
+* Improved code completion and validation for Terraform action block through dynamic schema support ([#2138](https://github.com/hashicorp/vscode-terraform/issues/2138))
+
 ## 2.37.2 (2025-09-24)
 
 NOTES:
