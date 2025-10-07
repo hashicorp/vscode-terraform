@@ -4,12 +4,8 @@
  */
 
 import TelemetryReporter from '@vscode/extension-telemetry';
-import { exec } from 'child_process';
-import { promisify } from 'util';
 import * as vscode from 'vscode';
 import { config } from '../utils/vscode';
-
-const execAsync = promisify(exec);
 
 interface McpServerDefinition {
   label: string;
@@ -98,10 +94,12 @@ export class McpServerFeature {
         return [];
       }
 
+      const containerRuntime = config('terraform').get<string>('mcp.server.containerRuntime', 'docker');
+
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
-        command: 'docker',
-        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server'],
+        command: containerRuntime,
+        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.2.3'],
         env: {},
       };
 
@@ -114,51 +112,14 @@ export class McpServerFeature {
 
   // All user interactions should happen here
   // Should return resolved server definition if server should be started
-  private async resolveMcpServerDefinition(definition: McpServerDefinition): Promise<McpServerDefinition> {
+  private resolveMcpServerDefinition(definition: McpServerDefinition): McpServerDefinition {
     if (definition.label !== 'HashiCorp Terraform MCP Server') {
       // Not our definition, return as is
       return definition;
     }
 
-    const dockerAvailable = await this.dockerValidations();
-    if (!dockerAvailable) {
-      throw new Error('Docker is required but not available or running');
-    }
-
     this.reporter.sendTelemetryEvent('terraform-mcp-server-start');
     return definition;
-  }
-
-  private async dockerValidations(): Promise<boolean> {
-    try {
-      if (!(await this.checkDockerRunning())) {
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      this.logError('Docker validation error', error);
-      return false;
-    }
-  }
-
-  // Check if container runtime is available and running
-  // The 'docker info' command validates both installation and daemon status
-  private async checkDockerRunning(): Promise<boolean> {
-    try {
-      await execAsync('docker info', { timeout: 5000 });
-      return true;
-    } catch (error) {
-      this.logError('Docker daemon check failed', error);
-      void vscode.window
-        .showWarningMessage('Please install and start a Docker compatible runtime to use this feature.', 'Learn More')
-        .then((selection) => {
-          if (selection === 'Learn More') {
-            void vscode.env.openExternal(vscode.Uri.parse('https://docs.docker.com/get-started/'));
-          }
-        });
-      return false;
-    }
   }
 
   dispose(): void {

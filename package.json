@@ -506,6 +506,13 @@
             "type": "boolean",
             "default": false,
             "description": "Enable HashiCorp Terraform MCP Server integration"
+          },
+          "terraform.mcp.server.containerRuntime": {
+            "order": 4,
+            "scope": "window",
+            "type": "string",
+            "default": "docker",
+            "description": "Container runtime command to use for running the HashiCorp Terraform MCP Server (e.g., 'docker', 'podman')"
           }
         }
       },
