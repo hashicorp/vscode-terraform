@@ -99,7 +99,7 @@ export class McpServerFeature {
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
         command: containerRuntime,
-        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.2.3'],
+        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.2'],
         env: {},
       };
 
