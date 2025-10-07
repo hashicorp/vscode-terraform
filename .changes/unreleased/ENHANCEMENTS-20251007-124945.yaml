@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Added configurable container runtime for MCP server integration
+time: 2025-10-07T12:49:45.840468+05:30
+custom:
+    Issue: "2139"
+    Repository: vscode-terraform
