@@ -4,8 +4,14 @@
  */
 
 import TelemetryReporter from '@vscode/extension-telemetry';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import * as vscode from 'vscode';
 import { config } from '../utils/vscode';
+
+const execAsync = promisify(exec);
+
+type ContainerRuntime = 'docker' | 'podman';
 
 interface McpServerDefinition {
   label: string;
@@ -94,11 +100,10 @@ export class McpServerFeature {
         return [];
       }
 
-      const containerRuntime = config('terraform').get<string>('mcp.server.containerRuntime', 'docker');
-
+      // Use Docker as default command, runtime detection happens in resolveMcpServerDefinition
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
-        command: containerRuntime,
+        command: 'docker', // Default to docker, will be resolved later
         args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.2'],
         env: {},
       };
@@ -112,14 +117,68 @@ export class McpServerFeature {
 
   // All user interactions should happen here
   // Should return resolved server definition if server should be started
-  private resolveMcpServerDefinition(definition: McpServerDefinition): McpServerDefinition {
+  private async resolveMcpServerDefinition(definition: McpServerDefinition): Promise<McpServerDefinition> {
     if (definition.label !== 'HashiCorp Terraform MCP Server') {
       // Not our definition, return as is
       return definition;
     }
 
-    this.reporter.sendTelemetryEvent('terraform-mcp-server-start');
-    return definition;
+    const availableRuntime = await this.getAvailableContainerRuntime();
+    if (!availableRuntime) {
+      const errorMessage =
+        'Please install and start a Docker compatible runtime (docker or podman) to use this feature.';
+      void vscode.window.showErrorMessage(errorMessage, 'Docker', 'Podman').then((selection) => {
+        if (selection === 'Docker') {
+          void vscode.env.openExternal(vscode.Uri.parse('https://docs.docker.com/get-started/'));
+        } else if (selection === 'Podman') {
+          void vscode.env.openExternal(vscode.Uri.parse('https://podman.io/get-started'));
+        }
+      });
+      throw new Error(errorMessage);
+    }
+
+    this.outputChannel.appendLine(
+      `Container runtime command to use for running the HashiCorp Terraform MCP Server ${availableRuntime}`,
+    );
+
+    // Update the definition to use the available container runtime
+    const resolvedDefinition: McpServerDefinition = {
+      ...definition,
+      command: availableRuntime,
+    };
+
+    this.reporter.sendTelemetryEvent('terraform-mcp-server-start', {
+      containerRuntime: availableRuntime,
+    });
+
+    return resolvedDefinition;
+  }
+
+  // Check which container runtime is available, preferring Docker over Podman
+  private async getAvailableContainerRuntime(): Promise<ContainerRuntime | null> {
+    // Check Docker first (preferred)
+    if (await this.checkContainerRuntimeAvailable('docker')) {
+      return 'docker';
+    }
+
+    // Fall back to Podman
+    if (await this.checkContainerRuntimeAvailable('podman')) {
+      return 'podman';
+    }
+
+    return null;
+  }
+
+  // Check if a specific container runtime is available and running
+  // The 'info' command validates both installation and daemon status
+  private async checkContainerRuntimeAvailable(runtime: ContainerRuntime): Promise<boolean> {
+    try {
+      await execAsync(`${runtime} info`, { timeout: 5000 });
+      return true;
+    } catch (error) {
+      this.logError(`${runtime} daemon check failed`, error);
+      return false;
+    }
   }
 
   dispose(): void {
