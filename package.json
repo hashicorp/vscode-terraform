@@ -3,7 +3,7 @@
   "name": "terraform",
   "displayName": "HashiCorp Terraform",
   "description": "Syntax highlighting and autocompletion for Terraform",
-  "version": "2.37.3",
+  "version": "2.37.4",
   "publisher": "hashicorp",
   "appInsightsKey": "InstrumentationKey=885372d2-6f3c-499f-9d25-b8b219983a52;IngestionEndpoint=https://westus2-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=6734158a-8ab9-4aec-9b5a-af151d14a754",
   "license": "MPL-2.0",
