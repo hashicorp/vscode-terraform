@@ -11,6 +11,8 @@ import { config } from '../utils/vscode';
 
 const execAsync = promisify(exec);
 
+type ContainerRuntime = 'docker' | 'podman';
+
 interface McpServerDefinition {
   label: string;
   command: string;
@@ -98,10 +100,11 @@ export class McpServerFeature {
         return [];
       }
 
+      // Use Docker as default command, runtime detection happens in resolveMcpServerDefinition
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
-        command: 'docker',
-        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server'],
+        command: 'docker', // Default to docker, will be resolved later
+        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.2'],
         env: {},
       };
 
@@ -120,43 +123,60 @@ export class McpServerFeature {
       return definition;
     }
 
-    const dockerAvailable = await this.dockerValidations();
-    if (!dockerAvailable) {
-      throw new Error('Docker is required but not available or running');
+    const availableRuntime = await this.getAvailableContainerRuntime();
+    if (!availableRuntime) {
+      const errorMessage =
+        'Please install and start a Docker compatible runtime (docker or podman) to use this feature.';
+      void vscode.window.showErrorMessage(errorMessage, 'Docker', 'Podman').then((selection) => {
+        if (selection === 'Docker') {
+          void vscode.env.openExternal(vscode.Uri.parse('https://docs.docker.com/get-started/'));
+        } else if (selection === 'Podman') {
+          void vscode.env.openExternal(vscode.Uri.parse('https://podman.io/get-started'));
+        }
+      });
+      throw new Error(errorMessage);
     }
 
-    this.reporter.sendTelemetryEvent('terraform-mcp-server-start');
-    return definition;
+    this.outputChannel.appendLine(
+      `Container runtime command to use for running the HashiCorp Terraform MCP Server ${availableRuntime}`,
+    );
+
+    // Update the definition to use the available container runtime
+    const resolvedDefinition: McpServerDefinition = {
+      ...definition,
+      command: availableRuntime,
+    };
+
+    this.reporter.sendTelemetryEvent('terraform-mcp-server-start', {
+      containerRuntime: availableRuntime,
+    });
+
+    return resolvedDefinition;
   }
 
-  private async dockerValidations(): Promise<boolean> {
-    try {
-      if (!(await this.checkDockerRunning())) {
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      this.logError('Docker validation error', error);
-      return false;
+  // Check which container runtime is available, preferring Docker over Podman
+  private async getAvailableContainerRuntime(): Promise<ContainerRuntime | null> {
+    // Check Docker first (preferred)
+    if (await this.checkContainerRuntimeAvailable('docker')) {
+      return 'docker';
     }
+
+    // Fall back to Podman
+    if (await this.checkContainerRuntimeAvailable('podman')) {
+      return 'podman';
+    }
+
+    return null;
   }
 
-  // Check if container runtime is available and running
-  // The 'docker info' command validates both installation and daemon status
-  private async checkDockerRunning(): Promise<boolean> {
+  // Check if a specific container runtime is available and running
+  // The 'info' command validates both installation and daemon status
+  private async checkContainerRuntimeAvailable(runtime: ContainerRuntime): Promise<boolean> {
     try {
-      await execAsync('docker info', { timeout: 5000 });
+      await execAsync(`${runtime} info`, { timeout: 5000 });
       return true;
     } catch (error) {
-      this.logError('Docker daemon check failed', error);
-      void vscode.window
-        .showWarningMessage('Please install and start a Docker compatible runtime to use this feature.', 'Learn More')
-        .then((selection) => {
-          if (selection === 'Learn More') {
-            void vscode.env.openExternal(vscode.Uri.parse('https://docs.docker.com/get-started/'));
-          }
-        });
+      this.logError(`${runtime} daemon check failed`, error);
       return false;
     }
   }

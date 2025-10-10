@@ -185,9 +185,20 @@ You can enable or disable this feature via:
 - The Command Palette: `HashiCorp Terraform: Enable MCP Server` or `HashiCorp Terraform: Disable MCP Server`
 - Settings: `terraform.mcp.server.enable`
 
-Note that enabling this feature requires Docker to be installed and running on your system.
+#### Container Runtime Configuration
 
-When enabled, the MCP server runs as a Docker container (`hashicorp/terraform-mcp-server`), providing your AI assistant with contextual knowledge about Terraform providers, modules, and best practices. The extension automatically manages the server lifecycle, starting it when needed for AI interactions.
+The extension automatically detects available container runtimes on your system and uses them in the following priority order:
+
+1. **Docker** (preferred) - If Docker is installed and running
+2. **Podman** (fallback) - If Docker is not available but Podman is installed and running
+
+**Supported container runtimes:**
+- `docker` - Requires Docker to be installed and running
+- `podman` - Requires Podman to be installed and running
+
+**Note:** At least one supported container runtime (Docker or Podman) must be installed and running on your system before enabling the MCP server integration. If neither is available, the extension will show an error message with links to installation guides for both runtimes.
+
+When enabled, the MCP server runs as a container (`hashicorp/terraform-mcp-server`), providing your AI assistant with contextual knowledge about Terraform providers, modules, and best practices. The extension automatically manages the server lifecycle, starting it when needed for AI interactions.
 
 ![](/docs/hashicorp-terraform-mcp-server.gif)
 
