@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.37.5 (2025-10-10)
+
+ENHANCEMENTS:
+
+* Added automatic container runtime detection for MCP server integration with Docker and Podman support ([#2139](https://github.com/hashicorp/vscode-terraform/issues/2139))
+
+## 2.37.4 (2025-10-09)
+
+BUG FIXES:
+
+* fix schema 1.12 to correctly allow the import block to use for_each ([#2143](https://github.com/hashicorp/vscode-terraform/issues/2143))
+
 ## 2.37.3 (2025-10-07)
 
 ENHANCEMENTS:

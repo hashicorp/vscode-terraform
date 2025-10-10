@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Added automatic container runtime detection for MCP server integration with Docker and Podman support
-time: 2025-10-07T12:49:45.840468+05:30
-custom:
-    Issue: "2139"
-    Repository: vscode-terraform
