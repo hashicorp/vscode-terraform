@@ -27,6 +27,7 @@ suite('completion', () => {
 
     test('simple completion', async () => {
       const expected = [
+        new vscode.CompletionItem('action', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('check', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('data', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('ephemeral', vscode.CompletionItemKind.Class),
