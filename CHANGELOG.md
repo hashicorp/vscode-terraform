@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.37.6 (2025-11-24)
+
+INTERNAL:
+
+* Bump: language server version to 0.38.3 ([#2159](https://github.com/hashicorp/vscode-terraform/issues/2159))
+
 ## 2.37.5 (2025-10-10)
 
 ENHANCEMENTS:
