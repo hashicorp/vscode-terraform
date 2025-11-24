@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: 'Bump: language server version 0.38.3'
+time: 2025-11-24T14:16:02.603023+05:30
+custom:
+    Issue: "2159"
+    Repository: vscode-terraform
