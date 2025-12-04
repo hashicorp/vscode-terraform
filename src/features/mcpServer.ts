@@ -104,7 +104,7 @@ export class McpServerFeature {
       const server: McpServerDefinition = {
         label: 'HashiCorp Terraform MCP Server',
         command: 'docker', // Default to docker, will be resolved later
-        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.2'],
+        args: ['run', '-i', '--rm', 'hashicorp/terraform-mcp-server:0.3'],
         env: {},
       };
 
