@@ -38,6 +38,7 @@ import * as lsStatus from './status/language';
 import { TerraformCloudFeature } from './features/terraformCloud';
 import { setupMockServer, stopMockServer } from './test/e2e/specs/mocks/server';
 import { McpServerFeature } from './features/mcpServer';
+import { TerraformVisualizerPanel } from './VisualizerPanel';
 
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
@@ -240,6 +241,31 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   } catch (error) {
     await handleLanguageClientStartError(error, context, reporter);
   }
+
+  context.subscriptions.push(
+        vscode.commands.registerCommand('terraform.visualizer.start', async () => {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor || editor.document.languageId !== 'terraform') {
+                vscode.window.showErrorMessage('Please open a Terraform file to visualize.');
+                return;
+            }
+
+            try {
+
+              const filePath = editor.document.uri.fsPath;
+                const command = 'terraform-ls.terraform.display-graph';
+                const args: any[] = ["uri=" + filePath];
+
+                const graphData: any = await vscode.commands.executeCommand(command, ...args);
+
+                TerraformVisualizerPanel.createOrShow(context.extensionUri, graphData);
+            } catch (error: unknown) {
+              const message = error instanceof Error ? error.message : String(error);
+              vscode.window.showErrorMessage(`Graph generation failed: ${message}`);
+            }
+        })
+    );
+
 }
 
 export async function deactivate(): Promise<void> {

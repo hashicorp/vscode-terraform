@@ -103,7 +103,27 @@ async function main() {
     ...defaults,
   };
 
-  const contexts = [await context(desktop), await context(web)];
+  const webview = {
+    entryPoints: ['src/webview/index.tsx'],
+    outfile: 'media/main.js',
+    bundle: true,
+    format: 'iife',
+    platform: 'browser',
+    minify: production,
+    sourcemap: !production,
+    plugins: [esbuildProblemMatcherPlugin],
+    loader: {
+      '.tsx': 'tsx',
+      '.ts': 'ts',
+      '.css': 'css',
+    },
+    define: {
+      'process.env.NODE_ENV': production ? '"production"' : '"development"',
+      global: 'globalThis',
+    },
+  };
+
+  const contexts = [await context(desktop), await context(web), await context(webview)];
 
   try {
     const promises = [];

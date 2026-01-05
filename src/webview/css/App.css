@@ -1,0 +1,83 @@
+/* Container for the entire Webview */
+.webview-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    background-color: var(--vscode-editor-background);
+}
+
+/* The area where the graph lives */
+.graph-wrapper {
+    flex-grow: 1;
+    height: 100%;
+    position: relative;
+}
+
+/* Sidebar styling using VS Code theme variables */
+.sidebar {
+    width: 350px;
+    background-color: var(--vscode-sideBar-background);
+    color: var(--vscode-sideBar-foreground);
+    padding: 20px;
+    border-left: 1px solid var(--vscode-sideBar-border);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.sidebar h2 {
+    color: var(--vscode-sideBarTitle-foreground);
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.sidebar label {
+    font-size: 10px;
+    color: var(--vscode-descriptionForeground);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Button styling to match VS Code buttons */
+.btn-primary {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 2px;
+}
+
+.btn-primary:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.btn-secondary {
+    width: 100%;
+    background: transparent;
+    color: var(--vscode-foreground);
+    border: 1px solid var(--vscode-panel-border);
+    padding: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
+.terraform-node {
+    background: #ffffff;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    width: 200px;
+    padding: 10px; /* Added padding for content breathing room */
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.terraform-node:hover {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
