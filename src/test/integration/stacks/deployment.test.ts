@@ -16,11 +16,13 @@ suite('stacks deployments', () => {
       await activateExtension();
     });
 
-    teardown(async () => {
+    this.afterAll(async () => {
+      await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    });
+
+    this.afterEach(async () => {
       // revert any changes made to the document after each test
       await vscode.commands.executeCommand('workbench.action.files.revert');
-
-      await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 
     test('language is registered', async () => {
