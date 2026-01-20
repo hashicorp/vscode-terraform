@@ -70,9 +70,6 @@ jobs:
         run: terraform version
       - name: Clean Install Dependencies
         run: npm ci
-      - name: Pre-download VS Code Insiders (Windows workaround)
-        if: matrix.os == 'windows-latest' && matrix.vscode == 'insiders'
-        run: node -e "require('@vscode/test-electron').downloadAndUnzipVSCode('insiders').then(path => console.log('Downloaded to:', path))"
       - name: Allow unprivileged user namespace (ubuntu)
         if: runner.os == 'Linux'
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
