@@ -1,83 +1,274 @@
-/* Container for the entire Webview */
-.webview-container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    background-color: var(--vscode-editor-background);
+:root {
+  --tf-blue: #007CC3;
+  --bg-white: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border-light: #f1f5f9;
+  --border-medium: #e2e8f0;
 }
-
-/* The area where the graph lives */
-.graph-wrapper {
-    flex-grow: 1;
-    height: 100%;
-    position: relative;
-}
-
-/* Sidebar styling using VS Code theme variables */
-.sidebar {
-    width: 350px;
-    background-color: var(--vscode-sideBar-background);
-    color: var(--vscode-sideBar-foreground);
-    padding: 20px;
-    border-left: 1px solid var(--vscode-sideBar-border);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-    z-index: 10;
-}
-
-.sidebar h2 {
-    color: var(--vscode-sideBarTitle-foreground);
-    margin: 0;
-    font-size: 1.1rem;
-}
-
-.sidebar label {
-    font-size: 10px;
-    color: var(--vscode-descriptionForeground);
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 4px;
-}
-
-/* Button styling to match VS Code buttons */
-.btn-primary {
-    background-color: var(--vscode-button-background);
-    color: var(--vscode-button-foreground);
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 2px;
-}
-
-.btn-primary:hover {
-    background-color: var(--vscode-button-hoverBackground);
-}
-
-.btn-secondary {
-    width: 100%;
-    background: transparent;
-    color: var(--vscode-foreground);
-    border: 1px solid var(--vscode-panel-border);
-    padding: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
 
 .terraform-node {
-    background: #ffffff;
-    color: #000000;
-    border-radius: 4px;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    width: 200px;
-    padding: 10px; /* Added padding for content breathing room */
-    cursor: pointer;
-    transition: box-shadow 0.2s ease-in-out;
+  background: var(--bg-white) !important;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  width: 260px;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.node-header {
+  padding: 12px 16px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.node-type {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tf-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.node-content {
+  padding: 16px;
+}
+
+.node-label {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  line-height: 1.5;
+  word-break: break-all;
 }
 
 .terraform-node:hover {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  border-color: var(--tf-blue);
+  box-shadow: 0 0 0 2px rgba(0, 124, 195, 0.2);
+}
+
+
+.sidebar-container {
+    width: 300px;
+    background: #ffffff;
+    color: #111827;
+    padding: 0;
+    border-left: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 10;
+}
+
+.sidebar-accent-line {
+    height: 4px;
+    background: var(--tf-blue);
+    width: 100%;
+}
+
+.sidebar-header {
+    padding: 24px;
+    background: #f8fafc;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resource-icon-badge {
+    width: 36px;
+    height: 36px;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--tf-blue);
+}
+
+.sidebar-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.sidebar-subtitle {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.sidebar-content {
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.id-value-container {
+    background: #f1f5f9;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.id-value {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #334155;
+    padding: 12px;
+    word-break: break-all;
+}
+
+.type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.type-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--tf-blue);
+    border-radius: 50%;
+}
+
+.sidebar-footer {
+    padding: 20px 24px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-primary {
+    background: var(--tf-blue);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-secondary {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.react-flow__renderer.highlighting .react-flow__edge .react-flow__edge-path {
+  opacity: 0.15;
+}
+
+.react-flow__renderer.highlighting .react-flow__edge.connected-to-hovered .react-flow__edge-path {
+  opacity: 1 !important;
+  stroke: #3b82f6 !important;
+  stroke-width: 3px !important;
+}
+
+.react-flow__renderer.highlighting .react-flow__edge.connected-to-hovered marker path {
+  fill: #3b82f6 !important;
+}
+
+.loading-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.loading-screen p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    margin: 0;
+    letter-spacing: 0.01em;
+}
+
+.loading-screen p {
+    animation: pulseText 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(240, 240, 240, 1); /* Semi-transparent */
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  color: #64748b;
+  font-family: sans-serif;
 }

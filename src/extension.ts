@@ -40,6 +40,9 @@ import { setupMockServer, stopMockServer } from './test/e2e/specs/mocks/server';
 import { McpServerFeature } from './features/mcpServer';
 import { TerraformVisualizerPanel } from './VisualizerPanel';
 
+import { tracer } from './webview/tracer';
+import { SpanStatusCode } from '@opentelemetry/api';
+
 const id = 'terraform';
 const brand = `HashiCorp Terraform`;
 const documentSelector: DocumentSelector = [
@@ -53,6 +56,23 @@ const documentSelector: DocumentSelector = [
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
 const tfcOutputChannel = vscode.window.createOutputChannel('HCP Terraform');
+
+export interface TerraformNode {
+  id: string;
+  type: string;
+  label: string;
+}
+
+export interface TerraformEdge {
+  id: string;
+  source: string;
+  target: string;
+}
+
+export interface TerraformGraphData {
+  nodes: TerraformNode[];
+  edges: TerraformEdge[];
+}
 
 let reporter: TelemetryReporter;
 let client: LanguageClient;
@@ -243,31 +263,46 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   }
 
   context.subscriptions.push(
-        vscode.commands.registerCommand('terraform.visualizer.start', async () => {
-            const editor = vscode.window.activeTextEditor;
-            if (!editor || editor.document.languageId !== 'terraform') {
-                vscode.window.showErrorMessage('Please open a Terraform file to visualize.');
-                return;
-            }
+    vscode.commands.registerCommand('terraform.visualizer.start', () => {
+      const commandSpan = tracer.startSpan('command_visualizer_start');
+      const editor = vscode.window.activeTextEditor;
 
-            try {
+      if (!editor || editor.document.languageId !== 'terraform') {
+        vscode.window.showErrorMessage('Please open a Terraform file to visualize.');
+        commandSpan.setStatus({ code: SpanStatusCode.ERROR, message: 'Invalid file type' });
+        commandSpan.end();
+        return;
+      }
 
-              const filePath = editor.document.uri.fsPath;
-                const command = 'terraform-ls.terraform.display-graph';
-                const args: any[] = ["uri=" + filePath];
+      const filePath = editor.document.uri.fsPath;
+      commandSpan.setAttribute('terraform.file_path', filePath);
 
-                const graphData: any = await vscode.commands.executeCommand(command, ...args);
+      TerraformVisualizerPanel.createOrShow(context.extensionUri, null);
 
-                TerraformVisualizerPanel.createOrShow(context.extensionUri, graphData);
-            } catch (error: unknown) {
-              const message = error instanceof Error ? error.message : String(error);
-              vscode.window.showErrorMessage(`Graph generation failed: ${message}`);
-            }
+      const lsSpan = tracer.startSpan('terraform_ls_graph_generation');
+      const command = 'terraform-ls.terraform.display-graph';
+      const args: unknown[] = ['uri=' + filePath];
+
+      Promise.resolve(vscode.commands.executeCommand<TerraformGraphData>(command, ...args))
+        .then((graphData) => {
+          lsSpan.setAttribute('graph.node_count', graphData.nodes.length);
+          lsSpan.end();
+          commandSpan.end();
+
+          if (TerraformVisualizerPanel.currentPanel) {
+            TerraformVisualizerPanel.currentPanel.sendData(graphData);
+          }
         })
-    );
-
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : String(error);
+          lsSpan.setStatus({ code: SpanStatusCode.ERROR, message });
+          lsSpan.end();
+          commandSpan.end();
+          vscode.window.showErrorMessage(`Graph generation failed: ${message}`);
+        });
+    }),
+  );
 }
-
 export async function deactivate(): Promise<void> {
   try {
     await client.stop();
