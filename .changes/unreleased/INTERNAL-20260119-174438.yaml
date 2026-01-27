@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Update Copyright Headers
+time: 2026-01-19T17:44:38.376136+05:30
+custom:
+    Issue: "2165"
+    Repository: vscode-terraform
