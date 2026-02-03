@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: 'Added: support for policy files'
+time: 2026-02-03T20:33:01.531202+05:30
+custom:
+    Issue: "2167"
+    Repository: vscode-terraform
