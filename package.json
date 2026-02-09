@@ -18,7 +18,7 @@
     "vscode": "^1.92.2"
   },
   "langServer": {
-    "version": "0.38.4"
+    "version": "0.39.0-beta1"
   },
   "syntax": {
     "version": "0.7.1"
@@ -166,6 +166,20 @@
         }
       },
       {
+        "id": "terraform-policy",
+        "aliases": [
+          "Terraform Policy"
+        ],
+        "extensions": [
+          ".policy.hcl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
+        }
+      },
+      {
         "id": "json",
         "extensions": [
           ".tfstate"
@@ -205,6 +219,11 @@
       },
       {
         "language": "terraform-search",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-policy",
         "scopeName": "source.hcl",
         "path": "./syntaxes/hcl.tmGrammar.json"
       }
