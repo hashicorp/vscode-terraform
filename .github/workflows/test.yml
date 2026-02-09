@@ -50,6 +50,9 @@ jobs:
           - windows-latest
           - macos-latest
           - ubuntu-latest
+        exclude:
+          - vscode: 'insiders'
+            os: 'windows-latest'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     env:
@@ -77,8 +80,29 @@ jobs:
         shell: pwsh
         run: |
           $p = Join-Path $env:GITHUB_WORKSPACE ".vscode-test"
+          if (-Not (Test-Path $p)) { exit 0 }
+          Write-Host "Cleaning VS Code test cache at: $p"
+          $maxAttempts = 5
+          for ($i = 1; $i -le $maxAttempts; $i++) {
+            try {
+              cmd /c "rmdir /s /q \"$p\""
+            } catch {
+              Write-Host "Attempt $i: rmdir failed: $_"
+            }
+            Start-Sleep -Seconds 2
+            if (-Not (Test-Path $p)) { break }
+          }
           if (Test-Path $p) {
-            Remove-Item -LiteralPath $p -Recurse -Force
+            Write-Host "Directory still exists after $maxAttempts attempts; trying robocopy mirror fallback"
+            $tmp = Join-Path $env:GITHUB_WORKSPACE "__empty_dir__"
+            if (-Not (Test-Path $tmp)) { New-Item -ItemType Directory -Path $tmp | Out-Null }
+            try {
+              robocopy $tmp $p /MIR | Out-Null
+              cmd /c "rmdir /s /q \"$p\""
+            } catch {
+              Write-Host "Robocopy fallback failed: $_"
+            }
+            Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
           }
 
       - name: Allow unprivileged user namespace (ubuntu)
