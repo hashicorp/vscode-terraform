@@ -1,5 +1,5 @@
 kind: INTERNAL
-body: Temporarily exclude windows insiders test
+body: Temporarily exclude Windows Insider test cases
 time: 2026-02-09T13:19:27.011237+05:30
 custom:
     Issue: "2172"
