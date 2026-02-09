@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.38.2026020917 (2026-02-09)
+
+ENHANCEMENTS:
+
+* Add support for Terraform Policy files (.policy.hcl). This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Policy files. ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
+
 ## 2.37.2026020917 (2024-09-22)
 
 INTERNAL:

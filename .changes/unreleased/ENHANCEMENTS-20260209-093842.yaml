@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Add support for Terraform Policy files (.policy.hcl). This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Policy files.
-time: 2026-02-09T09:38:42.510312+05:30
-custom:
-    Issue: "2171"
-    Repository: vscode-terraform
