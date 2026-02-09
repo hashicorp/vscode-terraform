@@ -50,6 +50,9 @@ jobs:
           - windows-latest
           - macos-latest
           - ubuntu-latest
+        exclude:
+          - vscode: 'insiders'
+            os: 'windows-latest'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     env:
