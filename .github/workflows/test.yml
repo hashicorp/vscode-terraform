@@ -70,6 +70,17 @@ jobs:
         run: terraform version
       - name: Clean Install Dependencies
         run: npm ci
+
+      # Fix: avoid @vscode/test-electron failing to remove/update a stale VS Code Insiders cache on Windows
+      - name: Clean VS Code test cache (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $p = Join-Path $env:GITHUB_WORKSPACE ".vscode-test"
+          if (Test-Path $p) {
+            Remove-Item -LiteralPath $p -Recurse -Force
+          }
+
       - name: Allow unprivileged user namespace (ubuntu)
         if: runner.os == 'Linux'
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
