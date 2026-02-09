@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Temporarily exclude windows insiders test
+time: 2026-02-09T13:19:27.011237+05:30
+custom:
+    Issue: "2172"
+    Repository: vscode-terraform
