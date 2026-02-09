@@ -73,38 +73,6 @@ jobs:
         run: terraform version
       - name: Clean Install Dependencies
         run: npm ci
-
-      # Fix: avoid @vscode/test-electron failing to remove/update a stale VS Code Insiders cache on Windows
-      - name: Clean VS Code test cache (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $p = Join-Path $env:GITHUB_WORKSPACE ".vscode-test"
-          if (-Not (Test-Path $p)) { exit 0 }
-          Write-Host "Cleaning VS Code test cache at: $p"
-          $maxAttempts = 5
-          for ($i = 1; $i -le $maxAttempts; $i++) {
-            try {
-              cmd /c "rmdir /s /q \"$p\""
-            } catch {
-              Write-Host "Attempt $i: rmdir failed: $_"
-            }
-            Start-Sleep -Seconds 2
-            if (-Not (Test-Path $p)) { break }
-          }
-          if (Test-Path $p) {
-            Write-Host "Directory still exists after $maxAttempts attempts; trying robocopy mirror fallback"
-            $tmp = Join-Path $env:GITHUB_WORKSPACE "__empty_dir__"
-            if (-Not (Test-Path $tmp)) { New-Item -ItemType Directory -Path $tmp | Out-Null }
-            try {
-              robocopy $tmp $p /MIR | Out-Null
-              cmd /c "rmdir /s /q \"$p\""
-            } catch {
-              Write-Host "Robocopy fallback failed: $_"
-            }
-            Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
-          }
-
       - name: Allow unprivileged user namespace (ubuntu)
         if: runner.os == 'Linux'
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
