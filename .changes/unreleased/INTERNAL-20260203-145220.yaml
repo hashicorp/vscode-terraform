@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Update copyright config
-time: 2026-02-03T14:52:20.357778+05:30
-custom:
-    Issue: "2168"
-    Repository: vscode-terraform
