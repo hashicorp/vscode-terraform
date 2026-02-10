@@ -1,6 +1,0 @@
-kind: ENHANCEMENTS
-body: Enforce block - error message attribute should support templating
-time: 2026-02-10T12:31:25.477754+05:30
-custom:
-    Issue: "2178"
-    Repository: vscode-terraform

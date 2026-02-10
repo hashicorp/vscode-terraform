@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.38.2026021014 (2026-02-10)
+
+ENHANCEMENTS:
+
+* Enforce block - error message attribute should support templating ([#2178](https://github.com/hashicorp/vscode-terraform/issues/2178))
+
 ## 2.38.2026020917 (2026-02-09)
 
 ENHANCEMENTS:
