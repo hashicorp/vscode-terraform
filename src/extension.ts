@@ -50,6 +50,7 @@ const documentSelector: DocumentSelector = [
   { scheme: 'file', language: 'terraform-mock' },
   { scheme: 'file', language: 'terraform-search' },
   { scheme: 'file', language: 'terraform-policy' },
+  { scheme: 'file', language: 'terraform-policytest' },
 ];
 const outputChannel = vscode.window.createOutputChannel(brand);
 const tfcOutputChannel = vscode.window.createOutputChannel('HCP Terraform');

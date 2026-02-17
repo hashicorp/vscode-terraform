@@ -180,6 +180,20 @@
         }
       },
       {
+        "id": "terraform-policytest",
+        "aliases": [
+          "Terraform Policy Test"
+        ],
+        "extensions": [
+          ".policytest.hcl"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "assets/icons/terraform_feature.svg",
+          "light": "assets/icons/terraform_feature.svg"
+        }
+      },
+      {
         "id": "json",
         "extensions": [
           ".tfstate"
@@ -224,6 +238,11 @@
       },
       {
         "language": "terraform-policy",
+        "scopeName": "source.hcl",
+        "path": "./syntaxes/hcl.tmGrammar.json"
+      },
+      {
+        "language": "terraform-policytest",
         "scopeName": "source.hcl",
         "path": "./syntaxes/hcl.tmGrammar.json"
       }
