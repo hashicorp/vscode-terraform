@@ -33,12 +33,13 @@ suite('policy (.policy.hcl)', function () {
         new vscode.CompletionItem('policy', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('provider_policy', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('resource_policy', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
       ];
       await testCompletion(docUri, new vscode.Position(0, 0), { items: expected });
     });
   });
 
-  suite('resource_policy', function () {
+  suite('policy', function () {
     const docUri = getDocUri('main.policy.hcl');
 
     this.beforeAll(async () => {
@@ -53,7 +54,7 @@ suite('policy (.policy.hcl)', function () {
       await vscode.commands.executeCommand('workbench.action.files.revert');
     });
 
-    test('completes attrs of resource policy block', async () => {
+    test('completes attrs of policy block', async () => {
       const expected = [
         new vscode.CompletionItem('enforcement_level', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('plugins', vscode.CompletionItemKind.Class),
@@ -81,7 +82,9 @@ suite('policy (.policy.hcl)', function () {
     test('completes attrs of module policy block', async () => {
       const expected = [
         new vscode.CompletionItem('enforce', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('enforcement_level', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('filter', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
       ];
       await testCompletion(docUri, new vscode.Position(23, 0), { items: expected });
     });
@@ -105,7 +108,9 @@ suite('policy (.policy.hcl)', function () {
     test('completes attrs of provider policy block', async () => {
       const expected = [
         new vscode.CompletionItem('enforce', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('enforcement_level', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('filter', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
       ];
       await testCompletion(docUri, new vscode.Position(30, 0), { items: expected });
     });
