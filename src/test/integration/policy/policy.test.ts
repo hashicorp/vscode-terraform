@@ -30,7 +30,6 @@ suite('policy (.policy.hcl)', function () {
       const expected = [
         new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('module_policy', vscode.CompletionItemKind.Class),
-        new vscode.CompletionItem('policy', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('provider_policy', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('resource_policy', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
