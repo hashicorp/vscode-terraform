@@ -1,5 +1,5 @@
 kind: ENHANCEMENTS
-body: Bumped Language Server Version to 0.39.0-beta3 (Supporting Variables Inside policy files)
+body: Bumped Language Server Version to 0.39.0-beta3 (Support enforcement_level, info_message and variables inside policy files).
 time: 2026-02-23T17:31:31.190686+05:30
 custom:
     Issue: "2193"
