@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.38.2026022319 (2026-02-23)
+
+ENHANCEMENTS:
+
+* Bumped Language Server Version to 0.39.0-beta3 (Support enforcement_level, info_message and variables inside policy files). ([#2193](https://github.com/hashicorp/vscode-terraform/issues/2193))
+
 ## 2.38.2026021014 (2026-02-10)
 
 ENHANCEMENTS:
