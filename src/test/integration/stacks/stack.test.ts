@@ -33,6 +33,7 @@ suite('stacks stack', () => {
         new vscode.CompletionItem('provider', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('removed', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('required_providers', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('stack', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('variable', vscode.CompletionItemKind.Class),
       ];
 
