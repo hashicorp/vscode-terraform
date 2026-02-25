@@ -72,7 +72,7 @@ HCL syntax is checked for e.g. missing control characters like `}`, `"` or other
 
 ![](docs/validation-rule-hcl.png)
 
-Enhanced validation of selected Terraform language constructs in both `*.tf` and `*.tfvars` files based on detected Terraform version and provider versions is also provided. This validation also extends to language constructs for Terraform Search (`*.tfquery.hcl`) and Terraform Stacks (`*.tfcomponent.hcl`, `*.tfstack.hcl`, and `*.tfdeploy.hcl`).
+Enhanced validation of selected Terraform language constructs in both `*.tf` and `*.tfvars` files based on detected Terraform version and provider versions is also provided. This validation also extends to language constructs for Terraform Search (`*.tfquery.hcl`) and Terraform Stacks (`*.tfcomponent.hcl` and `*.tfdeploy.hcl`).
 
 This can highlight deprecations, missing required attributes or blocks, references to undeclared variables and more, [as documented](https://github.com/hashicorp/terraform-ls/blob/main/docs/validation.md#enhanced-validation).
 
