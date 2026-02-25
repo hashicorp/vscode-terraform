@@ -65,7 +65,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: npm
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
           terraform_version: '~1.9'
