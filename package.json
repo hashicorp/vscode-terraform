@@ -13,8 +13,8 @@
     "workspace"
   ],
   "engines": {
-    "npm": "^9.6.5 || ~10.X",
-    "node": "~20.X",
+    "npm": "^11.0.0",
+    "node": "^24.0.0",
     "vscode": "^1.92.2"
   },
   "langServer": {
