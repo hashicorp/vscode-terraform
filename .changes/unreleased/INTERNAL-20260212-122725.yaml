@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Bump nodejs from 20.18 to 24.13.1
+time: 2026-02-12T12:27:25.854285+05:30
+custom:
+    Issue: "2179"
+    Repository: vscode-terraform
