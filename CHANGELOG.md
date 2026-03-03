@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.37.8 (2026-03-03)
+
+ENHANCEMENTS:
+
+* Update Stacks schema to include missing GA specific blocks & attributes, remove support for tfstack.hcl ([#2197](https://github.com/hashicorp/vscode-terraform/issues/2197))
+
+INTERNAL:
+
+* Bump nodejs from 20.18 to 24.13.1 ([#2179](https://github.com/hashicorp/vscode-terraform/issues/2179))
+* Migrate GitHub Actions updates from TSCCR to Dependabot ([#2018](https://github.com/hashicorp/vscode-terraform/issues/2018))
+
 ## 2.37.7 (2026-02-09)
 
 ENHANCEMENTS:
