@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Bump minimatch from 3.1.2 to 3.1.5
-time: 2026-03-03T14:12:32.044486+05:30
-custom:
-    Issue: "2201"
-    Repository: vscode-terraform

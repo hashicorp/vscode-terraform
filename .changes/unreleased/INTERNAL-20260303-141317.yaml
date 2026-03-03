@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Bump the github-actions-breaking group across 1 directory with 3 updates
-time: 2026-03-03T14:13:17.210281+05:30
-custom:
-    Issue: "2198"
-    Repository: vscode-terraform
