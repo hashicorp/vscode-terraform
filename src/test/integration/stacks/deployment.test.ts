@@ -43,7 +43,12 @@ deployment "test" {
         );
       });
 
-      const expected = [new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property)];
+      const expected = [
+        new vscode.CompletionItem('deployment_group', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('destroy', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('migrate', vscode.CompletionItemKind.Property),
+      ];
 
       await testCompletion(docUri, new vscode.Position(16, 2), {
         items: expected,
