@@ -18,7 +18,14 @@ ENHANCEMENTS:
 
 * Add support for Terraform Policy files (.policy.hcl). This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Policy files. ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
 
-## 2.37.8 (2026-03-03)
+## 2.39.0 (2026-03-03)
+
+INTERNAL:
+
+* Bump minimatch from 3.1.2 to 3.1.5 ([#2201](https://github.com/hashicorp/vscode-terraform/issues/2201))
+* Bump the github-actions-breaking group across 1 directory with 3 updates ([#2198](https://github.com/hashicorp/vscode-terraform/issues/2198))
+
+## 2.38.8 (2026-03-03)
 
 ENHANCEMENTS:
 
