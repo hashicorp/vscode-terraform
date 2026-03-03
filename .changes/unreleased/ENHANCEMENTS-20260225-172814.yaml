@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Update Stacks schema to include missing GA specific blocks & attributes, remove support for tfstack.hcl
+time: 2026-02-25T17:28:14.228564+05:30
+custom:
+    Issue: "2197"
+    Repository: vscode-terraform
