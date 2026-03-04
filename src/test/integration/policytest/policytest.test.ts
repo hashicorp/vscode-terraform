@@ -92,6 +92,7 @@ suite('policytest (.policytest.hcl)', function () {
 
     test('completes attrs of module module block', async () => {
       const expected = [
+        new vscode.CompletionItem('attrs', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('expect_failure', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('meta', vscode.CompletionItemKind.Property),
       ];
