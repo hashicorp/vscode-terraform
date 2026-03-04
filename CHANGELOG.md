@@ -1,22 +1,10 @@
 # Changelog
 
-## 2.38.2026022319 (2026-02-23)
+## 2.39.2026030417 (2026-03-04)
 
 INTERNAL:
 
-* Minor fixes ([#2193](https://github.com/hashicorp/vscode-terraform/issues/2193))
-
-## 2.38.2026021014 (2026-02-10)
-
-INTERNAL:
-
-* Minor fixes ([#2178](https://github.com/hashicorp/vscode-terraform/issues/2178))
-
-## 2.38.2026020917 (2026-02-09)
-
-INTERNAL:
-
-* Minor fixes ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
+* Bumped terraform-ls ([#2189](https://github.com/hashicorp/vscode-terraform/issues/2189))
 
 ## 2.39.0 (2026-03-03)
 
@@ -35,6 +23,24 @@ INTERNAL:
 
 * Bump nodejs from 20.18 to 24.13.1 ([#2179](https://github.com/hashicorp/vscode-terraform/issues/2179))
 * Migrate GitHub Actions updates from TSCCR to Dependabot ([#2018](https://github.com/hashicorp/vscode-terraform/issues/2018))
+
+## 2.38.2026022319 (2026-02-23)
+
+INTERNAL:
+
+* Bumped terraform-ls ([#2193](https://github.com/hashicorp/vscode-terraform/issues/2193))
+
+## 2.38.2026021014 (2026-02-10)
+
+INTERNAL:
+
+* Bumped terraform-ls ([#2178](https://github.com/hashicorp/vscode-terraform/issues/2178))
+
+## 2.38.2026020917 (2026-02-09)
+
+INTERNAL:
+
+* Bumped terraform-ls ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
 
 ## 2.37.7 (2026-02-09)
 
