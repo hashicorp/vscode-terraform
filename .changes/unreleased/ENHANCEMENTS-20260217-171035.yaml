@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Bumped terraform-ls
+time: 2026-02-17T17:10:35.200741+05:30
+custom:
+    Issue: "2189"
+    Repository: vscode-terraform

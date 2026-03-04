@@ -2,21 +2,21 @@
 
 ## 2.38.2026022319 (2026-02-23)
 
-ENHANCEMENTS:
+INTERNAL:
 
-* Bumped Language Server Version to 0.39.0-beta3 (Support enforcement_level, info_message and variables inside policy files). ([#2193](https://github.com/hashicorp/vscode-terraform/issues/2193))
+* Minor fixes ([#2193](https://github.com/hashicorp/vscode-terraform/issues/2193))
 
 ## 2.38.2026021014 (2026-02-10)
 
-ENHANCEMENTS:
+INTERNAL:
 
-* Enforce block - error message attribute should support templating ([#2178](https://github.com/hashicorp/vscode-terraform/issues/2178))
+* Minor fixes ([#2178](https://github.com/hashicorp/vscode-terraform/issues/2178))
 
 ## 2.38.2026020917 (2026-02-09)
 
-ENHANCEMENTS:
+INTERNAL:
 
-* Add support for Terraform Policy files (.policy.hcl). This provides block and attribute completion, hover, and diagnostics along with syntax validation for Terraform Policy files. ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
+* Minor fixes ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
 
 ## 2.39.0 (2026-03-03)
 
