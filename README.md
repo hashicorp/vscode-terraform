@@ -316,6 +316,31 @@ To enable automatic formatting, it is recommended that the following be added to
   "editor.defaultFormatter": "hashicorp.terraform",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file"
+},
+"[terraform-stack]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+},
+"[terraform-deploy]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+},
+"[terraform-test]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+},
+"[terraform-mock]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+},
+"[terraform-search]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
 }
 ```
 
@@ -340,7 +365,43 @@ If you want to use `editor.codeActionsOnSave` with `editor.formatOnSave` to auto
   "editor.codeActionsOnSave": {
     "source.formatAll.terraform": true
   },
+},
+"[terraform-stack]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
+},
+"[terraform-deploy]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
+},
+"[terraform-test]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
+},
+"[terraform-mock]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
+},
+"[terraform-search]": {
+  "editor.defaultFormatter": "hashicorp.terraform",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.formatAll.terraform": true
+  },
 }
+
 ```
 
 This will keep the global `editor.formatOnSave` for other languages you use, and configure the Terraform extension to only format during a `codeAction` sweep.
