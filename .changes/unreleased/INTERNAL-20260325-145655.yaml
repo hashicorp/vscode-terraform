@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: 'chore: remove dependabot dev group and set open PR limit to 10'
+time: 2026-03-25T14:56:55.443251+05:30
+custom:
+    Issue: "2216"
+    Repository: vscode-terraform
