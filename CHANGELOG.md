@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.39.2 (2026-03-25)
+
+INTERNAL:
+
+* Build(deps-dev): Bump prettier from 3.6.2 to 3.8.1 ([#2220](https://github.com/hashicorp/vscode-terraform/issues/2220))
+
 ## 2.39.1 (2026-03-25)
 
 ENHANCEMENTS:

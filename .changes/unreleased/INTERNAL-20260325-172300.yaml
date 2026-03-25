@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: 'Build(deps-dev): Bump prettier from 3.6.2 to 3.8.1'
-time: 2026-03-25T17:23:00.910617+05:30
-custom:
-    Issue: "2220"
-    Repository: vscode-terraform
