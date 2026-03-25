@@ -1,6 +1,0 @@
-kind: NOTES
-body: 'docs: document all language types for formatting configuration'
-time: 2026-03-05T16:14:55.939353+05:30
-custom:
-    Issue: "2210"
-    Repository: vscode-terraform
