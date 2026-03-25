@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.39.1 (2026-03-25)
+
+ENHANCEMENTS:
+
+* Bumped terraform-ls & terraform-schema to incorporate the latest provider definitions. ([#2102](https://github.com/hashicorp/terraform-ls/issues/2102))
+
+INTERNAL:
+
+* chore: remove dependabot dev group and set open PR limit to 10 ([#2216](https://github.com/hashicorp/vscode-terraform/issues/2216))
+
+NOTES:
+
+* docs: document all language types for formatting configuration ([#2210](https://github.com/hashicorp/vscode-terraform/issues/2210))
+
 ## 2.39.0 (2026-03-03)
 
 INTERNAL:
