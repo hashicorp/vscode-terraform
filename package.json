@@ -1028,7 +1028,7 @@
     "@types/which": "^3.0.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.3.9",
-    "@vscode/test-web": "^0.0.72",
+    "@vscode/test-web": "^0.0.80",
     "@vscode/vsce": "^3.6.0",
     "assert": "^2.0.0",
     "chai": "^4.5.0",
