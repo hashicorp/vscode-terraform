@@ -1015,7 +1015,7 @@
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "@eslint/js": "^9.12.0",
+    "@eslint/js": "^10.0.1",
     "@hashicorp/js-releases": "^1.7.1",
     "@playwright/browser-chromium": "^1.39.0",
     "@types/chai": "^4.3.5",
