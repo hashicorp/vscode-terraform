@@ -59,7 +59,7 @@
     "mcpServerDefinitionProviders": [
       {
         "id": "terraform.mcp.server",
-        "label": "HashiCorp Terraform MCP Server"
+        "label": "HashiCorp_Terraform_MCP_Server"
       }
     ],
     "languages": [
