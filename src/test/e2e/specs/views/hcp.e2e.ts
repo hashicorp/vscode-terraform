@@ -30,7 +30,6 @@ describe('HCP tree view tests', () => {
   let outputView: OutputView;
 
   before(async function () {
-    this.timeout(15000);
     await VSBrowser.instance.openResources(path.join('src', 'test', 'fixtures'));
 
     // Dismiss the onboarding overlay by pressing Escape
