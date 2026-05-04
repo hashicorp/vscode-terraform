@@ -30,9 +30,13 @@ describe('HCP tree view tests', () => {
   let outputView: OutputView;
 
   before(async function () {
+    this.timeout(15000);
     await VSBrowser.instance.openResources(path.join('src', 'test', 'fixtures'));
 
-    (await new ActivityBar().getViewControl('HCP Terraform'))?.openView();
+    await (await new ActivityBar().getViewControl('HCP Terraform'))?.openView();
+
+    // Wait for the view to be ready
+    await VSBrowser.instance.driver.sleep(2000);
 
     const view = new SideBarView();
     titlePart = view.getTitlePart();
