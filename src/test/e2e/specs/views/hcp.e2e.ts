@@ -32,7 +32,15 @@ describe('HCP tree view tests', () => {
   before(async function () {
     await VSBrowser.instance.openResources(path.join('src', 'test', 'fixtures'));
 
-    (await new ActivityBar().getViewControl('HCP Terraform'))?.openView();
+    // Dismiss the onboarding overlay by pressing Escape
+    const driver = VSBrowser.instance.driver;
+    await driver.actions().sendKeys('\uE00C').perform();
+    await driver.sleep(500);
+
+    await (await new ActivityBar().getViewControl('HCP Terraform'))?.openView();
+
+    // Wait for the view to be ready
+    await VSBrowser.instance.driver.sleep(2000);
 
     const view = new SideBarView();
     titlePart = view.getTitlePart();
