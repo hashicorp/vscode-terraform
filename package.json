@@ -1022,7 +1022,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/glob": "^9.0.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^24.x",
+    "@types/node": "^25.x",
     "@types/semver": "^7.5.8",
     "@types/vscode": "~1.92",
     "@types/which": "^3.0.0",
