@@ -10,6 +10,11 @@ on:
 
 name: Check if changelog entry exists
 
+# dorny/paths-filter only reads PR file metadata via the GitHub API.
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   changelog_existence:
     name: Check if changelog entry exists

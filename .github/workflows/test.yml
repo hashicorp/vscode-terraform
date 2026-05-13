@@ -18,6 +18,9 @@ on:
       - 'tests/**'
       - '**.md'
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
