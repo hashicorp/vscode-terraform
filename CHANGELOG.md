@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.39.3 (2026-06-09)
+
+ENHANCEMENTS:
+
+* Added Terraform v1.11 test schema support ([#2275](https://github.com/hashicorp/vscode-terraform/issues/2275))
+
 ## 2.39.2 (2026-03-25)
 
 INTERNAL:
