@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Added Terraform v1.11 test schema support
+time: 2026-05-27T16:28:12.829303+05:30
+custom:
+    Issue: "2275"
+    Repository: vscode-terraform
