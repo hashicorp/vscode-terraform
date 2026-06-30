@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Fix flaky HCP workspace tooltip e2e assertion broken in newer VS Code Insiders
+time: 2026-06-30T09:43:03.180579+05:30
+custom:
+    Issue: "2285"
+    Repository: vscode-terraform
