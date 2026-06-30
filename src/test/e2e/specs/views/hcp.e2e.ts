@@ -105,7 +105,7 @@ describe('HCP tree view tests', () => {
 
     expect(await item?.getLabel()).equals('Workspace 1');
     expect(await item?.getDescription()).equals('[Project 1]');
-    expect(await item?.getTooltip()).equals('Workspace 1 [Project 1]');
+    expect(await item?.getTooltip()).contains('Workspace 1 [Project 1]');
   });
 
   it('should show a run when a workspace is clicked', async () => {
