@@ -72,6 +72,8 @@ export function GetRunStatusIcon(status?: string): vscode.ThemeIcon {
       return new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
     case 'planned_and_finished':
       return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('charts.green'));
+    case 'planned_and_saved':
+      return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow'));
     case 'policy_soft_failed':
       return new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow'));
     case 'applied':
@@ -132,6 +134,8 @@ export function GetRunStatusMessage(status?: string): string {
       return 'Tasks - post-plan (passed)';
     case 'planned_and_finished':
       return 'Planned and finished';
+    case 'planned_and_saved':
+      return 'Planned and saved';
     case 'policy_soft_failed':
       return 'Policy Soft Failure';
     case 'applied':
