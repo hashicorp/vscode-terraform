@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.39.4 (2026-07-02)
+
+ENHANCEMENTS:
+
+* Add support for the planned_and_saved run status for saved plan runs in the HCP Terraform view ([#2286](https://github.com/hashicorp/vscode-terraform/issues/2286))
+* Added type attribute to 1.15 output blocks ([terraform-schema#525](https://github.com/hashicorp/terraform-schema/issues/525))
+* Added failure_tolerance and eager_plan attribute to deployment_group ([terraform-schema#528](https://github.com/hashicorp/terraform-schema/issues/528))
+
+INTERNAL:
+
+* Fix flaky HCP workspace tooltip e2e assertion broken in newer VS Code Insiders ([#2285](https://github.com/hashicorp/vscode-terraform/issues/2285))
+
 ## 2.39.3 (2026-06-09)
 
 ENHANCEMENTS:
