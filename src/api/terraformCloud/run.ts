@@ -29,6 +29,7 @@ const runStatus = z.enum([
   'post_plan_running',
   'post_plan_completed',
   'planned_and_finished',
+  'planned_and_saved',
   'apply_queued',
   'applying',
   'applied',

@@ -6,6 +6,44 @@ INTERNAL:
 
 * Bumped terraform-ls ([#2189](https://github.com/hashicorp/vscode-terraform/issues/2189))
 
+## 2.39.4 (2026-07-02)
+
+ENHANCEMENTS:
+
+* Add support for the planned_and_saved run status for saved plan runs in the HCP Terraform view ([#2286](https://github.com/hashicorp/vscode-terraform/issues/2286))
+* Added type attribute to 1.15 output blocks ([terraform-schema#525](https://github.com/hashicorp/terraform-schema/issues/525))
+* Added failure_tolerance and eager_plan attribute to deployment_group ([terraform-schema#528](https://github.com/hashicorp/terraform-schema/issues/528))
+
+INTERNAL:
+
+* Fix flaky HCP workspace tooltip e2e assertion broken in newer VS Code Insiders ([#2285](https://github.com/hashicorp/vscode-terraform/issues/2285))
+
+## 2.39.3 (2026-06-09)
+
+ENHANCEMENTS:
+
+* Added Terraform v1.11 test schema support ([#2275](https://github.com/hashicorp/vscode-terraform/issues/2275))
+
+## 2.39.2 (2026-03-25)
+
+INTERNAL:
+
+* Build(deps-dev): Bump prettier from 3.6.2 to 3.8.1 ([#2220](https://github.com/hashicorp/vscode-terraform/issues/2220))
+
+## 2.39.1 (2026-03-25)
+
+ENHANCEMENTS:
+
+* Bumped terraform-ls & terraform-schema to incorporate the latest provider definitions. ([#2102](https://github.com/hashicorp/terraform-ls/issues/2102))
+
+INTERNAL:
+
+* chore: remove dependabot dev group and set open PR limit to 10 ([#2216](https://github.com/hashicorp/vscode-terraform/issues/2216))
+
+NOTES:
+
+* docs: document all language types for formatting configuration ([#2210](https://github.com/hashicorp/vscode-terraform/issues/2210))
+
 ## 2.39.0 (2026-03-03)
 
 INTERNAL:

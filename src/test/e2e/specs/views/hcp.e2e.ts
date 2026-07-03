@@ -32,7 +32,15 @@ describe('HCP tree view tests', () => {
   before(async function () {
     await VSBrowser.instance.openResources(path.join('src', 'test', 'fixtures'));
 
-    (await new ActivityBar().getViewControl('HCP Terraform'))?.openView();
+    // Dismiss the onboarding overlay by pressing Escape
+    const driver = VSBrowser.instance.driver;
+    await driver.actions().sendKeys('\uE00C').perform();
+    await driver.sleep(500);
+
+    await (await new ActivityBar().getViewControl('HCP Terraform'))?.openView();
+
+    // Wait for the view to be ready
+    await VSBrowser.instance.driver.sleep(2000);
 
     const view = new SideBarView();
     titlePart = view.getTitlePart();
@@ -97,7 +105,7 @@ describe('HCP tree view tests', () => {
 
     expect(await item?.getLabel()).equals('Workspace 1');
     expect(await item?.getDescription()).equals('[Project 1]');
-    expect(await item?.getTooltip()).equals('Workspace 1 [Project 1]');
+    expect(await item?.getTooltip()).contains('Workspace 1 [Project 1]');
   });
 
   it('should show a run when a workspace is clicked', async () => {
