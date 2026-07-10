@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.39.2026071014 (2026-07-10)
+
+INTERNAL:
+
+* Bumped terraform-ls ([#2289](https://github.com/hashicorp/vscode-terraform/issues/2289))
+
 ## 2.39.2026030417 (2026-03-04)
 
 INTERNAL:
@@ -51,17 +57,6 @@ INTERNAL:
 * Bump minimatch from 3.1.2 to 3.1.5 ([#2201](https://github.com/hashicorp/vscode-terraform/issues/2201))
 * Bump the github-actions-breaking group across 1 directory with 3 updates ([#2198](https://github.com/hashicorp/vscode-terraform/issues/2198))
 
-## 2.38.8 (2026-03-03)
-
-ENHANCEMENTS:
-
-* Update Stacks schema to include missing GA specific blocks & attributes, remove support for tfstack.hcl ([#2197](https://github.com/hashicorp/vscode-terraform/issues/2197))
-
-INTERNAL:
-
-* Bump nodejs from 20.18 to 24.13.1 ([#2179](https://github.com/hashicorp/vscode-terraform/issues/2179))
-* Migrate GitHub Actions updates from TSCCR to Dependabot ([#2018](https://github.com/hashicorp/vscode-terraform/issues/2018))
-
 ## 2.38.2026022319 (2026-02-23)
 
 INTERNAL:
@@ -79,6 +74,17 @@ INTERNAL:
 INTERNAL:
 
 * Bumped terraform-ls ([#2171](https://github.com/hashicorp/vscode-terraform/issues/2171))
+
+## 2.38.8 (2026-03-03)
+
+ENHANCEMENTS:
+
+* Update Stacks schema to include missing GA specific blocks & attributes, remove support for tfstack.hcl ([#2197](https://github.com/hashicorp/vscode-terraform/issues/2197))
+
+INTERNAL:
+
+* Bump nodejs from 20.18 to 24.13.1 ([#2179](https://github.com/hashicorp/vscode-terraform/issues/2179))
+* Migrate GitHub Actions updates from TSCCR to Dependabot ([#2018](https://github.com/hashicorp/vscode-terraform/issues/2018))
 
 ## 2.37.7 (2026-02-09)
 

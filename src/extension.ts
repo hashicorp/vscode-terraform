@@ -101,6 +101,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.workspace.createFileSystemWatcher('**/*.tfcomponent.hcl'),
         vscode.workspace.createFileSystemWatcher('**/*.tfdeploy.hcl'),
         vscode.workspace.createFileSystemWatcher('**/*.tftest.hcl'),
+        vscode.workspace.createFileSystemWatcher('**/*.policy.hcl'),
+        vscode.workspace.createFileSystemWatcher('**/*.policytest.hcl'),
         vscode.workspace.createFileSystemWatcher('**/*.tfmock.hcl'),
         vscode.workspace.createFileSystemWatcher('**/*.tfquery.hcl'),
       ],
