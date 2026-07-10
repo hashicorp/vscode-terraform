@@ -63,7 +63,7 @@ INTERNAL:
 
 * Bumped terraform-ls ([#2193](https://github.com/hashicorp/vscode-terraform/issues/2193))
 
-## 2.39.0 (2026-02-10)
+## 2.38.2026021014 (2026-02-10)
 
 INTERNAL:
 
