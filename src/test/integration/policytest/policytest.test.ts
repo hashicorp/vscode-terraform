@@ -30,6 +30,7 @@ suite('policytest (.policytest.hcl)', function () {
     test('completes policy blocks when policy test is present', async () => {
       const expected = [
         new vscode.CompletionItem('data', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('module', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('provider', vscode.CompletionItemKind.Class),
@@ -41,6 +42,7 @@ suite('policytest (.policytest.hcl)', function () {
     test('completes policy blocks', async () => {
       const expected = [
         new vscode.CompletionItem('data', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('locals', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('module', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('policytest', vscode.CompletionItemKind.Class),
@@ -70,6 +72,7 @@ suite('policytest (.policytest.hcl)', function () {
       const expected = [
         new vscode.CompletionItem('plugins', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('targets', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('terraform_config', vscode.CompletionItemKind.Class),
       ];
       await testCompletion(docUri, new vscode.Position(3, 15), { items: expected });
     });
@@ -94,6 +97,7 @@ suite('policytest (.policytest.hcl)', function () {
       const expected = [
         new vscode.CompletionItem('attrs', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('expect_failure', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('meta', vscode.CompletionItemKind.Property),
       ];
       await testCompletion(docUri, new vscode.Position(31, 0), { items: expected });
@@ -119,9 +123,39 @@ suite('policytest (.policytest.hcl)', function () {
       const expected = [
         new vscode.CompletionItem('attrs', vscode.CompletionItemKind.Property),
         new vscode.CompletionItem('expect_failure', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Class),
         new vscode.CompletionItem('meta', vscode.CompletionItemKind.Property),
       ];
       await testCompletion(docUri, new vscode.Position(25, 0), { items: expected });
+    });
+  });
+
+  suite('resource', function () {
+    const docUri = getDocUri('main.policytest.hcl');
+
+    this.beforeAll(async () => {
+      await open(docUri);
+      await activateExtension();
+    });
+
+    this.afterAll(async () => {
+      await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    });
+    this.afterEach(async () => {
+      await vscode.commands.executeCommand('workbench.action.files.revert');
+    });
+
+    test('completes attrs of resource block', async () => {
+      const expected = [
+        new vscode.CompletionItem('attrs', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('expect_failure', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('inputs', vscode.CompletionItemKind.Class),
+        new vscode.CompletionItem('meta', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('prior_attrs', vscode.CompletionItemKind.Property),
+        new vscode.CompletionItem('skip', vscode.CompletionItemKind.Property),
+      ];
+      // resource "aws_vpc" "main_vpc" block body starts at line 19 in main.policytest.hcl
+      await testCompletion(docUri, new vscode.Position(19, 0), { items: expected });
     });
   });
 });
