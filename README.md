@@ -104,7 +104,7 @@ Terraform Stacks syntax highlighting recognizes language constructs from Terrafo
 
 Terraform Search syntax highlighting recognizes language constructs from Terraform version 1.14 to 1.X.
 
-Terraform Policy syntax highlighting applies to `*.policy.hcl` and `*.policytest.hcl` files.
+Terraform Policy syntax highlighting recognizes language constructs from Terraform version 1.16 to 1.X.
 
 ![](docs/syntax.png)
 
