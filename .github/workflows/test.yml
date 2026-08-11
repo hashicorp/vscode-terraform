@@ -50,10 +50,6 @@ jobs:
           - windows-latest
           - macos-latest
           - ubuntu-latest
-        exclude:
-          # Temporarily disable insiders macos.
-          - vscode: 'insiders'
-            os: macos-latest
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     env:
