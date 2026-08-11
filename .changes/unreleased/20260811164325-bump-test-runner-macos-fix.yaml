@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: "Bump @vscode/test-cli to 0.0.15 and @vscode/test-electron to 3.1.0 to fix ENOENT spawn failure on macOS stable CI"
+time: 2026-08-11T16:43:25Z
+custom:
+  Issue: "2298"
+  Repository: vscode-terraform
