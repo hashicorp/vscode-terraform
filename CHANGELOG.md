@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.40.1 (2026-10-30)
+
+ENHANCEMENTS:
+
+* Upgraded Terraform Policy syntax compatibility to v0.5.x ([#2311](https://github.com/hashicorp/vscode-terraform/issues/2311))
+
+INTERNAL:
+
+* Bump @vscode/test-cli to 0.0.15 and @vscode/test-electron to 3.1.0 to fix ENOENT spawn failure on macOS stable CI ([#2299](https://github.com/hashicorp/vscode-terraform/issues/2299))
+
 ## 2.40.0 (2026-07-23)
 
 ENHANCEMENTS:
