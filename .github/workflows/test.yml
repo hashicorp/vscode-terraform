@@ -51,6 +51,8 @@ jobs:
           - macos-latest
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
+    # Insiders is an early-warning signal only; its failures must not block PRs/releases
+    continue-on-error: ${{ matrix.vscode == 'insiders' }}
     timeout-minutes: 10
     env:
       VSCODE_VERSION: ${{ matrix.vscode }}
