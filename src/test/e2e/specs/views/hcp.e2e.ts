@@ -6,6 +6,7 @@
 import {
   ActivityBar,
   BottomBarPanel,
+  By,
   DefaultTreeSection,
   EditorView,
   InputBox,
@@ -19,6 +20,13 @@ import {
 } from 'vscode-extension-tester';
 import * as path from 'path';
 import { expect } from 'chai';
+
+// InputBox.locators is protected; subclassing is the supported way to reuse the library's own quick pick locators
+class QuickPickLocators extends InputBox {
+  static get rowLabel(): By {
+    return QuickPickLocators.locators.Input.quickPickLabel;
+  }
+}
 
 describe('HCP tree view tests', () => {
   let titlePart: ViewTitlePart;
@@ -80,10 +88,35 @@ describe('HCP tree view tests', () => {
     await input.setText('fdsfdsdssfgdgdgdfgdsfagdfagdfrergebvbvtrhge');
     await input.confirm();
 
-    // wait for the login to complete
-    await VSBrowser.instance.driver.sleep(5000);
+    /*
+    // The org picker has a separator row (organizationPicker.ts). VS Code >= 1.145 renders it as a non-option row,
+    // which breaks getQuickPicks()/selectQuickPick(); select by role=option + label instead.
 
+    await VSBrowser.instance.driver.sleep(5000);
     await input.selectQuickPick('Org 1');
+    */
+
+    await VSBrowser.instance.driver.wait(
+      async () => {
+        try {
+          for (const row of await input.findElements(By.css('[role="option"]'))) {
+            const labels = await row.findElements(QuickPickLocators.rowLabel);
+            if (labels.length > 0 && (await labels[0].getText()) === 'Org 1') {
+              await row.click();
+              return true;
+            }
+          }
+          return false;
+        } catch (e) {
+          if (e instanceof Error && e.name === 'StaleElementReferenceError') {
+            return false;
+          }
+          throw e;
+        }
+      },
+      15000,
+      'Org 1 never appeared in the quick pick',
+    );
 
     // Enable if you want to see the output channels
     // await logOutputChannels();
@@ -105,6 +138,8 @@ describe('HCP tree view tests', () => {
 
     expect(await item?.getLabel()).equals('Workspace 1');
     expect(await item?.getDescription()).equals('[Project 1]');
+    // CustomTreeItem.getTooltip() now reads the aria-label of the inner label element (just 'Workspace 1');
+    // the tree row's own aria-label holds label, description and tooltip text
     expect(await item?.getAttribute('aria-label')).contains('Workspace 1 [Project 1]');
   });
 
