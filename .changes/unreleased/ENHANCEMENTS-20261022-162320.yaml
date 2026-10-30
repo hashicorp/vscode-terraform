@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: Upgraded Terraform Policy syntax compatibility to v0.5.x
+time: 2026-10-22T10:53:23Z
+custom:
+  Issue: "2311"
+  Repository: vscode-terraform
