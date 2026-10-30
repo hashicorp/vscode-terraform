@@ -80,8 +80,8 @@ describe('HCP tree view tests', () => {
     await input.setText('fdsfdsdssfgdgdgdfgdsfagdfagdfrergebvbvtrhge');
     await input.confirm();
 
-    // wait 1 second for the login to complete
-    await VSBrowser.instance.driver.sleep(1000);
+    // wait for the login to complete
+    await VSBrowser.instance.driver.sleep(5000);
 
     await input.selectQuickPick('Org 1');
 
@@ -105,7 +105,7 @@ describe('HCP tree view tests', () => {
 
     expect(await item?.getLabel()).equals('Workspace 1');
     expect(await item?.getDescription()).equals('[Project 1]');
-    expect(await item?.getTooltip()).contains('Workspace 1 [Project 1]');
+    expect(await item?.getAttribute('aria-label')).contains('Workspace 1 [Project 1]');
   });
 
   it('should show a run when a workspace is clicked', async () => {
@@ -127,7 +127,7 @@ describe('HCP tree view tests', () => {
     await runItem?.click();
     expect(await runItem?.getLabel()).equals('Run 1');
     expect(await runItem?.getDescription()).contains('manual');
-    expect(await runItem?.getTooltip()).contains('Run 1 manual');
+    expect(await runItem?.getAttribute('aria-label')).contains('Run 1 manual');
   });
 
   async function logOutputChannels() {
