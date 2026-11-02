@@ -1,6 +1,0 @@
-kind: INTERNAL
-body: Bump vscode-extension-tester to 8.28.1
-time: 2026-10-30T14:15:56.35126+05:30
-custom:
-    Issue: "2314"
-    Repository: vscode-terraform
