@@ -1087,6 +1087,6 @@
     "process": "^0.11.10",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.15.0",
-    "vscode-extension-tester": "^8.14.1"
+    "vscode-extension-tester": "^8.28.1"
   }
 }
