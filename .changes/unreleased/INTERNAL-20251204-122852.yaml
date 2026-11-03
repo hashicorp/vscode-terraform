@@ -1,0 +1,6 @@
+kind: INTERNAL
+body: Bump Terraform MCP Server to 0.3.x
+time: 2025-12-04T12:28:52.633881-07:00
+custom:
+    Issue: "2164"
+    Repository: vscode-terraform
