@@ -127,9 +127,8 @@ terraform.languageServer.tcp.port
 terraform.languageServer.terraform.path
 terraform.languageServer.terraform.logFilePath
 terraform.languageServer.terraform.timeout
-terraform.languageServer.rootModules
-terraform.languageServer.excludeRootModules
-terraform.languageServer.ignoreDirectoryNames
+terraform.languageServer.indexing.ignorePaths
+terraform.languageServer.indexing.ignoreDirectoryNames
 ```
 
 > **Note**: This means these settings are no longer able to be configred in the Workspace or Folder setting scopes. For more information about setting scope see the VS Code [setting documentation](https://code.visualstudio.com/docs/getstarted/settings)

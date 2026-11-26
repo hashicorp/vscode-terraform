@@ -450,32 +450,20 @@ This will create diagnostics for any elements that fail validation. You can also
 
 ### Multiple Workspaces
 
-If you have multiple root modules in your workspace, you can configure the language server settings to identify them. Edit this through the VSCode Settings UI or add a `.vscode/settings.json` file using the following template:
+terraform-ls indexes every folder in a workspace, so if you have multiple root modules, add each one as a folder in a [multi-root workspace](https://code.visualstudio.com/docs/editor/multi-root-workspaces). No extension-specific setting is needed.
 
-```json
-"terraform.languageServer.rootModules": [
-  "/module1",
-  "/module2"
-]
-```
-
-If you want to automatically search root modules in your workspace and exclude some folders, you can configure the language server settings to identify them.
-
-```json
-"terraform.languageServer.excludeRootModules": [
-  "/module3",
-  "/module4"
-]
-```
+> **Note**: `terraform.languageServer.rootModules` and `terraform.languageServer.excludeRootModules` are no longer supported. `rootModules` is a no-op in terraform-ls, which reports it as deprecated, and `excludeRootModules` is not read by the extension.
 
 If you want to automatically ignore certain directories when terraform-ls indexes files, add the folder names to this setting:
 
 ```json
- "terraform.languageServer.ignoreDirectoryNames": [
+ "terraform.languageServer.indexing.ignoreDirectoryNames": [
    "folder1",
    "folder2"
  ]
 ```
+
+To ignore specific paths instead, use `terraform.languageServer.indexing.ignorePaths`.
 
 ### Terraform command options
 
