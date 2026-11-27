@@ -1,0 +1,6 @@
+kind: BUG FIXES
+body: 'Correct the multiple workspaces documentation: `rootModules` and `excludeRootModules` are no longer supported, and the indexing settings live under `indexing`'
+time: 2026-11-27T02:25:00Z
+custom:
+    Issue: "1874"
+    Repository: vscode-terraform
